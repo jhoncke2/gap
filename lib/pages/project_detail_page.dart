@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gap/pages/visitas_page.dart';
+import 'package:gap/pages/visits_page.dart';
 import 'package:gap/utils/size_utils.dart';
 import 'package:gap/widgets/header.dart';
 import 'package:gap/widgets/navigation_list_button.dart';
@@ -44,13 +44,13 @@ class ProjectDetailPage extends StatelessWidget {
           NavigationListButton(
             name: 'Visitas',
             hasBottomBorder: true,
-            navigationRoute: VisitasPage.route,
+            onTap: () => VisitsPage.route,
 
           ),
           NavigationListButton(
             name: 'Viáticos',
             hasBottomBorder: false,
-            navigationRoute: '',
+            onTap: (){},
 
           )
         ],

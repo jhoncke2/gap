@@ -17,11 +17,18 @@ class VisitsBloc extends Bloc<VisitsEvent, VisitsState> {
   ) async* {
     if(event is SetVisits){
       _setVisits(event);
-      yield _currentYieldedState;
     }else if(event is ChangeShowedVisitsStep){
-      final VisitStep newShowedVisitsSetp = event.newShowedVisitsSetp;
-      yield state.copyWith(currentShowedVisitsStep: newShowedVisitsSetp);
+      _changeShowedVisitsStep(event);
+    }else if(event is ChangeDateFilterItem){
+      _changeDateFilterItem(event);
+    }else if(event is ChooseVisit){
+      _chooseVisit(event);
+    }else if(event is ResetAllOfVisits){
+      _resetAllOfVisits();
+    }else if(event is ResetDateFilter){
+      _resetDateFilter();      
     }
+    yield _currentYieldedState;
   }
 
   void _setVisits(SetVisits event){
@@ -29,9 +36,9 @@ class VisitsBloc extends Bloc<VisitsEvent, VisitsState> {
     final List<Visit> pendientesVisits = [];
     final List<Visit> realizadasVisits = [];
     visits.forEach((Visit visit) {
-      if(visit.state == VisitStep.Pendiente)
+      if(visit.step == VisitStep.Pendiente)
         pendientesVisits.add(visit);
-      else if(visit.state == VisitStep.Realizada)
+      else if(visit.step == VisitStep.Realizada)
         realizadasVisits.add(visit);
     });
     _currentYieldedState = state.copyWith(
@@ -39,6 +46,54 @@ class VisitsBloc extends Bloc<VisitsEvent, VisitsState> {
       visits: visits, 
       pendientesVisits: pendientesVisits,
       realizadasVisits: realizadasVisits
+    ); 
+  }
+
+  void _changeShowedVisitsStep(ChangeShowedVisitsStep event){
+    final VisitStep newShowedVisitsSetp = event.newShowedVisitsSetp;
+    _currentYieldedState = state.copyWith(showedVisitsStep: newShowedVisitsSetp);
+  }
+
+  void _changeDateFilterItem(ChangeDateFilterItem event){
+    final int filterItemIndex = event.filterItemIndex;
+    final DateTime filterDate = event.filterDate;
+    final List<Visit> filterVisits = _getVisitsWithSameDateThanFilter(filterDate);
+    _currentYieldedState = state.copyWith(
+      indexOfChosenFilterItem: filterItemIndex,
+      filterDate: filterDate,
+      visitsByFilterDate: filterVisits
+    );
+  }
+
+  void _chooseVisit(ChooseVisit event){
+    final Visit chosenOne = event.chosenOne;
+    _currentYieldedState = state.copyWith(chosenVisit: chosenOne);
+  }
+
+  List<Visit> _getVisitsWithSameDateThanFilter(DateTime filterDate){
+    final List<Visit> currentShowedVisits = state.currentShowedVisits;
+    final Iterable<Visit> filterVisits = currentShowedVisits.where(
+      (Visit visit){
+        final String visitDateString = visit.date.toString().split(' ')[0];
+        final String filterDateString = filterDate.toString().split(' ')[0];
+        return visitDateString == filterDateString;
+      }
+    );
+    return filterVisits.toList();
+  }
+
+  void _resetAllOfVisits(){
+    _currentYieldedState = state.reset();
+  }
+
+  void _resetDateFilter(){
+    _currentYieldedState = VisitsState(
+      visitsAreLoaded: state.visitsAreLoaded,
+      visits: state.visits,
+      showedVisitsStep: state.showedVisitsStep,
+      pendientesVisits: state.pendientesVisits,
+      realizadasVisits: state.realizadasVisits,
+      chosenVisit: state.chosenVisit
     );
   }
 }

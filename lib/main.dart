@@ -4,7 +4,8 @@ import 'package:gap/bloc/visits/visits_bloc.dart';
 import 'package:gap/pages/login_page.dart';
 import 'package:gap/pages/project_detail_page.dart';
 import 'package:gap/pages/projects_page.dart';
-import 'package:gap/pages/visitas_page.dart';
+import 'package:gap/pages/visit_detail_page.dart';
+import 'package:gap/pages/visits_page.dart';
 void main() => runApp(MyApp());
  
 class MyApp extends StatelessWidget {
@@ -25,7 +26,8 @@ class MyApp extends StatelessWidget {
           LoginPage.route: (_)=>LoginPage(),
           ProjectsPage.route: (_)=>ProjectsPage(),
           ProjectDetailPage.route: (_)=>ProjectDetailPage(),
-          VisitasPage.route: (_)=>VisitasPage()
+          VisitsPage.route: (_)=>VisitsPage(),
+          VisitDetailPage.route: (_)=>VisitDetailPage()
         },
       ),
     );

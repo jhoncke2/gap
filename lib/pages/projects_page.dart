@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/pages/project_detail_page.dart';
+import 'package:gap/pages/visits_page.dart';
 import 'package:gap/utils/size_utils.dart';
 import 'package:gap/widgets/header.dart';
 import 'package:gap/utils/test/projects.dart' as testingProjects;
@@ -55,7 +56,7 @@ class ProjectsPage extends StatelessWidget {
       return NavigationListButton(
         name: project['name'], 
         hasBottomBorder: true, 
-        navigationRoute: ProjectDetailPage.route
+        onTap: ()=>Navigator.of(_context).pushNamed(VisitsPage.route)
       );
     }).toList();
     return items;

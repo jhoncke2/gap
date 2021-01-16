@@ -6,11 +6,11 @@ enum VisitStep{
 class Visit{
   final String name;
   final DateTime date;
-  final VisitStep state;
+  final VisitStep step;
 
   Visit.fromJson(Map<String, dynamic> json):
     this.name = json['name'],
     this.date = DateTime.parse(json['fecha']),
-    this.state = json['step'] == 'pendiente'? VisitStep.Pendiente : VisitStep.Realizada 
+    this.step = json['step'] == 'pendiente'? VisitStep.Pendiente : VisitStep.Realizada 
     ;
 }

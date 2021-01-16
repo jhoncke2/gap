@@ -4,14 +4,14 @@ import 'package:gap/utils/size_utils.dart';
 class NavigationListButton extends StatelessWidget {
   final String name;
   final bool hasBottomBorder;
-  final String navigationRoute;
+  final Function onTap;
   BuildContext _context;
   SizeUtils _sizeUtils;
   NavigationListButton({
     Key key,
     @required this.name,
     @required this.hasBottomBorder,
-    @required this.navigationRoute
+    @required this.onTap
   }) : super(key: key);
 
   @override
@@ -20,13 +20,11 @@ class NavigationListButton extends StatelessWidget {
     return MaterialButton(
       padding: EdgeInsets.symmetric(horizontal: 0.0),
       child: Container(
-        width: double.infinity,
         padding: EdgeInsets.symmetric(
           horizontal: _sizeUtils.xasisSobreYasis * 0.01,
           vertical: _sizeUtils.xasisSobreYasis * 0.0225
         ),
-        alignment: Alignment.centerLeft,
-        
+        alignment: Alignment.centerLeft, 
         child: Text(
           name,
           style: TextStyle(
@@ -37,9 +35,7 @@ class NavigationListButton extends StatelessWidget {
         ),
         decoration: _createButtonDecoration(),
       ),
-      onPressed: (){
-        Navigator.of(_context).pushNamed(navigationRoute);
-      },
+      onPressed: onTap,
     );
   }
 
@@ -49,7 +45,9 @@ class NavigationListButton extends StatelessWidget {
           color: Theme.of(_context).primaryColor.withOpacity(0.75),
           width: 0.75
         )
-      : BorderSide();
+      : BorderSide(
+        color: Colors.transparent
+      );
     return BoxDecoration(
       border: Border(
         bottom: bottomBorder
