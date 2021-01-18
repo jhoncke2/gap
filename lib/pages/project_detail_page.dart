@@ -44,14 +44,12 @@ class ProjectDetailPage extends StatelessWidget {
           NavigationListButton(
             name: 'Visitas',
             hasBottomBorder: true,
-            onTap: () => VisitsPage.route,
-
+            onTap: () => Navigator.of(_context).pushNamed(VisitsPage.route),
           ),
           NavigationListButton(
             name: 'Viáticos',
             hasBottomBorder: false,
             onTap: (){},
-
           )
         ],
       ),

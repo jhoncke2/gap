@@ -61,7 +61,7 @@ class SizeUtils{
   }
 
   double get normalTextSize{
-    return _xasisYasisProm * 0.0295;
+    return _xasisYasisProm * 0.0275;
   }
 
   double get littleTextSize{

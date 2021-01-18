@@ -4,7 +4,7 @@ part of 'visits_bloc.dart';
 class VisitsState {
   final bool visitsAreLoaded;
   final List<Visit> visits;
-  final VisitStep showedVisitsStep;
+  final VisitStep selectedStepInNav;
   final List<Visit> pendientesVisits;
   final List<Visit> realizadasVisits;
   final int indexOfChosenFilterItem;
@@ -15,7 +15,7 @@ class VisitsState {
   VisitsState({
     this.visitsAreLoaded = false,
     List<Visit> visits,
-    VisitStep showedVisitsStep,
+    VisitStep selectedStepInNav,
     List<Visit> pendientesVisits,    
     List<Visit> realizadasVisits,
     int indexOfChosenFilterItem,
@@ -24,7 +24,7 @@ class VisitsState {
     Visit chosenVisit   
   }):
     this.visits = visits??[],
-    this.showedVisitsStep = showedVisitsStep??VisitStep.Pendiente,
+    this.selectedStepInNav = selectedStepInNav??VisitStep.Pendiente,
     this.pendientesVisits = pendientesVisits??[],
     this.realizadasVisits = realizadasVisits??[],
     this.indexOfChosenFilterItem = indexOfChosenFilterItem??null,
@@ -36,7 +36,7 @@ class VisitsState {
   VisitsState copyWith({
     bool visitsAreLoaded,
     List<Visit> visits,
-    VisitStep showedVisitsStep,
+    VisitStep selectedStepInNav,
     List<Visit> pendientesVisits,    
     List<Visit> realizadasVisits,
     int indexOfChosenFilterItem,    
@@ -46,7 +46,7 @@ class VisitsState {
   })=>VisitsState(
     visitsAreLoaded: visitsAreLoaded??this.visitsAreLoaded,
     visits: visits??this.visits,
-    showedVisitsStep: showedVisitsStep??this.showedVisitsStep, 
+    selectedStepInNav: selectedStepInNav??this.selectedStepInNav, 
     pendientesVisits: pendientesVisits??this.pendientesVisits,    
     realizadasVisits: realizadasVisits??this.realizadasVisits,
     indexOfChosenFilterItem: indexOfChosenFilterItem??this.indexOfChosenFilterItem,
@@ -60,10 +60,19 @@ class VisitsState {
     if(indexOfChosenFilterItem != null){
       return visitsByFilterDate;
     }else{
-      if(showedVisitsStep == VisitStep.Pendiente)
+      if(selectedStepInNav == VisitStep.Pendiente)
         return pendientesVisits;
       return realizadasVisits;
     }
+  }
+
+  List<Visit> get visitsByCurrentSelectedStep{
+    if(selectedStepInNav == VisitStep.Pendiente)
+      return pendientesVisits;
+    else if(selectedStepInNav == VisitStep.Realizada)
+      return realizadasVisits;
+    else
+      return null;
   }
 }
 

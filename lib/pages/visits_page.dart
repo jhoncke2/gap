@@ -6,6 +6,7 @@ import 'package:gap/pages/visit_detail_page.dart';
 import 'package:gap/utils/size_utils.dart';
 import 'package:gap/widgets/header.dart';
 import 'package:gap/widgets/navigation_list_button.dart';
+import 'package:gap/widgets/unloaded_elements/unloaded_nav_items.dart';
 import 'package:gap/widgets/visits_date_filter.dart';
 import 'package:gap/utils/test/visits.dart' as fakeVisits;
 class VisitsPage extends StatefulWidget {
@@ -63,14 +64,18 @@ class _VisitsPageState extends State<VisitsPage> {
       height: _sizeUtils.xasisSobreYasis * 0.95,
       child: BlocBuilder<VisitsBloc, VisitsState>(
         builder: (_, VisitsState state){
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _createNavForVisitsStates(state),
-              VisitsDateFilter(),
-              _createVisitsComponent(state)
-            ],
-          );
+          if(state.visitsAreLoaded){
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _createNavForVisitsStates(state),
+                VisitsDateFilter(),
+                _createVisitsComponent(state)
+              ],
+            );
+          }else{
+            return UnloadedNavItems();
+          }
         },
       ),
     );
@@ -108,7 +113,7 @@ class _VisitsPageState extends State<VisitsPage> {
 
   Map<String, Color> _elegirNavItemsColoresSegunState(VisitsState state){
     final Map<String, Color> colors = {};
-    if(state.showedVisitsStep == VisitStep.Pendiente){
+    if(state.selectedStepInNav == VisitStep.Pendiente){
       colors['pendientes'] = Theme.of(_context).primaryColor;
       colors['realizadas'] = Theme.of(_context).primaryColor.withOpacity(0.5);
     }else{
@@ -120,7 +125,7 @@ class _VisitsPageState extends State<VisitsPage> {
 
   void _changeShowedVisitsState(VisitStep newStep){
     final VisitsBloc visitsBloc = BlocProvider.of<VisitsBloc>(_context);
-    final ChangeShowedVisitsStep changeShVisitsStepEVent =ChangeShowedVisitsStep(newShowedVisitsSetp: newStep);
+    final ChangeSelectedStepInNav changeShVisitsStepEVent =ChangeSelectedStepInNav(newSelectedStep: newStep);
     visitsBloc.add(changeShVisitsStepEVent);
     final ResetDateFilter resetDateFilterEvent= ResetDateFilter();
     visitsBloc.add(resetDateFilterEvent);

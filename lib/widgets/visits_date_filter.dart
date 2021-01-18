@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/bloc/visits/visits_bloc.dart';
 import 'package:gap/utils/size_utils.dart';
 
@@ -74,9 +75,9 @@ class VisitsDateFilter extends StatelessWidget {
       rowChildren.addAll([
         SizedBox(width: _sizeUtils.xasisSobreYasis * 0.03),
         Icon(
-          Icons.calendar_today_rounded,
+          FontAwesomeIcons.calendarAlt,
           color: Theme.of(_context).primaryColor,
-          size: _sizeUtils.largeIconSize * 0.9,
+          size: _sizeUtils.largeIconSize * 0.8,
         )
       ]);
     }

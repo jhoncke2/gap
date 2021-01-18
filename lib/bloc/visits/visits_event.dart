@@ -6,14 +6,14 @@ abstract class VisitsEvent {}
 class SetVisits extends VisitsEvent{
   final List<Visit> visits;
   SetVisits({
-    @required this.visits
+    @required this.visits,
   });
 }
 
-class ChangeShowedVisitsStep extends VisitsEvent{
-  final VisitStep newShowedVisitsSetp;
-  ChangeShowedVisitsStep({
-    @required this.newShowedVisitsSetp
+class ChangeSelectedStepInNav extends VisitsEvent{
+  final VisitStep newSelectedStep;
+  ChangeSelectedStepInNav({
+    @required this.newSelectedStep
   });
 }
 
@@ -29,7 +29,7 @@ class ChangeDateFilterItem extends VisitsEvent{
 class ChooseVisit extends VisitsEvent{
   final Visit chosenOne;
   ChooseVisit({
-    @required this.chosenOne
+    @required this.chosenOne,
   });
 }
 

@@ -1,5 +1,7 @@
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/utils/size_utils.dart';
+// ignore: must_be_immutable
 class Header extends StatelessWidget {
   final bool showBackNavButton;
   final bool withTitle;

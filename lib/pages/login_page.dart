@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gap/pages/projects_page.dart';
 import 'package:gap/utils/size_utils.dart';
 import 'package:gap/widgets/logo.dart';
 
@@ -24,11 +25,13 @@ class _LoginPageState extends State<LoginPage> {
     _initInitialConfiguration(context);
     return Scaffold(
       body: SafeArea(
-        child: Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: _sizeUtils.largeHorizontalScaffoldPadding
+        child: SingleChildScrollView(
+          child: Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: _sizeUtils.largeHorizontalScaffoldPadding
+            ),
+            child: _crearComponentes(),
           ),
-          child: _crearComponentes(),
         ),
       ),
     );
@@ -181,6 +184,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _login(){
+    Navigator.of(context).pushReplacementNamed(ProjectsPage.route);
   }
 
   Widget _createBottomComponents(){

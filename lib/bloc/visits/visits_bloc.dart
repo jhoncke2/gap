@@ -17,8 +17,8 @@ class VisitsBloc extends Bloc<VisitsEvent, VisitsState> {
   ) async* {
     if(event is SetVisits){
       _setVisits(event);
-    }else if(event is ChangeShowedVisitsStep){
-      _changeShowedVisitsStep(event);
+    }else if(event is ChangeSelectedStepInNav){
+      _changeSelectedStepInNav(event);
     }else if(event is ChangeDateFilterItem){
       _changeDateFilterItem(event);
     }else if(event is ChooseVisit){
@@ -49,9 +49,9 @@ class VisitsBloc extends Bloc<VisitsEvent, VisitsState> {
     ); 
   }
 
-  void _changeShowedVisitsStep(ChangeShowedVisitsStep event){
-    final VisitStep newShowedVisitsSetp = event.newShowedVisitsSetp;
-    _currentYieldedState = state.copyWith(showedVisitsStep: newShowedVisitsSetp);
+  void _changeSelectedStepInNav(ChangeSelectedStepInNav event){
+    final VisitStep newShowedVisitsSetp = event.newSelectedStep;
+    _currentYieldedState = state.copyWith(selectedStepInNav: newShowedVisitsSetp);
   }
 
   void _changeDateFilterItem(ChangeDateFilterItem event){
@@ -71,7 +71,7 @@ class VisitsBloc extends Bloc<VisitsEvent, VisitsState> {
   }
 
   List<Visit> _getVisitsWithSameDateThanFilter(DateTime filterDate){
-    final List<Visit> currentShowedVisits = state.currentShowedVisits;
+    final List<Visit> currentShowedVisits = state.visitsByCurrentSelectedStep;
     final Iterable<Visit> filterVisits = currentShowedVisits.where(
       (Visit visit){
         final String visitDateString = visit.date.toString().split(' ')[0];
@@ -90,7 +90,7 @@ class VisitsBloc extends Bloc<VisitsEvent, VisitsState> {
     _currentYieldedState = VisitsState(
       visitsAreLoaded: state.visitsAreLoaded,
       visits: state.visits,
-      showedVisitsStep: state.showedVisitsStep,
+      selectedStepInNav: state.selectedStepInNav,
       pendientesVisits: state.pendientesVisits,
       realizadasVisits: state.realizadasVisits,
       chosenVisit: state.chosenVisit

@@ -13,7 +13,7 @@ class ProjectsPage extends StatelessWidget {
   SizeUtils _sizeUtils;
   
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context){
     _initInitialConfiguration(context);
     return Scaffold(
       body: SafeArea(
@@ -50,13 +50,12 @@ class ProjectsPage extends StatelessWidget {
   }
 
   List<Widget> _createProjectsItems(){
-    //TODO: Hasta haber implementado el formato bloc y la conexión con el server
     final List<Map<String, dynamic>> projects = testingProjects.projects;
     final List<Widget> items = projects.map<Widget>((Map<String, dynamic> project){
       return NavigationListButton(
         name: project['name'], 
         hasBottomBorder: true, 
-        onTap: ()=>Navigator.of(_context).pushNamed(VisitsPage.route)
+        onTap: ()=>Navigator.of(_context).pushNamed(ProjectDetailPage.route)
       );
     }).toList();
     return items;
