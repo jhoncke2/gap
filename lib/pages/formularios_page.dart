@@ -3,11 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/bloc/formularios/formularios_bloc.dart';
 import 'package:gap/bloc/visits/visits_bloc.dart';
 import 'package:gap/enums/process_stage.dart';
+import 'package:gap/models/EntityWithStages.dart';
 import 'package:gap/models/formulario.dart';
 import 'package:gap/models/visit.dart';
 import 'package:gap/pages/visit_detail_page.dart';
 import 'package:gap/widgets/header.dart';
 import 'package:gap/widgets/navigation_list/button/navigation_list_button.dart';
+import 'package:gap/widgets/navigation_list/navigation_list_with_stage_color_buttons.dart';
 import 'package:gap/widgets/unloaded_elements/unloaded_nav_items.dart';
 import 'package:gap/utils/size_utils.dart';
 // ignore: must_be_immutable
@@ -62,7 +64,11 @@ class FormulariosPage extends StatelessWidget {
         child: BlocBuilder<FormulariosBloc, FormulariosState>(
           builder: (_, state) {
             if(state.formsAreLoaded){
-              return _createFormulariosNavigation(state);
+              return Column(
+                children: [
+                  _createNavigationList(state),
+                ],
+              );
             }else{
               return UnloadedNavItems();
             }
@@ -70,6 +76,15 @@ class FormulariosPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget _createNavigationList(FormulariosState state){
+    final List<Formulario> forms = state.forms;
+    return NavigationListWithStageButtons(itemsFunction: _onItemTap, entitiesWithStages: forms);
+  }
+
+  void _onItemTap(EntityWithStages entity){
+
   }
 
   Widget _createFormulariosNavigation(FormulariosState state){
@@ -101,7 +116,8 @@ class FormulariosPage extends StatelessWidget {
   Widget _createVisitRightItem(Formulario formulario){
     return Expanded(
       child: NavigationListButton(
-        name: formulario.name, 
+        name: formulario.name,
+        textColor: Theme.of(_context).primaryColor,
         hasBottomBorder: true, 
         onTap: (){
           final FormulariosBloc formsBloc = BlocProvider.of<FormulariosBloc>(_context);

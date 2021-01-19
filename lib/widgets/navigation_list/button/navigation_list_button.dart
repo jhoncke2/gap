@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:gap/utils/size_utils.dart';
 // ignore: must_be_immutable
 class NavigationListButton extends StatelessWidget {
+  
   final String name;
+  final Color textColor;
   final bool hasBottomBorder;
   final Function onTap;
   BuildContext _context;
@@ -10,6 +12,7 @@ class NavigationListButton extends StatelessWidget {
   NavigationListButton({
     Key key,
     @required this.name,
+    @required this.textColor,
     @required this.hasBottomBorder,
     @required this.onTap
   }) : super(key: key);
@@ -55,7 +58,7 @@ class NavigationListButton extends StatelessWidget {
       style: TextStyle(
         fontWeight: FontWeight.normal,
         fontSize: _sizeUtils.littleTitleSize,
-        color: Theme.of(_context).primaryColor
+        color: textColor
       ),
     );
   }

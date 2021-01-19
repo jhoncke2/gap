@@ -8,11 +8,13 @@ class ButtonWithStageColor extends NavigationListButton{
   final ProcessStage stage;
   ButtonWithStageColor({
     @required String name,
+    @required Color textColor,
     @required Function onTap,
     @required this.stage
   }):super(
     hasBottomBorder: true,
     name: name,
+    textColor: textColor,
     onTap: onTap
   );
 

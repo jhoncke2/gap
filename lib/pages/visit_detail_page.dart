@@ -7,6 +7,7 @@ import 'package:gap/utils/size_utils.dart';
 import 'package:gap/widgets/header.dart';
 import 'package:gap/widgets/navigation_list/button/navigation_list_button.dart';
 import 'package:gap/utils/static_data/visit_detail_navigation.dart' as navigationData;
+import 'package:gap/widgets/navigation_list/navigation_list_with_icons.dart';
 
 // ignore: must_be_immutable
 class VisitDetailPage extends StatelessWidget {
@@ -50,7 +51,12 @@ class VisitDetailPage extends StatelessWidget {
               SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
               _createDateText(),
               SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
-              _createNavigation(state)
+              //_createNavigation(state),
+              NavigationListWithIcons(
+                itemCurrentProcessState: _visit.currentStage, 
+
+              )
+
             ],
           );
         }else{
@@ -141,11 +147,20 @@ class VisitDetailPage extends StatelessWidget {
     return items;
   }
 
+  Widget _createNavItemIcon(int itemIndex, IconData icon){
+    return Icon(
+      icon,
+      size: _sizeUtils.largeIconSize,
+      color: _navItemsColors[itemIndex]['icon'],
+    );
+  }
+
   Widget _createNavItemName(int itemIndex, String name, String navigationRoute){
     final Function onTap = _generateOnTapNavItemFunction(itemIndex, navigationRoute);
     return Expanded(
       child: NavigationListButton(
-        name: name, 
+        name: name,
+        textColor: Theme.of(_context).primaryColor,
         hasBottomBorder: false, 
         onTap: onTap
       )
@@ -157,13 +172,5 @@ class VisitDetailPage extends StatelessWidget {
       (){Navigator.of(_context).pushNamed(navigationRoute);} 
       : null;
     return onTap;
-  }
-
-  Widget _createNavItemIcon(int itemIndex, IconData icon){
-    return Icon(
-      icon,
-      size: _sizeUtils.largeIconSize,
-      color: _navItemsColors[itemIndex]['icon'],
-    );
   }
 }

@@ -5,7 +5,7 @@ import 'package:gap/widgets/navigation_list/button/navigation_list_button.dart';
 class NavigationList extends StatelessWidget {
   final SizeUtils _sizeUtils = SizeUtils();
   final List<String> itemsNames;
-  final List<Function> itemsFunctions;
+  List<Function> itemsFunctions;
   final double horizontalPadding;
   BuildContext context;
   NavigationList({
@@ -13,11 +13,15 @@ class NavigationList extends StatelessWidget {
     @required this.itemsFunctions,
     this.horizontalPadding = 0
   });
-  
 
   @override
   Widget build(BuildContext context) {
     this.context = context;
+    return createNavList();
+  }
+
+  @protected
+  Widget createNavList(){
     final List<Widget> navItems = createButtonItems();
     return Expanded(
       child: Container(
@@ -44,7 +48,8 @@ class NavigationList extends StatelessWidget {
   @protected
   Widget createNavButton(int itemIndex){
     return NavigationListButton(
-      name: itemsNames[itemIndex], 
+      name: itemsNames[itemIndex],
+      textColor: Theme.of(context).primaryColor,
       hasBottomBorder: true, 
       onTap: itemsFunctions[itemIndex]
     );

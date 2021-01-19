@@ -21,6 +21,7 @@ class NavigationListWithStageButtons extends NavigationList {
     final List<Widget> items = entitiesWithStages.map<Widget>((EntityWithStages entity){
       return ButtonWithStageColor(
         name: entity.name,
+        textColor: Theme.of(context).primaryColor,
         stage: entity.currentStage,
         onTap: (){itemsFunction(entity);}, 
         

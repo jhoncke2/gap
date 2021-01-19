@@ -69,7 +69,6 @@ class _VisitsPageState extends State<VisitsPage> {
       child: BlocBuilder<VisitsBloc, VisitsState>(
         builder: (_, VisitsState state){
           if(state.visitsAreLoaded){
-            final List<Visit> visits = state.currentShowedVisits;
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
