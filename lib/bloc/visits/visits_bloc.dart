@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:gap/enums/process_stage.dart';
 import 'package:gap/models/visit.dart';
 import 'package:meta/meta.dart';
 
@@ -36,9 +37,9 @@ class VisitsBloc extends Bloc<VisitsEvent, VisitsState> {
     final List<Visit> pendientesVisits = [];
     final List<Visit> realizadasVisits = [];
     visits.forEach((Visit visit) {
-      if(visit.step == VisitStep.Pendiente)
+      if(visit.currentStage == ProcessStage.Pendiente)
         pendientesVisits.add(visit);
-      else if(visit.step == VisitStep.Realizada)
+      else if(visit.currentStage == ProcessStage.Realizada)
         realizadasVisits.add(visit);
     });
     _currentYieldedState = state.copyWith(
@@ -50,8 +51,8 @@ class VisitsBloc extends Bloc<VisitsEvent, VisitsState> {
   }
 
   void _changeSelectedStepInNav(ChangeSelectedStepInNav event){
-    final VisitStep newShowedVisitsSetp = event.newSelectedStep;
-    _currentYieldedState = state.copyWith(selectedStepInNav: newShowedVisitsSetp);
+    final ProcessStage newSelectedMenuStage = event.newSelectedMenuStage;
+    _currentYieldedState = state.copyWith(selectedStepInNav: newSelectedMenuStage);
   }
 
   void _changeDateFilterItem(ChangeDateFilterItem event){

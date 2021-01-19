@@ -15,8 +15,19 @@ class NavigationListButton extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    _initInitialConfiguration(context);
+  Widget build(BuildContext context){
+    initInitialConfiguration(context);
+    return createButton();
+  }
+
+  @protected
+  void initInitialConfiguration(BuildContext appContext){
+    _context = appContext;
+    _sizeUtils = SizeUtils();
+  }
+
+  @protected
+  Widget createButton(){
     return MaterialButton(
       padding: EdgeInsets.symmetric(horizontal: 0.0),
       child: Container(
@@ -25,17 +36,27 @@ class NavigationListButton extends StatelessWidget {
           vertical: _sizeUtils.xasisSobreYasis * 0.0225
         ),
         alignment: Alignment.centerLeft, 
-        child: Text(
-          name,
-          style: TextStyle(
-            fontWeight: FontWeight.normal,
-            fontSize: _sizeUtils.littleTitleSize,
-            color: Theme.of(_context).primaryColor
-          ),
-        ),
+        child: createButtonChild(),
         decoration: _createButtonDecoration(),
       ),
       onPressed: onTap,
+    );
+  }
+
+  @protected
+  Widget createButtonChild(){
+    return createButtonName();
+  }
+
+  @protected
+  Widget createButtonName(){
+    return Text(
+      name,
+      style: TextStyle(
+        fontWeight: FontWeight.normal,
+        fontSize: _sizeUtils.littleTitleSize,
+        color: Theme.of(_context).primaryColor
+      ),
     );
   }
 
@@ -53,10 +74,5 @@ class NavigationListButton extends StatelessWidget {
         bottom: bottomBorder
       )
     );
-  }
-
-  void _initInitialConfiguration(BuildContext appContext){
-    _context = appContext;
-    _sizeUtils = SizeUtils();
   }
 }

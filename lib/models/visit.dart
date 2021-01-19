@@ -1,16 +1,15 @@
-enum VisitStep{
-  Pendiente,
-  Realizada
-}
+import 'package:gap/enums/process_stage.dart';
+import 'package:gap/models/EntityWithStages.dart';
 
-class Visit{
-  final String name;
+class Visit extends EntityWithStages{
   final DateTime date;
-  final VisitStep step;
 
-  Visit.fromJson(Map<String, dynamic> json):
-    this.name = json['name'],
+  Visit.fromJson(Map<String, dynamic> json)
+    :
     this.date = DateTime.parse(json['fecha']),
-    this.step = json['step'] == 'pendiente'? VisitStep.Pendiente : VisitStep.Realizada 
+    super(
+      currentStage: (json['step']=='pendiente')? ProcessStage.Pendiente : ProcessStage.Realizada,
+      name: json['name']
+    )
     ;
 }

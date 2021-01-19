@@ -1,30 +1,33 @@
 import 'package:gap/models/formulario.dart';
-List<Formulario> formulario = [
+List<Formulario> formularios = [
   Formulario.fromJson(json: {
     'id':0,
-    'title':'Formulario PAE 2021A',
+    'step':'realizada',
+    'name':'Formulario PAE 2021A',
     'time':{
       'hour':12,
       'minute':50
     },
-    'field':[]
+    'fields':[]
   }),
   Formulario.fromJson(json: {
     'id':1,
-    'title':'Formulario Calidad',
+    'step':'pendiente',
+    'name':'Formulario Calidad',
     'time':{
       'hour':12,
       'minute':50
     },
-    'field':[]
+    'fields':[]
   }),
   Formulario.fromJson(json: {
     'id':2,
-    'title':'Formulario infraestructuras',
+    'step':'pendiente',
+    'name':'Formulario infraestructuras',
     'time':{
       'hour':13,
       'minute':35
     },
-    'field':[]
+    'fields':[]
   }),
 ];

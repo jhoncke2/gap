@@ -4,7 +4,7 @@ part of 'visits_bloc.dart';
 class VisitsState {
   final bool visitsAreLoaded;
   final List<Visit> visits;
-  final VisitStep selectedStepInNav;
+  final ProcessStage selectedStepInNav;
   final List<Visit> pendientesVisits;
   final List<Visit> realizadasVisits;
   final int indexOfChosenFilterItem;
@@ -15,7 +15,7 @@ class VisitsState {
   VisitsState({
     this.visitsAreLoaded = false,
     List<Visit> visits,
-    VisitStep selectedStepInNav,
+    ProcessStage selectedStepInNav,
     List<Visit> pendientesVisits,    
     List<Visit> realizadasVisits,
     int indexOfChosenFilterItem,
@@ -24,7 +24,7 @@ class VisitsState {
     Visit chosenVisit   
   }):
     this.visits = visits??[],
-    this.selectedStepInNav = selectedStepInNav??VisitStep.Pendiente,
+    this.selectedStepInNav = selectedStepInNav??ProcessStage.Pendiente,
     this.pendientesVisits = pendientesVisits??[],
     this.realizadasVisits = realizadasVisits??[],
     this.indexOfChosenFilterItem = indexOfChosenFilterItem??null,
@@ -36,7 +36,7 @@ class VisitsState {
   VisitsState copyWith({
     bool visitsAreLoaded,
     List<Visit> visits,
-    VisitStep selectedStepInNav,
+    ProcessStage selectedStepInNav,
     List<Visit> pendientesVisits,    
     List<Visit> realizadasVisits,
     int indexOfChosenFilterItem,    
@@ -60,16 +60,16 @@ class VisitsState {
     if(indexOfChosenFilterItem != null){
       return visitsByFilterDate;
     }else{
-      if(selectedStepInNav == VisitStep.Pendiente)
+      if(selectedStepInNav == ProcessStage.Pendiente)
         return pendientesVisits;
       return realizadasVisits;
     }
   }
 
   List<Visit> get visitsByCurrentSelectedStep{
-    if(selectedStepInNav == VisitStep.Pendiente)
+    if(selectedStepInNav == ProcessStage.Pendiente)
       return pendientesVisits;
-    else if(selectedStepInNav == VisitStep.Realizada)
+    else if(selectedStepInNav == ProcessStage.Realizada)
       return realizadasVisits;
     else
       return null;

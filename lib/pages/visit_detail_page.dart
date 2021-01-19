@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/bloc/visits/visits_bloc.dart';
+import 'package:gap/enums/process_stage.dart';
 import 'package:gap/models/visit.dart';
 import 'package:gap/utils/size_utils.dart';
 import 'package:gap/widgets/header.dart';
-import 'package:gap/widgets/navigation_list_button.dart';
+import 'package:gap/widgets/navigation_list/button/navigation_list_button.dart';
 import 'package:gap/utils/static_data/visit_detail_navigation.dart' as navigationData;
 
 // ignore: must_be_immutable
@@ -74,7 +75,7 @@ class VisitDetailPage extends StatelessWidget {
    *  *Los siguientes dos están activos solo si la visita está realizada(ya no está pendiente)
    */
   void _initNavItemsVisualFeatures(){
-    final bool visitaEstaPendiente = _visit.step == VisitStep.Pendiente;
+    final bool visitaEstaPendiente = _visit.currentStage == ProcessStage.Pendiente;
     final Color iconColorItem1 = (visitaEstaPendiente)?_activeIconColor:_inactiveItemColor;
     final Color textColorItem1 = (visitaEstaPendiente)?_activeTextColor:_inactiveItemColor;
     final Color iconColorDemasItems = (visitaEstaPendiente)?_inactiveItemColor:_activeIconColor;

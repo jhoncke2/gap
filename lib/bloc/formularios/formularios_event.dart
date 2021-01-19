@@ -10,4 +10,11 @@ class SetForms extends FormulariosEvent{
   });
 }
 
+class ChooseForm extends FormulariosEvent{
+  final Formulario chosenOne;
+  ChooseForm({
+    @required this.chosenOne
+  });
+}
+
 class ResetForms extends FormulariosEvent{}

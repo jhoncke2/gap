@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/bloc/formularios/formularios_bloc.dart';
 import 'package:gap/bloc/visits/visits_bloc.dart';
+import 'package:gap/enums/process_stage.dart';
+import 'package:gap/models/EntityWithStages.dart';
 import 'package:gap/models/visit.dart';
 import 'package:gap/pages/visit_detail_page.dart';
 import 'package:gap/utils/size_utils.dart';
 import 'package:gap/widgets/header.dart';
-import 'package:gap/widgets/navigation_list_button.dart';
+import 'package:gap/widgets/navigation_list/navigation_list_with_stage_color_buttons.dart';
 import 'package:gap/widgets/unloaded_elements/unloaded_nav_items.dart';
 import 'package:gap/widgets/visits_date_filter.dart';
 import 'package:gap/utils/test/visits.dart' as fakeVisits;
+import 'package:gap/utils/test/formularios.dart' as fakeFormularios;
 class VisitsPage extends StatefulWidget {
   static final String route = 'visitas';
   @override
@@ -65,12 +69,14 @@ class _VisitsPageState extends State<VisitsPage> {
       child: BlocBuilder<VisitsBloc, VisitsState>(
         builder: (_, VisitsState state){
           if(state.visitsAreLoaded){
+            final List<Visit> visits = state.currentShowedVisits;
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _createNavForVisitsStates(state),
                 VisitsDateFilter(),
-                _createVisitsComponent(state)
+                //_createVisitsComponent(state),
+                _createNavigationList(state)
               ],
             );
           }else{
@@ -86,13 +92,13 @@ class _VisitsPageState extends State<VisitsPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _createVisitsByStepNavigationItems(VisitStep.Pendiente, 'Visitas pendientes', navItemsColors['pendientes']),
-        _createVisitsByStepNavigationItems(VisitStep.Realizada, 'Visitas realizadas', navItemsColors['realizadas'])
+        _createVisitsByStageNavigationItems(ProcessStage.Pendiente, 'Visitas pendientes', navItemsColors['pendientes']),
+        _createVisitsByStageNavigationItems(ProcessStage.Realizada, 'Visitas realizadas', navItemsColors['realizadas'])
       ],
     );
   }
 
-  Widget _createVisitsByStepNavigationItems(VisitStep visitStep, String name, Color color){
+  Widget _createVisitsByStageNavigationItems(ProcessStage visitsStage, String name, Color color){
     return GestureDetector(
       child: Container(
         color: Colors.transparent,
@@ -107,13 +113,13 @@ class _VisitsPageState extends State<VisitsPage> {
           ),
         ),
       ),
-      onTap: ()=>_changeShowedVisitsState(visitStep),
+      onTap: ()=>_changeShowedVisitsState(visitsStage),
     );
   }
 
   Map<String, Color> _elegirNavItemsColoresSegunState(VisitsState state){
     final Map<String, Color> colors = {};
-    if(state.selectedStepInNav == VisitStep.Pendiente){
+    if(state.selectedStepInNav == ProcessStage.Pendiente){
       colors['pendientes'] = Theme.of(_context).primaryColor;
       colors['realizadas'] = Theme.of(_context).primaryColor.withOpacity(0.5);
     }else{
@@ -123,68 +129,27 @@ class _VisitsPageState extends State<VisitsPage> {
     return colors;
   }
 
-  void _changeShowedVisitsState(VisitStep newStep){
+  void _changeShowedVisitsState(ProcessStage newSelectedStage){
     final VisitsBloc visitsBloc = BlocProvider.of<VisitsBloc>(_context);
-    final ChangeSelectedStepInNav changeShVisitsStepEVent =ChangeSelectedStepInNav(newSelectedStep: newStep);
+    final ChangeSelectedStepInNav changeShVisitsStepEVent =ChangeSelectedStepInNav(newSelectedMenuStage: newSelectedStage);
     visitsBloc.add(changeShVisitsStepEVent);
     final ResetDateFilter resetDateFilterEvent= ResetDateFilter();
     visitsBloc.add(resetDateFilterEvent);
   }
 
-  Widget _createVisitsComponent(VisitsState state){
-    final List<Widget> visitsItems = _createVisitsItems(state);
-    return Expanded(
-      child: ListView(
-        children: visitsItems,
-      ),
-    );
-  }
-
-  List<Widget> _createVisitsItems(VisitsState state){
-    //TODO: Hasta haber implementado el formato bloc y la conexión con el server
+  Widget _createNavigationList(VisitsState state){
     final List<Visit> visits = state.currentShowedVisits;
-    final List<Widget> items = visits.map<Widget>((Visit visit){
-      return Container(
-        width: double.infinity,
-        padding: EdgeInsets.symmetric(horizontal: _sizeUtils.xasisSobreYasis * 0.03),
-        child: Row(
-          children: [
-            _createCircleForVisitStep(visit.step),
-            SizedBox(width: _sizeUtils.xasisSobreYasis * 0.02),
-            _createVisitRightItem(visit),
-          ],
-        ),
-      );
-    }).toList();
-    return items;
+    return NavigationListWithStageButtons(itemsFunction: _onTapFunction, entitiesWithStages: visits);
   }
 
-  Widget _createVisitRightItem(Visit visit){
-    return Expanded(
-      child: NavigationListButton(
-        name: visit.name, 
-        hasBottomBorder: true, 
-        onTap: (){
-          final VisitsBloc visitsBloc = BlocProvider.of<VisitsBloc>(_context);
-          final ChooseVisit chooseVisitEvent = ChooseVisit(chosenOne: visit);
-          visitsBloc.add(chooseVisitEvent);
-          Navigator.of(_context).pushNamed(VisitDetailPage.route);
-        }
-      )
-    );
-  }
-
-  Widget _createCircleForVisitStep(VisitStep step){
-    final Color circleColor = (step == VisitStep.Pendiente)? 
-      Color.fromRGBO(213, 199, 18, 1)
-      : Color.fromRGBO(142, 180, 22, 1);
-    return Container(
-      width: _sizeUtils.xasisSobreYasis * 0.0175,
-      height: _sizeUtils.xasisSobreYasis * 0.0175,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: circleColor
-      ),
-    );
+  void _onTapFunction(EntityWithStages entity){
+    final Visit visit = entity as Visit;
+    final VisitsBloc visitsBloc = BlocProvider.of<VisitsBloc>(_context);
+    final ChooseVisit chooseVisitEvent = ChooseVisit(chosenOne: visit);
+    visitsBloc.add(chooseVisitEvent);
+    final FormulariosBloc formsBloc = BlocProvider.of<FormulariosBloc>(_context);
+    final SetForms setFormsEvent = SetForms(forms: fakeFormularios.formularios);
+    formsBloc.add(setFormsEvent);
+    Navigator.of(_context).pushNamed(VisitDetailPage.route);
   }
 }

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gap/pages/project_detail_page.dart';
-import 'package:gap/pages/visits_page.dart';
 import 'package:gap/utils/size_utils.dart';
 import 'package:gap/widgets/header.dart';
+import 'package:gap/widgets/navigation_list/navigation_list.dart';
 import 'package:gap/utils/test/projects.dart' as testingProjects;
-import 'package:gap/widgets/navigation_list_button.dart';
 
+// ignore: must_be_immutable
 class ProjectsPage extends StatelessWidget {
   static final String route = 'projects';
   final String _widgetTitle = 'Listado de proyectos';
@@ -33,31 +33,36 @@ class ProjectsPage extends StatelessWidget {
   }
 
   Widget _createBodyComponents(){
-    final List<Widget> projectsItems = _createProjectsItems();
     return Column(
       children: [
         SizedBox(height:_sizeUtils.veryMuchLargeSizedBoxHeigh),
         Header(showBackNavButton: false, withTitle: true, title: _widgetTitle),
         SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
-        Expanded(
-          child: ListView(
-            padding: EdgeInsets.symmetric(horizontal: _sizeUtils.xasisSobreYasis * 0.085),
-            children: projectsItems,
-          ),
-        )
+        _createProjectsNavList()
       ],
     );
   }
 
-  List<Widget> _createProjectsItems(){
+  Widget _createProjectsNavList(){
     final List<Map<String, dynamic>> projects = testingProjects.projects;
-    final List<Widget> items = projects.map<Widget>((Map<String, dynamic> project){
-      return NavigationListButton(
-        name: project['name'], 
-        hasBottomBorder: true, 
-        onTap: ()=>Navigator.of(_context).pushNamed(ProjectDetailPage.route)
-      );
-    }).toList();
-    return items;
+    final Map<String, List<dynamic>> namesAndFunctions = _createProjectsItemsNamesAndFunctions(projects);
+    return NavigationList(
+      itemsNames: namesAndFunctions['names'], 
+      itemsFunctions: namesAndFunctions['functions'],
+      horizontalPadding: 0.075,
+    );
+  }
+
+  Map<String, List<dynamic>> _createProjectsItemsNamesAndFunctions(List<Map<String, dynamic>> projects){
+    final List<Function> functions = [];
+    final List<String> names = [];
+    final Map<String, List<dynamic>> namesAndFunctions = {};
+    projects.forEach((Map<String, dynamic> project) {
+      names.add(project['name']);
+      functions.add(()=>Navigator.of(_context).pushNamed(ProjectDetailPage.route));
+    });
+    namesAndFunctions['names'] = names;
+    namesAndFunctions['functions'] = functions;
+    return namesAndFunctions;
   }
 }

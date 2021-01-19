@@ -11,9 +11,9 @@ class SetVisits extends VisitsEvent{
 }
 
 class ChangeSelectedStepInNav extends VisitsEvent{
-  final VisitStep newSelectedStep;
+  final ProcessStage newSelectedMenuStage;
   ChangeSelectedStepInNav({
-    @required this.newSelectedStep
+    @required this.newSelectedMenuStage
   });
 }
 
