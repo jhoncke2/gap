@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gap/enums/process_stage.dart';
-import 'package:gap/models/visit.dart';
 import 'package:gap/utils/size_utils.dart';
 import 'package:gap/widgets/navigation_list/button/button_with_icon.dart';
 import 'package:gap/widgets/navigation_list/navigation_list.dart';
@@ -11,14 +10,14 @@ class NavigationListWithIcons extends NavigationList{
   final Color _activeIconColor = Color.fromRGBO(213, 199, 18, 1);
   final Color _activeTextColor = Colors.black87;
   final Color _inactiveItemColor = Colors.grey[300];
-  final ProcessStage itemCurrentProcessState;
+  final ProcessStage currentVisitProcessState;
   final List<IconData> icons = [];
   final List<Map<String, dynamic>> navigationItemsParts = navigationData.navigationItemsParts;
   List<Map<String, Color>> _navItemsColors;
   List<bool> _navItemsActivation;
 
   NavigationListWithIcons({
-    @required this.itemCurrentProcessState,
+    @required this.currentVisitProcessState,
   }):super(
     itemsNames: [],
     itemsFunctions: [],
@@ -31,7 +30,7 @@ class NavigationListWithIcons extends NavigationList{
     final List<Widget> navigationItems = _createNavigationItems();
     return Container(
       padding: EdgeInsets.symmetric(
-        horizontal: _sizeUtils.xasisSobreYasis * 0.08
+        horizontal: _sizeUtils.xasisSobreYasis * 0.03
       ),
       child: Column(
         children: navigationItems,
@@ -40,7 +39,7 @@ class NavigationListWithIcons extends NavigationList{
   }
 
   void _initNavItemsVisualFeatures(){
-    final bool visitaEstaPendiente =itemCurrentProcessState == ProcessStage.Pendiente;
+    final bool visitaEstaPendiente = currentVisitProcessState == ProcessStage.Pendiente;
     final Color iconColorItem1 = (visitaEstaPendiente)?_activeIconColor:_inactiveItemColor;
     final Color textColorItem1 = (visitaEstaPendiente)?_activeTextColor:_inactiveItemColor;
     final Color iconColorDemasItems = (visitaEstaPendiente)?_inactiveItemColor:_activeIconColor;

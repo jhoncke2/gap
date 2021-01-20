@@ -1,4 +1,3 @@
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/utils/size_utils.dart';
 // ignore: must_be_immutable
@@ -6,13 +5,16 @@ class Header extends StatelessWidget {
   final bool showBackNavButton;
   final bool withTitle;
   final String title;
+  final bool titleIsUnderlined;
+
   BuildContext _context;
   SizeUtils _sizeUtils;
 
   Header({
     this.showBackNavButton = true,
     this.withTitle = false,
-    this.title
+    this.title,
+    this.titleIsUnderlined = true
   });
 
   @override
@@ -25,7 +27,7 @@ class Header extends StatelessWidget {
           _elegirTopElement(),
           _createDividerLine(Colors.black87),
           _createDividerLine(Colors.pink),
-          SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
+          //SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
           _createBottomElement()
         ],
       ),
@@ -92,7 +94,7 @@ class Header extends StatelessWidget {
           color: Theme.of(_context).primaryColor,
           fontSize: _sizeUtils.titleSize,
           fontWeight: FontWeight.bold,
-          decoration: TextDecoration.underline
+          decoration: (this.titleIsUnderlined)?TextDecoration.underline:null
         ),
       ),
     );

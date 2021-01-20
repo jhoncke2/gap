@@ -4,24 +4,37 @@ import 'package:gap/models/EntityWithStages.dart';
 
 class Formulario extends EntityWithStages {
   final int id;
-  final Time initHour;
+  final Date date;
   final List<Map<String, dynamic>> fields;
   
   Formulario.fromJson({Map<String, dynamic> json}):
     this.id = json['id'],
-    this.initHour = Time(hour: json['time']['hour'], minute: json['time']['minute']),
+    this.date = Date( DateTime.parse(json['date']) ),
     this.fields = json['fields'].cast<Map<String, dynamic>>(),
     super(
       currentStage: (json['step']=='pendiente')? ProcessStage.Pendiente : ProcessStage.Realizada,
       name: json['name']
-    );
+    )
+    ;
+ 
+  String get initialDate => '${date.year}-${date.month}-${date.day}';
+  String get initialTime => '${date.hour}:${date.minute} ${date.partOfDay}';
 }
 
-class Time{
+class Date{
+  final int year;
+  final int month;
+  final int day;
   final int hour;
   final int minute;
-  Time({
-    @required this.hour,
-    @required this.minute
-  });
+  final String partOfDay; //AM o PM
+
+  Date(DateTime dateTime):
+    this.year = dateTime.year,
+    this.month = dateTime.month,
+    this.day = dateTime.day,
+    this.hour = dateTime.hour % 12,
+    this.minute = dateTime.minute,
+    this.partOfDay = dateTime.hour > 12 ? 'AM' : 'PM'
+    ;
 }

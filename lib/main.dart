@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/bloc/formularios/formularios_bloc.dart';
+import 'package:gap/bloc/projects/projects_bloc.dart';
 import 'package:gap/bloc/visits/visits_bloc.dart';
+import 'package:gap/pages/formulario_detail_page.dart';
 import 'package:gap/pages/formularios_page.dart';
 import 'package:gap/pages/login_page.dart';
 import 'package:gap/pages/project_detail_page.dart';
@@ -15,6 +17,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider<ProjectsBloc>(create: (_)=>ProjectsBloc()),
         BlocProvider<VisitsBloc>(create: (_)=>VisitsBloc()),
         BlocProvider<FormulariosBloc>(create: (_)=>FormulariosBloc())
       ],
@@ -31,7 +34,8 @@ class MyApp extends StatelessWidget {
           ProjectDetailPage.route: (_)=>ProjectDetailPage(),
           VisitsPage.route: (_)=>VisitsPage(),
           VisitDetailPage.route: (_)=>VisitDetailPage(),
-          FormulariosPage.route: (_)=>FormulariosPage()
+          FormulariosPage.route: (_)=>FormulariosPage(),
+          FormularioDetailPage.route: (_)=>FormularioDetailPage()
         },
       ),
     );

@@ -20,6 +20,8 @@ class FormulariosBloc extends Bloc<FormulariosEvent, FormulariosState> {
       _setForms(event);
     }else if(event is ResetForms){
       _resetForms();
+    }else if(event is ChooseForm){
+      _chooseForm(event);
     }
     yield _currentYieldedState;
   }
@@ -44,5 +46,12 @@ class FormulariosBloc extends Bloc<FormulariosEvent, FormulariosState> {
 
   void _resetForms(){
     _currentYieldedState = state.reset();
+  }
+
+  void _chooseForm(ChooseForm event){
+    final Formulario chosenOne = event.chosenOne;
+    _currentYieldedState = state.copyWith(
+      chosenForm: chosenOne
+    );
   }
 }

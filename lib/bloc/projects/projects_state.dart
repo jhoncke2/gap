@@ -1,6 +1,26 @@
 part of 'projects_bloc.dart';
 
 @immutable
-abstract class ProjectsState {}
+class ProjectsState {
+  final bool projectsAreLoaded;
+  final List<Project> projects;
+  final Project chosenProject;
 
-class ProjectsInitial extends ProjectsState {}
+  ProjectsState({
+    this.projectsAreLoaded = false, 
+    this.projects, 
+    this.chosenProject
+  });
+
+  ProjectsState copyWith({
+    bool projectsAreLoaded, 
+    List<Project> projects, 
+    Project chosenProject
+  }) => ProjectsState(
+    projectsAreLoaded: projectsAreLoaded??this.projectsAreLoaded,
+    projects: projects??this.projects,
+    chosenProject: chosenProject??this.chosenProject    
+  );
+
+  ProjectsState reset() => ProjectsState();
+}

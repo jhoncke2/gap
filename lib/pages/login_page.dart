@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/bloc/projects/projects_bloc.dart';
+import 'package:gap/models/project.dart';
 import 'package:gap/pages/projects_page.dart';
 import 'package:gap/utils/size_utils.dart';
 import 'package:gap/widgets/logo.dart';
+import 'package:gap/utils/test/projects.dart' as fakeProjects;
 
 class LoginPage extends StatefulWidget {
   static final String route = 'login';
@@ -184,7 +188,15 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _login(){
+    _loadProjects();
     Navigator.of(context).pushReplacementNamed(ProjectsPage.route);
+  }
+
+  void _loadProjects(){
+    final ProjectsBloc projBloc = BlocProvider.of<ProjectsBloc>(_context);
+    final List<Project> projects = fakeProjects.projects;
+    final SetProjects setProjecsEvent = SetProjects(projects: projects);
+    projBloc.add(setProjecsEvent);
   }
 
   Widget _createBottomComponents(){
@@ -232,6 +244,10 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _createLabel(String text){
+    DateTime nowTime = DateTime.now();
+    nowTime = nowTime.add(Duration(hours: 3));
+    final String nowToString = nowTime.toString();
+    print(nowToString);
     return Text(
       text,
       style: TextStyle(

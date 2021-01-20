@@ -30,34 +30,23 @@ class SizeUtils{
   }
 
   double get normalHorizontalScaffoldPadding{
-    return _xasisYasisProm * 0.09;
+    return _xasisYasisProm * 0.05;
   }
 
   double get largeHorizontalScaffoldPadding{
     return _xasisYasisProm * 0.13;
   }
 
-  /**
-   * El container que contiene al listview principal de tamaño normal de un scaffold
-   */
-  double get normalMainListviewContainerHeight{
-    return _xasisYasisProm;
-  }
-
-  double get superTitleSize{
-    return _xasisYasisProm * 0.05;
-  }
-
   double get titleSize{
-    return _xasisYasisProm * 0.042;
+    return _xasisYasisProm * 0.041;
   }
 
   double get littleTitleSize{
-    return _xasisYasisProm * 0.038;
+    return _xasisYasisProm * 0.037;
   }
 
   double get subtitleSize{
-    return _xasisYasisProm * 0.032;
+    return _xasisYasisProm * 0.033;
   }
 
   double get normalTextSize{
@@ -91,10 +80,6 @@ class SizeUtils{
   double get extraLargeIconSize{
     return _xasisYasisProm * 0.085;
   }
-
-  double get flatButtonTextSize{
-    return _xasisYasisProm * 0.03;
-  }
   
   Map<String, double> get largeFlatButtonPadding{
     return {
@@ -117,40 +102,12 @@ class SizeUtils{
     };
   }
 
-  Map<String, double> get circleButtonPadding{
-    return {
-      'vertical':_xasisYasisProm * 0.015,
-      'horizontal':_xasisYasisProm * 0.015
-    };
-  }
-
-  Map<String, dynamic> get largeIconButtonPadding{
-    return {
-      'vertical':_xasisYasisProm * 0.0125,
-      'horizontal':_xasisYasisProm * 0.06
-    };
-  }
-
-  List<double> get submitButtonPadding{
-    return [
-      _xasisYasisProm * 0.037,
-      _xasisYasisProm * 0.004
-    ];
-  }
-
-  List<double> get veryWideTextFormFieldSize{
-    return [
-      _xasisYasisProm * 0.6,
-      _xasisYasisProm * 0.067
-    ];
-  }
-
-  double get veryMuchLittleSizedBoxHeigh{
-    return _xasisYasisProm * 0.008;
+  double get veryLittleSizedBoxHeigh{
+      return _xasisYasisProm * 0.015;
   }
 
   double get littleSizedBoxHeigh{
-    return _xasisYasisProm * 0.02;
+    return _xasisYasisProm * 0.03;
   }
 
   double get normalSizedBoxHeigh{
@@ -167,59 +124,5 @@ class SizeUtils{
 
   double get giantSizedBoxHeight{
     return _xasisYasisProm * 0.165;
-  }
-
-  double get selectableCircleRadius{
-    return _xasisYasisProm * 0.04;
-  }
-
-  double get submitButtonBorderRadius{
-    return _xasisYasisProm * 0.03;
-  }
-
-  double get normalListviewVerticalPadding{
-    return _xasisYasisProm * 0.027;
-  }
-
-  Map<String, double> get mainLogoSize{
-    return {
-      'vertical':_xasisYasisProm * 0.45,
-      'horizontal':_xasisYasisProm * 0.47
-      
-    };
-  }
-
-  Map<String, double> get littleMainLogoSize{
-    return {
-      'vertical':_xasisYasisProm * 0.35,
-      'horizontal':_xasisYasisProm * 0.38
-      
-    };
-  }
-
-  Map<String, double> get diminuteLogoSize{
-    return {
-      'vertical':_xasisYasisProm * 0.09,
-      'horizontal':_xasisYasisProm * 0.1
-      
-    };
-  }
-
-  
-
-  double get normalMainMenuPopUpMenuItemHeigh{
-    return _xasisYasisProm * 0.09;
-  }
-
-  double get littleMainMenuPopUpMenuItemHeigh{
-    return _xasisYasisProm * 0.082;
-  }
-
-  double get normalMainMenuText{
-    return _xasisYasisProm * 0.029;
-  }
-
-  double get littleMainMenuText{
-    return _xasisYasisProm * 0.024;
   }
 }

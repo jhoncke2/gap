@@ -7,8 +7,9 @@ import 'package:gap/models/EntityWithStages.dart';
 import 'package:gap/models/visit.dart';
 import 'package:gap/pages/visit_detail_page.dart';
 import 'package:gap/utils/size_utils.dart';
-import 'package:gap/widgets/header.dart';
+import 'package:gap/widgets/header/header.dart';
 import 'package:gap/widgets/navigation_list/navigation_list_with_stage_color_buttons.dart';
+import 'package:gap/widgets/page_title.dart';
 import 'package:gap/widgets/unloaded_elements/unloaded_nav_items.dart';
 import 'package:gap/widgets/visits_date_filter.dart';
 import 'package:gap/utils/test/visits.dart' as fakeVisits;
@@ -55,7 +56,7 @@ class _VisitsPageState extends State<VisitsPage> {
     return Column(
       children: [
         SizedBox(height:_sizeUtils.normalSizedBoxHeigh),
-        Header(withTitle: true, title: _widgetTitle),
+        Header(),
         SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
         _createVisitStateComponents()
       ],
@@ -64,26 +65,49 @@ class _VisitsPageState extends State<VisitsPage> {
 
   Widget _createVisitStateComponents(){
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: _sizeUtils.xasisSobreYasis * 0.05),
-      height: _sizeUtils.xasisSobreYasis * 0.95,
+      height: _sizeUtils.xasisSobreYasis * 0.75,
       child: BlocBuilder<VisitsBloc, VisitsState>(
         builder: (_, VisitsState state){
           if(state.visitsAreLoaded){
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _createNavForVisitsStates(state),
-                VisitsDateFilter(),
-                //_createVisitsComponent(state),
-                _createNavigationList(state)
-              ],
-            );
+            return _VisitsComponents(state: state);
           }else{
             return UnloadedNavItems();
           }
         },
       ),
     );
+  }
+}
+
+
+// ignore: must_be_immutable
+class _VisitsComponents extends StatelessWidget {
+  final SizeUtils _sizeUtils = SizeUtils();
+  final VisitsState state;
+  BuildContext _context;
+  _VisitsComponents({
+    @required this.state
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    _context = context;
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: _sizeUtils.normalHorizontalScaffoldPadding,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          PageTitle(title: 'Listado de visitas'),
+          SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
+          _createNavForVisitsStates(state),
+          VisitsDateFilter(),
+          _createNavigationList(state)
+        ],
+      )
+    );
+
   }
 
   Widget _createNavForVisitsStates(VisitsState state){
@@ -95,6 +119,18 @@ class _VisitsPageState extends State<VisitsPage> {
         _createVisitsByStageNavigationItems(ProcessStage.Realizada, 'Visitas realizadas', navItemsColors['realizadas'])
       ],
     );
+  }
+
+  Map<String, Color> _elegirNavItemsColoresSegunState(VisitsState state){
+    final Map<String, Color> colors = {};
+    if(state.selectedStepInNav == ProcessStage.Pendiente){
+      colors['pendientes'] = Theme.of(_context).primaryColor;
+      colors['realizadas'] = Theme.of(_context).primaryColor.withOpacity(0.5);
+    }else{
+      colors['realizadas'] = Theme.of(_context).primaryColor;
+      colors['pendientes'] = Theme.of(_context).primaryColor.withOpacity(0.5);
+    }
+    return colors;
   }
 
   Widget _createVisitsByStageNavigationItems(ProcessStage visitsStage, String name, Color color){
@@ -114,18 +150,6 @@ class _VisitsPageState extends State<VisitsPage> {
       ),
       onTap: ()=>_changeShowedVisitsState(visitsStage),
     );
-  }
-
-  Map<String, Color> _elegirNavItemsColoresSegunState(VisitsState state){
-    final Map<String, Color> colors = {};
-    if(state.selectedStepInNav == ProcessStage.Pendiente){
-      colors['pendientes'] = Theme.of(_context).primaryColor;
-      colors['realizadas'] = Theme.of(_context).primaryColor.withOpacity(0.5);
-    }else{
-      colors['realizadas'] = Theme.of(_context).primaryColor;
-      colors['pendientes'] = Theme.of(_context).primaryColor.withOpacity(0.5);
-    }
-    return colors;
   }
 
   void _changeShowedVisitsState(ProcessStage newSelectedStage){
