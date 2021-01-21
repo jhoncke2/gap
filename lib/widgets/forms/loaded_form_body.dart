@@ -3,6 +3,7 @@ import 'package:gap/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/models/entities/formulario.dart';
 import 'package:gap/utils/size_utils.dart';
 import 'package:gap/widgets/forms/form_inputs_fraction.dart';
+import 'package:gap/widgets/forms/form_inputs_index.dart';
 import 'package:gap/widgets/page_title.dart';
 
 // ignore: must_be_immutable
@@ -26,10 +27,11 @@ class LoadedFormBody extends StatelessWidget{
         color: Colors.grey.withOpacity(0.2),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             PageTitle(title: _formulario.name, underlined: false),
-            SizedBox(height:  _sizeUtils.normalSizedBoxHeigh),
-            FormInputsFraction()
+            FormInputsFraction(),
+            FormInputsIndex()
           ],
         )
       ),

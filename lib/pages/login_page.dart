@@ -169,9 +169,7 @@ class _LoginPageState extends State<LoginPage> {
     return MaterialButton(
       child: _crearTextoDeBoton('INGRESAR'),
       padding: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: verticalPadding),
-      shape: new RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(_sizeUtils.xasisSobreYasis * 0.03)
-      ),
+      shape: _createButtonShape(),
       color: Theme.of(_context).primaryColor,
       onPressed: _login,
     );
@@ -184,6 +182,12 @@ class _LoginPageState extends State<LoginPage> {
         color: Colors.white,
         fontSize: _sizeUtils.littleTitleSize
       ),
+    );
+  }
+
+  ShapeBorder _createButtonShape(){
+    return RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(_sizeUtils.xasisSobreYasis * 0.03)
     );
   }
 

@@ -1,26 +1,30 @@
 part of 'form_inputs_navigation_bloc.dart';
 
 @immutable
-class FormInputNavigationState {
+class FormInputsNavigationState {
+  final bool thereIsSelectedForm;
   final Formulario form;
   final int pageIndex;
   final List<FormInput> showedInputs;
 
-  FormInputNavigationState({
+  FormInputsNavigationState({
+    this.thereIsSelectedForm = false,
     this.form, 
     this.pageIndex, 
     this.showedInputs
   });
 
-  FormInputNavigationState copyWith({
+  FormInputsNavigationState copyWith({
+    bool thereIsSelectedForm,
     Formulario form,    
     int pageIndex,
     List<FormInput> showedInputs,
-  }) => FormInputNavigationState(
+  }) => FormInputsNavigationState(
+    thereIsSelectedForm: thereIsSelectedForm??this.thereIsSelectedForm,
     form: form??this.form,
     pageIndex: pageIndex??this.pageIndex,
     showedInputs: showedInputs??this.showedInputs   
   );
 
-  FormInputNavigationState reset() => FormInputNavigationState();
+  FormInputsNavigationState reset() => FormInputsNavigationState();
 }

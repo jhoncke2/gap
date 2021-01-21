@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/bloc/entities/projects/projects_bloc.dart';
 import 'package:gap/bloc/entities/visits/visits_bloc.dart';
 import 'package:gap/bloc/ui/form_inputs_navigation/form_inputs_navigation_bloc.dart';
+import 'package:gap/pages/adjuntar_fotos_visita_page.dart';
 import 'bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/pages/formulario_detail_page.dart';
 import 'package:gap/pages/formularios_page.dart';
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
         BlocProvider<ProjectsBloc>(create: (_)=>ProjectsBloc()),
         BlocProvider<VisitsBloc>(create: (_)=>VisitsBloc()),
         BlocProvider<FormulariosBloc>(create: (_)=>FormulariosBloc()),
-        BlocProvider<FormInputNavigationBloc>(create: (_)=>FormInputNavigationBloc())
+        BlocProvider<FormInputsNavigationBloc>(create: (_)=>FormInputsNavigationBloc())
       ],
       child: MaterialApp(
         title: 'Material App',
@@ -37,7 +38,8 @@ class MyApp extends StatelessWidget {
           VisitsPage.route: (_)=>VisitsPage(),
           VisitDetailPage.route: (_)=>VisitDetailPage(),
           FormulariosPage.route: (_)=>FormulariosPage(),
-          FormularioDetailPage.route: (_)=>FormularioDetailPage()
+          FormularioDetailPage.route: (_)=>FormularioDetailPage(),
+          AdjuntarFotosVisitaPage.route: (_)=>AdjuntarFotosVisitaPage()
         },
       ),
     );

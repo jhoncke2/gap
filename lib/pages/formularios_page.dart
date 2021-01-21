@@ -72,7 +72,7 @@ class _FormulariosComponents extends StatelessWidget {
           SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
           _createDate(),
           SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
-          _createNavigationList(),
+          NavigationListWithStageButtons(itemsFunction: _onItemTap, entitiesWithStages: visitForms),
         ],
       )
     );
@@ -86,7 +86,7 @@ class _FormulariosComponents extends StatelessWidget {
 
   Widget _createDate(){
     return Container(   
-      padding: EdgeInsets.only(left: _sizeUtils.xasisSobreYasis * 0.05),
+      padding: EdgeInsets.only(left: _sizeUtils.xasisSobreYasis * 0.03),
       child: Text(
         visit.date.toString().split(' ')[0],
         textAlign: TextAlign.left,
@@ -98,16 +98,11 @@ class _FormulariosComponents extends StatelessWidget {
     );
   }
 
-  Widget _createNavigationList( ){
-    final List<Formulario> forms = visitForms;
-    return NavigationListWithStageButtons(itemsFunction: _onItemTap, entitiesWithStages: forms);
-  }
-
   void _onItemTap(EntityWithStages entity){
     final FormulariosBloc formsBloc = BlocProvider.of<FormulariosBloc>(_context);
     final ChooseForm chooseFormEvent = ChooseForm(chosenOne: entity);
     formsBloc.add(chooseFormEvent);
-    final FormInputNavigationBloc lFBodyBloc = BlocProvider.of<FormInputNavigationBloc>(_context);
+    final FormInputsNavigationBloc lFBodyBloc = BlocProvider.of<FormInputsNavigationBloc>(_context);
     final SetForm setFormEvent = SetForm(form: entity);
     lFBodyBloc.add(setFormEvent);
     Navigator.of(_context).pushNamed(FormularioDetailPage.route);

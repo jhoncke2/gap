@@ -38,15 +38,15 @@ class SizeUtils{
   }
 
   double get titleSize{
-    return _xasisYasisProm * 0.041;
+    return _xasisYasisProm * 0.04;
   }
 
   double get littleTitleSize{
-    return _xasisYasisProm * 0.037;
+    return _xasisYasisProm * 0.036;
   }
 
   double get subtitleSize{
-    return _xasisYasisProm * 0.033;
+    return _xasisYasisProm * 0.0325;
   }
 
   double get normalTextSize{

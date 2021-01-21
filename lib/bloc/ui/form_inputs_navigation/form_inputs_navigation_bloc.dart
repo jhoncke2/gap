@@ -8,13 +8,13 @@ import 'package:meta/meta.dart';
 part 'form_inputs_navigation_event.dart';
 part 'form_inputs_navigation_state.dart';
 
-class FormInputNavigationBloc extends Bloc<FormInputNavigationEvent, FormInputNavigationState> {
-  FormInputNavigationState _currentYieldedState;
-  FormInputNavigationBloc() : super(FormInputNavigationState());
+class FormInputsNavigationBloc extends Bloc<FormInputsNavigationEvent, FormInputsNavigationState> {
+  FormInputsNavigationState _currentYieldedState;
+  FormInputsNavigationBloc() : super(FormInputsNavigationState());
 
   @override
-  Stream<FormInputNavigationState> mapEventToState(
-    FormInputNavigationEvent event,
+  Stream<FormInputsNavigationState> mapEventToState(
+    FormInputsNavigationEvent event,
   ) async* {
     if(event is SetForm){
       _setForm(event);      
@@ -29,6 +29,7 @@ class FormInputNavigationBloc extends Bloc<FormInputNavigationEvent, FormInputNa
   void _setForm(SetForm event){
     final Formulario form = event.form;
     _currentYieldedState = state.copyWith(
+      thereIsSelectedForm: true,
       form: form,
       pageIndex: 0,
       showedInputs: []
