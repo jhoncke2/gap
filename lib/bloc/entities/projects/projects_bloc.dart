@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:gap/models/project.dart';
+import 'package:gap/models/entities/project.dart';
 import 'package:meta/meta.dart';
 
 part 'projects_event.dart';

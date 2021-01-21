@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:gap/enums/process_stage.dart';
-import 'package:gap/models/visit.dart';
+import 'package:gap/models/entities/visit.dart';
 import 'package:meta/meta.dart';
 
 part 'visits_event.dart';

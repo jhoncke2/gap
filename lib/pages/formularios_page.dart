@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gap/bloc/formularios/formularios_bloc.dart';
-import 'package:gap/bloc/visits/visits_bloc.dart';
+import 'package:gap/bloc/entities/formularios/formularios_bloc.dart';
+import 'package:gap/bloc/entities/visits/visits_bloc.dart';
+import 'package:gap/bloc/ui/form_inputs_navigation/form_inputs_navigation_bloc.dart';
+import 'package:gap/models/entities/formulario.dart';
+import 'package:gap/models/entities/visit.dart';
 import 'package:gap/pages/formulario_detail_page.dart';
 import 'package:gap/widgets/header/header.dart';
 import 'package:gap/widgets/navigation_list/navigation_list_with_stage_color_buttons.dart';
 import 'package:gap/widgets/page_title.dart';
 import 'package:gap/widgets/unloaded_elements/unloaded_nav_items.dart';
-import 'package:gap/models/EntityWithStages.dart';
-import 'package:gap/models/formulario.dart';
-import 'package:gap/models/visit.dart';
+import 'package:gap/models/entities/EntityWithStages.dart';
 import 'package:gap/utils/size_utils.dart';
 // ignore: must_be_immutable
 class FormulariosPage extends StatelessWidget {
@@ -84,8 +85,7 @@ class _FormulariosComponents extends StatelessWidget {
   }
 
   Widget _createDate(){
-    return Container(
-      
+    return Container(   
       padding: EdgeInsets.only(left: _sizeUtils.xasisSobreYasis * 0.05),
       child: Text(
         visit.date.toString().split(' ')[0],
@@ -107,6 +107,12 @@ class _FormulariosComponents extends StatelessWidget {
     final FormulariosBloc formsBloc = BlocProvider.of<FormulariosBloc>(_context);
     final ChooseForm chooseFormEvent = ChooseForm(chosenOne: entity);
     formsBloc.add(chooseFormEvent);
+    final FormInputNavigationBloc lFBodyBloc = BlocProvider.of<FormInputNavigationBloc>(_context);
+    final SetForm setFormEvent = SetForm(form: entity);
+    lFBodyBloc.add(setFormEvent);
     Navigator.of(_context).pushNamed(FormularioDetailPage.route);
   }
+}
+
+class LoadedFormBodyBloc {
 }

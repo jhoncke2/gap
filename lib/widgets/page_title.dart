@@ -11,17 +11,13 @@ class PageTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      child: Text(
-        title,
-        textAlign: TextAlign.left,
-        style: TextStyle(
-          color: Theme.of(context).primaryColor,
-          fontSize: _sizeUtils.titleSize,
-          fontWeight: FontWeight.bold,
-          decoration: (this.underlined)?TextDecoration.underline:null
-        ),
+    return Text(
+      title,
+      style: TextStyle(
+        color: Theme.of(context).primaryColor,
+        fontSize: _sizeUtils.titleSize,
+        fontWeight: FontWeight.bold,
+        decoration: (this.underlined)?TextDecoration.underline:null
       ),
     );
   }

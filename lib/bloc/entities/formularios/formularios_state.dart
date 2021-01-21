@@ -1,7 +1,8 @@
 part of 'formularios_bloc.dart';
 
+
 @immutable
-class FormulariosState {
+class FormulariosState{
   final bool formsAreLoaded;
   final List<Formulario> forms;
   final List<Formulario> pendientesForms;

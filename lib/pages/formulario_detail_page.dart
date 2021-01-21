@@ -1,98 +1,88 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gap/bloc/formularios/formularios_bloc.dart';
-import 'package:gap/bloc/visits/visits_bloc.dart';
-import 'package:gap/models/formulario.dart';
+import 'package:gap/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/utils/size_utils.dart';
+import 'package:gap/widgets/forms/loaded_form_body.dart';
+import 'package:gap/widgets/forms/loaded_form_head.dart';
 import 'package:gap/widgets/header/header.dart';
-import 'package:gap/widgets/page_title.dart';
 import 'package:gap/widgets/unloaded_elements/unloaded_nav_items.dart';
 
 // ignore: must_be_immutable
 class FormularioDetailPage extends StatelessWidget {
   static final String route = 'formulario_detail';
   final SizeUtils _sizeUtils = SizeUtils();
-  BuildContext _context;
-  Formulario _formulario;
   FormularioDetailPage({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    _context = context;
-    return Scaffold(body: SafeArea(
-      child: BlocBuilder<FormulariosBloc, FormulariosState>(
-        builder: (context, state) {
-          if(state.chosenForm != null){          
-            return _createFormComponents(state);
-          }else{
-            return UnloadedNavItems();
-          }
-        },
-      ),
-    ));
-  }
-
-  Widget _createFormComponents(FormulariosState state){
-    _formulario = state.chosenForm;
-    return Column(
-      children: [
-        SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
-        Header(),
-        SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
-        _createFormularioComponents(state)
-      ],
-    );
-  }
-
-  Widget _createFormularioComponents(FormulariosState state){
-    final String chosenVisitName = _getChosenVisitName();
-    return Container(
-      height: _sizeUtils.xasisSobreYasis * 0.75,
-      padding: EdgeInsets.symmetric(horizontal: _sizeUtils.xasisSobreYasis * 0.05),
-      child: Column(
-        children: [
-          PageTitle(title: chosenVisitName, underlined: false),
-          SizedBox(height: _sizeUtils.veryLittleSizedBoxHeigh),
-          _createInitFullDate(state)
-        ],
+    final padding = MediaQuery.of(context).padding;
+    final viewPadding = MediaQuery.of(context).viewPadding;
+    print(padding);
+    print(viewPadding);
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SafeArea(child: Container()),
+              SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
+              Header(),
+              SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
+              _createFormBuilder()
+            ],
+            ),
+        ),
       )
     );
   }
 
-  String _getChosenVisitName(){
-    final VisitsBloc vBloc = BlocProvider.of<VisitsBloc>(_context);
-    final String chosenVisitName = vBloc.state.chosenVisit.name;
-    return chosenVisitName;
-  }
-
-  Widget _createInitFullDate(FormulariosState state){
-    return Row(
-      children: [
-        _createFullDateChild('Fecha: ${_formulario.initialDate}'),
-        _createVerticalDivider(),
-        _createFullDateChild('Hora inicio: ${_formulario.initialTime}')
-      ],
+  Widget _createFormBuilder(){
+    return BlocBuilder<FormulariosBloc, FormulariosState>(
+      builder: (context, state) {
+        if(state.chosenForm != null){          
+          return _LoadedFormularioDetail(formsState: state);
+        }else{
+          return UnloadedNavItems();
+        }
+      },
     );
   }
+}
 
-  Widget _createFullDateChild(String fullDateChild){
-    return Expanded(
-      child: Text(
-        fullDateChild,
-        style: TextStyle(
-          color: Theme.of(_context).primaryColor,
-          fontSize: _sizeUtils.normalTextSize
-        ),
-      ),
-    );
-  }
+/**
+ * Column(
+children: [
+  SafeArea(child: Container()),
+  SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
+  Header(),
+  SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
+  _createFormBuilder()
+],
+),
+ */
 
-  Widget  _createVerticalDivider(){
+// ignore: must_be_immutable
+class _LoadedFormularioDetail extends StatelessWidget {
+  final SizeUtils _sizeUtils = SizeUtils();
+  final FormulariosState formsState;
+  _LoadedFormularioDetail({
+    @required this.formsState
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: _sizeUtils.xasisSobreYasis * 0.02),
-      color: Theme.of(_context).primaryColor,
-      width: 1,
-      height: _sizeUtils.xasisSobreYasis * 0.03,
+      height: _sizeUtils.xasisSobreYasis * 1.05,
+      margin: EdgeInsets.all(0),
+      child: Column(
+        children: [
+          LoadedFormHead(formsState: formsState),
+          SizedBox(height: _sizeUtils.littleSizedBoxHeigh),
+          LoadedFormBody(formsState: formsState)
+        ],
+      )
     );
   }
 }

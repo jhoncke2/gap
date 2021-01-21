@@ -1,4 +1,4 @@
-import 'package:gap/models/project.dart';
+import 'package:gap/models/entities/project.dart';
 
 final List<Project> projects = [
   Project.fromJson({

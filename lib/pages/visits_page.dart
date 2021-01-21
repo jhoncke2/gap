@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gap/bloc/formularios/formularios_bloc.dart';
-import 'package:gap/bloc/visits/visits_bloc.dart';
+import 'package:gap/bloc/entities/formularios/formularios_bloc.dart';
+import 'package:gap/bloc/entities/visits/visits_bloc.dart';
 import 'package:gap/enums/process_stage.dart';
-import 'package:gap/models/EntityWithStages.dart';
-import 'package:gap/models/visit.dart';
+import 'package:gap/models/entities/EntityWithStages.dart';
+import 'package:gap/models/entities/visit.dart';
 import 'package:gap/pages/visit_detail_page.dart';
 import 'package:gap/utils/size_utils.dart';
 import 'package:gap/widgets/header/header.dart';

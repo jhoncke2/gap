@@ -1,5 +1,5 @@
 import 'package:gap/enums/process_stage.dart';
-import 'package:gap/models/EntityWithStages.dart';
+import 'package:gap/models/entities/EntityWithStages.dart';
 
 class Visit extends EntityWithStages{
   final DateTime date;

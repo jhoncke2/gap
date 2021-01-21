@@ -1,4 +1,4 @@
-import 'package:gap/models/formulario.dart';
+import 'package:gap/models/entities/formulario.dart';
 final DateTime nowTime = DateTime.now();
 List<Formulario> formularios = [
   Formulario.fromJson(json: {

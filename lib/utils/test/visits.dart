@@ -1,4 +1,4 @@
-import 'package:gap/models/visit.dart';
+import 'package:gap/models/entities/visit.dart';
 
 final List<Visit> visits = [
   //Pendientes

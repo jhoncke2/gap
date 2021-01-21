@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:gap/bloc/visits/visits_bloc.dart';
+import 'package:gap/bloc/entities/visits/visits_bloc.dart';
 import 'package:gap/utils/size_utils.dart';
 
 // ignore: must_be_immutable

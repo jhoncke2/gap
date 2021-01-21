@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/enums/process_stage.dart';
-import 'package:gap/models/EntityWithStages.dart';
+import 'package:gap/models/entities/EntityWithStages.dart';
 
 class Formulario extends EntityWithStages {
   final int id;

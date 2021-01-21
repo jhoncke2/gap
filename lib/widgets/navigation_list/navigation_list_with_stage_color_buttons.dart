@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/utils/size_utils.dart';
-import 'package:gap/models/EntityWithStages.dart';
+import 'package:gap/models/entities/EntityWithStages.dart';
 import 'package:gap/widgets/navigation_list/button/button_with_stage_color.dart';
 import 'package:gap/widgets/navigation_list/navigation_list.dart';
 // ignore: must_be_immutable

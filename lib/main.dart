@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gap/bloc/formularios/formularios_bloc.dart';
-import 'package:gap/bloc/projects/projects_bloc.dart';
-import 'package:gap/bloc/visits/visits_bloc.dart';
+import 'package:gap/bloc/entities/projects/projects_bloc.dart';
+import 'package:gap/bloc/entities/visits/visits_bloc.dart';
+import 'package:gap/bloc/ui/form_inputs_navigation/form_inputs_navigation_bloc.dart';
+import 'bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/pages/formulario_detail_page.dart';
 import 'package:gap/pages/formularios_page.dart';
 import 'package:gap/pages/login_page.dart';
@@ -19,13 +20,14 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider<ProjectsBloc>(create: (_)=>ProjectsBloc()),
         BlocProvider<VisitsBloc>(create: (_)=>VisitsBloc()),
-        BlocProvider<FormulariosBloc>(create: (_)=>FormulariosBloc())
+        BlocProvider<FormulariosBloc>(create: (_)=>FormulariosBloc()),
+        BlocProvider<FormInputNavigationBloc>(create: (_)=>FormInputNavigationBloc())
       ],
       child: MaterialApp(
         title: 'Material App',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          primaryColor: Color.fromRGBO(93, 92, 92, 1)
+          primaryColor: Color.fromRGBO(93, 92, 92, 1),
         ),
         initialRoute: LoginPage.route,
         routes: {

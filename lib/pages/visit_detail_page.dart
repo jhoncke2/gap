@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gap/bloc/visits/visits_bloc.dart';
-import 'package:gap/enums/process_stage.dart';
-import 'package:gap/models/visit.dart';
+import 'package:gap/bloc/entities/visits/visits_bloc.dart';
+import 'package:gap/models/entities/visit.dart';
 import 'package:gap/utils/size_utils.dart';
 import 'package:gap/widgets/header/header.dart';
 import 'package:gap/widgets/navigation_list/navigation_list_with_icons.dart';
