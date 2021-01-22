@@ -4,6 +4,7 @@ import 'package:gap/bloc/entities/projects/projects_bloc.dart';
 import 'package:gap/models/entities/project.dart';
 import 'package:gap/pages/projects_page.dart';
 import 'package:gap/utils/size_utils.dart';
+import 'package:gap/widgets/buttons/general_button.dart';
 import 'package:gap/widgets/logo.dart';
 import 'package:gap/utils/test/projects.dart' as fakeProjects;
 
@@ -163,31 +164,10 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _crearBotonLogin(){
-    final Map<String, double> shortFlatButtonPadding = _sizeUtils.shortFlatButtonPadding;
-    final double horizontalPadding = shortFlatButtonPadding['horizontal'];
-    final double verticalPadding = shortFlatButtonPadding['vertical'];
-    return MaterialButton(
-      child: _crearTextoDeBoton('INGRESAR'),
-      padding: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: verticalPadding),
-      shape: _createButtonShape(),
-      color: Theme.of(_context).primaryColor,
+    return GeneralButton(
+      text: 'INGRESAR',
+      backgroundColor: Theme.of(_context).primaryColor,
       onPressed: _login,
-    );
-  }
-
-  Widget _crearTextoDeBoton(String texto){
-    return Text(
-      texto,
-      style: TextStyle(
-        color: Colors.white,
-        fontSize: _sizeUtils.littleTitleSize
-      ),
-    );
-  }
-
-  ShapeBorder _createButtonShape(){
-    return RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(_sizeUtils.xasisSobreYasis * 0.03)
     );
   }
 

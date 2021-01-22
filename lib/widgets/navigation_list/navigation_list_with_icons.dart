@@ -7,7 +7,8 @@ import 'package:gap/utils/static_data/visit_detail_navigation.dart' as navigatio
 // ignore: must_be_immutable
 class NavigationListWithIcons extends NavigationList{
   final SizeUtils _sizeUtils = SizeUtils();
-  final Color _activeIconColor = Color.fromRGBO(213, 199, 18, 1);
+  final Color _activeFirstIconColor = Color.fromRGBO(213, 199, 18, 1);
+  final Color _activeOtherIconsColor = Colors.black54;
   final Color _activeTextColor = Colors.black87;
   final Color _inactiveItemColor = Colors.grey[300];
   final ProcessStage currentVisitProcessState;
@@ -40,9 +41,9 @@ class NavigationListWithIcons extends NavigationList{
 
   void _initNavItemsVisualFeatures(){
     final bool visitaEstaPendiente = currentVisitProcessState == ProcessStage.Pendiente;
-    final Color iconColorItem1 = (visitaEstaPendiente)?_activeIconColor:_inactiveItemColor;
+    final Color iconColorItem1 = (visitaEstaPendiente)?_activeFirstIconColor:_inactiveItemColor;
     final Color textColorItem1 = (visitaEstaPendiente)?_activeTextColor:_inactiveItemColor;
-    final Color iconColorDemasItems = (visitaEstaPendiente)?_inactiveItemColor:_activeIconColor;
+    final Color iconColorDemasItems = (visitaEstaPendiente)?_inactiveItemColor:_activeOtherIconsColor;
     final Color textColorDemasItems = (visitaEstaPendiente)?_inactiveItemColor:_activeTextColor;
     _navItemsColors = [
       {

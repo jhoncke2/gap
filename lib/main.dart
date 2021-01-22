@@ -29,6 +29,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primaryColor: Color.fromRGBO(93, 92, 92, 1),
+          secondaryHeaderColor: Colors.brown.withOpacity(0.35)
         ),
         initialRoute: LoginPage.route,
         routes: {
