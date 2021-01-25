@@ -16,3 +16,5 @@ class SetPhotos extends ImagesEvent{
     @required this.photos
   });
 }
+
+class ResetAllImages extends ImagesEvent{}

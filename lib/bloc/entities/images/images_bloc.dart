@@ -19,6 +19,8 @@ class ImagesBloc extends Bloc<ImagesEvent, ImagesState> {
       _loadPhoto(event);
     }else if(event is SetPhotos){
       _setPhotos(event);
+    }else if(event is ResetAllImages){
+      _resetAll();
     }
     yield _currentStateToYield;
   }
@@ -39,5 +41,9 @@ class ImagesBloc extends Bloc<ImagesEvent, ImagesState> {
     _currentStateToYield = state.copyWith(
       photos: photos
     );
+  }
+
+  void _resetAll(){
+    _currentStateToYield = ImagesState();
   }
 }

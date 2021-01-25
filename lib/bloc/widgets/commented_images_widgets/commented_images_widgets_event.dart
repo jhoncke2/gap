@@ -10,4 +10,4 @@ class AddImages extends CommentedImagesWidgetsEvent{
   });
 }
 
-class ResetAll extends CommentedImagesWidgetsEvent{}
+class ResetAllCommentedImages extends CommentedImagesWidgetsEvent{}

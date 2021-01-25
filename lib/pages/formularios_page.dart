@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/bloc/entities/visits/visits_bloc.dart';
-import 'package:gap/bloc/ui/form_inputs_navigation/form_inputs_navigation_bloc.dart';
+import 'package:gap/bloc/widgets/form_inputs_navigation/form_inputs_navigation_bloc.dart';
 import 'package:gap/models/entities/formulario.dart';
 import 'package:gap/models/entities/visit.dart';
 import 'package:gap/pages/formulario_detail_page.dart';

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gap/bloc/ui/form_inputs_navigation/form_inputs_navigation_bloc.dart';
-import 'package:gap/utils/size_utils.dart';
+import 'package:gap/bloc/widgets/form_inputs_navigation/form_inputs_navigation_bloc.dart';
 import 'package:gap/widgets/unloaded_elements/unloaded_form_inputs_index.dart';
+import 'package:gap/utils/size_utils.dart';
+
 class FormInputsIndex extends StatelessWidget {
   const FormInputsIndex();
 

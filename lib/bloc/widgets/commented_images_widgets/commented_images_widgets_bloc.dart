@@ -21,7 +21,7 @@ class CommentedImagesWidgetsBloc extends Bloc<CommentedImagesWidgetsEvent, Comme
   ) async* {
     if(event is AddImages){
       _addCommentedImages(event);
-    }else if(event is ResetAll){
+    }else if(event is ResetAllCommentedImages){
       _resetAll();
     }
     yield _currentStateToYield;
