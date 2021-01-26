@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'package:gap/bloc/widgets/commented_images_widgets/commented_images_widgets_bloc.dart';
+import 'package:gap/bloc/widgets/index/index_bloc.dart';
+import 'package:gap/models/ui/commented_image.dart';
 import 'package:gap/widgets/current_images_to_set_dialog/fotos_por_agregar_group.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +15,8 @@ class AdjuntarFotosDialog extends StatelessWidget {
   final SizeUtils _sizeUtils = SizeUtils();
   final ImagePicker _imagePicker = ImagePicker();
   ImagesBloc _imagesBloc;
+  CommentedImagesWidgetsBloc _commImagesWidgBloc;
+  IndexBloc _indexBloc;
   BuildContext _context;
   AdjuntarFotosDialog();
 
@@ -46,6 +50,8 @@ class AdjuntarFotosDialog extends StatelessWidget {
   void _initInitialConfiguration(BuildContext appContext){
     _context = appContext;
     _imagesBloc = BlocProvider.of<ImagesBloc>(_context);
+    _commImagesWidgBloc = BlocProvider.of<CommentedImagesWidgetsBloc>(_context);
+    _indexBloc = BlocProvider.of<IndexBloc>(_context);    
   }
 
   Widget _createHeadComponents(){
@@ -110,14 +116,16 @@ class AdjuntarFotosDialog extends StatelessWidget {
 
   Widget _createSubirArchivoButton(){
     return GeneralButton(
-      text: 'Subir archivo', 
-      onPressed: _onSubirArchivoPressed, 
-      backgroundColor: Theme.of(_context).secondaryHeaderColor
+      text: 'Subir archivo',
+      backgroundColor: Theme.of(_context).secondaryHeaderColor,
+      onPressed: _onSubirArchivoPressed
     );
   }
 
   void _onSubirArchivoPressed(){
     _addCurrentTemporalPhotosToMainPhotos();
+    //TODO: Verificar que no haya problemas de continuidad
+    _addMainPhotosToCommentedImages();
     _resetFotosPorAgregar();
     Navigator.of(_context).pop();
   }
@@ -125,15 +133,22 @@ class AdjuntarFotosDialog extends StatelessWidget {
   void _addCurrentTemporalPhotosToMainPhotos(){
     final List<File> photosToSet = _imagesBloc.state.currentPhotosToSet;
     final SetPhotos setPhotosEvent = SetPhotos(photos: photosToSet);
-    final CommentedImagesWidgetsBloc commImagesWidgBloc = BlocProvider.of<CommentedImagesWidgetsBloc>(_context);
-    //TODO: Verificar que no haya problemas de continuidad
-    final AddImages addImagesEvent = AddImages(images: _imagesBloc.state.photos);
-    commImagesWidgBloc.add(addImagesEvent);
     _imagesBloc.add(setPhotosEvent);
   }
 
-  void _resetFotosPorAgregar(){
-    
+  void _addMainPhotosToCommentedImages(){
+    final AddImages addImagesEvent = AddImages(images: _imagesBloc.state.photos, onEnd: _changeNPagesToIndex);
+    _commImagesWidgBloc.add(addImagesEvent);
+  }
+
+  void _changeNPagesToIndex(){
+    final CommentedLoadedImagesWidgetsState commImgsState = _commImagesWidgBloc.state;
+    final int newIndexNPages = commImgsState.nPaginasDeWidgets;
+    final ChangeNPages updateWidgetsEvent = ChangeNPages(nPages: newIndexNPages);
+    _indexBloc.add(updateWidgetsEvent);
+  }
+
+  void _resetFotosPorAgregar(){ 
     final ResetAllImages resetAllEvent = ResetAllImages();
     _imagesBloc.add(resetAllEvent);
   }

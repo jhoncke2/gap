@@ -16,10 +16,11 @@ class CommentedImageCard extends StatelessWidget {
   Widget build(BuildContext context) {
     _context = context;
     return Container(
+      margin: EdgeInsets.symmetric(vertical: _sizeUtils.xasisSobreYasis * 0.01),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           _createImage(),
-          SizedBox(width:  _sizeUtils.xasisSobreYasis * 0.015),
           _createComentaryInput()
         ],
       ),
@@ -29,24 +30,31 @@ class CommentedImageCard extends StatelessWidget {
   Widget _createImage(){
     return Image.file(
       commentedImage.image,
-      height: _sizeUtils.xasisSobreYasis * 0.1,
-      width: _sizeUtils.xasisSobreYasis * 0.1,
+      height: _sizeUtils.xasisSobreYasis * 0.14,
+      width: _sizeUtils.xasisSobreYasis * 0.14,
       fit: BoxFit.cover,
     );
   }
 
   Widget _createComentaryInput(){
-    return TextField(
-      controller: _commentaryController,
-      maxLines: 4,
-      decoration: _createCommentaryDecoration(),
+    return Container(
+      width: _sizeUtils.xasisSobreYasis * 0.415,
+      child: TextField(
+        controller: _commentaryController,
+        maxLines: 4,
+        decoration: _createCommentaryDecoration(),
+      ),
     );
   }
 
   InputDecoration _createCommentaryDecoration(){
     return InputDecoration(
+      contentPadding: EdgeInsets.symmetric(
+        vertical: _sizeUtils.xasisSobreYasis * 0.015,
+        horizontal: _sizeUtils.xasisSobreYasis * 0.035
+      ),
       border: _createCommentaryBorder(),
-      enabledBorder: _createCommentaryBorder()
+      enabledBorder: _createCommentaryBorder(),
     );
   }
 

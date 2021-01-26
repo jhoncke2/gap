@@ -3,7 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/bloc/entities/images/images_bloc.dart';
 import 'package:gap/bloc/entities/projects/projects_bloc.dart';
 import 'package:gap/bloc/entities/visits/visits_bloc.dart';
+import 'package:gap/bloc/widgets/commented_images_widgets/commented_images_widgets_bloc.dart';
 import 'package:gap/bloc/widgets/form_inputs_navigation/form_inputs_navigation_bloc.dart';
+import 'package:gap/bloc/widgets/index/index_bloc.dart';
 import 'package:gap/pages/adjuntar_fotos_visita_page.dart';
 import 'bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/pages/formulario_detail_page.dart';
@@ -24,7 +26,9 @@ class MyApp extends StatelessWidget {
         BlocProvider<VisitsBloc>(create: (_)=>VisitsBloc()),
         BlocProvider<FormulariosBloc>(create: (_)=>FormulariosBloc()),
         BlocProvider<FormInputsNavigationBloc>(create: (_)=>FormInputsNavigationBloc()),
-        BlocProvider<ImagesBloc>(create: (_)=>ImagesBloc())
+        BlocProvider<ImagesBloc>(create: (_)=>ImagesBloc()),
+        BlocProvider<CommentedImagesWidgetsBloc>(create: (_)=>CommentedImagesWidgetsBloc()),
+        BlocProvider<IndexBloc>(create: (_)=>IndexBloc()),
       ],
       child: MaterialApp(
         title: 'Material App',

@@ -3,16 +3,16 @@ part of 'commented_images_widgets_bloc.dart';
 @immutable
 abstract class CommentedImagesWidgetsState {}
 
-class CommentedImagesWidgetsInitial extends CommentedImagesWidgetsState {}
+class CommentedImagesWidgetsInitialState extends CommentedImagesWidgetsState {}
 
-class CommentedLoadedImagesWidgets extends CommentedImagesWidgetsState{
+class CommentedLoadedImagesWidgetsState extends CommentedImagesWidgetsState{
   final int nPaginasDeWidgets;
-  final int widgetsPerPage;
+  final int nWidgetsPerPage;
   final List<List<Widget>> _commentedImageswidgetsPerPage;
 
-  CommentedLoadedImagesWidgets({
+  CommentedLoadedImagesWidgetsState({
     this.nPaginasDeWidgets, 
-    this.widgetsPerPage, 
+    this.nWidgetsPerPage, 
     @required List<List<Widget>> commentedImageswidgetsPerPage
   }):
     _commentedImageswidgetsPerPage = commentedImageswidgetsPerPage

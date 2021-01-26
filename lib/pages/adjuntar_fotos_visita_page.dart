@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/bloc/entities/visits/visits_bloc.dart';
 import 'package:gap/widgets/buttons/general_button.dart';
+import 'package:gap/widgets/commented_images/commented_images_section.dart';
 import 'package:gap/widgets/header/header.dart';
+import 'package:gap/widgets/indexing/index_pagination.dart';
 import 'package:gap/widgets/page_title.dart';
 import 'package:gap/utils/size_utils.dart';
 import 'package:gap/utils/dialogs.dart' as dialogs;
@@ -44,6 +46,8 @@ class AdjuntarFotosVisitaPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               _createTopComponents(state),
+              CommentedImagesPag(),
+              IndexPagination(),
               _createEndButton()
             ],
           );
@@ -92,7 +96,6 @@ class AdjuntarFotosVisitaPage extends StatelessWidget {
 
   Widget _createEndButton(){
     return Container(
-      margin: EdgeInsets.only(bottom: _sizeUtils.xasisSobreYasis * 0.1),
       child: GeneralButton(
         text: 'Finalizar',
         backgroundColor: Theme.of(_context).secondaryHeaderColor,

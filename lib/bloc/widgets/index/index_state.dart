@@ -4,29 +4,21 @@ part of 'index_bloc.dart';
 class IndexState {
   final int nPages;
   final int currentIndex;
-  final List<Widget> showedItems;
-  final bool canGoPrevious;
-  final bool canGoNext;
+  final bool isActive;
 
   IndexState({
-    this.nPages,
+    this.nPages = 0,
     this.currentIndex, 
-    this.showedItems, 
-    this.canGoPrevious, 
-    this.canGoNext
+    this.isActive = false
   });
 
   IndexState copyWith({
     int nPages,
     int currentIndex,
-    List<Widget> showedItems,    
-    bool canGoPrevious,
-    bool canGoNext,
-  }) => IndexState(
+    bool isActive,
+   }) => IndexState(
     nPages: nPages??this.nPages,
     currentIndex: currentIndex??this.currentIndex,
-    showedItems: showedItems??this.showedItems,
-    canGoPrevious: canGoPrevious??this.canGoPrevious,
-    canGoNext: canGoNext??this.canGoNext
+    isActive: isActive??this.isActive,
   );
 }
