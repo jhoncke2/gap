@@ -41,11 +41,18 @@ class IndexBloc extends Bloc<IndexEvent, IndexState> {
 
   void _cnahgeNPages(ChangeNPages event){
     final int nPages = event.nPages;
-    final int currentIndex = state.currentIndex ?? 0;
+    int currentIndex = _getValueToCurrentIndex();
     _currentStateToYield = state.copyWith(
       nPages: nPages,
       currentIndex: currentIndex
     );
+  }
+
+  int _getValueToCurrentIndex(){
+    final int currentIndex = state.currentIndex;
+    if(currentIndex == -1)
+      return 0;
+    return currentIndex;
   }
 
   void _revisarActivacionesNavegacion(){

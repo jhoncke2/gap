@@ -227,7 +227,7 @@ class _LoadedFormInputsIndex extends StatelessWidget {
   void _changeIndex(int bttnIndexNavigation){
     final ChangeIndex changeIndexEvent = ChangeIndex(newIndex: bttnIndexNavigation);
     _indexBloc.add(changeIndexEvent);
-    CommentedImagesIndexManagerSingleton.csManager.definirActivacionAvanzarSegunCommentedImages();
+    CommentedImagesIndexManagerSingleton.commImgIndexManager.definirActivacionAvanzarSegunCommentedImages();
   }
 
   BoxDecoration _createButtonDecoration(){

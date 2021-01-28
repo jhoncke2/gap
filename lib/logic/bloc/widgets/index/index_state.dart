@@ -9,7 +9,7 @@ class IndexState {
 
   IndexState({
     this.nPages = 0,
-    this.currentIndex, 
+    this.currentIndex = -1, 
     this.sePuedeAvanzar = false,
     this.sePuedeRetroceder = false,
   });

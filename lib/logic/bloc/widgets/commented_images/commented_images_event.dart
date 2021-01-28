@@ -29,6 +29,9 @@ class CommentImage extends CommentedImagesEvent{
     @required this.positionInPage,
     @required this.commentary 
   });
+}
+
+class ChangeEnviandoCommentedImagesAlBack extends CommentedImagesEvent{
 
 }
 

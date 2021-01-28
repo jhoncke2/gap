@@ -48,6 +48,7 @@ class CommentedImagesBloc extends Bloc<CommentedImagesEvent, CommentedImagesStat
     final List<List<CommentedImage>> commentedImagesPages = state._commentedImagesPerPage;
     final CommentedImage commImageWithNewCommentary = commentedImagesPages[page][positionInPage];
     commImageWithNewCommentary.commentary = newCommentary;
+    _currentStateToYield = state.copyWith();
   }
 
   void _resetAll(){
@@ -68,7 +69,7 @@ class _CommentedImagesGenerator{
     final List<List<CommentedImage>> newCommImagesWidgetsPerPage = _generateCommImgsPerPage();
     return CommentedImagesState(
       nPaginasDeCommImages: _currentNPages,
-      nWidgetsPerPage: _nCommImgsPerPage,
+      commImgsPerPage: _nCommImgsPerPage,
       commentedImagesPerPage: newCommImagesWidgetsPerPage
     );
   }

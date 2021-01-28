@@ -144,8 +144,8 @@ class AdjuntarFotosDialog extends StatelessWidget {
   void _changeNPagesToIndex(){
     final CommentedImagesState commImgsState = _commImagesWidgBloc.state;
     final int newIndexNPages = commImgsState.nPaginasDeCommImages;
-    final ChangeNPages updateWidgetsEvent = ChangeNPages(nPages: newIndexNPages);
-    _indexBloc.add(updateWidgetsEvent);
+    final ChangeNPages changesNPagesEvent = ChangeNPages(nPages: newIndexNPages);
+    _indexBloc.add(changesNPagesEvent);
   }
 
   void _resetFotosPorAgregar(){ 

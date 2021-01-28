@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/logic/bloc/entities/visits/visits_bloc.dart';
+import 'package:gap/logic/bloc/widgets/commented_images/commented_images_bloc.dart';
+import 'package:gap/logic/bloc/widgets/index/index_bloc.dart';
+import 'package:gap/logic/blocs_manager/commented_images_index_manager.dart';
+import 'package:gap/ui/pages/visit_detail_page.dart';
+import 'package:gap/ui/pages/visits_page.dart';
 import 'package:gap/ui/widgets/buttons/general_button.dart';
 import 'package:gap/ui/widgets/commented_images/commented_images_section.dart';
 import 'package:gap/ui/widgets/header/header.dart';
@@ -96,13 +101,70 @@ class AdjuntarFotosVisitaPage extends StatelessWidget {
     );
   }
 
-  Widget _createEndButton(){
+  _createEndButton(){
+    return BlocBuilder<IndexBloc, IndexState>(
+      builder: (context, IndexState state) {
+        final bool estaEnUltimoIndexPage = _estaEnUltimoIndexPage(state);
+        if(estaEnUltimoIndexPage){
+          return _EndButton();
+        }else{
+          return Container(
+            height: _sizeUtils.xasisSobreYasis * 0.0775,
+          );
+        }
+      },
+    );
+  }
+
+  bool _estaEnUltimoIndexPage(IndexState state){
+    final int currentIndex = state.currentIndex;
+    final int nPages = state.nPages;
+    return currentIndex == nPages - 1;
+  }
+}
+
+// ignore: must_be_immutable
+class _EndButton extends StatelessWidget {
+  BuildContext _context;
+  Function _onPressed;
+  _EndButton();
+
+  @override
+  Widget build(BuildContext context) {
+    _createOnPressedFunction();
+    _context = context;
     return Container(
       child: GeneralButton(
         text: 'Finalizar',
         backgroundColor: Theme.of(_context).secondaryHeaderColor,
-        onPressed: (){},
+        onPressed: _onPressed,
       ),
     );
+  }
+
+  void _createOnPressedFunction(){
+    final bool allCommImgsAreCompleted = CommentedImagesIndexManagerSingleton.commImgIndexManager.allCommentedImagesAreCompleted();
+    if(allCommImgsAreCompleted){
+      _onPressed = _endImgsEdition;
+    }else{
+      _onPressed = null;
+    }
+  }
+
+  void _endImgsEdition(){
+    _resetCommImgsBloc();
+    _resetIndexBloc();
+    //TODO: llamar a servicio de enviar commentedImages al back
+    Navigator.of(_context).pushReplacementNamed(VisitDetailPage.route);
+  }
+
+  void _resetCommImgsBloc(){
+    final CommentedImagesBloc commImgsBloc = BlocProvider.of<CommentedImagesBloc>(_context);
+    commImgsBloc.add(ResetAllCommentedImages());
+  }
+
+  void _resetIndexBloc(){
+    final IndexBloc indexBloc = BlocProvider.of<IndexBloc>(_context);
+    indexBloc.add(ResetAllOfIndex());
   }
 }

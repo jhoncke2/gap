@@ -7,20 +7,25 @@ import 'package:gap/ui/utils/size_utils.dart';
 // ignore: must_be_immutable
 class CommentedImageCard extends StatelessWidget {
   final SizeUtils _sizeUtils = SizeUtils();
-  final TextEditingController _commentaryController = TextEditingController();
+  final TextEditingController _commentaryController;
   final CommentedImage commentedImage;
-  
+  final FocusNode focusNode;
+
   BuildContext _context;
   CommentedImagesBloc _commImgsBloc;
   int _currentIndex;
+
   CommentedImageCard({
     @required this.commentedImage,
+    @required this.focusNode,
     Key key
-  }): super(key: key);
+  }):
+    _commentaryController = TextEditingController(text: commentedImage.commentary),
+    super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    _initInitialConfiguration(context);
+  Widget build(BuildContext context){
+     _initInitialConfiguration(context);
     return Container(
       margin: EdgeInsets.symmetric(vertical: _sizeUtils.xasisSobreYasis * 0.01),
       child: Row(
@@ -38,6 +43,8 @@ class CommentedImageCard extends StatelessWidget {
     _commImgsBloc = BlocProvider.of<CommentedImagesBloc>(_context);
     final IndexBloc indexBloc = BlocProvider.of<IndexBloc>(_context);
     _currentIndex = indexBloc.state.currentIndex;
+    //Para que el cursor aparezca en la parte derecha del texto
+    _commentaryController.selection = TextSelection.fromPosition(TextPosition(offset: _commentaryController.text.length));
   }
 
   Widget _createImage(){
@@ -52,22 +59,38 @@ class CommentedImageCard extends StatelessWidget {
   Widget _createComentaryInput(){
     return Container(
       width: _sizeUtils.xasisSobreYasis * 0.415,
-      child: TextField(
+      child: TextFormField(
         controller: _commentaryController,
+        //focusNode: focusNode,
+        //key: this.key,
         maxLines: 4,
         decoration: _createCommentaryDecoration(),
         onChanged: _onInputChanged,
+        textAlign: TextAlign.start,
+        onEditingComplete: _onEditingComplete,
+        keyboardType: TextInputType.multiline,
+        keyboardAppearance: Brightness.dark,
       ),
     );
   }
 
   void _onInputChanged(String newValue){
+    commentedImage.commentary = newValue;
     final CommentImage commImgEvent = CommentImage(
       commentary: newValue, 
       page: _currentIndex,
       positionInPage: commentedImage.positionInPage, 
     );
     _commImgsBloc.add(commImgEvent);
+    
+  }
+
+  void _onInputSubmitted(String value){
+    print('on submitted');
+  }
+
+  void _onEditingComplete(){
+    print('on editing complete');
   }
 
   InputDecoration _createCommentaryDecoration(){
