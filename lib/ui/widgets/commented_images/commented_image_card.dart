@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/logic/bloc/widgets/commented_images/commented_images_bloc.dart';
 import 'package:gap/logic/bloc/widgets/index/index_bloc.dart';
-import 'package:gap/logic/models/ui/commented_image.dart';
+import 'package:gap/logic/models/entities/commented_image.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 // ignore: must_be_immutable
 class CommentedImageCard extends StatelessWidget {

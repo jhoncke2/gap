@@ -149,7 +149,7 @@ class AdjuntarFotosDialog extends StatelessWidget {
   }
 
   void _resetFotosPorAgregar(){ 
-    final ResetAllImages resetAllEvent = ResetAllImages();
+    final ResetImages resetAllEvent = ResetImages();
     _imagesBloc.add(resetAllEvent);
   }
 }

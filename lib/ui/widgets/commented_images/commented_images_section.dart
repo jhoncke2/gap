@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/logic/bloc/widgets/commented_images/commented_images_bloc.dart';
 import 'package:gap/logic/bloc/widgets/index/index_bloc.dart';
 import 'package:gap/logic/blocs_manager/commented_images_index_manager.dart';
-import 'package:gap/logic/models/ui/commented_image.dart';
+import 'package:gap/logic/models/entities/commented_image.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/commented_images/commented_image_card.dart';
 import 'package:gap/ui/widgets/unloaded_elements/unloaded_nav_items.dart';

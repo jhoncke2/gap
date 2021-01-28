@@ -166,13 +166,23 @@ class _VisitsComponents extends StatelessWidget {
   }
 
   void _onTapFunction(EntityWithStages entity){
+    _choseVisit(entity);
+    _loadForms();
+    Navigator.of(_context).pushNamed(VisitDetailPage.route);
+  }
+
+  void _choseVisit(EntityWithStages entity){
     final Visit visit = entity as Visit;
     final VisitsBloc visitsBloc = BlocProvider.of<VisitsBloc>(_context);
     final ChooseVisit chooseVisitEvent = ChooseVisit(chosenOne: visit);
     visitsBloc.add(chooseVisitEvent);
+  }
+
+  void _loadForms(){
     final FormulariosBloc formsBloc = BlocProvider.of<FormulariosBloc>(_context);
     final SetForms setFormsEvent = SetForms(forms: fakeFormularios.formularios);
     formsBloc.add(setFormsEvent);
-    Navigator.of(_context).pushNamed(VisitDetailPage.route);
   }
+
+
 }

@@ -5,7 +5,7 @@ class FormInputsNavigationState {
   final bool thereIsSelectedForm;
   final Formulario form;
   final int pageIndex;
-  final List<FormInput> showedInputs;
+  final List<FormField> showedInputs;
 
   FormInputsNavigationState({
     this.thereIsSelectedForm = false,
@@ -18,7 +18,7 @@ class FormInputsNavigationState {
     bool thereIsSelectedForm,
     Formulario form,    
     int pageIndex,
-    List<FormInput> showedInputs,
+    List<FormField> showedInputs,
   }) => FormInputsNavigationState(
     thereIsSelectedForm: thereIsSelectedForm??this.thereIsSelectedForm,
     form: form??this.form,

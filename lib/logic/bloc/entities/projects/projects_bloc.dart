@@ -19,7 +19,7 @@ class ProjectsBloc extends Bloc<ProjectsEvent, ProjectsState> {
       _setProjects(event);
     }else if(event is ChooseProject){
       _chooseProject(event);
-    }else if(event is ResetAll){
+    }else if(event is ResetProyects){
       _resetAll();
     }
     yield _currentYieldedState;

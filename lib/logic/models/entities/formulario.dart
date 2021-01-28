@@ -1,15 +1,16 @@
 import 'package:gap/logic/enums/process_stage.dart';
 import 'package:gap/logic/models/entities/EntityWithStages.dart';
+import 'package:gap/logic/models/entities/form_field.dart';
 
 class Formulario extends EntityWithStages {
   final int id;
   final Date date;
-  final List<Map<String, dynamic>> fields;
+  final List<FormField> fields;
   
   Formulario.fromJson({Map<String, dynamic> json}):
     this.id = json['id'],
     this.date = Date( DateTime.parse(json['date']) ),
-    this.fields = json['fields'].cast<Map<String, dynamic>>(),
+    this.fields = FormFields.fromJson( json['fields'].cast<Map<String, dynamic>>() ).formsFields,
     super(
       currentStage: (json['step']=='pendiente')? ProcessStage.Pendiente : ProcessStage.Realizada,
       name: json['name']

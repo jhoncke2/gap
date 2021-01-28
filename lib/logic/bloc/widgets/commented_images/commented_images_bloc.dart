@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:gap/logic/models/ui/commented_image.dart';
+import 'package:gap/logic/models/entities/commented_image.dart';
 import 'package:meta/meta.dart';
 
 part 'commented_images_event.dart';

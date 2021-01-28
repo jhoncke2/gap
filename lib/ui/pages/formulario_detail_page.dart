@@ -15,10 +15,6 @@ class FormularioDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final padding = MediaQuery.of(context).padding;
-    final viewPadding = MediaQuery.of(context).viewPadding;
-    print(padding);
-    print(viewPadding);
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
@@ -28,11 +24,9 @@ class FormularioDetailPage extends StatelessWidget {
             children: [
               SafeArea(child: Container()),
               SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
-              Header(),
-              SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
               _createFormBuilder()
             ],
-            ),
+          ),
         ),
       )
     );
@@ -51,18 +45,6 @@ class FormularioDetailPage extends StatelessWidget {
   }
 }
 
-/**
- * Column(
-children: [
-  SafeArea(child: Container()),
-  SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
-  Header(),
-  SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
-  _createFormBuilder()
-],
-),
- */
-
 // ignore: must_be_immutable
 class _LoadedFormularioDetail extends StatelessWidget {
   final SizeUtils _sizeUtils = SizeUtils();
@@ -74,7 +56,7 @@ class _LoadedFormularioDetail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: _sizeUtils.xasisSobreYasis * 1.05,
+      height: _sizeUtils.xasisSobreYasis * 1.15,
       margin: EdgeInsets.all(0),
       child: Column(
         children: [

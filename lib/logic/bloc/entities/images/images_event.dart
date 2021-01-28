@@ -17,4 +17,4 @@ class SetPhotos extends ImagesEvent{
   });
 }
 
-class ResetAllImages extends ImagesEvent{}
+class ResetImages extends ImagesEvent{}

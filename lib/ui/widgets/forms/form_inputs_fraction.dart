@@ -11,7 +11,7 @@ class FormInputsFraction extends StatelessWidget {
     _context = context;
     final List<Widget> inputsItems = _createInputsItems();
     return Container(
-      height: _sizeUtils.xasisSobreYasis * 0.675,
+      height: _sizeUtils.xasisSobreYasis * 0.65,
       width: double.infinity,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

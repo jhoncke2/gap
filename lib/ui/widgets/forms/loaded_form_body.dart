@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/logic/models/entities/formulario.dart';
 import 'package:gap/ui/utils/size_utils.dart';
+import 'package:gap/ui/widgets/buttons/general_button.dart';
 import 'package:gap/ui/widgets/forms/form_inputs_fraction.dart';
 import 'package:gap/ui/widgets/forms/form_inputs_index.dart';
 import 'package:gap/ui/widgets/page_title.dart';
@@ -12,6 +13,7 @@ class LoadedFormBody extends StatelessWidget{
   final FormulariosState formsState;
   final Formulario _formulario;
   BuildContext _context;
+
   LoadedFormBody({
     @required this.formsState
   }):
@@ -29,8 +31,9 @@ class LoadedFormBody extends StatelessWidget{
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            PageTitle(title: _formulario.name, underlined: false),
+            PageTitle(title: _formulario.name, underlined: false, centerText: true),
             FormInputsFraction(),
+            _createNextButton(),
             FormInputsIndex()
           ],
         )
@@ -45,5 +48,17 @@ class LoadedFormBody extends StatelessWidget{
       left: _sizeUtils.xasisSobreYasis * 0.045,
       right: _sizeUtils.xasisSobreYasis * 0.045
     );
+  }
+
+  Widget _createNextButton(){
+    return GeneralButton(
+      backgroundColor: Theme.of(_context).primaryColor,
+      text: 'Siguiente',
+      onPressed: _terminarForm,
+    );
+  }
+
+  void _terminarForm(){
+    //Enviar servicio de crear formulario respuesta (?)
   }
 }

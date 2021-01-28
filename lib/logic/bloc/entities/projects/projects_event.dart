@@ -16,4 +16,4 @@ class ChooseProject extends ProjectsEvent{
   });
 }
 
-class ResetAll extends ProjectsEvent{}
+class ResetProyects extends ProjectsEvent{}

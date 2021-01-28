@@ -33,6 +33,6 @@ class ChooseVisit extends VisitsEvent{
   });
 }
 
-class ResetAllOfVisits extends VisitsEvent{}
+class ResetVisits extends VisitsEvent{}
 
 class ResetDateFilter extends VisitsEvent{}

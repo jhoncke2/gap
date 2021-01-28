@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:gap/logic/models/entities/formulario.dart';
-import 'package:gap/logic/models/ui/form_input.dart';
+import 'package:gap/logic/models/entities/form_field.dart';
 
 part 'form_inputs_navigation_event.dart';
 part 'form_inputs_navigation_state.dart';

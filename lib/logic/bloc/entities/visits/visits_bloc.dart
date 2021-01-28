@@ -24,7 +24,7 @@ class VisitsBloc extends Bloc<VisitsEvent, VisitsState> {
       _changeDateFilterItem(event);
     }else if(event is ChooseVisit){
       _chooseVisit(event);
-    }else if(event is ResetAllOfVisits){
+    }else if(event is ResetVisits){
       _resetAllOfVisits();
     }else if(event is ResetDateFilter){
       _resetDateFilter();      
