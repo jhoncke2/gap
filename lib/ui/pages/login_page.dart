@@ -18,7 +18,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-
   BuildContext _context;
   SizeUtils _sizeUtils;
   String _email;
@@ -209,6 +208,7 @@ class _LoginPageState extends State<LoginPage> {
     return Container(
       margin: EdgeInsets.all(0),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
             child: Checkbox(
@@ -221,7 +221,8 @@ class _LoginPageState extends State<LoginPage> {
               }
             ),
           ),
-          _createLabel('Mantenerme en el sistema')
+          _createLabel('Mantenerme en el sistema'),
+          SizedBox(width: _sizeUtils.xasisSobreYasis * 0.035)
         ],
       ),
     );

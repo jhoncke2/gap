@@ -12,6 +12,8 @@ class InitFormFillingOut extends ChosenFormEvent{
 
 class InitFirstFirmerFillingOut extends ChosenFormEvent{}
 
+class InitFirstFirmerFirm extends ChosenFormEvent{}
+
 class InitFirmsFillingOut extends ChosenFormEvent{}
 
 class AddFirmerPersonalInformation extends ChosenFormEvent{

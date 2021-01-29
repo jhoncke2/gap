@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/logic/bloc/entities/visits/visits_bloc.dart';
+import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/logic/bloc/widgets/form_inputs_navigation/form_inputs_navigation_bloc.dart';
 import 'package:gap/logic/models/entities/formulario.dart';
 import 'package:gap/logic/models/entities/visit.dart';
@@ -16,7 +17,6 @@ import 'package:gap/ui/utils/size_utils.dart';
 class FormulariosPage extends StatelessWidget {
   static final String route = 'formularios';
   final SizeUtils _sizeUtils = SizeUtils();
-  Visit _visit;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -99,15 +99,28 @@ class _FormulariosComponents extends StatelessWidget {
   }
 
   void _onItemTap(EntityWithStages entity){
-    final FormulariosBloc formsBloc = BlocProvider.of<FormulariosBloc>(_context);
-    final ChooseForm chooseFormEvent = ChooseForm(chosenOne: entity);
-    formsBloc.add(chooseFormEvent);
-    final FormInputsNavigationBloc lFBodyBloc = BlocProvider.of<FormInputsNavigationBloc>(_context);
-    final SetForm setFormEvent = SetForm(form: entity);
-    lFBodyBloc.add(setFormEvent);
+    _addChosenFormToForms(entity);
+    //TODO: Revisar que esté haciendo algo que tenga sentido
+    _addEntityToFormInputsNav(entity);
+    _addFormToChosenFormBloc(entity);
     Navigator.of(_context).pushNamed(FormularioDetailPage.route);
   }
-}
 
-class LoadedFormBodyBloc {
+  void _addChosenFormToForms(Formulario form){
+    final FormulariosBloc formsBloc = BlocProvider.of<FormulariosBloc>(_context);
+    final ChooseForm chooseFormEvent = ChooseForm(chosenOne: form);
+    formsBloc.add(chooseFormEvent);
+  }
+
+  void _addEntityToFormInputsNav(Formulario form){
+    final FormInputsNavigationBloc fINavBloc = BlocProvider.of<FormInputsNavigationBloc>(_context);
+    final SetForm setFormEvent = SetForm(form: form);
+    fINavBloc.add(setFormEvent);
+  }
+
+  void _addFormToChosenFormBloc(Formulario form){
+    final ChosenFormBloc cFBloc = BlocProvider.of<ChosenFormBloc>(_context);
+    final InitFormFillingOut initFormFOEvent = InitFormFillingOut(formulario: form);
+    cFBloc.add(initFormFOEvent);
+  }
 }

@@ -43,7 +43,7 @@ class AdjuntarFotosVisitaPage extends StatelessWidget {
   Widget _createBottomItems() {
     return Container(
       width: MediaQuery.of(_context).size.width,
-      height: _sizeUtils.xasisSobreYasis * 1.025,
+      height: _sizeUtils.xasisSobreYasis * 1.0,
       padding: EdgeInsets.symmetric(
       horizontal: _sizeUtils.normalHorizontalScaffoldPadding),
       child: BlocBuilder<VisitsBloc, VisitsState>(

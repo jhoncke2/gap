@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/ui/utils/size_utils.dart';
-import 'package:gap/ui/widgets/forms/loaded_form_body.dart';
+import 'package:gap/ui/widgets/forms/form_body/loaded_form_body.dart';
 import 'package:gap/ui/widgets/forms/loaded_form_head.dart';
 import 'package:gap/ui/widgets/header/header.dart';
 import 'package:gap/ui/widgets/unloaded_elements/unloaded_nav_items.dart';

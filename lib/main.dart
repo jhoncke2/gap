@@ -4,6 +4,7 @@ import 'package:gap/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/logic/bloc/entities/images/images_bloc.dart';
 import 'package:gap/logic/bloc/entities/projects/projects_bloc.dart';
 import 'package:gap/logic/bloc/entities/visits/visits_bloc.dart';
+import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/logic/bloc/widgets/commented_images/commented_images_bloc.dart';
 import 'package:gap/logic/bloc/widgets/form_inputs_navigation/form_inputs_navigation_bloc.dart';
 import 'package:gap/logic/bloc/widgets/index/index_bloc.dart';
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
         BlocProvider<ProjectsBloc>(create: (_)=>ProjectsBloc()),
         BlocProvider<VisitsBloc>(create: (_)=>VisitsBloc()),
         BlocProvider<FormulariosBloc>(create: (_)=>FormulariosBloc()),
+        BlocProvider<ChosenFormBloc>(create: (_)=>ChosenFormBloc()),
         BlocProvider<FormInputsNavigationBloc>(create: (_)=>FormInputsNavigationBloc()),
         BlocProvider<ImagesBloc>(create: (_)=>ImagesBloc()),
         BlocProvider<CommentedImagesBloc>(create: (_)=>CommentedImagesBloc()),

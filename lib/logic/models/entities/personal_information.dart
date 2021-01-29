@@ -4,13 +4,15 @@ import 'dart:io';
 class PersonalInformation{
   final int id;
   final String name;
-  final int cc;
+  final String idDocumentType;
+  final int idDocumentNumber;
   final File firm;
 
   PersonalInformation({
     @required this.id, 
-    @required this.name, 
-    @required this.cc, 
+    @required this.name,
+    @required this.idDocumentType,
+    @required this.idDocumentNumber, 
     @required this.firm
   });
 }

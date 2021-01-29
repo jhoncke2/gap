@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/ui/utils/size_utils.dart';
+import 'package:gap/ui/widgets/forms/form_body/center_containers/form_field.dart';
 // ignore: must_be_immutable
 class FormInputsFraction extends StatelessWidget {
   final SizeUtils _sizeUtils = SizeUtils();
@@ -23,7 +24,12 @@ class FormInputsFraction extends StatelessWidget {
   List<Widget> _createInputsItems(){
     final List<Widget> inputsItems = [];
     for(int i = 0; i < 4; i++){
-      inputsItems.add(_createFakeInput(i));
+      inputsItems.add(
+        CustomFormField(
+          fieldName: 'Input $i',
+          onFieldChanged: (){},
+        )
+      );
     }
     return inputsItems;
   }
