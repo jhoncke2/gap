@@ -6,6 +6,7 @@ import 'package:gap/logic/bloc/entities/projects/projects_bloc.dart';
 import 'package:gap/logic/bloc/entities/visits/visits_bloc.dart';
 import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/logic/bloc/widgets/commented_images/commented_images_bloc.dart';
+import 'package:gap/logic/bloc/widgets/firm_paint/firm_paint_bloc.dart';
 import 'package:gap/logic/bloc/widgets/form_inputs_navigation/form_inputs_navigation_bloc.dart';
 import 'package:gap/logic/bloc/widgets/index/index_bloc.dart';
 import 'package:gap/ui/pages/adjuntar_fotos_visita_page.dart';
@@ -13,6 +14,7 @@ import 'package:gap/ui/pages/formulario_detail_page.dart';
 import 'package:gap/ui/pages/formularios_page.dart';
 import 'package:gap/ui/pages/init_page.dart';
 import 'package:gap/ui/pages/login_page.dart';
+import 'package:gap/ui/pages/painter_test_page.dart';
 import 'package:gap/ui/pages/project_detail_page.dart';
 import 'package:gap/ui/pages/projects_page.dart';
 import 'package:gap/ui/pages/visit_detail_page.dart';
@@ -32,6 +34,7 @@ class MyApp extends StatelessWidget {
         BlocProvider<ImagesBloc>(create: (_)=>ImagesBloc()),
         BlocProvider<CommentedImagesBloc>(create: (_)=>CommentedImagesBloc()),
         BlocProvider<IndexBloc>(create: (_)=>IndexBloc()),
+        BlocProvider<FirmPaintBloc>(create: (_)=>FirmPaintBloc())
       ],
       child: MaterialApp(
         title: 'Material App',
@@ -40,7 +43,7 @@ class MyApp extends StatelessWidget {
           primaryColor: Color.fromRGBO(93, 92, 92, 1),
           secondaryHeaderColor: Colors.brown.withOpacity(0.35)
         ),
-        initialRoute: InitPage.route,
+        initialRoute: PainterTestPage.route,
         routes: {
           InitPage.route: (_)=>InitPage(),
           LoginPage.route: (_)=>LoginPage(),
@@ -50,7 +53,9 @@ class MyApp extends StatelessWidget {
           VisitDetailPage.route: (_)=>VisitDetailPage(),
           FormulariosPage.route: (_)=>FormulariosPage(),
           FormularioDetailPage.route: (_)=>FormularioDetailPage(),
-          AdjuntarFotosVisitaPage.route: (_)=>AdjuntarFotosVisitaPage()
+          AdjuntarFotosVisitaPage.route: (_)=>AdjuntarFotosVisitaPage(),
+          //For test
+          PainterTestPage.route: (_)=>PainterTestPage()
         },
       ),
     );
