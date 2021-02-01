@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
+import 'package:gap/logic/blocs_manager/chosen_form_manager.dart';
 import 'package:gap/ui/pages/formularios_page.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/buttons/general_button.dart';
@@ -9,7 +10,7 @@ class BottomFirmsOptions extends StatelessWidget {
   final SizeUtils _sizeUtils = SizeUtils();
   BuildContext _context;
   ChosenFormBloc _chosenFormBloc;
-  ChosenFormState _chosenFormState;
+  Function _onPressed;
   BottomFirmsOptions();
 
   @override
@@ -17,9 +18,8 @@ class BottomFirmsOptions extends StatelessWidget {
     _initInitialConfiguration(context);
     return Container(
       height: _sizeUtils.xasisSobreYasis * 0.4,
-      margin: EdgeInsets.only(bottom: _sizeUtils.xasisSobreYasis * 0.275),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           _createAddFirmButton(),
           _createFinishButton()
@@ -31,16 +31,25 @@ class BottomFirmsOptions extends StatelessWidget {
   void _initInitialConfiguration(BuildContext context){
     _context = context;
     _chosenFormBloc = BlocProvider.of<ChosenFormBloc>(_context);
-    _chosenFormState = _chosenFormBloc.state;
   }
 
   Widget _createAddFirmButton(){
+    _defineFinishOnPressed();
     return GeneralButton(
-      text: 'Agregar Firma', 
-      onPressed: _onAddNewFirm,
+      text: 'Agregar Firma',
+      onPressed: _onPressed,
       borderShape: BtnBorderShape.Circular,
       backgroundColor: Theme.of(_context).secondaryHeaderColor
     );
+  }
+
+  void _defineFinishOnPressed(){
+    final bool puedeAvanzar = ChosenFormManagerSingleton.chosenFormManager.canGoToNextFormStep();
+    if(puedeAvanzar){
+      _onPressed = _onAddNewFirm;
+    }else{
+      _onPressed = null;
+    }
   }
 
   void _onAddNewFirm(){

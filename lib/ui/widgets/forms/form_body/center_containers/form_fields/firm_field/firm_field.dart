@@ -30,7 +30,8 @@ class FirmField extends StatelessWidget {
     return Text(
       'Firma',
       style: TextStyle(
-        color: Theme.of(_context).primaryColor
+        color: Theme.of(_context).primaryColor,
+        fontSize: _sizeUtils.subtitleSize
       ),
     );
   }
@@ -47,6 +48,7 @@ class FirmField extends StatelessWidget {
   Widget _createFirmBotLine(){
     return Divider(
       color: Theme.of(_context).primaryColor.withOpacity(0.5),
+      thickness: 3,
       height: 3,
     );
   }

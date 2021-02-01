@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 // ignore: must_be_immutable
-class UnloadedFormInputsIndex extends StatelessWidget {
+class UnloadedIndexPagination extends StatelessWidget {
   final SizeUtils _sizeUtils = SizeUtils();
   BuildContext _context;
-  UnloadedFormInputsIndex();
+  UnloadedIndexPagination();
 
   @override
   Widget build(BuildContext context) {

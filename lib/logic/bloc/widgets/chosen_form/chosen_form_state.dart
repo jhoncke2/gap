@@ -5,7 +5,7 @@ enum FormStep{
   OnForm,
   OnFirstFirmerInformation,
   OnFirstFirmerFirm,
-  OnFirms
+  OnSecondaryFirms
 }
 
 @immutable

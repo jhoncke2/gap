@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/logic/models/entities/personal_information.dart';
 import 'package:gap/ui/utils/size_utils.dart';
-import 'package:gap/ui/widgets/forms/form_body/center_containers/firm_field.dart';
+import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/firm_field/firm_field.dart';
 // ignore: must_be_immutable
 class FirstFirmerFirm extends StatelessWidget {
   final SizeUtils _sizeUtils = SizeUtils();
@@ -20,7 +20,7 @@ class FirstFirmerFirm extends StatelessWidget {
         children: [
           FirmField(firmer: _firmer),
           _createFirmerInfoText(_firmer.name),
-          _createFirmerInfoText('${_firmer.idDocumentType} ${_firmer.idDocumentNumber}')
+          _createFirmerInfoText('${_firmer.identifDocumentType} ${_firmer.identifDocumentNumber}')
         ],
       ),
     );

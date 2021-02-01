@@ -25,7 +25,7 @@ class ChosenFormBloc extends Bloc<ChosenFormEvent, ChosenFormState> {
       _initFirstFirmerFirm(event);
     }else if(event is InitFirmsFillingOut){
       _initFirmsFillingOut(event);
-    }else if(event is AddFirmerPersonalInformation){
+    }else if(event is UpdateFirmerPersonalInformation){
       _addFirmerPersonalInformation(event);
     }else if(event is ResetChosenForm){
       _resetChosenForm();
@@ -42,8 +42,11 @@ class ChosenFormBloc extends Bloc<ChosenFormEvent, ChosenFormState> {
   }
 
   void _initFirstFirmerFillingOut(InitFirstFirmerFillingOut event){
+    final PersonalInformation firstFirmer = PersonalInformation();
+    final List<PersonalInformation> firmers = [firstFirmer];
     _currentStateToYield = state.copyWith(
-      formStep: FormStep.OnFirstFirmerInformation
+      formStep: FormStep.OnFirstFirmerInformation,
+      firmers: firmers
     );
   }
 
@@ -55,12 +58,18 @@ class ChosenFormBloc extends Bloc<ChosenFormEvent, ChosenFormState> {
 
   void _initFirmsFillingOut(InitFirmsFillingOut event){
     _currentStateToYield = state.copyWith(
-      formStep: FormStep.OnFirms
+      formStep: FormStep.OnSecondaryFirms
     );
   }
 
-  void _addFirmerPersonalInformation(AddFirmerPersonalInformation event){
-    _currentStateToYield = state.copyWith();
+  void _addFirmerPersonalInformation(UpdateFirmerPersonalInformation event){
+    final int firmerIndex = event.firmerListIndex;
+    final PersonalInformation firmer = event.firmer;
+    final List<PersonalInformation> firmers = state.firmers;
+    firmers[firmerIndex] = firmer;
+    _currentStateToYield = state.copyWith(
+      firmers: firmers
+    );
   }
 
   void _resetChosenForm(){

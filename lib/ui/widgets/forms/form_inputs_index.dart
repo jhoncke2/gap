@@ -14,7 +14,7 @@ class FormInputsIndex extends StatelessWidget {
         if(state.thereIsSelectedForm){
           return _LoadedFormInputsIndex(state: state);
         }else{
-          return UnloadedFormInputsIndex();
+          return UnloadedIndexPagination();
         }
       },
     );

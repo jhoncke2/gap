@@ -4,10 +4,11 @@ import 'package:gap/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/logic/models/entities/formulario.dart';
 import 'package:gap/ui/utils/size_utils.dart';
-import 'package:gap/ui/widgets/buttons/general_button.dart';
-import 'package:gap/ui/widgets/forms/firms/first_firmer_information.dart';
+import 'package:gap/ui/widgets/forms/form_body/bottom_containers/bottom_firms_options.dart';
+import 'package:gap/ui/widgets/forms/form_body/bottom_containers/bottom_formfilling_navigation.dart';
+import 'package:gap/ui/widgets/forms/form_body/center_containers/first_firmer_firm.dart';
+import 'package:gap/ui/widgets/forms/form_body/center_containers/first_firmer_pers_info.dart';
 import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields_fraction.dart';
-import 'package:gap/ui/widgets/forms/form_inputs_index.dart';
 import 'package:gap/ui/widgets/page_title.dart';
 import 'package:gap/ui/widgets/unloaded_elements/unloaded_nav_items.dart';
 
@@ -16,7 +17,6 @@ class LoadedFormBody extends StatelessWidget{
   final SizeUtils _sizeUtils = SizeUtils();
   final FormulariosState formsState;
   final Formulario _formulario;
-  BuildContext _context;
 
   LoadedFormBody({
     @required this.formsState
@@ -25,7 +25,6 @@ class LoadedFormBody extends StatelessWidget{
     ;
   @override
   Widget build(BuildContext context) {
-    _context = context;
     return Expanded(
       child: Container(
         width: MediaQuery.of(context).size.width,
@@ -36,9 +35,7 @@ class LoadedFormBody extends StatelessWidget{
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             PageTitle(title: _formulario.name, underlined: false, centerText: true),
-            _ChosenFormCurrentComponent(),
-            Container(),
-            FormInputsIndex()
+            _ChosenFormCurrentComponent()
           ],
         )
       ),
@@ -58,39 +55,57 @@ class LoadedFormBody extends StatelessWidget{
 
 // ignore: must_be_immutable
 class _ChosenFormCurrentComponent extends StatelessWidget {
+  final SizeUtils _sizeUtils = SizeUtils();
   ChosenFormState _state;
-  Widget _components;
+  Widget _centerComponents;
+  Widget _bottomComponents;
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ChosenFormBloc, ChosenFormState>(
       builder: (context, state) {
         _state = state;
-        _elegirComponentSegunFormState();
-        return _components;
+        _elegirComponentsSegunFormState();
+        return Container(
+          height: _sizeUtils.xasisSobreYasis * 0.85,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _centerComponents,
+              SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
+              _bottomComponents
+            ],
+          ),
+        );
       },
     );
   }
 
-  void _elegirComponentSegunFormState(){
+  void _elegirComponentsSegunFormState(){
     switch(_state.formStep){      
       case FormStep.WithoutForm:
-        _components = UnloadedNavItems();
+        _centerComponents = UnloadedNavItems();
+        _bottomComponents = Container();
         break;
       case FormStep.OnForm:
-        _components = FormInputsFraction();
+        _centerComponents = FormInputsFraction();
+        _bottomComponents = BottomFormFillingNavigation();
         break;
       case FormStep.OnFirstFirmerInformation:
-        _components = FirstFirmerInformation();
+        _centerComponents = FirstFirmerPersInfo();
+        _bottomComponents = BottomFormFillingNavigation();
         break;
       case FormStep.OnFirstFirmerFirm:
-        _components = UnloadedNavItems();
+        _centerComponents = FirstFirmerFirm();
+        _bottomComponents = BottomFirmsOptions();
         break;
-      case FormStep.OnFirms:
-        _components = UnloadedNavItems();
+      case FormStep.OnSecondaryFirms:
+        _centerComponents = UnloadedNavItems();
+        _bottomComponents = BottomFirmsOptions();
         break;
       default:
-        _components = Container();
+        _centerComponents = Container();
+        _bottomComponents = Container();
     }
   }
 }

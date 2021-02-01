@@ -18,16 +18,23 @@ class FormField{
   int id;
   String name;
   InputType type;
+  bool isFilled;
+  String currentValue;
+
   FormField({
     @required this.id, 
     @required this.name, 
-    @required this.type}
-  );
+    @required this.type
+  }):
+    this.isFilled = false
+    ;
+
   FormField.fromJson(Map<String, dynamic> json):
     this.id = json['id'],
     this.name = json['name']
   {
     _defineType(json['type']);
+    this.isFilled = false;
   }
   
   void _defineType(String type){

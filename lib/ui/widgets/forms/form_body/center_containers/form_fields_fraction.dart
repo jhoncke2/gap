@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:gap/ui/utils/size_utils.dart';
-import 'package:gap/ui/widgets/forms/form_body/center_containers/form_field.dart';
-// ignore: must_be_immutable
+import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/form_single_text/form_single_text_with_name.dart';
+import 'package:gap/logic/fake_data/formularios.dart' as fakeForms;
 class FormInputsFraction extends StatelessWidget {
   final SizeUtils _sizeUtils = SizeUtils();
-  BuildContext _context;
   FormInputsFraction({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    _context = context;
     final List<Widget> inputsItems = _createInputsItems();
     return Container(
       height: _sizeUtils.xasisSobreYasis * 0.65,
@@ -25,57 +23,16 @@ class FormInputsFraction extends StatelessWidget {
     final List<Widget> inputsItems = [];
     for(int i = 0; i < 4; i++){
       inputsItems.add(
-        CustomFormField(
-          fieldName: 'Input $i',
-          onFieldChanged: (){},
+        FormSingleTextWithName(
+          fieldName: 'Campo ${i+1}',
+          onFieldChanged: _onFieldChanged,
         )
       );
     }
     return inputsItems;
   }
 
-  Widget _createFakeInput(int itemIndex){
-    return Container(
-      width: double.infinity,
-      //margin: EdgeInsets.only(bottom: _sizeUtils.xasisSobreYasis * 0.02),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _createInputName(itemIndex),
-          SizedBox(height:  _sizeUtils.veryLittleSizedBoxHeigh),
-          _createInputBox()
-        ],
-      ),
-    );
-  }
-
-  Widget _createInputName(int itemIndex){
-    return Text(
-      'Input $itemIndex',
-      style: TextStyle(
-        color: Theme.of(_context).primaryColor,
-        fontSize: _sizeUtils.subtitleSize
-      ),
-    );
-  }
-
-  Widget _createInputBox(){
-    return TextField(
-      decoration: InputDecoration( 
-        isDense: true ,
-        border: _createInputBorder(),
-        enabledBorder: _createInputBorder()
-      ),
-    );
-  }
-
-  InputBorder _createInputBorder(){
-    return OutlineInputBorder(
-      borderRadius: BorderRadius.circular(_sizeUtils.xasisSobreYasis * 0.065),
-      borderSide: BorderSide(
-        color: Theme.of(_context).primaryColor.withOpacity(0.525),
-        width: 3.5
-      )
-    );
+  void _onFieldChanged(String newValue){
+    //TODO: Implementar cuando se haya conectado con servicios de forms del back
   }
 }

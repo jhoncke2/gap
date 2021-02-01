@@ -1,18 +1,17 @@
-import 'package:flutter/material.dart';
 import 'dart:io';
 
 class PersonalInformation{
-  final int id;
-  final String name;
-  final String idDocumentType;
-  final int idDocumentNumber;
-  final File firm;
+  int id;
+  String name;
+  String identifDocumentType;
+  int identifDocumentNumber;
+  File firm;
 
   PersonalInformation({
-    @required this.id, 
-    @required this.name,
-    @required this.idDocumentType,
-    @required this.idDocumentNumber, 
-    @required this.firm
+    this.id, 
+    this.name,
+    this.identifDocumentType,
+    this.identifDocumentNumber, 
+    this.firm
   });
 }

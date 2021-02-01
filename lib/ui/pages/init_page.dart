@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gap/logic/blocs_manager/chosen_form_manager.dart';
 import 'package:gap/logic/blocs_manager/commented_images_index_manager.dart';
 import 'package:gap/ui/pages/login_page.dart';
 import 'package:gap/ui/utils/size_utils.dart';
@@ -35,6 +36,7 @@ class InitPage extends StatelessWidget {
 
   void initBlocsManagers(){
     CommentedImagesIndexManagerSingleton(appContext: _context);
+    ChosenFormManagerSingleton(appContext: _context);
   }
 
   void _navigateToFirstPage(){

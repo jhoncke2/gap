@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
+import 'package:gap/logic/blocs_manager/chosen_form_manager.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/buttons/general_button.dart';
 import 'package:gap/ui/widgets/indexing/index_pagination.dart';
@@ -19,6 +20,7 @@ class BottomFormFillingNavigation extends StatelessWidget {
       child: Column(
         children: [
           _ChangeFormStepButton(chosenFormState: _chosenFormState),
+          SizedBox(height: _sizeUtils.littleSizedBoxHeigh),
           _createIndexField()
         ],
       ),
@@ -43,8 +45,8 @@ class BottomFormFillingNavigation extends StatelessWidget {
 
 // ignore: must_be_immutable
 class _ChangeFormStepButton extends StatelessWidget {
-  FormulariosState _formsWidgetsState;
   final ChosenFormState chosenFormState;
+  FormulariosState _formsWidgetsState;
   BuildContext _context;
   Function _onPressed;
   _ChangeFormStepButton({
@@ -56,20 +58,20 @@ class _ChangeFormStepButton extends StatelessWidget {
     _initInitialConfiguration(context);
     _generateOnPressedFunction();
     return GeneralButton(
-      backgroundColor: Theme.of(_context).primaryColor,
+      backgroundColor: Theme.of(_context).secondaryHeaderColor,
       text: 'Siguiente',
       onPressed: _onPressed,
     );
   }
 
   void _initInitialConfiguration(BuildContext appContext){
-    _context = appContext;
+    _context = appContext; 
     _formsWidgetsState = BlocProvider.of<FormulariosBloc>(_context).state;
   }
 
   void _generateOnPressedFunction(){
     //TODO: Implementar verificación de que todos los formularios estén diligenciados
-    if(true){
+    if(ChosenFormManagerSingleton.chosenFormManager.canGoToNextFormStep()){
       _onPressed = _irASiguienteWidget;
     }else{
       _onPressed = null;
