@@ -14,7 +14,12 @@ class SecondaryFirmerFirm extends StatelessWidget {
   ChosenFormBloc _chosenFormBloc;
   ChosenFormState _chosenFormState;
   PersonalInformation _firmer;
-  SecondaryFirmerFirm();
+  final TextEditingController _nameController;
+  final TextEditingController _identifDocNumberController;
+  SecondaryFirmerFirm():
+    _nameController = TextEditingController(),
+    _identifDocNumberController = TextEditingController()
+    ;
 
   @override
   Widget build(BuildContext context) {
@@ -30,11 +35,31 @@ class SecondaryFirmerFirm extends StatelessWidget {
   }
 
   void _initInitialConfig(BuildContext context){
+    _initContextDependentElements(context);
+    _initFirmer();
+    _initTextFieldController();
+  }
+
+  void _initContextDependentElements(BuildContext context){
     _context = context;
     _chosenFormBloc = BlocProvider.of<ChosenFormBloc>(_context);
     _chosenFormState = _chosenFormBloc.state;
+  }
+
+  void _initFirmer(){
     final int firmsLength = _chosenFormState.firmers.length;
     _firmer = _chosenFormState.firmers[firmsLength - 1];
+  }
+
+  void _initTextFieldController(){
+    _nameController.text = _firmer.name??'';
+    _nameController.selection = TextSelection.fromPosition(TextPosition(offset: _nameController.text.length));
+    _identifDocNumberController.text = '';
+    int identifDocumentNumber = _firmer.identifDocumentNumber;
+    if(identifDocumentNumber != null){
+      _identifDocNumberController.text = identifDocumentNumber.toString();
+    }
+    _identifDocNumberController.selection = TextSelection.fromPosition(TextPosition(offset: _identifDocNumberController.text.length));
   }
 
   Widget _createBottomFields(){
@@ -54,14 +79,15 @@ class SecondaryFirmerFirm extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           _createNameText(),
-          FormSingleTextWithoutName(onFieldChanged: _onNameChange, width: _sizeUtils.xasisSobreYasis * 0.4)
+          FormSingleTextWithoutName(onFieldChanged: _onNameChange, width: _sizeUtils.xasisSobreYasis * 0.4, controller: _nameController)
         ],
       ),
     );
   }
 
   void _onNameChange(String newValue){
-    
+    _firmer.name = newValue;
+    _updateFirmerPersInformation();
   }
 
   Widget _createIdDocumentFields(){
@@ -71,7 +97,7 @@ class SecondaryFirmerFirm extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           FormSelectWitouthName(items: typesOfIdentfDocuments.typesOfIdentfDocument, onFieldChanged: _onIdDocumentTypeChanged, width: _sizeUtils.xasisSobreYasis * 0.14, initialValue: _firmer.identifDocumentType),
-          FormSingleTextWithoutName(onFieldChanged: _onIdDocumentNumberChanged, width: _sizeUtils.xasisSobreYasis * 0.4)
+          FormSingleTextWithoutName(onFieldChanged: _onIdDocumentNumberChanged, width: _sizeUtils.xasisSobreYasis * 0.4, controller: _identifDocNumberController)
         ],
       ),
     );
@@ -79,12 +105,18 @@ class SecondaryFirmerFirm extends StatelessWidget {
 
   void _onIdDocumentTypeChanged(int typeIndex){
     _firmer.identifDocumentType = typesOfIdentfDocuments.typesOfIdentfDocument[typeIndex];
-    final UpdateFirmerPersonalInformation ufpiEvent = UpdateFirmerPersonalInformation(firmer: _firmer);
-    _chosenFormBloc.add(ufpiEvent);
+    _updateFirmerPersInformation();
   }
 
   void _onIdDocumentNumberChanged(String newValue){
+    //TODO: Limpiar textfield si todos los caracteres no son números
+    _firmer.identifDocumentNumber = int.parse(newValue);
+    _updateFirmerPersInformation();
+  }
 
+  void _updateFirmerPersInformation(){
+    final UpdateFirmerPersonalInformation ufpiEvent = UpdateFirmerPersonalInformation(firmer: _firmer);
+    _chosenFormBloc.add(ufpiEvent);
   }
 
   Widget _createNameText(){
@@ -96,6 +128,4 @@ class SecondaryFirmerFirm extends StatelessWidget {
       )
     );
   }
-
-  
 }

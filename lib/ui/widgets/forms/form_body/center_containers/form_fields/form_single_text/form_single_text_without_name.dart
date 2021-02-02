@@ -4,14 +4,18 @@ import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/gen
 
 // ignore: must_be_immutable
 class FormSingleTextWithoutName extends GeneralFormFieldWithoutName implements FormFieldStructure{
+  final String initialValue;
   FormSingleTextWithoutName({
     Key key,
     @required Function onFieldChanged,
-    double width
+    @required ValueNotifier controller,
+    double width,
+    this.initialValue = ''
   }): super(
     key: key, 
     onFieldChanged: onFieldChanged,
-    width: width
+    width: width,
+    controller: controller
   );
 
   @override
@@ -23,7 +27,8 @@ class FormSingleTextWithoutName extends GeneralFormFieldWithoutName implements F
 
   @override
   void createFieldBox(){
-    this.fieldBox = TextField(
+    this.fieldBox = TextFormField(
+      controller: this.controller,
       decoration: InputDecoration( 
         isDense: true,
         border: _createInputBorder(),
@@ -31,7 +36,6 @@ class FormSingleTextWithoutName extends GeneralFormFieldWithoutName implements F
       ),
       onChanged: this.onFieldChanged,
     );
-    print(this.fieldBox);
   }
 
   InputBorder _createInputBorder(){

@@ -7,10 +7,12 @@ class GeneralFormFieldWithName extends GeneralFormField{
   GeneralFormFieldWithName({
     Key key,
     @required this.fieldName,
-    @required Function onFieldChanged
+    @required Function onFieldChanged,
+    ValueNotifier controller
   }):super(
     key:key,
-    onFieldChanged:onFieldChanged
+    onFieldChanged:onFieldChanged,
+    controller: controller
   );
 
   @override

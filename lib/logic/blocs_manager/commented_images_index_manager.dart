@@ -1,8 +1,14 @@
+import 'dart:ui';
+import 'dart:io';
+import 'dart:async';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/logic/bloc/widgets/commented_images/commented_images_bloc.dart';
 import 'package:gap/logic/bloc/widgets/index/index_bloc.dart';
 import 'package:gap/logic/models/entities/commented_image.dart';
+import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/firm_field/firm_paint.dart';
+import 'package:path_provider/path_provider.dart';
 class CommentedImagesIndexManagerSingleton{
   static final CommentedImagesIndexManagerSingleton _commImgsIndxManagerSingleton = CommentedImagesIndexManagerSingleton._internal();
   static final CommentedImagesIndexManager commImgIndexManager = CommentedImagesIndexManager();

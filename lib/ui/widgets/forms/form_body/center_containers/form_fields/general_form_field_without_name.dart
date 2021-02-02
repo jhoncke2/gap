@@ -7,12 +7,14 @@ class GeneralFormFieldWithoutName extends GeneralFormField{
   GeneralFormFieldWithoutName({
     Key key,
     @required Function onFieldChanged,
-    double width
+    double width,
+    ValueNotifier controller
   }):super(
     key:key,
     onFieldChanged:onFieldChanged,
     borderShape: BtnBorderShape.Ellyptic,
-    width: width
+    width: width,
+    controller: controller
   );
 
   @override

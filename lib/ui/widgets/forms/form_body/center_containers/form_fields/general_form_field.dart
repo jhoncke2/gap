@@ -7,6 +7,7 @@ abstract class GeneralFormField extends StatelessWidget {
   final Function onFieldChanged;
   final double width;
   final BtnBorderShape borderShape;
+  final ValueNotifier controller;
   BuildContext context;
   @protected
   Widget fieldHead;
@@ -17,7 +18,8 @@ abstract class GeneralFormField extends StatelessWidget {
     Key key,
     @required this.onFieldChanged,
     this.borderShape = BtnBorderShape.Circular,
-    this.width = double.infinity
+    this.width = double.infinity,
+    this.controller
   }) : super(key: key);
 
   @override

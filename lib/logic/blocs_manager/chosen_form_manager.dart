@@ -1,10 +1,14 @@
 import 'dart:io';
+import 'dart:typed_data';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/logic/bloc/widgets/firm_paint/firm_paint_bloc.dart';
 import 'package:gap/logic/models/entities/personal_information.dart';
+import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/firm_field/firm_paint.dart';
+import 'package:path_provider/path_provider.dart';
 class ChosenFormManagerSingleton{
   static final ChosenFormManagerSingleton _commImgsIndxManagerSingleton = ChosenFormManagerSingleton._internal();
   static final ChosenFormManager chosenFormManager = ChosenFormManager();
@@ -118,5 +122,43 @@ class ChosenFormManager{
     chosenFormBloc.add(ResetChosenForm());
     firmPaintBloc.add(ResetFirmPaint());
     //TODO: ¿Servicio de crear firma en el back se implementa acá?
+  }
+
+  void addFirmToFirmer(){
+    //TODO: Implementar
+  }
+}
+
+class _PainterToImageConverter{
+  final Size _imgsSize = Size(350, 350);
+
+  Future<void> createFileFromFirmPainter(FirmPainter painter, int firmIndex)async{
+    final ByteData byteData = await _convertPainterToByteData(painter);
+    final ByteBuffer dataBuffer = byteData.buffer;
+    final String tempPath = await _getFilePath(firmIndex);
+    return File(tempPath).writeAsBytes(
+      dataBuffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes)
+    );
+  }
+
+  Future<ByteData> _convertPainterToByteData(FirmPainter painter)async{
+    final recorder = new PictureRecorder();
+    _paintPainter(painter, recorder);
+    final Picture picture = recorder.endRecording();
+    final image = await picture.toImage(_imgsSize.width.toInt(), _imgsSize.height.toInt());
+    final ByteData byteData = await image.toByteData(format: ImageByteFormat.png);
+    return byteData;
+  }
+
+  void _paintPainter(FirmPainter painter, PictureRecorder recorder){
+    final canvas = new Canvas(recorder);
+    painter.paint(canvas, _imgsSize);
+  }
+
+  Future<String> _getFilePath(int firmIndex)async{
+    final Directory tempDir = await getTemporaryDirectory();
+    String tempPath = tempDir.path;
+    tempPath += '/firm$firmIndex.png';
+    return tempPath;
   }
 }

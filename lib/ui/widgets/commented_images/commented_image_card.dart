@@ -69,7 +69,6 @@ class CommentedImageCard extends StatelessWidget {
         textAlign: TextAlign.start,
         onEditingComplete: _onEditingComplete,
         keyboardType: TextInputType.multiline,
-        keyboardAppearance: Brightness.dark,
       ),
     );
   }
