@@ -17,11 +17,9 @@ class InitFirstFirmerFirm extends ChosenFormEvent{}
 class InitFirmsFillingOut extends ChosenFormEvent{}
 
 class UpdateFirmerPersonalInformation extends ChosenFormEvent{
-  final int firmerListIndex;
   final PersonalInformation firmer;
   UpdateFirmerPersonalInformation({
-    @required this.firmer,
-    @required this.firmerListIndex
+    @required this.firmer
   });
 }
 

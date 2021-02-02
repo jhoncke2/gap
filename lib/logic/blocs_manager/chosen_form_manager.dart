@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
+import 'package:gap/logic/bloc/widgets/firm_paint/firm_paint_bloc.dart';
 import 'package:gap/logic/models/entities/personal_information.dart';
 class ChosenFormManagerSingleton{
   static final ChosenFormManagerSingleton _commImgsIndxManagerSingleton = ChosenFormManagerSingleton._internal();
@@ -18,24 +19,25 @@ class ChosenFormManagerSingleton{
   
   static void _initInitialElements(BuildContext appContext){
     chosenFormManager..appContext = appContext
-    ..chosenFormBloc = BlocProvider.of<ChosenFormBloc>(appContext);
-    chosenFormManager.chosenFormState = chosenFormManager.chosenFormBloc.state;    
+    ..chosenFormBloc = BlocProvider.of<ChosenFormBloc>(appContext)
+    ..firmPaintBloc = BlocProvider.of<FirmPaintBloc>(appContext);
   }
 
   @protected
   factory ChosenFormManagerSingleton.forTesting({
     @required BuildContext appContext,
-    @required ChosenFormBloc commImgsBloc, 
+    @required ChosenFormBloc commImgsBloc,
+    @required FirmPaintBloc firmPaintBloc
   }){
-    _initInitialTestingElements(appContext, commImgsBloc);
+    _initInitialTestingElements(appContext, commImgsBloc, firmPaintBloc);
     return _commImgsIndxManagerSingleton;
   }
 
-  static void _initInitialTestingElements(BuildContext appContext, ChosenFormBloc chosenFormBloc){
+  static void _initInitialTestingElements(BuildContext appContext, ChosenFormBloc chosenFormBloc, FirmPaintBloc firmPaintBloc){
     chosenFormManager
     ..appContext = appContext
     ..chosenFormBloc = chosenFormBloc
-    ..chosenFormState = chosenFormBloc.state;
+    ..firmPaintBloc = firmPaintBloc;
   }
   // ****************** Fin del modelo Singleton
 }
@@ -45,6 +47,7 @@ class ChosenFormManager{
   BuildContext appContext;
   ChosenFormBloc chosenFormBloc;
   ChosenFormState chosenFormState;
+  FirmPaintBloc firmPaintBloc;
 
   bool canGoToNextFormStep(){
     _updateState();
@@ -76,18 +79,22 @@ class ChosenFormManager{
   }
 
   bool _sePuedeAvanzarDesdeFirstFirmerFirm(){
-    bool sePuedeAvanzar = false;
-    final File firm = chosenFormState.firmers[0].firm;
-    if(firm != null)
-      sePuedeAvanzar = true;
+    bool sePuedeAvanzar = _currentFirmerHasEnoughPointsInHisDraw();
     return sePuedeAvanzar;
   }
   
   bool _sePuedeAvanzarDesdeSecondaryFirmer(){
     final List<PersonalInformation> firmers = chosenFormState.firmers;
     final PersonalInformation currentFirmer = firmers.last;
-    final bool sePuedeAvanzar = _firmerHasPersInfoValues(currentFirmer);
-    return sePuedeAvanzar;
+    if( _firmerHasPersInfoValues(currentFirmer) && _currentFirmerHasEnoughPointsInHisDraw())
+      return true;
+    return false;
+  }
+
+  bool _currentFirmerHasEnoughPointsInHisDraw(){
+    final FirmPaintState fpState = firmPaintBloc.state;
+    final int nTotalPoints = fpState.nTotalPoints;
+    return nTotalPoints > 75;
   }
 
   bool _firmerHasPersInfoValues(PersonalInformation firmer){
@@ -99,5 +106,17 @@ class ChosenFormManager{
       return true;
     }
     return false;
+  }
+
+  void addNewFirm(){
+    chosenFormBloc.add(InitFirmsFillingOut());
+    firmPaintBloc.add(ResetFirmPaint());
+    //TODO: ¿Servicio de crear firma en el back se implementa acá?
+  }
+
+  void finishFirms(){
+    chosenFormBloc.add(ResetChosenForm());
+    firmPaintBloc.add(ResetFirmPaint());
+    //TODO: ¿Servicio de crear firma en el back se implementa acá?
   }
 }

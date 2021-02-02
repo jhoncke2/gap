@@ -10,7 +10,7 @@ class GeneralFormFieldWithName extends GeneralFormField{
     @required Function onFieldChanged
   }):super(
     key:key,
-    onFieldChanged:onFieldChanged  
+    onFieldChanged:onFieldChanged
   );
 
   @override

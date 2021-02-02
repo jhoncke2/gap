@@ -12,4 +12,4 @@ class AddNewPointToCurrentWord extends FirmPaintEvent{
 
 class AddNewWord extends FirmPaintEvent{}
 
-class ResetAllOffFirmPaint extends FirmPaintEvent{}
+class ResetFirmPaint extends FirmPaintEvent{}

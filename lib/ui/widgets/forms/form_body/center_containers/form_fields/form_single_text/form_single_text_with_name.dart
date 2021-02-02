@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gap/ui/widgets/buttons/general_button.dart';
 import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/form_field_structure.dart';
 import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/general_form_field_with_name.dart';
 // ignore: must_be_immutable
@@ -7,11 +8,11 @@ class FormSingleTextWithName extends GeneralFormFieldWithName implements FormFie
   FormSingleTextWithName({
     Key key,
     @required String fieldName,
-    @required Function onFieldChanged
+    @required Function onFieldChanged,
   }) : super(
     key: key,
     fieldName: fieldName,
-    onFieldChanged: onFieldChanged
+    onFieldChanged: onFieldChanged,
   );
 
   @override

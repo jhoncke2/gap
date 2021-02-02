@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
           primaryColor: Color.fromRGBO(93, 92, 92, 1),
           secondaryHeaderColor: Colors.brown.withOpacity(0.35)
         ),
-        initialRoute: PainterTestPage.route,
+        initialRoute: InitPage.route,
         routes: {
           InitPage.route: (_)=>InitPage(),
           LoginPage.route: (_)=>LoginPage(),

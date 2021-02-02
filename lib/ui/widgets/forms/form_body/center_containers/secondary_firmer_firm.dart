@@ -6,14 +6,15 @@ import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/firm_field/firm_field.dart';
 import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/form_select/form_select_without_name.dart';
 import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/form_single_text/form_single_text_without_name.dart';
-import 'package:gap/ui/utils/static_data/types_of_identif_document.dart' as typesOfIdDocuments;
+import 'package:gap/ui/utils/static_data/types_of_identif_document.dart' as typesOfIdentfDocuments;
 // ignore: must_be_immutable
-class OtherFirmerFirm extends StatelessWidget {
+class SecondaryFirmerFirm extends StatelessWidget {
   final SizeUtils _sizeUtils = SizeUtils();
   BuildContext _context;
+  ChosenFormBloc _chosenFormBloc;
   ChosenFormState _chosenFormState;
   PersonalInformation _firmer;
-  OtherFirmerFirm();
+  SecondaryFirmerFirm();
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +27,14 @@ class OtherFirmerFirm extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void _initInitialConfig(BuildContext context){
+    _context = context;
+    _chosenFormBloc = BlocProvider.of<ChosenFormBloc>(_context);
+    _chosenFormState = _chosenFormBloc.state;
+    final int firmsLength = _chosenFormState.firmers.length;
+    _firmer = _chosenFormState.firmers[firmsLength - 1];
   }
 
   Widget _createBottomFields(){
@@ -42,9 +51,10 @@ class OtherFirmerFirm extends StatelessWidget {
   Widget _createNameField(){
     return Container(
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           _createNameText(),
-          FormSingleTextWithoutName(onFieldChanged: _onNameChange)
+          FormSingleTextWithoutName(onFieldChanged: _onNameChange, width: _sizeUtils.xasisSobreYasis * 0.4)
         ],
       ),
     );
@@ -56,17 +66,21 @@ class OtherFirmerFirm extends StatelessWidget {
 
   Widget _createIdDocumentFields(){
     return Container(
+      width: double.infinity,
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          FormSelectWitouthName(items: typesOfIdDocuments.typesOfIdentfDocument, onFieldChanged: _onIdDocumentTypeChanged, width: _sizeUtils.xasisSobreYasis * 0.075),
-          FormSingleTextWithoutName(onFieldChanged: _onIdDocumentNumberChanged)
+          FormSelectWitouthName(items: typesOfIdentfDocuments.typesOfIdentfDocument, onFieldChanged: _onIdDocumentTypeChanged, width: _sizeUtils.xasisSobreYasis * 0.14, initialValue: _firmer.identifDocumentType),
+          FormSingleTextWithoutName(onFieldChanged: _onIdDocumentNumberChanged, width: _sizeUtils.xasisSobreYasis * 0.4)
         ],
       ),
     );
   }
 
   void _onIdDocumentTypeChanged(int typeIndex){
-
+    _firmer.identifDocumentType = typesOfIdentfDocuments.typesOfIdentfDocument[typeIndex];
+    final UpdateFirmerPersonalInformation ufpiEvent = UpdateFirmerPersonalInformation(firmer: _firmer);
+    _chosenFormBloc.add(ufpiEvent);
   }
 
   void _onIdDocumentNumberChanged(String newValue){
@@ -83,9 +97,5 @@ class OtherFirmerFirm extends StatelessWidget {
     );
   }
 
-  void _initInitialConfig(BuildContext context){
-    _context = context;
-    _chosenFormState = BlocProvider.of<ChosenFormBloc>(_context).state;
-    _firmer = _chosenFormState.firmers[0];
-  }
+  
 }

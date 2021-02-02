@@ -8,12 +8,18 @@ class FormSingleTextWithoutName extends GeneralFormFieldWithoutName implements F
     Key key,
     @required Function onFieldChanged,
     double width
-  }):
-  super(
+  }): super(
     key: key, 
     onFieldChanged: onFieldChanged,
     width: width
   );
+
+  @override
+  Widget build(BuildContext context) {
+    this.context = context;
+    createFieldBox();
+    return super.build(context);
+  }
 
   @override
   void createFieldBox(){

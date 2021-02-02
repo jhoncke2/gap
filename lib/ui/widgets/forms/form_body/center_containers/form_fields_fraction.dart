@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/form_single_text/form_single_text_with_name.dart';
-import 'package:gap/logic/fake_data/formularios.dart' as fakeForms;
 class FormInputsFraction extends StatelessWidget {
   final SizeUtils _sizeUtils = SizeUtils();
   FormInputsFraction({Key key}) : super(key: key);
@@ -9,12 +8,14 @@ class FormInputsFraction extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<Widget> inputsItems = _createInputsItems();
-    return Container(
-      height: _sizeUtils.xasisSobreYasis * 0.65,
-      width: double.infinity,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: inputsItems,
+    return SingleChildScrollView(
+      child: Container(
+        height: _sizeUtils.xasisSobreYasis * 0.65,
+        width: double.infinity,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: inputsItems,
+        ),
       ),
     );
   }

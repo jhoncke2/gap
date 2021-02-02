@@ -16,13 +16,15 @@ class BottomFormFillingNavigation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _initInitialConfiguration(context);
-    return Container(
-      child: Column(
-        children: [
-          _ChangeFormStepButton(chosenFormState: _chosenFormState),
-          SizedBox(height: _sizeUtils.littleSizedBoxHeigh),
-          _createIndexField()
-        ],
+    return SingleChildScrollView(
+      child: Container(
+        child: Column(
+          children: [
+            _ChangeFormStepButton(chosenFormState: _chosenFormState),
+            SizedBox(height: _sizeUtils.littleSizedBoxHeigh),
+            _createIndexField()
+          ],
+        ),
       ),
     );
   }

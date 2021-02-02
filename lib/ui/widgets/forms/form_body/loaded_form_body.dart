@@ -9,6 +9,7 @@ import 'package:gap/ui/widgets/forms/form_body/bottom_containers/bottom_formfill
 import 'package:gap/ui/widgets/forms/form_body/center_containers/first_firmer_firm.dart';
 import 'package:gap/ui/widgets/forms/form_body/center_containers/first_firmer_pers_info.dart';
 import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields_fraction.dart';
+import 'package:gap/ui/widgets/forms/form_body/center_containers/secondary_firmer_firm.dart';
 import 'package:gap/ui/widgets/page_title.dart';
 import 'package:gap/ui/widgets/unloaded_elements/unloaded_nav_items.dart';
 
@@ -100,7 +101,7 @@ class _ChosenFormCurrentComponent extends StatelessWidget {
         _bottomComponents = BottomFirmsOptions();
         break;
       case FormStep.OnSecondaryFirms:
-        _centerComponents = UnloadedNavItems();
+        _centerComponents = SecondaryFirmerFirm();
         _bottomComponents = BottomFirmsOptions();
         break;
       default:

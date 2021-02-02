@@ -74,7 +74,7 @@ class SizeUtils{
   }
 
   double get largeIconSize{
-    return _xasisYasisProm * 0.065;
+    return _xasisYasisProm * 0.055;
   }
 
   double get extraLargeIconSize{

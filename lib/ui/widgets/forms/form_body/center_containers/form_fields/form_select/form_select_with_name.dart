@@ -28,6 +28,6 @@ class FormSelectWithName extends GeneralFormFieldWithName implements FormFieldSt
 
   @override
   void createFieldBox() {
-    this.fieldBox = FormSelectBox(items: this.items, initialValue: initialValue, onSelected: this.onFieldChanged);
+    this.fieldBox = FormSelectBox(items: this.items, initialValue: initialValue, onSelected: this.onFieldChanged, borderShape: this.borderShape);
   }
 }

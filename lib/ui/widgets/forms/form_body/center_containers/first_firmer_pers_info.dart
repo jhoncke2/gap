@@ -54,7 +54,6 @@ class FirstFirmerPersInfo extends StatelessWidget {
 
   void _updateCurrentFirmer(){
     final UpdateFirmerPersonalInformation afpiEvent = UpdateFirmerPersonalInformation(
-      firmerListIndex: 0,
       firmer: _firmer
     );
     _chosenFormBloc.add(afpiEvent);

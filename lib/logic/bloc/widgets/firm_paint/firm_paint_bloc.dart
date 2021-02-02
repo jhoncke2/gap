@@ -21,7 +21,7 @@ class FirmPaintBloc extends Bloc<FirmPaintEvent, FirmPaintState> {
     if(event is AddNewWord){
       _addNewWord(event);
     }
-    if(event is ResetAllOffFirmPaint){
+    if(event is ResetFirmPaint){
       _resetAllOffFirmPaint(event);
     }
     yield _currentStateToYield;
@@ -33,6 +33,7 @@ class FirmPaintBloc extends Bloc<FirmPaintEvent, FirmPaintState> {
     final List<Offset> lastWordPoints = pointsByWord[pointsByWord.length - 1];
     lastWordPoints.add(newPoint);
     _currentStateToYield = state.copyWith(
+      nTotalPoints: state.nTotalPoints + 1,
       pointsByWord: pointsByWord
     );
   }
@@ -45,7 +46,7 @@ class FirmPaintBloc extends Bloc<FirmPaintEvent, FirmPaintState> {
     );
   }
 
-  void _resetAllOffFirmPaint(ResetAllOffFirmPaint event){
+  void _resetAllOffFirmPaint(ResetFirmPaint event){
     _currentStateToYield = FirmPaintState();
   } 
 

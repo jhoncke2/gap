@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/logic/bloc/widgets/firm_paint/firm_paint_bloc.dart';
@@ -94,6 +93,7 @@ class _FirmPaint extends StatelessWidget{
 class _FirmPainter extends CustomPainter {
   final FirmPaintState firmPaintSate;
   Canvas _canvas;
+  Size _size;
   Paint _paint;
   _FirmPainter({
     @required this.firmPaintSate
@@ -101,27 +101,33 @@ class _FirmPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    _initInitialConfig(canvas);
+    _initInitialConfig(canvas, size);
     for (List<Offset> currentWord in firmPaintSate.pointsByWord) {
       if(currentWord.length == 1){
         _paintPoint(currentWord[0]);
       }else{
-        for (int i = 0; i < currentWord.length; i++) {
-          _paintCoupleOfPoints(currentWord, i);
-        }
+        _paintWord(currentWord);
       }
-      
     }
   }
 
-  void _initInitialConfig(Canvas canvas) {
+  void _paintWord(List<Offset> word){
+    for (int i = 0; i < word.length; i++) {
+      _paintCoupleOfPoints(word, i);
+    }
+  }
+
+  void _initInitialConfig(Canvas canvas, Size size) {
     _canvas = canvas;
+    _size = size;
     _paint = Paint();
     _paint.color = Colors.black;
     _paint.strokeWidth = 1.2;
   }
 
   void _paintPoint(Offset currentPoint){
+    if(!pointIsInsidePainterSpace(currentPoint))
+      return;
     _paint.strokeWidth = 1.75;
     _canvas.drawPoints(PointMode.points, [currentPoint], _paint);
     _paint.strokeWidth = 1.2;
@@ -131,8 +137,14 @@ class _FirmPainter extends CustomPainter {
     if (currentWord.length > pointIndex + 1) {
       final Offset p1 = currentWord[pointIndex];
       final Offset p2 = currentWord[pointIndex + 1];
+      if(!pointIsInsidePainterSpace(p1) || !pointIsInsidePainterSpace(p2))
+        return;
       _canvas.drawLine(p1, p2, _paint);
     }
+  }
+
+  bool pointIsInsidePainterSpace(Offset point){
+    return _size.contains(point);
   }
 
   @override

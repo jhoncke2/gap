@@ -5,11 +5,13 @@ import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/gen
 // ignore: must_be_immutable
 class FormSelectWitouthName extends GeneralFormFieldWithoutName implements FormFieldStructure{
   final List<String> items;
+  final String initialValue;
   
   FormSelectWitouthName({
     Key key,
     @required this.items,
     @required Function onFieldChanged,
+    @required this.initialValue,
     double width
   }):super(
     key:key,
@@ -26,6 +28,6 @@ class FormSelectWitouthName extends GeneralFormFieldWithoutName implements FormF
 
   @override
   void createFieldBox() {
-    this.fieldBox = FormSelectBox(items: items, onSelected: this.onFieldChanged);
+    this.fieldBox = FormSelectBox(items: items, onSelected: this.onFieldChanged, borderShape: this.borderShape, initialValue: this.initialValue);
   }
 }

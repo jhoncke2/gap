@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:gap/ui/utils/size_utils.dart';
+import 'package:gap/ui/widgets/buttons/general_button.dart';
 // ignore: must_be_immutable
 class FormSelectBox extends StatelessWidget{
   final SizeUtils _sizeUtils = SizeUtils();
   final List<String> items;
   final Function onSelected;
+  final BtnBorderShape borderShape;
   BuildContext _context;
+  BorderRadius _mainElementBorderRadius;
   List<PopupMenuEntry<int>> _popupItems;
   String _selectedValue;
   
   FormSelectBox({
     @required this.items,
     @required this.onSelected,
+    @required this.borderShape,
     String initialValue
   }):
     _selectedValue = initialValue
@@ -58,10 +62,11 @@ class FormSelectBox extends StatelessWidget{
   }
 
   Widget _crearPopUpChild(){
+    _defineMainElementBorderRadius();
     return Container(
       width: double.infinity,
       height: _sizeUtils.xasisSobreYasis * 0.075,
-      padding: EdgeInsets.symmetric(horizontal: _sizeUtils.xasisSobreYasis * 0.02),
+      padding: EdgeInsets.symmetric(horizontal: _sizeUtils.xasisSobreYasis * 0.0125),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -70,9 +75,30 @@ class FormSelectBox extends StatelessWidget{
         ],
       ),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(_sizeUtils.xasisSobreYasis * 0.065),
+        borderRadius: _mainElementBorderRadius,
         border: _createBoxBorder()
       ),
+    );
+  }
+
+  void _defineMainElementBorderRadius(){
+    if(borderShape == BtnBorderShape.Circular){
+      _createCircularBorderRadius();
+    }else{
+      _createEllipticalBorderRadius();
+    }
+  }
+
+  void _createCircularBorderRadius(){
+    _mainElementBorderRadius =  BorderRadius.circular(
+      _sizeUtils.xasisSobreYasis * 0.04
+    );
+  }
+
+  void _createEllipticalBorderRadius(){
+    _mainElementBorderRadius = BorderRadius.horizontal(
+      left: Radius.elliptical(_sizeUtils.xasisSobreYasis * 0.0275, _sizeUtils.xasisSobreYasis * 0.05),
+      right: Radius.elliptical(_sizeUtils.xasisSobreYasis * 0.0275, _sizeUtils.xasisSobreYasis * 0.05)
     );
   }
 

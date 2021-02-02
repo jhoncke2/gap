@@ -4,7 +4,6 @@ import 'package:gap/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/forms/form_body/loaded_form_body.dart';
 import 'package:gap/ui/widgets/forms/loaded_form_head.dart';
-import 'package:gap/ui/widgets/header/header.dart';
 import 'package:gap/ui/widgets/unloaded_elements/unloaded_nav_items.dart';
 
 // ignore: must_be_immutable
@@ -16,17 +15,16 @@ class FormularioDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Container(
-          height: MediaQuery.of(context).size.height,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              SafeArea(child: Container()),
-              SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
-              _createFormBuilder()
-            ],
-          ),
+      resizeToAvoidBottomPadding: false,
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            SafeArea(child: Container()),
+            SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
+            _createFormBuilder()
+          ],
         ),
       )
     );
