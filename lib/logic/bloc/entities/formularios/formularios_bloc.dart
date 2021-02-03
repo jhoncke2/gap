@@ -31,9 +31,9 @@ class FormulariosBloc extends Bloc<FormulariosEvent, FormulariosState> {
     final List<Formulario> pendientesForms = [];
     final List<Formulario> realizadosForms = [];
     forms.forEach((Formulario form) {
-      if(form.currentStage == ProcessStage.Pendiente)
+      if(form.stage == ProcessStage.Pendiente)
         pendientesForms.add(form);
-      else if(form.currentStage == ProcessStage.Realizada)
+      else if(form.stage == ProcessStage.Realizada)
         realizadosForms.add(form);
     });
     _currentYieldedState = state.copyWith(

@@ -12,7 +12,7 @@ class Formulario extends EntityWithStages {
     this.date = Date( DateTime.parse(json['date']) ),
     this.fields = FormFields.fromJson( json['fields'].cast<Map<String, dynamic>>() ).formsFields,
     super(
-      currentStage: (json['step']=='pendiente')? ProcessStage.Pendiente : ProcessStage.Realizada,
+      stage: (json['step']=='pendiente')? ProcessStage.Pendiente : ProcessStage.Realizada,
       name: json['name']
     )
     ;

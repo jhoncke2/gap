@@ -22,7 +22,7 @@ class NavigationListWithStageButtons extends NavigationList {
       return ButtonWithStageColor(
         name: entity.name,
         textColor: Theme.of(context).primaryColor,
-        stage: entity.currentStage,
+        stage: entity.stage,
         onTap: (){itemsFunction(entity);}, 
         
       );

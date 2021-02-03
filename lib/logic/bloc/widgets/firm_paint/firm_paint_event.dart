@@ -13,3 +13,10 @@ class AddNewPointToCurrentWord extends FirmPaintEvent{
 class AddNewWord extends FirmPaintEvent{}
 
 class ResetFirmPaint extends FirmPaintEvent{}
+
+class AddFirmPainter extends FirmPaintEvent{
+  final FirmPainter painter;
+  AddFirmPainter({
+    @required this.painter
+  });
+}

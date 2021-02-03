@@ -1,14 +1,13 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/logic/bloc/widgets/firm_paint/firm_paint_bloc.dart';
 import 'package:gap/logic/models/entities/personal_information.dart';
 import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/firm_field/firm_paint.dart';
-import 'package:path_provider/path_provider.dart';
 class ChosenFormManagerSingleton{
   static final ChosenFormManagerSingleton _commImgsIndxManagerSingleton = ChosenFormManagerSingleton._internal();
   static final ChosenFormManager chosenFormManager = ChosenFormManager();
@@ -72,10 +71,6 @@ class ChosenFormManager{
     }
   }
 
-  void _updateState(){
-    chosenFormState = chosenFormBloc.state;
-  }
-
   bool _sePuedeAvanzarDesdeFirstFirmerInfo(){
     final PersonalInformation firstFirmer = chosenFormState.firmers[0];
     final bool sePuedeAvanzar = _firmerHasPersInfoValues(firstFirmer);
@@ -124,15 +119,27 @@ class ChosenFormManager{
     //TODO: ¿Servicio de crear firma en el back se implementa acá?
   }
 
-  void addFirmToFirmer(){
-    //TODO: Implementar
+  Future<void> addFirmToFirmer()async{
+    _updateState();
+    final int lastFirmerIndex = chosenFormState.firmers.length - 1;
+    final FirmPainter firmPainter = firmPaintBloc.state.firmPainter;
+    final File firmFile = await _PainterToImageConverter.createFileFromFirmPainter(firmPainter, lastFirmerIndex);
+    final PersonalInformation currentFirmer = chosenFormState.firmers[lastFirmerIndex];
+    currentFirmer.firm = firmFile;
+    final UpdateFirmerPersonalInformation ufpiEvent = UpdateFirmerPersonalInformation(firmer: currentFirmer);
+    chosenFormBloc.add(ufpiEvent);
+    //TODO: ¿Se llamará al service a add firm to form en lugar de solo guardarla en el bloc?
+  }
+
+  void _updateState(){
+    chosenFormState = chosenFormBloc.state;
   }
 }
 
 class _PainterToImageConverter{
-  final Size _imgsSize = Size(350, 350);
+  static final Size _imgsSize = Size(350, 350);
 
-  Future<void> createFileFromFirmPainter(FirmPainter painter, int firmIndex)async{
+  static Future<File> createFileFromFirmPainter(FirmPainter painter, int firmIndex)async{
     final ByteData byteData = await _convertPainterToByteData(painter);
     final ByteBuffer dataBuffer = byteData.buffer;
     final String tempPath = await _getFilePath(firmIndex);
@@ -141,7 +148,7 @@ class _PainterToImageConverter{
     );
   }
 
-  Future<ByteData> _convertPainterToByteData(FirmPainter painter)async{
+  static Future<ByteData> _convertPainterToByteData(FirmPainter painter)async{
     final recorder = new PictureRecorder();
     _paintPainter(painter, recorder);
     final Picture picture = recorder.endRecording();
@@ -150,12 +157,12 @@ class _PainterToImageConverter{
     return byteData;
   }
 
-  void _paintPainter(FirmPainter painter, PictureRecorder recorder){
+  static void _paintPainter(FirmPainter painter, PictureRecorder recorder){
     final canvas = new Canvas(recorder);
     painter.paint(canvas, _imgsSize);
   }
 
-  Future<String> _getFilePath(int firmIndex)async{
+  static Future<String> _getFilePath(int firmIndex)async{
     final Directory tempDir = await getTemporaryDirectory();
     String tempPath = tempDir.path;
     tempPath += '/firm$firmIndex.png';

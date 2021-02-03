@@ -7,4 +7,9 @@ class Project{
     this.name = json['name']
     ;
 
+  Map<String, dynamic> toJson() => {
+    'id':this.id,
+    'name':this.name
+  };
+
 }

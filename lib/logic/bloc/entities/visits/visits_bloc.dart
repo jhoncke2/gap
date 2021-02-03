@@ -37,9 +37,9 @@ class VisitsBloc extends Bloc<VisitsEvent, VisitsState> {
     final List<Visit> pendientesVisits = [];
     final List<Visit> realizadasVisits = [];
     visits.forEach((Visit visit) {
-      if(visit.currentStage == ProcessStage.Pendiente)
+      if(visit.stage == ProcessStage.Pendiente)
         pendientesVisits.add(visit);
-      else if(visit.currentStage == ProcessStage.Realizada)
+      else if(visit.stage == ProcessStage.Realizada)
         realizadasVisits.add(visit);
     });
     _currentYieldedState = state.copyWith(

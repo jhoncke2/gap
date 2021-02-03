@@ -7,10 +7,17 @@ class Visit extends EntityWithStages{
 
   Visit.fromJson(Map<String, dynamic> json)
     :
-    this.date = DateTime.parse(json['fecha']),
+    this.date = DateTime.parse(json['date']),
     super(
-      currentStage: (json['step']=='pendiente')? ProcessStage.Pendiente : ProcessStage.Realizada,
+      stage: (json['stage']=='pendiente')? ProcessStage.Pendiente : ProcessStage.Realizada,
       name: json['name']
     )
     ;
+
+  @override
+  Map<String, dynamic> toJson(){
+    final Map<String, dynamic> json = super.toJson();
+    json['date'] = date.toString();
+    return json;
+  }
 }

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/firm_field/firm_paint.dart';
 import 'package:meta/meta.dart';
 
 part 'firm_paint_event.dart';
@@ -20,6 +21,8 @@ class FirmPaintBloc extends Bloc<FirmPaintEvent, FirmPaintState> {
     }
     if(event is AddNewWord){
       _addNewWord(event);
+    }if(event is AddFirmPainter){
+      _addFirmPainter(event);
     }
     if(event is ResetFirmPaint){
       _resetAllOffFirmPaint(event);
@@ -43,6 +46,13 @@ class FirmPaintBloc extends Bloc<FirmPaintEvent, FirmPaintState> {
     pointsByWord.add(List<Offset>());
     _currentStateToYield = state.copyWith(
       pointsByWord: pointsByWord
+    );
+  }
+
+  void _addFirmPainter(AddFirmPainter event){
+    final FirmPainter painter = event.painter;
+    _currentStateToYield = state.copyWith(
+      currentFirmPainter: painter
     );
   }
 

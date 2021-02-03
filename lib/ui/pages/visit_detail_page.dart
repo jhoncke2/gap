@@ -72,7 +72,7 @@ class _VisitDetailComponents extends StatelessWidget {
           _createDateText(),
           SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
           NavigationListWithIcons(
-            currentVisitProcessState: visit.currentStage, 
+            currentVisitProcessState: visit.stage, 
           )
         ],
       )

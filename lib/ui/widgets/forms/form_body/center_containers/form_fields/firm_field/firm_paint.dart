@@ -15,7 +15,7 @@ class FirmPaint extends StatelessWidget{
       child: BlocBuilder<FirmPaintBloc, FirmPaintState>(
         builder: (context, state) {
           return CustomPaint(
-            painter: FirmPainter(firmPaintSate: state),
+            painter: FirmPainter(firmPaintState: state, context: context),
             willChange: true,
           );
         },
@@ -24,24 +24,35 @@ class FirmPaint extends StatelessWidget{
   }
 }
 
-class FirmPainter extends CustomPainter {
-  final FirmPaintState firmPaintSate;
+class FirmPainter extends CustomPainter{
+  final BuildContext context;
+  final FirmPaintState firmPaintState;
   Canvas _canvas;
   Size _size;
   Paint _paint;
   FirmPainter({
-    @required this.firmPaintSate
+    @required this.context,
+    @required this.firmPaintState
   });
 
   @override
   void paint(Canvas canvas, Size size) {
+    _managePainterInBloc();
     _initInitialConfig(canvas, size);
-    for (List<Offset> currentWord in firmPaintSate.pointsByWord) {
+    for (List<Offset> currentWord in firmPaintState.pointsByWord) {
       if(currentWord.length == 1){
         _paintPoint(currentWord[0]);
       }else{
         _paintWord(currentWord);
       }
+    }
+  }
+
+  void _managePainterInBloc(){
+    if(firmPaintState.firmPainter == null){
+      final FirmPaintBloc fpBloc = BlocProvider.of<FirmPaintBloc>(this.context);
+      final AddFirmPainter afpEvent = AddFirmPainter(painter: this);
+      fpBloc.add(afpEvent);
     }
   }
 

@@ -57,7 +57,8 @@ class BottomFirmsOptions extends StatelessWidget {
         backgroundColor: Theme.of(_context).secondaryHeaderColor);
   }
 
-  void _addNewFirm() {
+  Future<void> _addNewFirm()async{
+    await _addFirmToFirmer();
     ChosenFormManagerSingleton.chosenFormManager.addNewFirm();
   }
 
@@ -68,9 +69,14 @@ class BottomFirmsOptions extends StatelessWidget {
         backgroundColor: Theme.of(_context).secondaryHeaderColor);
   }
 
-  void _finish() {
-    ChosenFormManagerSingleton.chosenFormManager.finishFirms();
+  Future<void> _finish()async{
+    await _addFirmToFirmer();
     //TODO: El service de enviar formulario
+    ChosenFormManagerSingleton.chosenFormManager.finishFirms();
     Navigator.of(_context).pushReplacementNamed(FormulariosPage.route);
+  }
+
+  Future<void> _addFirmToFirmer()async{
+    await ChosenFormManagerSingleton.chosenFormManager.addFirmToFirmer();
   }
 }
