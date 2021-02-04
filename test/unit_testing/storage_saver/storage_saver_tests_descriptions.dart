@@ -1,0 +1,10 @@
+  final String setGetStringGroupDescription = 'Se testeará el método de set, get';
+  final String testSetStringDescription = 'Se testeará el método set';
+  final String testGetStringDescription = 'Se testeará el método get';
+  final String setGetMapGroupDescription = 'Se testeará el método de set, get';
+  final String testSetMapDescription = 'Se testeará el método set';
+  final String testGetMapDescription = 'Se testeará el método get';
+  final String setGetListGroupDescription = 'Se testeará el método de set, get';
+  final String testSetListDescription = 'Se testeará el método set';
+  final String testGetListDescription = 'Se testeará el método get';
+  final String testRemoveDescription = 'Se testeará el método remove';
