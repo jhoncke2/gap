@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gap/logic/enums/process_stage.dart';
+import 'package:gap/data/enums/enums.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/navigation_list/button/navigation_list_button.dart';
 // ignore: must_be_immutable

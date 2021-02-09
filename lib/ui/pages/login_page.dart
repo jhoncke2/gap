@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/logic/bloc/entities/projects/projects_bloc.dart';
-import 'package:gap/logic/models/entities/project.dart';
+import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/ui/pages/projects_page.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/buttons/general_button.dart';
 import 'package:gap/ui/widgets/logo.dart';
-import 'package:gap/logic/fake_data/projects.dart' as fakeProjects;
+import 'package:gap/data/fake_data/fake_data.dart' as fakeProjects;
 
 class LoginPage extends StatefulWidget {
   static final String route = 'login';

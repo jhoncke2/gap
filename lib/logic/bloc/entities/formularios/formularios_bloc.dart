@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:gap/logic/enums/process_stage.dart';
-import 'package:gap/logic/models/entities/formulario.dart';
 import 'package:meta/meta.dart';
+import 'package:gap/data/models/entities/entities.dart';
+import 'package:gap/data/enums/enums.dart';
 
 part 'formularios_event.dart';
 part 'formularios_state.dart';

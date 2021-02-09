@@ -20,6 +20,13 @@ class AddImages extends CommentedImagesEvent{
     ;
 }
 
+class SetCommentedImages extends CommentedImagesEvent{
+  final List<CommentedImage> commentedImages;
+  SetCommentedImages({
+    @required this.commentedImages
+  });
+}
+
 class CommentImage extends CommentedImagesEvent{
   final int page;
   final int positionInPage;
@@ -35,4 +42,4 @@ class ChangeEnviandoCommentedImagesAlBack extends CommentedImagesEvent{
 
 }
 
-class ResetAllCommentedImages extends CommentedImagesEvent{}
+class ResetCommentedImages extends CommentedImagesEvent{}

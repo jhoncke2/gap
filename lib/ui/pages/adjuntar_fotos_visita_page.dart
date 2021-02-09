@@ -160,7 +160,7 @@ class _EndButton extends StatelessWidget {
 
   void _resetCommImgsBloc(){
     final CommentedImagesBloc commImgsBloc = BlocProvider.of<CommentedImagesBloc>(_context);
-    commImgsBloc.add(ResetAllCommentedImages());
+    commImgsBloc.add(ResetCommentedImages());
   }
 
   void _resetIndexBloc(){

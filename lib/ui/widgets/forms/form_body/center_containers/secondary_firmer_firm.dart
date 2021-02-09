@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
-import 'package:gap/logic/models/entities/personal_information.dart';
+import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/firm_field/firm_field.dart';
 import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/form_select/form_select_without_name.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gap/logic/models/entities/personal_information.dart';
+import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/firm_field/draw_detector.dart';
 import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/firm_field/firm_paint.dart';

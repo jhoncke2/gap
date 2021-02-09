@@ -1,0 +1,5 @@
+class NetConnectionManager{
+  static onNetConnectionChange(){
+    
+  }
+}

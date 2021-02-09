@@ -3,10 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/logic/bloc/entities/visits/visits_bloc.dart';
 import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
-import 'package:gap/logic/bloc/widgets/form_inputs_navigation/form_inputs_navigation_bloc.dart';
-import 'package:gap/logic/models/entities/formulario.dart';
-import 'package:gap/logic/models/entities/visit.dart';
-import 'package:gap/logic/models/entities/EntityWithStages.dart';
+import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/ui/pages/formulario_detail_page.dart';
 import 'package:gap/ui/widgets/header/header.dart';
 import 'package:gap/ui/widgets/navigation_list/navigation_list_with_stage_color_buttons.dart';
@@ -113,9 +110,7 @@ class _FormulariosComponents extends StatelessWidget {
   }
 
   void _addEntityToFormInputsNav(Formulario form){
-    final FormInputsNavigationBloc fINavBloc = BlocProvider.of<FormInputsNavigationBloc>(_context);
-    final SetForm setFormEvent = SetForm(form: form);
-    fINavBloc.add(setFormEvent);
+
   }
 
   void _addFormToChosenFormBloc(Formulario form){

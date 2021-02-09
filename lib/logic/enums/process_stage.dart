@@ -1,4 +1,0 @@
-enum ProcessStage{
-  Pendiente,
-  Realizada
-}

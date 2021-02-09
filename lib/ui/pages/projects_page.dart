@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/logic/bloc/entities/projects/projects_bloc.dart';
-import 'package:gap/logic/models/entities/project.dart';
+import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/ui/pages/project_detail_page.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/header/header.dart';

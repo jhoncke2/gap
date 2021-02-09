@@ -1,9 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:gap/logic/models/entities/form_field.dart';
-import 'package:gap/logic/models/entities/formulario.dart';
-import 'package:gap/logic/models/entities/personal_information.dart';
+import 'package:gap/data/models/entities/entities.dart';
 import 'package:meta/meta.dart';
 
 part 'chosen_form_event.dart';

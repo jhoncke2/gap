@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/logic/bloc/entities/visits/visits_bloc.dart';
-import 'package:gap/logic/enums/process_stage.dart';
-import 'package:gap/logic/models/entities/EntityWithStages.dart';
-import 'package:gap/logic/models/entities/visit.dart';
+import 'package:gap/data/enums/enums.dart';
+import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/ui/pages/visit_detail_page.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/header/header.dart';
@@ -12,8 +11,7 @@ import 'package:gap/ui/widgets/navigation_list/navigation_list_with_stage_color_
 import 'package:gap/ui/widgets/page_title.dart';
 import 'package:gap/ui/widgets/unloaded_elements/unloaded_nav_items.dart';
 import 'package:gap/ui/widgets/visits_date_filter.dart';
-import 'package:gap/logic/fake_data/visits.dart' as fakeVisits;
-import 'package:gap/logic/fake_data/formularios.dart' as fakeFormularios;
+import 'package:gap/data/fake_data/fake_data.dart' as fakeData;
 class VisitsPage extends StatefulWidget {
   static final String route = 'visitas';
   @override
@@ -47,7 +45,7 @@ class _VisitsPageState extends State<VisitsPage> {
   //Testing, mientras se implementan los VisitsManager
   void _initFakeVisits(){
     final VisitsBloc visitsBloc = BlocProvider.of<VisitsBloc>(_context);
-    final List<Visit> visits = fakeVisits.visits;
+    final List<Visit> visits = fakeData.visits;
     final SetVisits event = SetVisits(visits: visits);
     visitsBloc.add(event);
   }
@@ -180,7 +178,7 @@ class _VisitsComponents extends StatelessWidget {
 
   void _loadForms(){
     final FormulariosBloc formsBloc = BlocProvider.of<FormulariosBloc>(_context);
-    final SetForms setFormsEvent = SetForms(forms: fakeFormularios.formularios);
+    final SetForms setFormsEvent = SetForms(forms: fakeData.formularios);
     formsBloc.add(setFormsEvent);
   }
 

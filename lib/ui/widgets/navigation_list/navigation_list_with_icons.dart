@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gap/logic/enums/process_stage.dart';
+import 'package:gap/data/enums/enums.dart';
 import 'package:gap/ui/widgets/navigation_list/button/button_with_icon.dart';
 import 'package:gap/ui/widgets/navigation_list/navigation_list.dart';
 import 'package:gap/ui/utils/size_utils.dart';

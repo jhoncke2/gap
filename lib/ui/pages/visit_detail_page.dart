@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/logic/bloc/entities/visits/visits_bloc.dart';
-import 'package:gap/logic/models/entities/visit.dart';
+import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/header/header.dart';
 import 'package:gap/ui/widgets/navigation_list/navigation_list_with_icons.dart';

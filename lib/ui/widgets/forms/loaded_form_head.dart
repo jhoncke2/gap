@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/logic/bloc/entities/visits/visits_bloc.dart';
-import 'package:gap/logic/models/entities/formulario.dart';
+import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/ui/widgets/page_title.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 // ignore: must_be_immutable

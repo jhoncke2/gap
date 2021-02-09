@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:gap/logic/models/entities/commented_image.dart';
+import 'package:gap/data/models/entities/entities.dart';
 import 'package:meta/meta.dart';
 
 part 'commented_images_event.dart';
@@ -23,8 +23,10 @@ class CommentedImagesBloc extends Bloc<CommentedImagesEvent, CommentedImagesStat
       _addCommentedImages(event);
     }else if(event is CommentImage){
       _commentImage(event);
-    }else if(event is ResetAllCommentedImages){
+    }else if(event is ResetCommentedImages){
       _resetAll();
+    }else if(event is SetCommentedImages){
+      _setCommentedImages(event);
     }
     yield _currentStateToYield;
     _evaluateEventOnEnd(event);
@@ -36,7 +38,7 @@ class CommentedImagesBloc extends Bloc<CommentedImagesEvent, CommentedImagesStat
   }
 
   void _addCommentedImages(AddImages event){
-    _commentedImagesGenerator.currentCommentedImagesPerPage = state._commentedImagesPerPage;
+    _commentedImagesGenerator.commentedImagesPerPage = state._commentedImagesPerPage;
     _commentedImagesGenerator.currentEvent = event;
     _currentStateToYield = _commentedImagesGenerator.generateCommentedImages();
   }
@@ -54,35 +56,61 @@ class CommentedImagesBloc extends Bloc<CommentedImagesEvent, CommentedImagesStat
   void _resetAll(){
     _currentStateToYield = CommentedImagesState();
   }
+
+  void _setCommentedImages(SetCommentedImages event){
+    final List<CommentedImage> commentedImages = event.commentedImages;
+    _currentStateToYield = state.copyWith();
+  }
+ 
 }
 
 
 
 class _CommentedImagesGenerator{
-  List<List<CommentedImage>> currentCommentedImagesPerPage;
+  List<List<CommentedImage>> commentedImagesPerPage;
   AddImages currentEvent;
   int _currentNPages;
   List<CommentedImage> _newCommentedImages;
+  CommentedImagesState _currentState;
 
   CommentedImagesState generateCommentedImages(){
     _initEventValues();
-    final List<List<CommentedImage>> newCommImagesWidgetsPerPage = _generateCommImgsPerPage();
-    return CommentedImagesState(
+    commentedImagesPerPage = _generateCommImgsPerPage();
+    _generateState();
+    return _currentState;
+  }
+
+  //TODO: Probar que funcione
+  CommentedImagesState generateCommentedImagesFromExisting(List<CommentedImage> commImgs){
+    commentedImagesPerPage = [];
+    _newCommentedImages = commImgs;
+    commentedImagesPerPage = _generateCommImgsPerPage();
+    _defineNPages(commImgs.length);
+    _generateState();
+    return _currentState;
+  }
+
+  void _generateState(){
+    _currentState =  CommentedImagesState(
       nPaginasDeCommImages: _currentNPages,
       commImgsPerPage: _nCommImgsPerPage,
-      commentedImagesPerPage: newCommImagesWidgetsPerPage
+      commentedImagesPerPage: commentedImagesPerPage
     );
   }
 
   void _initEventValues(){
     _newCommentedImages = _transformToCommentedImages();
+    _defineNPages(_newCommentedImages.length);
+  }
+
+  void _defineNPages(int totalListLength){
     final double unExactlyNPages = _newCommentedImages.length /_nCommImgsPerPage;
     _currentNPages = unExactlyNPages.ceil();
   }
 
   List<CommentedImage> _transformToCommentedImages(){
     final List<CommentedImage> commImages = [];
-    currentCommentedImagesPerPage.forEach((List<CommentedImage> commImgsForOnePage) {
+    commentedImagesPerPage.forEach((List<CommentedImage> commImgsForOnePage) {
       commImages.addAll(commImgsForOnePage);
     });
     final List<CommentedImage> newCommImages = currentEvent.images.map<CommentedImage>(
@@ -115,7 +143,7 @@ class _CommentedImagesGenerator{
   int _definirSobranteDeUltimaPageIndex(int pageIndex){
     int sobrante;
     if(pageIndex == _currentNPages-1)
-      sobrante =  ((pageIndex + 1)*_nCommImgsPerPage - _newCommentedImages.length).abs();
+      sobrante = ((pageIndex + 1)*_nCommImgsPerPage - _newCommentedImages.length).abs();
     else
       sobrante = 0;
     return sobrante;

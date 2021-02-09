@@ -1,13 +1,14 @@
 import 'dart:async';
-
 import 'package:bloc/bloc.dart';
-import 'package:gap/logic/models/entities/project.dart';
+import 'package:gap/logic/bloc/entities/projects/projects_storage_manager.dart';
+import 'package:gap/data/models/entities/entities.dart';
 import 'package:meta/meta.dart';
 
 part 'projects_event.dart';
 part 'projects_state.dart';
 
 class ProjectsBloc extends Bloc<ProjectsEvent, ProjectsState> {
+  final ProjectsStorageManager _projectsSM = ProjectsStorageManager();
   ProjectsState _currentYieldedState;
   ProjectsBloc() : super(ProjectsState());
 
@@ -30,15 +31,20 @@ class ProjectsBloc extends Bloc<ProjectsEvent, ProjectsState> {
     _currentYieldedState = state.copyWith(
       projectsAreLoaded: true, 
       projects: projects
-    ); 
+    );
+    _projectsSM.setProjects(projects);
   }
+  
   void _chooseProject(ChooseProject event){
     final Project chosenOne = event.chosenOne;
     _currentYieldedState = state.copyWith(chosenProject: chosenOne);
+    _projectsSM.setChosenProject(chosenOne);
   }
 
   void _resetAll(){
     _currentYieldedState = state.reset();
+    _projectsSM.removeProjects();
+    _projectsSM.removeChosenProject();
   }
 
 }
