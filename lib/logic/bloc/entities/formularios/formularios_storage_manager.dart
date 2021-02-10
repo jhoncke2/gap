@@ -3,7 +3,7 @@ import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/native_connectors/storage_connector.dart';
 
 class FormulariosStorageManager{
-  final String formsKey = 'forms';
+  final String formsKey = 'formularios';
   final StorageConnector storageConnector;
   FormulariosStorageManager():
     this.storageConnector = StorageConnectorSingleton.storageConnector

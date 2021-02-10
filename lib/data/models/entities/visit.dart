@@ -1,5 +1,24 @@
 part of 'entities.dart';
 
+class Visits{
+  List<Visit> visits;
+
+  Visits({
+    @required this.visits
+  });
+  
+  Visits.fromJson(List<Map<String, dynamic>> json){
+    visits = [];
+    json.forEach((Map<String, dynamic> visitAsJson) {
+      visits.add(Visit.fromJson(visitAsJson));
+    });
+  }
+
+  List<Map<String, dynamic>> toJson() => visits.map<Map<String, dynamic>>(
+    (Visit v)=>v.toJson()
+  ).toList();
+}
+
 class Visit extends EntityWithStages{
   final DateTime date;
 

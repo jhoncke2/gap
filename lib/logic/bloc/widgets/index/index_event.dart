@@ -17,10 +17,10 @@ class ChangeNPages extends IndexEvent{
   });
 }
 
-class ChangeIndex extends IndexEvent{
-  final int newIndex;
-  ChangeIndex({
-    @required this.newIndex
+class ChangeIndexPage extends IndexEvent{
+  final int newIndexPage;
+  ChangeIndexPage({
+    @required this.newIndexPage
   });
 }
 

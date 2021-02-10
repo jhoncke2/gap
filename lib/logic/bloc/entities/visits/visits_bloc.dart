@@ -17,22 +17,23 @@ class VisitsBloc extends Bloc<VisitsEvent, VisitsState> {
     VisitsEvent event,
   ) async* {
     if(event is SetVisits){
-      _setVisits(event);
+      setVisits(event);
     }else if(event is ChangeSelectedStepInNav){
-      _changeSelectedStepInNav(event);
+      changeSelectedStepInNav(event);
     }else if(event is ChangeDateFilterItem){
-      _changeDateFilterItem(event);
+      changeDateFilterItem(event);
     }else if(event is ChooseVisit){
-      _chooseVisit(event);
+      chooseVisit(event);
     }else if(event is ResetVisits){
-      _resetAllOfVisits();
+      resetAllOfVisits();
     }else if(event is ResetDateFilter){
-      _resetDateFilter();      
+      resetDateFilter();      
     }
     yield _currentYieldedState;
   }
 
-  void _setVisits(SetVisits event){
+  @protected
+  void setVisits(SetVisits event){
     final List<Visit> visits = event.visits;
     final List<Visit> pendientesVisits = [];
     final List<Visit> realizadasVisits = [];
@@ -50,12 +51,14 @@ class VisitsBloc extends Bloc<VisitsEvent, VisitsState> {
     ); 
   }
 
-  void _changeSelectedStepInNav(ChangeSelectedStepInNav event){
+  @protected
+  void changeSelectedStepInNav(ChangeSelectedStepInNav event){
     final ProcessStage newSelectedMenuStage = event.newSelectedMenuStage;
     _currentYieldedState = state.copyWith(selectedStepInNav: newSelectedMenuStage);
   }
 
-  void _changeDateFilterItem(ChangeDateFilterItem event){
+  @protected
+  void changeDateFilterItem(ChangeDateFilterItem event){
     final int filterItemIndex = event.filterItemIndex;
     final DateTime filterDate = event.filterDate;
     final List<Visit> filterVisits = _getVisitsWithSameDateThanFilter(filterDate);
@@ -66,11 +69,13 @@ class VisitsBloc extends Bloc<VisitsEvent, VisitsState> {
     );
   }
 
-  void _chooseVisit(ChooseVisit event){
+  @protected
+  void chooseVisit(ChooseVisit event){
     final Visit chosenOne = event.chosenOne;
     _currentYieldedState = state.copyWith(chosenVisit: chosenOne);
   }
 
+  @protected
   List<Visit> _getVisitsWithSameDateThanFilter(DateTime filterDate){
     final List<Visit> currentShowedVisits = state.visitsByCurrentSelectedStep;
     final Iterable<Visit> filterVisits = currentShowedVisits.where(
@@ -83,11 +88,13 @@ class VisitsBloc extends Bloc<VisitsEvent, VisitsState> {
     return filterVisits.toList();
   }
 
-  void _resetAllOfVisits(){
+  @protected
+  void resetAllOfVisits(){
     _currentYieldedState = state.reset();
   }
 
-  void _resetDateFilter(){
+  @protected
+  void resetDateFilter(){
     _currentYieldedState = VisitsState(
       visitsAreLoaded: state.visitsAreLoaded,
       visits: state.visits,

@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gap/logic/bloc/entities/formularios/formularios_storage_manager.dart';
 
-import '../../../mock/mock_storage_manager.dart';
+import '../../../mock/mock_storage_connector.dart';
 import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/data/fake_data/fake_data.dart' as fakeData;
 import './formularios_storage_manager_descriptions.dart' as descriptions;

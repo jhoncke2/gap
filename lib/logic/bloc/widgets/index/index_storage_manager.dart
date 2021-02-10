@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/logic/bloc/widgets/index/index_bloc.dart';
 import 'package:gap/native_connectors/storage_connector.dart';
 
@@ -22,7 +21,7 @@ class IndexStorageManager{
 
   Map<String, dynamic> _convertCommentedImagesToJson(IndexState indexConfig){
     final Map<String, dynamic> indexConfigAsJson = {
-      'current_index': indexConfig.currentIndex,
+      'current_index': indexConfig.currentIndexPage,
       'n_pages':indexConfig.nPages,
       'se_puede_avanzar':indexConfig.sePuedeAvanzar,
       'se_puede_retroceder':indexConfig.sePuedeRetroceder,
@@ -39,7 +38,7 @@ class IndexStorageManager{
   IndexState _convertJsonCommentedImagesToObject(Map<String, dynamic> indexConfigAsJson){
     final IndexState indexConfig = IndexState(
       nPages: indexConfigAsJson['n_pages'],
-      currentIndex: indexConfigAsJson['current_index'],
+      currentIndexPage: indexConfigAsJson['current_index'],
       sePuedeAvanzar: indexConfigAsJson['se_puede_avanzar'],
       sePuedeRetroceder: indexConfigAsJson['se_puede_retroceder']
     );

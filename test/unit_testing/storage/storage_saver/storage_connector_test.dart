@@ -2,10 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../../mock/mock_storage_manager.dart';
-import 'storage_saver_tests_descriptions.dart' as descriptions;
+import '../../../mock/mock_storage_connector.dart';
+import 'storage_connector_tests_descriptions.dart' as descriptions;
 
-final MockStorageConnector storageManager = MockStorageConnector();
+final MockStorageConnector storageConnector = MockStorageConnector();
 
 final String initialResourceKey = 'fake_initial_resource_key';
 final String initialResourceValue = 'fake_initial_resource_value';
@@ -42,7 +42,7 @@ main(){
 
 void _initStorageFakeInitialElement(){
   
-  storageManager.storage[initialResourceKey] = initialResourceValue;
+  storageConnector.storage[initialResourceKey] = initialResourceValue;
 }
 
 void _testRemove(){
@@ -56,9 +56,9 @@ void _testRemove(){
 }
 
 Future<void> _tryTestRemove()async{
-  expect(storageManager.storage[initialResourceKey], isNotNull, reason: 'El recurso inicial debe existir antes de intentar borrarlo.');
-  await storageManager.removeResource(initialResourceKey);
-  expect(storageManager.storage[initialResourceKey], isNull, reason: 'Después de borrar el recurso, este debería no existir en el storage');
+  expect(storageConnector.storage[initialResourceKey], isNotNull, reason: 'El recurso inicial debe existir antes de intentar borrarlo.');
+  await storageConnector.removeResource(initialResourceKey);
+  expect(storageConnector.storage[initialResourceKey], isNull, reason: 'Después de borrar el recurso, este debería no existir en el storage');
 }
 
 void _testSetString(){
@@ -72,8 +72,8 @@ void _testSetString(){
 }
 
 Future<void> _tryTestSetString()async{
-   await storageManager.setStringResource(stringResourceKey, stringResourceValue);
-   final String storageResource = storageManager.storage[stringResourceKey];
+   await storageConnector.setStringResource(stringResourceKey, stringResourceValue);
+   final String storageResource = storageConnector.storage[stringResourceKey];
    _verifyResourceIsntNull(storageResource);
    _verifyStringResourceIsEqualsToFake(storageResource);
 }
@@ -89,7 +89,7 @@ void _testGetString(){
 }
 
 Future<void> _tryTestGetString()async{
-  final String returnedResource = await storageManager.getStringResource(stringResourceKey);
+  final String returnedResource = await storageConnector.getStringResource(stringResourceKey);
   _verifyResourceIsntNull(returnedResource);
   _verifyStringResourceIsEqualsToFake(returnedResource);
 }
@@ -109,8 +109,8 @@ void _testSetMap(){
 }
 
 Future<void> _tryTestSetMap()async{
-   await storageManager.setMapResource(mapResourceKey, mapResourceValue);
-   final Map<String, dynamic> storageResource = jsonDecode(storageManager.storage[mapResourceKey]);
+   await storageConnector.setMapResource(mapResourceKey, mapResourceValue);
+   final Map<String, dynamic> storageResource = jsonDecode(storageConnector.storage[mapResourceKey]);
    _verifyResourceIsntNull(storageResource);
    _verifyMapResourceIsEqualsToFake(storageResource);
 }
@@ -126,7 +126,7 @@ void _testGetMap(){
 }
 
 Future<void> _tryTestGetMap()async{
-  final Map<String, dynamic> returnedResource = await storageManager.getMapResource(mapResourceKey);
+  final Map<String, dynamic> returnedResource = await storageConnector.getMapResource(mapResourceKey);
   _verifyResourceIsntNull(returnedResource);
   _verifyMapResourceIsEqualsToFake(returnedResource);
 }
@@ -146,8 +146,8 @@ void _testSetList(){
 }
 
 Future<void> _tryTestSetList()async{
-   await storageManager.setListResource(mapResourceKey, listResourceValue);
-   final List<Map<String, dynamic>> storageResource = jsonDecode(storageManager.storage[mapResourceKey]).cast<Map<String, dynamic>>();
+   await storageConnector.setListResource(mapResourceKey, listResourceValue);
+   final List<Map<String, dynamic>> storageResource = jsonDecode(storageConnector.storage[mapResourceKey]).cast<Map<String, dynamic>>();
    _verifyResourceIsntNull(storageResource);
    _verifyListResourceIsEqualsToFake(storageResource);
 }
@@ -163,7 +163,7 @@ void _testGetList(){
 }
 
 Future<void> _tryTestGetList()async{
-  final List<Map<String, dynamic>> returnedResource = await storageManager.getListResource(mapResourceKey);
+  final List<Map<String, dynamic>> returnedResource = await storageConnector.getListResource(mapResourceKey);
   _verifyResourceIsntNull(returnedResource);
   _verifyListResourceIsEqualsToFake(returnedResource);
 }

@@ -3,13 +3,13 @@ part of 'index_bloc.dart';
 @immutable
 class IndexState {
   final int nPages;
-  final int currentIndex;
+  final int currentIndexPage;
   final bool sePuedeAvanzar;
   final bool sePuedeRetroceder;
 
   IndexState({
     this.nPages = 0,
-    this.currentIndex = -1, 
+    this.currentIndexPage = -1, 
     this.sePuedeAvanzar = false,
     this.sePuedeRetroceder = false,
   });
@@ -21,7 +21,7 @@ class IndexState {
     bool sePuedeRetroceder,
    }) => IndexState(
     nPages: nPages??this.nPages,
-    currentIndex: currentIndex??this.currentIndex,
+    currentIndexPage: currentIndex??this.currentIndexPage,
     sePuedeAvanzar: sePuedeAvanzar??this.sePuedeAvanzar,
     sePuedeRetroceder: sePuedeRetroceder??this.sePuedeRetroceder,
   );

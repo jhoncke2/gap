@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gap/logic/bloc/entities/user/user_storage_manager.dart';
-import '../../../mock/mock_storage_manager.dart';
+import '../../../mock/mock_storage_connector.dart';
 import './user_storage_manager_descriptions.dart' as descriptions;
 
 final String fakeAuthToken = 'fake_auth_token';

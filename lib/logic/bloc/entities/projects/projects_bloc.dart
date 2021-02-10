@@ -8,43 +8,52 @@ part 'projects_event.dart';
 part 'projects_state.dart';
 
 class ProjectsBloc extends Bloc<ProjectsEvent, ProjectsState> {
-  final ProjectsStorageManager _projectsSM = ProjectsStorageManager();
+  
+  @protected
+  ProjectsStorageManager projectsSM;
   ProjectsState _currentYieldedState;
-  ProjectsBloc() : super(ProjectsState());
+
+  ProjectsBloc() : 
+    projectsSM = ProjectsStorageManager(),
+    super(ProjectsState())
+    ;
 
   @override
   Stream<ProjectsState> mapEventToState(
     ProjectsEvent event,
   ) async* {
     if(event is SetProjects){
-      _setProjects(event);
+      setProjects(event);
     }else if(event is ChooseProject){
-      _chooseProject(event);
+      chooseProject(event);
     }else if(event is ResetProyects){
-      _resetAll();
+      resetAll();
     }
     yield _currentYieldedState;
   }
 
-  void _setProjects(SetProjects event){
+  @protected
+  void setProjects(SetProjects event){
     final List<Project> projects = event.projects;
     _currentYieldedState = state.copyWith(
       projectsAreLoaded: true, 
       projects: projects
     );
-    _projectsSM.setProjects(projects);
-  }
-  
-  void _chooseProject(ChooseProject event){
-    final Project chosenOne = event.chosenOne;
-    _currentYieldedState = state.copyWith(chosenProject: chosenOne);
-    _projectsSM.setChosenProject(chosenOne);
+    projectsSM.setProjects(projects);
   }
 
-  void _resetAll(){
+  @protected
+  void chooseProject(ChooseProject event){
+    final Project chosenOne = event.chosenOne;
+    _currentYieldedState = state.copyWith(chosenProject: chosenOne);
+    projectsSM.setChosenProject(chosenOne);
+  }
+
+  @protected
+  void resetAll(){
     _currentYieldedState = state.reset();
-    _projectsSM.removeProjects();
-    _projectsSM.removeChosenProject();
+    projectsSM.removeProjects();
+    projectsSM.removeChosenProject();
   }
 
 }

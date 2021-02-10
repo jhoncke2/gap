@@ -16,7 +16,7 @@ class IndexBloc extends Bloc<IndexEvent, IndexState> {
   ) async* {
     if(event is ChangeSePuedeAvanzar){
       _changeSePuedeAvanzar(event);
-    }else if(event is ChangeIndex){
+    }else if(event is ChangeIndexPage){
       _changeIndex(event);
     }else if(event is ChangeNPages){
       _cnahgeNPages(event);
@@ -31,8 +31,8 @@ class IndexBloc extends Bloc<IndexEvent, IndexState> {
     _currentStateToYield = state.copyWith(sePuedeAvanzar: sePuedeAvanzar);
   }
 
-  void _changeIndex(ChangeIndex event){
-    final int newIndex = event.newIndex;
+  void _changeIndex(ChangeIndexPage event){
+    final int newIndex = event.newIndexPage;
     _currentStateToYield = state.copyWith(
       currentIndex: newIndex,
     );
@@ -49,7 +49,7 @@ class IndexBloc extends Bloc<IndexEvent, IndexState> {
   }
 
   int _getValueToCurrentIndex(){
-    final int currentIndex = state.currentIndex;
+    final int currentIndex = state.currentIndexPage;
     if(currentIndex == -1)
       return 0;
     return currentIndex;
@@ -58,7 +58,7 @@ class IndexBloc extends Bloc<IndexEvent, IndexState> {
   void _revisarActivacionesNavegacion(){
     bool sePuedeAvanzar = true;
     bool sePuedeRetroceder = true;
-    final int currentIndex = _currentStateToYield.currentIndex;
+    final int currentIndex = _currentStateToYield.currentIndexPage;
     if(currentIndex == 0){
       sePuedeRetroceder = false;
     }else if(currentIndex == _currentStateToYield.nPages - 1){

@@ -1,5 +1,24 @@
 part of 'entities.dart';
 
+class CommentedImages{
+  List<CommentedImage> commentedImages;
+
+  CommentedImages({
+    @required this.commentedImages
+  });
+
+  CommentedImages.fromJson(List<Map<String, dynamic>> json){
+    commentedImages = [];
+    json.forEach((Map<String, dynamic> commentedImageAsJson) {
+      commentedImages.add(CommentedImage.fromJson(commentedImageAsJson));
+    });
+  }
+
+  List<Map<String, dynamic>> toJson() => commentedImages.map<Map<String, dynamic>>(
+    (CommentedImage ci)=>ci.toJson()
+  ).toList();
+}
+
 class CommentedImage{
   File image;
   int positionInPage;

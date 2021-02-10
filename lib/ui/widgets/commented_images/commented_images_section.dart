@@ -57,7 +57,7 @@ class _LoadedCommentedImagesPag extends StatelessWidget {
 
   List<Widget> _createCommentedImages(){
     
-    final int currentIndex = indexState.currentIndex;
+    final int currentIndex = indexState.currentIndexPage;
     final List<CommentedImage> commImages = commImgsWidgetsState.getCommImgsByIndex(currentIndex);
     final List<Widget> commentedImagesCards = [];
     for(int i = 0; i < commImages.length; i++){

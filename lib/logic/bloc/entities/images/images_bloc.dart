@@ -16,16 +16,17 @@ class ImagesBloc extends Bloc<ImagesEvent, ImagesState> {
     ImagesEvent event,
   ) async* {
     if(event is LoadPhoto){
-      _loadPhoto(event);
+      loadPhoto(event);
     }else if(event is SetPhotos){
-      _setPhotos(event);
+      setPhotos(event);
     }else if(event is ResetImages){
-      _resetAll();
+      resetAll();
     }
     yield _currentStateToYield;
   }
 
-  void _loadPhoto(LoadPhoto event){
+  @protected
+  void loadPhoto(LoadPhoto event){
     final File photo = event.photo;
     final List<File> currentPhotosToSet = state.currentPhotosToSet;
     currentPhotosToSet.add(photo);
@@ -34,7 +35,8 @@ class ImagesBloc extends Bloc<ImagesEvent, ImagesState> {
     );
   }
 
-  void _setPhotos(SetPhotos event){
+  @protected
+  void setPhotos(SetPhotos event){
     final List<File> newPhotos = event.photos;
     final List<File> photos = state.photos;
     photos.addAll(newPhotos);
@@ -43,7 +45,8 @@ class ImagesBloc extends Bloc<ImagesEvent, ImagesState> {
     );
   }
 
-  void _resetAll(){
+  @protected
+  void resetAll(){
     _currentStateToYield = ImagesState();
   }
 }

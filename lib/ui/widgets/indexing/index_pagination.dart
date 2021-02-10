@@ -42,7 +42,7 @@ class _LoadedIndexPagination extends StatelessWidget {
     @required this.state
   }):
     _nPages = state.nPages,
-    _currentIndex = state.currentIndex,
+    _currentIndex = state.currentIndexPage,
     _sePuedeAvanzar = state.sePuedeAvanzar,
     _sePuedeRetroceder = state.sePuedeRetroceder
     ;
@@ -209,7 +209,7 @@ class _LoadedIndexPagination extends StatelessWidget {
   }
 
   Map<String, dynamic> _definirTextButtonOnTapConfiguration(String tipoMovimiento){
-    final int currentIndex = _indexBloc.state.currentIndex;
+    final int currentIndex = _indexBloc.state.currentIndexPage;
     int bttnIndexNavigation;
     bool estaActivo;
     if(tipoMovimiento == 'Siguiente'){
@@ -226,7 +226,7 @@ class _LoadedIndexPagination extends StatelessWidget {
   }
 
   void _changeIndex(int bttnIndexNavigation){
-    final ChangeIndex changeIndexEvent = ChangeIndex(newIndex: bttnIndexNavigation);
+    final ChangeIndexPage changeIndexEvent = ChangeIndexPage(newIndexPage: bttnIndexNavigation);
     _indexBloc.add(changeIndexEvent);
     CommentedImagesIndexManagerSingleton.commImgIndexManager.definirActivacionAvanzarSegunCommentedImages();
   }

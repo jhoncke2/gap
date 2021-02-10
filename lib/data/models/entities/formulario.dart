@@ -1,5 +1,24 @@
 part of 'entities.dart';
 
+class Formularios{
+  List<Formulario> formularios;
+
+  Formularios({
+    @required this.formularios
+  });
+
+  Formularios.fromJson(List<Map<String, dynamic>> json){
+    formularios = [];
+    json.forEach((Map<String, dynamic> formularioAsJson) {
+      formularios.add(Formulario.fromJson(formularioAsJson));
+    });
+  }
+
+  List<Map<String, dynamic>> toJson() => formularios.map<Map<String, dynamic>>(
+    (Formulario f)=>f.toJson()
+  ).toList();
+}
+
 class Formulario extends EntityWithStages {
   final int id;
   final Date date;

@@ -117,7 +117,7 @@ class AdjuntarFotosVisitaPage extends StatelessWidget {
   }
 
   bool _estaEnUltimoIndexPage(IndexState state){
-    final int currentIndex = state.currentIndex;
+    final int currentIndex = state.currentIndexPage;
     final int nPages = state.nPages;
     return currentIndex == nPages - 1;
   }
