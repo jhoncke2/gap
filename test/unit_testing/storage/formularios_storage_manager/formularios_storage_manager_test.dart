@@ -1,20 +1,24 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gap/logic/bloc/entities/formularios/formularios_storage_manager.dart';
+import 'package:gap/native_connectors/storage_connector.dart';
 
-import '../../../mock/mock_storage_connector.dart';
+import '../../../mock/storage/mock_flutter_secure_storage.dart';
 import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/data/fake_data/fake_data.dart' as fakeData;
 import './formularios_storage_manager_descriptions.dart' as descriptions;
 
-
-final FormulariosStorageManager formsSM = FormulariosStorageManager.forTesting(storageConnector: MockStorageConnector());
-
 main(){
+  _initStorageConnector();
   group(descriptions.formsGroupDescription, (){
     _testSetForms();
     _testGetForms();
     _testRemoveForms();
   });
+}
+
+void _initStorageConnector(){
+  // ignore: invalid_use_of_protected_member
+  StorageConnectorSingleton.storageConnector.fss = MockFlutterSecureStorage();
 }
 
 void _testSetForms(){
@@ -28,7 +32,7 @@ void _testSetForms(){
 }
 
 Future<void> _tryTestSetForms()async{
-  await formsSM.setForms(fakeData.formularios);
+  await FormulariosStorageManager.setForms(fakeData.formularios);
 }
 
 void _testGetForms(){
@@ -42,7 +46,7 @@ void _testGetForms(){
 }
 
 Future<void> _tryTestGetForms()async{
-  final List<Formulario> visits = await formsSM.getForms();
+  final List<Formulario> visits = await FormulariosStorageManager.getForms();
   _verifyStorageGetReturnedElements(visits);
 }
 
@@ -71,5 +75,5 @@ void _testRemoveForms(){
 }
 
 Future<void> _tryTestRemoveForms()async{
-  await formsSM.removeForms();
+  await FormulariosStorageManager.removeForms();
 }

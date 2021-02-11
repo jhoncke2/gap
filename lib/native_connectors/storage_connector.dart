@@ -3,6 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+/*
+  La clas StorageConnector está hecho de esta forma y no como una clase estáticapara facilidad de los tests
+*/
 class StorageConnectorSingleton{
   static final StorageConnector storageConnector = StorageConnector();
 }

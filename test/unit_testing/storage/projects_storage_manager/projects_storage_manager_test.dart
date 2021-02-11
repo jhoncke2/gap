@@ -3,12 +3,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:gap/logic/bloc/entities/projects/projects_storage_manager.dart';
 import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/data/fake_data/fake_data.dart' as fakeProjects;
-import '../../../mock/mock_storage_connector.dart';
+import 'package:gap/native_connectors/storage_connector.dart';
+import '../../../mock/storage/mock_flutter_secure_storage.dart';
 import './projects_storage_manager_descriptions.dart' as descriptions;
 
-final ProjectsStorageManager projectsStorageManager = ProjectsStorageManager.forTesting(storageConnector: MockStorageConnector());
-
 main(){
+  _initStorageConnector();
   group(descriptions.projectsGroupDescription, (){
     _testSetProjects();
     _testGetProjects();
@@ -20,7 +20,15 @@ main(){
     _testGetChosenProject();
     _testRemoveChosenProject();
   });
-  
+
+  group(descriptions.projectsWithPreloadedVisitsGroupDescription, (){
+    //_testGetProjecstWithPreloadedVisits();
+  });
+}
+
+void _initStorageConnector(){
+  // ignore: invalid_use_of_protected_member
+  StorageConnectorSingleton.storageConnector.fss = MockFlutterSecureStorage();
 }
 
 void _testSetProjects(){
@@ -35,7 +43,7 @@ void _testSetProjects(){
 
 Future<void> _tryTestSetProjects()async{
   final List<Project> projects = fakeProjects.projects;
-  await projectsStorageManager.setProjects(projects);
+  await ProjectsStorageManager.setProjects(projects);
 }
 
 void _testGetProjects(){
@@ -49,7 +57,7 @@ void _testGetProjects(){
 }
 
 Future<void> _tryTestGetProjects()async{
-  final List<Project> projects = await projectsStorageManager.getProjects();
+  final List<Project> projects = await ProjectsStorageManager.getProjects();
   _verifyReturnedProjects(projects);
 }
 
@@ -77,7 +85,7 @@ void _testRemoveProjects(){
 }
 
 Future<void> _tryTestRemoveProjects()async{
-  await projectsStorageManager.removeProjects();
+  await ProjectsStorageManager.removeProjects();
 }
 
 
@@ -93,7 +101,7 @@ void _testSetChosenProject(){
 
 Future<void> _tryTestSetChosenProject()async{
   final Project chosenProject = fakeProjects.projects[0];
-  await projectsStorageManager.setChosenProject(chosenProject);
+  await ProjectsStorageManager.setChosenProject(chosenProject);
 }
 
 void _testGetChosenProject(){
@@ -107,7 +115,7 @@ void _testGetChosenProject(){
 }
 
 Future<void> _tryTestGetChosenProject()async{
-  final Project chosenProject = await projectsStorageManager.getChosenProject();
+  final Project chosenProject = await ProjectsStorageManager.getChosenProject();
   expect(chosenProject, isNotNull, reason: 'El chosen project retornado por el storageSaver no debería ser null');
   _compararParDeProjects(chosenProject, fakeProjects.projects[0]);
 }
@@ -123,5 +131,21 @@ void _testRemoveChosenProject(){
 }
 
 Future<void> _tryTestRemoveChosenProject()async{
-  await projectsStorageManager.removeChosenProject();
+  await ProjectsStorageManager.removeChosenProject();
+}
+
+
+void _testGetProjecstWithPreloadedVisits(){
+  test(descriptions.testGetProjectsWithPreloadedVisitsDescription, ()async{
+    try{
+      await _tryTestGetProjecstWithPreloadedVisits();
+    }catch(err){
+      fail('Ocurrió un error: $err');
+    }
+  });
+}
+
+Future<void> _tryTestGetProjecstWithPreloadedVisits()async{
+  final List<Project> projects =  await ProjectsStorageManager.getProjectsWithPreloadedVisits();
+  expect(projects, isNotNull, reason: 'Los projectos del projectsStorageManager no deberian ser null');
 }

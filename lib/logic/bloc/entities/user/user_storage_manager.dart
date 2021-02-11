@@ -2,25 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:gap/native_connectors/storage_connector.dart';
 
 class UserStorageManager{
-  final String authTokenKey = 'auth_token';
-  final StorageConnector storageConnector;
-  UserStorageManager():
-    this.storageConnector = StorageConnectorSingleton.storageConnector
-    ; 
+  @protected
+  static final String authTokenKey = 'auth_token';
 
-  UserStorageManager.forTesting({
-    @required this.storageConnector
-  });
-
-  Future<void> setAuthToken(String authToken)async{
-    await storageConnector.setStringResource(authTokenKey, authToken);
+  static Future<void> setAuthToken(String authToken)async{
+    await StorageConnectorSingleton.storageConnector.setStringResource(authTokenKey, authToken);
   }
 
-  Future<String> getAuthToken()async{
-    return await storageConnector.getStringResource(authTokenKey);
+  static Future<String> getAuthToken()async{
+    return await StorageConnectorSingleton.storageConnector.getStringResource(authTokenKey);
   }
 
-  Future<void> deleteAuthToken()async{
-    await storageConnector.removeResource(authTokenKey);
+  static Future<void> deleteAuthToken()async{
+    await StorageConnectorSingleton.storageConnector.removeResource(authTokenKey);
   }
 }

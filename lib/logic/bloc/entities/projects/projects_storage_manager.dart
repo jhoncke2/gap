@@ -1,59 +1,68 @@
-import 'package:flutter/material.dart';
 import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/native_connectors/storage_connector.dart';
 
 class ProjectsStorageManager{
-  final String projectsKey = 'projects';
-  final String chosenProjectKey = 'chosen_project';
-  final StorageConnector storageConnector;
-  ProjectsStorageManager():
-    this.storageConnector = StorageConnectorSingleton.storageConnector
-    ;
-
-  ProjectsStorageManager.forTesting({
-    @required this.storageConnector
-  });
+  static final String projectsKey = 'projects';
+  static final String chosenProjectKey = 'chosen_project';
+  static final String projectsWithPreloadedVisitsKey = 'projects_with_preloaded_visits';
   
-  Future<void> setProjects(List<Project> projects)async{
+  static Future<void> setProjects(List<Project> projects)async{
     final List<Map<String, dynamic>> projectsAsJson = _convertProjectsToJson(projects);
-    await storageConnector.setListResource(projectsKey, projectsAsJson);
+    await StorageConnectorSingleton.storageConnector.setListResource(projectsKey, projectsAsJson);
   }
 
-  List<Map<String, dynamic>> _convertProjectsToJson(List<Project> projects){
+  static List<Map<String, dynamic>> _convertProjectsToJson(List<Project> projects){
     return projects.map<Map<String, dynamic>>(
       (Project p)=> p.toJson()
     ).toList();
   }
 
-  Future<List<Project>> getProjects()async{
-    final List<Map<String, dynamic>> projectsAsJson = await storageConnector.getListResource(projectsKey);
-    final List<Project> projects = _convertJsonProjectsToObject(projectsAsJson);
-    return projects;
+  static Future<List<Project>> getProjects()async{
+    return await _getListOfProjects(projectsKey);
   }
 
-  List<Project> _convertJsonProjectsToObject(List<Map<String, dynamic>> projectsAsJson){
-    return projectsAsJson.map<Project>(
-      (Map<String, dynamic> jsonProject) => Project.fromJson(jsonProject)
-    ).toList();
-  }
+  
 
-  Future<void> removeProjects()async{
-    await storageConnector.removeResource(projectsKey);
+  static Future<void> removeProjects()async{
+    await StorageConnectorSingleton.storageConnector.removeResource(projectsKey);
   }
   
-  Future<void> setChosenProject(Project project)async{
+  static Future<void> setChosenProject(Project project)async{
     final Map<String, dynamic> projectAsMap = project.toJson();
-    await storageConnector.setMapResource(chosenProjectKey, projectAsMap);
+    await StorageConnectorSingleton.storageConnector.setMapResource(chosenProjectKey, projectAsMap);
   }
 
-  Future<Project> getChosenProject()async{
-    final Map<String, dynamic> chosenProjectAsMap = await storageConnector.getMapResource(chosenProjectKey);
+  static Future<Project> getChosenProject()async{
+    final Map<String, dynamic> chosenProjectAsMap = await StorageConnectorSingleton.storageConnector.getMapResource(chosenProjectKey);
     final Project chosenProject = Project.fromJson(chosenProjectAsMap);
     return chosenProject;
   }
 
-  Future<void> removeChosenProject()async{
-    await storageConnector.removeResource(chosenProjectKey);
+  static Future<void> removeChosenProject()async{
+    await StorageConnectorSingleton.storageConnector.removeResource(chosenProjectKey);
   }
+
+  // * * * * * * * * * Preloaded data
+
+  static Future<void> setToProjectsWithPreloadedVisits(Project project)async{
+
+  }
+
+  static Future<List<Project>> getProjectsWithPreloadedVisits()async{
+    return await _getListOfProjects(projectsWithPreloadedVisitsKey);
+  }
+
+  static Future<List<Project>> _getListOfProjects(String key)async{
+    final List<Map<String, dynamic>> projectsAsJson = await StorageConnectorSingleton.storageConnector.getListResource(key);
+    final List<Project> projects = _convertJsonProjectsToObject(projectsAsJson);
+    return projects;
+  }
+
+  static List<Project> _convertJsonProjectsToObject(List<Map<String, dynamic>> projectsAsJson){
+    return projectsAsJson.map<Project>(
+      (Map<String, dynamic> jsonProject) => Project.fromJson(jsonProject)
+    ).toList();
+  }
+  
 
 }

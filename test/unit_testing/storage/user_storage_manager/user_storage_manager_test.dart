@@ -1,18 +1,23 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gap/logic/bloc/entities/user/user_storage_manager.dart';
-import '../../../mock/mock_storage_connector.dart';
+import 'package:gap/native_connectors/storage_connector.dart';
+import '../../../mock/storage/mock_flutter_secure_storage.dart';
 import './user_storage_manager_descriptions.dart' as descriptions;
 
 final String fakeAuthToken = 'fake_auth_token';
 
-final UserStorageManager userSM = UserStorageManager.forTesting(storageConnector: MockStorageConnector());
-
 void main(){
+  _initStorageConnector();
   group(descriptions.authTokenGroupDescription, (){
     _testSetAuthToken();
     _testGetAuthToken();
     _testRemoveAuthToken();    
   });
+}
+
+void _initStorageConnector(){
+  // ignore: invalid_use_of_protected_member
+  StorageConnectorSingleton.storageConnector.fss = MockFlutterSecureStorage();
 }
 
 void _testSetAuthToken(){
@@ -26,7 +31,7 @@ void _testSetAuthToken(){
 }
 
 Future<void> _tryTestSetAuthToken()async{
-  await userSM.setAuthToken(fakeAuthToken);
+  await UserStorageManager.setAuthToken(fakeAuthToken);
 }
 
 void _testGetAuthToken(){
@@ -40,7 +45,7 @@ void _testGetAuthToken(){
 }
 
 Future<void> _tryTestGetAuthToken()async{
-  final String authToken = await userSM.getAuthToken();
+  final String authToken = await UserStorageManager.getAuthToken();
   expect(authToken, isNotNull, reason: 'El auth token en el storageSaver no debe ser null');
   expect(authToken, fakeAuthToken, reason: 'El auth token en el storageSaver debe ser igual al creado en este test');
 }
@@ -56,5 +61,5 @@ void _testRemoveAuthToken(){
 }
 
 Future<void> _tryTestRemoveAuthToken()async{
-  await userSM.deleteAuthToken();
+  await UserStorageManager.deleteAuthToken();
 }

@@ -2,12 +2,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:gap/logic/bloc/entities/visits/visits_storage_manager.dart';
 import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/data/fake_data/fake_data.dart' as fakeData;
-import '../../../mock/mock_storage_connector.dart';
+import 'package:gap/native_connectors/storage_connector.dart';
+import '../../../mock/storage/mock_flutter_secure_storage.dart';
 import './visits_storage_manager_descriptions.dart' as descriptions;
 
-final VisitsStorageManager visitsSM = VisitsStorageManager.forTesting(storageConnector: MockStorageConnector());
-
 void main(){
+  _initStorageConnector();
   group(descriptions.visitsGroupDescription, (){
     _testSetVisits();
     _testGetVisits();
@@ -21,6 +21,11 @@ void main(){
   });
 }
 
+void _initStorageConnector(){
+  // ignore: invalid_use_of_protected_member
+  StorageConnectorSingleton.storageConnector.fss = MockFlutterSecureStorage();
+}
+
 void _testSetVisits(){
   test(descriptions.testSetVisitsDescription, ()async{
     try{
@@ -32,7 +37,7 @@ void _testSetVisits(){
 }
 
 Future<void> _tryTestSetVisits()async{
-  await visitsSM.setVisits(fakeData.visits);
+  await VisitsStorageManager.setVisits(fakeData.visits);
 }
 
 void _testGetVisits(){
@@ -46,7 +51,7 @@ void _testGetVisits(){
 }
 
 Future<void> _tryTestGetVisits()async{
-  final List<Visit> visits = await visitsSM.getVisits();
+  final List<Visit> visits = await VisitsStorageManager.getVisits();
   _verifyStorageGetReturnedElements(visits);
 }
 
@@ -75,7 +80,7 @@ void _testRemoveVisits(){
 }
 
 Future<void> _tryTestRemoveVisits()async{
-  await visitsSM.deleteVisits();
+  await VisitsStorageManager.deleteVisits();
 }
 
 void _testSetChosenVisit(){
@@ -90,7 +95,7 @@ void _testSetChosenVisit(){
 
 Future<void> _tryTestSetChosenVisit()async{
   final Visit chosenOne = fakeData.visits[0];
-  await visitsSM.setChosenVisit(chosenOne);
+  await VisitsStorageManager.setChosenVisit(chosenOne);
 }
 
 void _testGetChosenVisit(){
@@ -104,7 +109,7 @@ void _testGetChosenVisit(){
 }
 
 Future<void> _tryTestGetChosenVisit()async{
-  final Visit chosenOne = await visitsSM.getChosenVisit();
+  final Visit chosenOne = await VisitsStorageManager.getChosenVisit();
   expect(chosenOne, isNotNull, reason: 'El visit retornado por el storage no debería ser null');
   _compararParDeVisits(chosenOne, fakeData.visits[0]);
 }
@@ -120,5 +125,5 @@ void _testRemoveChosenVisit(){
 }
 
 Future<void> _tryTestRemoveChosenVisit()async{
-  await visitsSM.removeChosenVisit();
+  await VisitsStorageManager.removeChosenVisit();
 }

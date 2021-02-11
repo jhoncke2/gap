@@ -1,19 +1,26 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_storage_manager.dart';
+import 'package:gap/native_connectors/storage_connector.dart';
 
-import '../../../mock/mock_storage_connector.dart';
+import '../../../mock/storage/mock_flutter_secure_storage.dart';
 import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/data/fake_data/fake_data.dart' as fakeData;
 import './chosen_form_storage_manager_descriptions.dart' as descriptions;
 
-final ChosenFormStorageManager cfSM = ChosenFormStorageManager.forTesting(storageConnector: MockStorageConnector());
+final ChosenFormStorageManager cfSM = ChosenFormStorageManager();
 
 main(){
+  _initStorageConnector();
   group(descriptions.chosenFormGroupDescription, (){
     _testSetChosenVisit();
     _testGetChosenVisit();
     _testRemoveChosenVisit();
   });
+}
+
+void _initStorageConnector(){
+  // ignore: invalid_use_of_protected_member
+  StorageConnectorSingleton.storageConnector.fss = MockFlutterSecureStorage();
 }
 
 void _testSetChosenVisit(){
@@ -28,7 +35,7 @@ void _testSetChosenVisit(){
 
 Future<void> _tryTestSetChosenVisit()async{
   final Formulario chosenOne = fakeData.formularios[0];
-  await cfSM.setChosenForm(chosenOne);
+  await ChosenFormStorageManager.setChosenForm(chosenOne);
 }
 
 void _testGetChosenVisit(){
@@ -42,7 +49,7 @@ void _testGetChosenVisit(){
 }
 
 Future<void> _tryTestGetChosenVisit()async{
-  final Formulario chosenOne = await cfSM.getChosenForm();
+  final Formulario chosenOne = await ChosenFormStorageManager.getChosenForm();
   expect(chosenOne, isNotNull, reason: 'El visit retornado por el storage no debería ser null');
   _compararParDeForms(chosenOne, fakeData.formularios[0]);
 }
@@ -64,5 +71,5 @@ void _testRemoveChosenVisit(){
 }
 
 Future<void> _tryTestRemoveChosenVisit()async{
-  await cfSM.removeChosenForm();
+  await ChosenFormStorageManager.removeChosenForm();
 }

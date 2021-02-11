@@ -44,18 +44,18 @@ abstract class _StorageBlocsManager{
         addStorageDataToProjectsBloc(bloc);
         break;
       case BlocName.Visits:
-        addStorageDataToVisitsBloc(bloc);
+        //addStorageDataToVisitsBloc(bloc);
         break;
       case BlocName.Formularios:
-        addStorageDataToFormulariosBloc(bloc);
+        //addStorageDataToFormulariosBloc(bloc);
         break;
       case BlocName.ChosenForm:
-        addStorageDataToChosenFormBloc(bloc);
+        //addStorageDataToChosenFormBloc(bloc);
         break;
       case BlocName.Images:
         break;
       case BlocName.CommentedImages:
-        addStorageDataToCommentedImagesBloc(bloc);
+        //addStorageDataToCommentedImagesBloc(bloc);
         break;
       case BlocName.FirmPaint:
         break;
@@ -68,32 +68,30 @@ abstract class _StorageBlocsManager{
 
   @protected
   Future<void> addStorageDataToProjectsBloc(ProjectsBloc bloc)async{
-    final ProjectsStorageManager psm = ProjectsStorageManager();
-    await addStorageDataToProjects(psm, bloc);
-    await _addStorageDataToChosenProject(psm, bloc);
+    await addStorageDataToProjects(bloc);
+    await _addStorageDataToChosenProject(bloc);
   }
 
   @protected
-  Future<void> addStorageDataToProjects(ProjectsStorageManager psm, ProjectsBloc bloc)async{}
+  Future<void> addStorageDataToProjects(ProjectsBloc bloc)async{}
 
-  Future<void> _addStorageDataToChosenProject(ProjectsStorageManager psm, ProjectsBloc bloc)async{
-    final Project chosenOne = await psm.getChosenProject();
+  Future<void> _addStorageDataToChosenProject(ProjectsBloc bloc)async{
+    final Project chosenOne = await ProjectsStorageManager.getChosenProject();
     final ChooseProject cpEvent = ChooseProject(chosenOne: chosenOne);
     bloc.add(cpEvent);
   }
 
   @protected
   Future<void> addStorageDataToVisitsBloc(VisitsBloc bloc)async{
-    final VisitsStorageManager vsm = VisitsStorageManager();
-    await addStorageDataToVisits(vsm, bloc);
-    await _addStorageDataToChosenVisit(vsm, bloc);
+    await addStorageDataToVisits(bloc);
+    await _addStorageDataToChosenVisit(bloc);
   }
 
   @protected
-  Future<void> addStorageDataToVisits(VisitsStorageManager vsm, VisitsBloc bloc)async{}
+  Future<void> addStorageDataToVisits(VisitsBloc bloc)async{}
 
-  Future<void> _addStorageDataToChosenVisit(VisitsStorageManager vsm, VisitsBloc bloc)async{
-    final Visit chosenOne = await vsm.getChosenVisit();
+  Future<void> _addStorageDataToChosenVisit(VisitsBloc bloc)async{
+    final Visit chosenOne = await VisitsStorageManager.getChosenVisit();
     final ChooseVisit cvEvent = ChooseVisit(chosenOne: chosenOne);
     bloc.add(cvEvent);
   }
@@ -103,16 +101,14 @@ abstract class _StorageBlocsManager{
 
   @protected
   Future<void> addStorageDataToChosenFormBloc(ChosenFormBloc bloc)async{
-    final ChosenFormStorageManager cfsm = ChosenFormStorageManager();
-    final Formulario chosenOne = await cfsm.getChosenForm();
+    final Formulario chosenOne = await ChosenFormStorageManager.getChosenForm();
     final InitFormFillingOut iffoEvent= InitFormFillingOut(formulario: chosenOne);
     bloc.add(iffoEvent);
   }
 
   @protected
   Future<void> addStorageDataToCommentedImagesBloc(CommentedImagesBloc bloc)async{
-    final CommentedImagesStorageManager cmsm = CommentedImagesStorageManager();
-    final List<CommentedImage> commentedImages = await cmsm.getCommentedImages();
+    final List<CommentedImage> commentedImages = await CommentedImagesStorageManager.getCommentedImages();
     final SetCommentedImages sciEvent = SetCommentedImages(commentedImages: commentedImages);
     bloc.add(sciEvent);
   }
@@ -135,21 +131,15 @@ abstract class _StorageBlocsManager{
 class _StorageRecentActivityBlocsManager extends _StorageBlocsManager{
 
   @override
-  Future<void> addStorageDataToProjects(ProjectsStorageManager psm, ProjectsBloc bloc)async{
-
-  }
-
-  @override
-  Future<void> addStorageDataToVisits(VisitsStorageManager vsm, VisitsBloc bloc)async{
-    final List<Visit> visits = await vsm.getVisits();
+  Future<void> addStorageDataToVisits(VisitsBloc bloc)async{
+    final List<Visit> visits = await VisitsStorageManager.getVisits();
     final SetVisits svEvent = SetVisits(visits: visits);
     bloc.add(svEvent);
   }
 
   @override
   Future<void> addStorageDataToFormulariosBloc(FormulariosBloc bloc)async{
-    final FormulariosStorageManager fsm = FormulariosStorageManager();
-    final List<Formulario> forms = await fsm.getForms();
+    final List<Formulario> forms = await FormulariosStorageManager.getForms();
     final SetForms sfEvent = SetForms(forms: forms);
     bloc.add(sfEvent);
   }
@@ -160,7 +150,7 @@ class _StorageRecentActivityBlocsManager extends _StorageBlocsManager{
 class _StoragePreloadedDataBlocsManager extends _StorageBlocsManager{
 
   @override
-  Future<void> addStorageDataToProjects(ProjectsStorageManager psm, ProjectsBloc bloc)async{
+  Future<void> addStorageDataToProjects(ProjectsBloc bloc)async{
     //TODO: Implementar método get projects with preloaded visits
     final List<Project> projectsWithPreloadedVisits = [];
     final SetProjects spEvent = SetProjects(projects: projectsWithPreloadedVisits);
@@ -168,7 +158,7 @@ class _StoragePreloadedDataBlocsManager extends _StorageBlocsManager{
   }
 
   @override
-  Future<void> addStorageDataToVisits(VisitsStorageManager vsm, VisitsBloc bloc)async{
+  Future<void> addStorageDataToVisits(VisitsBloc bloc)async{
     //TODO: Implementar método get preloaded visits
     final List<Visit> preloadedVisits = [];
     final SetVisits svEvent = SetVisits(visits: preloadedVisits);
@@ -177,7 +167,6 @@ class _StoragePreloadedDataBlocsManager extends _StorageBlocsManager{
 
   @override
   Future<void> addStorageDataToFormulariosBloc(FormulariosBloc bloc)async{
-    final FormulariosStorageManager fsm = FormulariosStorageManager();
     //TODO: Implementar método get forms grouped by preloaded visit
     final List<Formulario> formsGroupedByPreloadedVisit = [];
     final SetForms sfEvent = SetForms(forms: formsGroupedByPreloadedVisit);
