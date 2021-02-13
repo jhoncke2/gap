@@ -4,8 +4,10 @@ import 'package:gap/data/enums/enums.dart';
 import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/logic/bloc/entities/formularios/formularios_storage_manager.dart';
+import 'package:gap/logic/bloc/entities/formularios/preloaded_forms_storage_manager.dart';
 import 'package:gap/logic/bloc/entities/projects/projects_bloc.dart';
 import 'package:gap/logic/bloc/entities/projects/projects_storage_manager.dart';
+import 'package:gap/logic/bloc/entities/visits/preloaded_visits_storage_manager.dart';
 import 'package:gap/logic/bloc/entities/visits/visits_bloc.dart';
 import 'package:gap/logic/bloc/entities/visits/visits_storage_manager.dart';
 import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
@@ -31,8 +33,11 @@ class StorageManager{
 
 
 abstract class _StorageBlocsManager{
+  @protected
+  Map<BlocName, Bloc> blocs;
 
   void addStorageDataToBlocs(Map<BlocName, Bloc> blocs){
+    this.blocs = blocs;
     blocs.forEach((blocName, bloc){
       _addStorageDataToBloc(blocName, bloc);
     });
@@ -44,18 +49,18 @@ abstract class _StorageBlocsManager{
         addStorageDataToProjectsBloc(bloc);
         break;
       case BlocName.Visits:
-        //addStorageDataToVisitsBloc(bloc);
+        addStorageDataToVisitsBloc(bloc);
         break;
       case BlocName.Formularios:
-        //addStorageDataToFormulariosBloc(bloc);
+        addStorageDataToFormulariosBloc(bloc);
         break;
       case BlocName.ChosenForm:
-        //addStorageDataToChosenFormBloc(bloc);
+        addStorageDataToChosenFormBloc(bloc);
         break;
       case BlocName.Images:
         break;
       case BlocName.CommentedImages:
-        //addStorageDataToCommentedImagesBloc(bloc);
+        addStorageDataToCommentedImagesBloc(bloc);
         break;
       case BlocName.FirmPaint:
         break;
@@ -82,9 +87,9 @@ abstract class _StorageBlocsManager{
   }
 
   @protected
-  Future<void> addStorageDataToVisitsBloc(VisitsBloc bloc)async{
-    await addStorageDataToVisits(bloc);
-    await _addStorageDataToChosenVisit(bloc);
+  Future<void> addStorageDataToVisitsBloc(VisitsBloc vBloc)async{
+    await addStorageDataToVisits(vBloc);
+    await _addStorageDataToChosenVisit(vBloc);
   }
 
   @protected
@@ -151,25 +156,36 @@ class _StoragePreloadedDataBlocsManager extends _StorageBlocsManager{
 
   @override
   Future<void> addStorageDataToProjects(ProjectsBloc bloc)async{
-    //TODO: Implementar método get projects with preloaded visits
-    final List<Project> projectsWithPreloadedVisits = [];
+    final List<Project> projectsWithPreloadedVisits = await ProjectsStorageManager.getProjectsWithPreloadedVisits();
     final SetProjects spEvent = SetProjects(projects: projectsWithPreloadedVisits);
     bloc.add(spEvent);
   }
 
   @override
-  Future<void> addStorageDataToVisits(VisitsBloc bloc)async{
-    //TODO: Implementar método get preloaded visits
-    final List<Visit> preloadedVisits = [];
+  Future<void> addStorageDataToVisits(VisitsBloc vBloc)async{
+    final ProjectsState pState = super.blocs[BlocName.Projects].state;
+    if(pState.chosenProject != null)
+      await _doVisitsStorageDataAdding(vBloc, pState);
+  }
+
+  Future<void> _doVisitsStorageDataAdding(VisitsBloc vBloc, ProjectsState pState)async{
+    final int chosenProjectId = pState.chosenProject.id;
+    final List<Visit> preloadedVisits = await PreloadedVisitsStorageManager.getPreloadedVisitsByProjectId(chosenProjectId);
     final SetVisits svEvent = SetVisits(visits: preloadedVisits);
-    bloc.add(svEvent);
+    vBloc.add(svEvent);
   }
 
   @override
-  Future<void> addStorageDataToFormulariosBloc(FormulariosBloc bloc)async{
-    //TODO: Implementar método get forms grouped by preloaded visit
-    final List<Formulario> formsGroupedByPreloadedVisit = [];
+  Future<void> addStorageDataToFormulariosBloc(FormulariosBloc fBloc)async{
+    final VisitsState vState = super.blocs[BlocName.Visits].state;
+    if(vState.chosenVisit != null)
+      await _doFormsStorageDataAdding(fBloc, vState);
+  }
+  
+  Future<void> _doFormsStorageDataAdding(FormulariosBloc fBloc, VisitsState vState)async{
+    final int chosenVisitId = vState.chosenVisit.id;
+    final List<Formulario> formsGroupedByPreloadedVisit = await PreloadedFormsStorageManager.getPreloadedFormsByVisitId(chosenVisitId);
     final SetForms sfEvent = SetForms(forms: formsGroupedByPreloadedVisit);
-    bloc.add(sfEvent);
+    fBloc.add(sfEvent);
   }
 }

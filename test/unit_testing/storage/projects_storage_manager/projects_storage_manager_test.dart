@@ -2,13 +2,14 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gap/logic/bloc/entities/projects/projects_storage_manager.dart';
 import 'package:gap/data/models/entities/entities.dart';
-import 'package:gap/data/fake_data/fake_data.dart' as fakeProjects;
+import 'package:gap/data/fake_data/fake_data.dart' as fakeData;
 import 'package:gap/native_connectors/storage_connector.dart';
 import '../../../mock/storage/mock_flutter_secure_storage.dart';
 import './projects_storage_manager_descriptions.dart' as descriptions;
 
 main(){
   _initStorageConnector();
+  
   group(descriptions.projectsGroupDescription, (){
     _testSetProjects();
     _testGetProjects();
@@ -20,9 +21,11 @@ main(){
     _testGetChosenProject();
     _testRemoveChosenProject();
   });
-
+  
   group(descriptions.projectsWithPreloadedVisitsGroupDescription, (){
-    //_testGetProjecstWithPreloadedVisits();
+    _testSetProjecstWithPreloadedVisits();
+    _testGetProjecstWithPreloadedVisits();
+    _testRemoveProjectWithPreloadedVisits();
   });
 }
 
@@ -42,7 +45,7 @@ void _testSetProjects(){
 }
 
 Future<void> _tryTestSetProjects()async{
-  final List<Project> projects = fakeProjects.projects;
+  final List<Project> projects = fakeData.projects;
   await ProjectsStorageManager.setProjects(projects);
 }
 
@@ -61,18 +64,7 @@ Future<void> _tryTestGetProjects()async{
   _verifyReturnedProjects(projects);
 }
 
-void _verifyReturnedProjects(List<Project> storageReturnedElements){
-  expect(storageReturnedElements, isNotNull, reason: 'Los projects retornados por el storageSaver no deben ser null');
-  expect(storageReturnedElements.length, fakeProjects.projects.length, reason: 'El length de los projects retornados por el storageSaver debe ser el mismo que el de los fakeProjects');
-  for(int i = 0; i < storageReturnedElements.length; i++){
-    _compararParDeProjects(storageReturnedElements[i], fakeProjects.projects[i]);
-  }
-}
 
-void _compararParDeProjects(Project p1, Project p2){
-  expect(p1.id, p2.id, reason: 'El id del current project del storageSaver debe ser el mismo que el de los fakeProjects');
-  expect(p1.name, p2.name, reason: 'El name del current project del storageSaver debe ser el mismo que el de los fakeProjects');
-}
 
 void _testRemoveProjects(){
   test(descriptions.testRemoveProjectsDescription, ()async{
@@ -100,7 +92,7 @@ void _testSetChosenProject(){
 }
 
 Future<void> _tryTestSetChosenProject()async{
-  final Project chosenProject = fakeProjects.projects[0];
+  final Project chosenProject = fakeData.projects[0];
   await ProjectsStorageManager.setChosenProject(chosenProject);
 }
 
@@ -117,7 +109,7 @@ void _testGetChosenProject(){
 Future<void> _tryTestGetChosenProject()async{
   final Project chosenProject = await ProjectsStorageManager.getChosenProject();
   expect(chosenProject, isNotNull, reason: 'El chosen project retornado por el storageSaver no debería ser null');
-  _compararParDeProjects(chosenProject, fakeProjects.projects[0]);
+  _compararParDeProjects(chosenProject, fakeData.projects[0]);
 }
 
 void _testRemoveChosenProject(){
@@ -134,6 +126,22 @@ Future<void> _tryTestRemoveChosenProject()async{
   await ProjectsStorageManager.removeChosenProject();
 }
 
+void _testSetProjecstWithPreloadedVisits(){
+  test(descriptions.testSetProjectWithPreloadedVisitsDescription, ()async{
+    try{
+      await _tryTestSetProjecstWithPreloadedVisits();
+    }catch(err){
+      fail('Ocurrió un error: $err');
+    }
+  });
+}
+
+Future<void> _tryTestSetProjecstWithPreloadedVisits()async{
+  for(int i = 0; i < fakeData.projects.length; i++){
+    final Project p = fakeData.projects[i];
+    await ProjectsStorageManager.setToProjectWithPreloadedVisits(p);
+  }
+}
 
 void _testGetProjecstWithPreloadedVisits(){
   test(descriptions.testGetProjectsWithPreloadedVisitsDescription, ()async{
@@ -148,4 +156,42 @@ void _testGetProjecstWithPreloadedVisits(){
 Future<void> _tryTestGetProjecstWithPreloadedVisits()async{
   final List<Project> projects =  await ProjectsStorageManager.getProjectsWithPreloadedVisits();
   expect(projects, isNotNull, reason: 'Los projectos del projectsStorageManager no deberian ser null');
+  _verifyReturnedProjects(projects);
+}
+
+void _verifyReturnedProjects(List<Project> storageReturnedElements){
+  expect(storageReturnedElements, isNotNull, reason: 'Los projects retornados por el storage no deben ser null');
+  expect(storageReturnedElements.length, fakeData.projects.length, reason: 'El length de los projects retornados por el storage debe ser el mismo que el de los fakeProjects');
+  for(int i = 0; i < storageReturnedElements.length; i++){
+    _compararParDeProjects(storageReturnedElements[i], fakeData.projects[i]);
+  }
+}
+
+void _compararParDeProjects(Project p1, Project p2){
+  expect(p1.id, p2.id, reason: 'El id del current project del storage debe ser el mismo que el de los fakeProjects');
+  expect(p1.name, p2.name, reason: 'El name del current project del storage debe ser el mismo que el de los fakeProjects');
+}
+
+Future<void> _testRemoveProjectWithPreloadedVisits()async{
+  test(descriptions.testGetProjectsWithPreloadedVisitsDescription, ()async{
+    try{
+      await _tryTestRemoveProjectWithPreloadedVisits();
+    }catch(err){
+      fail('Ocurrió un error: $err');
+    }
+  });
+}
+
+Future<void> _tryTestRemoveProjectWithPreloadedVisits()async{
+  for(int i = 0; i < fakeData.projects.length; i++){
+    await ProjectsStorageManager.removeProjectWithPreloadedVisits(fakeData.projects[i]);
+    final List<Project> projectsWithPreloadedVisits = await ProjectsStorageManager.getProjectsWithPreloadedVisits();
+    _ensureProjectIsntInProjects(fakeData.projects[i], projectsWithPreloadedVisits);
+  }
+}
+
+void _ensureProjectIsntInProjects(Project project, List<Project> projects){
+  for(int i = 0; i < projects.length; i++){
+    expect(project.id, isNot(projects[i].id), reason: 'El projecto que se acabó de borrar no puede estar entre los projects with preloaded visits');
+  }
 }

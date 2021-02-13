@@ -21,8 +21,6 @@ class ProjectsStorageManager{
     return await _getListOfProjects(projectsKey);
   }
 
-  
-
   static Future<void> removeProjects()async{
     await StorageConnectorSingleton.storageConnector.removeResource(projectsKey);
   }
@@ -44,8 +42,18 @@ class ProjectsStorageManager{
 
   // * * * * * * * * * Preloaded data
 
-  static Future<void> setToProjectsWithPreloadedVisits(Project project)async{
+  static Future<void> removeProjectWithPreloadedVisits(Project removedProject)async{
+    final List<Project> projects = await getProjectsWithPreloadedVisits();
+    final List<Project> restantProjects = projects.where(
+      (Project p) => p.id != removedProject.id
+    ).toList();
+    await StorageConnectorSingleton.storageConnector.setListResource(projectsWithPreloadedVisitsKey, Projects(projects: restantProjects).toJson());
+  }
 
+  static Future<void> setToProjectWithPreloadedVisits(Project project)async{
+    final List<Project> projectsWithPreloadedVisits = await getProjectsWithPreloadedVisits();
+    projectsWithPreloadedVisits.add(project);
+    await StorageConnectorSingleton.storageConnector.setListResource(projectsWithPreloadedVisitsKey, Projects(projects: projectsWithPreloadedVisits).toJson());
   }
 
   static Future<List<Project>> getProjectsWithPreloadedVisits()async{
@@ -54,15 +62,7 @@ class ProjectsStorageManager{
 
   static Future<List<Project>> _getListOfProjects(String key)async{
     final List<Map<String, dynamic>> projectsAsJson = await StorageConnectorSingleton.storageConnector.getListResource(key);
-    final List<Project> projects = _convertJsonProjectsToObject(projectsAsJson);
+    final List<Project> projects = Projects.fromJson(projectsAsJson).projects;
     return projects;
   }
-
-  static List<Project> _convertJsonProjectsToObject(List<Map<String, dynamic>> projectsAsJson){
-    return projectsAsJson.map<Project>(
-      (Map<String, dynamic> jsonProject) => Project.fromJson(jsonProject)
-    ).toList();
-  }
-  
-
 }

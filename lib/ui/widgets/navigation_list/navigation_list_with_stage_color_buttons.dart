@@ -6,8 +6,8 @@ import 'package:gap/ui/utils/size_utils.dart';
 // ignore: must_be_immutable
 class NavigationListWithStageButtons extends NavigationList {
   final SizeUtils _sizeUtils = SizeUtils();
-  final List<EntityWithStages> entitiesWithStages;
-  final Function(EntityWithStages entity) itemsFunction;
+  final List<EntityWithStage> entitiesWithStages;
+  final Function(EntityWithStage entity) itemsFunction;
   NavigationListWithStageButtons({
     @required this.entitiesWithStages,
     @required this.itemsFunction
@@ -18,7 +18,7 @@ class NavigationListWithStageButtons extends NavigationList {
 
   @override
   List<Widget> createButtonItems(){
-    final List<Widget> items = entitiesWithStages.map<Widget>((EntityWithStages entity){
+    final List<Widget> items = entitiesWithStages.map<Widget>((EntityWithStage entity){
       return ButtonWithStageColor(
         name: entity.name,
         textColor: Theme.of(context).primaryColor,

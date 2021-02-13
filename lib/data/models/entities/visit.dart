@@ -19,13 +19,14 @@ class Visits{
   ).toList();
 }
 
-class Visit extends EntityWithStages{
+class Visit extends EntityWithStage{
   final DateTime date;
 
   Visit.fromJson(Map<String, dynamic> json)
     :
     this.date = DateTime.parse(json['date']),
     super(
+      id: json['id'],
       stage: (json['stage']=='pendiente')? ProcessStage.Pendiente : ProcessStage.Realizada,
       name: json['name']
     )

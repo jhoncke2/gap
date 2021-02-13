@@ -13,9 +13,9 @@ main(){
 
   _initStorageConnector();
   group(descriptions.commentedImagesGroupDescription, (){
-    _testSetForms();
-    _testGetForms();
-    _testRemoveForms();
+    _testSetCommentedImages();
+    _testGetCommentedImages();
+    _testRemoveCommentedImages();
   });
 }
 
@@ -24,59 +24,59 @@ void _initStorageConnector(){
   StorageConnectorSingleton.storageConnector.fss = MockFlutterSecureStorage();
 }
 
-void _testSetForms(){
+void _testSetCommentedImages(){
   test(descriptions.testSetCommentedImagesDescription, ()async{
     try{
-      await _tryTestSetForms();
+      await _tryTestSetCommentedImages();
     }catch(err){
       fail('Ocurrió un error: $err');
     }
   });
 }
 
-Future<void> _tryTestSetForms()async{
+Future<void> _tryTestSetCommentedImages()async{
   await CommentedImagesStorageManager.setCommentedImages(fakeData.commentedImages);
 }
 
-void _testGetForms(){
+void _testGetCommentedImages(){
   test(descriptions.testGetCommentedImagesDescription, ()async{   
     try{
-      await _tryTestGetForms();
+      await _tryTestGetCommentedImages();
     }catch(err){
       throw err;
     }
   });
 }
 
-Future<void> _tryTestGetForms()async{
-  final List<CommentedImage> visits = await CommentedImagesStorageManager.getCommentedImages();
-  _verifyStorageGetReturnedElements(visits);
+Future<void> _tryTestGetCommentedImages()async{
+  final List<CommentedImage> commentedImages = await CommentedImagesStorageManager.getCommentedImages();
+  _verifyStorageGetReturnedElements(commentedImages);
 }
 
 void _verifyStorageGetReturnedElements(List<dynamic> storageReturnedElements){
   expect(storageReturnedElements, isNotNull, reason: 'Las commentedImages retornados por el storageManager no deben ser null');
-  expect(storageReturnedElements.length, fakeData.formularios.length, reason: 'El length de las commentedImages retornados por el storageManager debe ser el mismo que el de los fake');
+  expect(storageReturnedElements.length, fakeData.commentedImages.length, reason: 'El length de las commentedImages retornados por el storageManager debe ser el mismo que el de los fake');
   for(int i = 0; i < storageReturnedElements.length; i++){
-    _compararParDeForms(storageReturnedElements[i], fakeData.commentedImages[i]);
+    _compararParDeCommentedImages(storageReturnedElements[i], fakeData.commentedImages[i]);
   }
 }
 
-void _compararParDeForms(CommentedImage i1, CommentedImage i2){
+void _compararParDeCommentedImages(CommentedImage i1, CommentedImage i2){
   expect(i1.commentary, i2.commentary, reason: 'El commentary del current CommentedImage del storageManager debe ser el mismo que el de los fakeCommentedImages');
   expect(i1.image.toString(), i2.image.toString(), reason: 'El image del current CommentedImage del storageManager debe ser el mismo que el de los fakeCommentedImages');
   expect(i1.positionInPage, i2.positionInPage, reason: 'El positionInPage del current CommentedImage del storageManager debe ser el mismo que el de los fakeCommentedImages');
 }
 
-void _testRemoveForms(){
+void _testRemoveCommentedImages(){
   test(descriptions.testRemoveCommentedImagesDescription, ()async{
     try{
-      await _tryTestRemoveForms();
+      await _tryTestRemoveCommentedImages();
     }catch(err){
       fail('Ocurrió un error: $err');
     }
   });
 }
 
-Future<void> _tryTestRemoveForms()async{
+Future<void> _tryTestRemoveCommentedImages()async{
   await CommentedImagesStorageManager.removeCommentedImages();
 }

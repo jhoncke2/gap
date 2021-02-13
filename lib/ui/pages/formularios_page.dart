@@ -95,7 +95,7 @@ class _FormulariosComponents extends StatelessWidget {
     );
   }
 
-  void _onItemTap(EntityWithStages entity){
+  void _onItemTap(EntityWithStage entity){
     _addChosenFormToForms(entity);
     //TODO: Revisar que esté haciendo algo que tenga sentido
     _addEntityToFormInputsNav(entity);

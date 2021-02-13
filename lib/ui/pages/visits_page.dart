@@ -163,13 +163,13 @@ class _VisitsComponents extends StatelessWidget {
     return NavigationListWithStageButtons(itemsFunction: _onTapFunction, entitiesWithStages: visits);
   }
 
-  void _onTapFunction(EntityWithStages entity){
+  void _onTapFunction(EntityWithStage entity){
     _choseVisit(entity);
     _loadForms();
     Navigator.of(_context).pushNamed(VisitDetailPage.route);
   }
 
-  void _choseVisit(EntityWithStages entity){
+  void _choseVisit(EntityWithStage entity){
     final Visit visit = entity as Visit;
     final VisitsBloc visitsBloc = BlocProvider.of<VisitsBloc>(_context);
     final ChooseVisit chooseVisitEvent = ChooseVisit(chosenOne: visit);

@@ -4,6 +4,7 @@ import 'package:gap/native_connectors/storage_connector.dart';
 class VisitsStorageManager{
   static final String visitsKey = 'visits';
   static final String chosenVisitKey = 'chosen_visit';
+  static final String preloadedVisitsKey = 'preloaded_visits';
 
   static Future<void> setVisits(List<Visit> visits)async{
     final List<Map<String, dynamic>> visitsAsJson = _convertVisitsToJson(visits);

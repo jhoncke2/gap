@@ -19,16 +19,15 @@ class Formularios{
   ).toList();
 }
 
-class Formulario extends EntityWithStages {
-  final int id;
+class Formulario extends EntityWithStage {
   final Date date;
   final FormFields _fields;
   
   Formulario.fromJson(Map<String, dynamic> json):
-    id = json['id'],
     date = Date( DateTime.parse(json['date']) ),
     _fields = FormFields.fromJson( json['fields'].cast<Map<String, dynamic>>() ),
     super(
+      id: json['id'],
       stage: (json['stage']=='pendiente')? ProcessStage.Pendiente : ProcessStage.Realizada,
       name: json['name']
     )

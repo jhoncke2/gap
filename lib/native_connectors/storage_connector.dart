@@ -23,12 +23,12 @@ class StorageConnector{
     return value;
   }
 
-  Future<void> setMapResource(String resourceKey, Map<String, dynamic> value)async{
+  Future<void> setMapResource(String resourceKey, Map<dynamic, dynamic> value)async{
     final String valueAsString = jsonEncode(value);
     await write(resourceKey, valueAsString);
   }
 
-  Future<Map<String, dynamic>> getMapResource(String resourceKey)async{
+  Future<Map<dynamic, dynamic>> getMapResource(String resourceKey)async{
     final String valueAsString = await read(resourceKey);
     final Map<String, dynamic> value = jsonDecode(valueAsString??'{}').cast<String, dynamic>();
     return value;
@@ -56,7 +56,7 @@ class StorageConnector{
   
   @protected
   Future<String> read(String key)async{
-    return await fss.read(key: key)??'';
+    return (await fss.read(key: key));
   }
   
   @protected
