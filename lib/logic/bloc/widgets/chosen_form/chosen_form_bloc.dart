@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:gap/data/models/entities/entities.dart';
-import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_storage_manager.dart';
+import 'package:gap/logic/storage_managers/forms/chosen_form_storage_manager.dart';
 import 'package:meta/meta.dart';
 
 part 'chosen_form_event.dart';

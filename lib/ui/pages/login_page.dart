@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/data/enums/enums.dart';
 import 'package:gap/logic/bloc/entities/projects/projects_bloc.dart';
 import 'package:gap/data/models/entities/entities.dart';
+import 'package:gap/logic/bloc/nav_routes/nav_routes_manager.dart';
+import 'package:gap/logic/blocs_manager/pages_navigation_manager.dart';
+import 'package:gap/native_connectors/net_connection_detector.dart';
 import 'package:gap/ui/pages/projects_page.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/buttons/general_button.dart';
@@ -170,18 +174,10 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  void _login(){
-    _loadProjects();
-    Navigator.of(context).pushReplacementNamed(ProjectsPage.route);
+  void _login()async{
+    PagesNavigationManager.navToProjects(context);
   }
-
-  void _loadProjects(){
-    final ProjectsBloc projBloc = BlocProvider.of<ProjectsBloc>(_context);
-    final List<Project> projects = fakeProjects.projects;
-    final SetProjects setProjecsEvent = SetProjects(projects: projects);
-    projBloc.add(setProjecsEvent);
-  }
-
+  
   Widget _createBottomComponents(){
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,

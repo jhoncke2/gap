@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gap/logic/bloc/widgets/commented_images/commented_images_storage_manager.dart';
+import 'package:gap/logic/storage_managers/commented_images/commented_images_storage_manager.dart';
 import 'package:gap/native_connectors/storage_connector.dart';
 
 import '../../../mock/storage/mock_flutter_secure_storage.dart';

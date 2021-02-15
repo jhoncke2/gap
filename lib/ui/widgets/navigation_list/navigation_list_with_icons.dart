@@ -6,6 +6,7 @@ import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/utils/static_data/visit_detail_navigation.dart' as navigationData;
 // ignore: must_be_immutable
 class NavigationListWithIcons extends NavigationList{
+
   final SizeUtils _sizeUtils = SizeUtils();
   final Color _activeFirstIconColor = Color.fromRGBO(213, 199, 18, 1);
   final Color _activeOtherIconsColor = Colors.black54;
@@ -63,7 +64,7 @@ class NavigationListWithIcons extends NavigationList{
     for(int i = 0; i < navigationItemsParts.length; i++){
       final Map<String, dynamic> itemPart = navigationItemsParts[i];
       this.itemsFunctions.add(
-        _generateFunctionByItemActivation(_navItemsActivation[i], itemPart['navigation_route'])
+        _generateFunctionByItemActivation(_navItemsActivation[i], itemPart['nav_function'])
       );
       this.itemsNames.add(itemPart['name']);
       this.icons.add(
@@ -72,10 +73,10 @@ class NavigationListWithIcons extends NavigationList{
     }
   }
 
-  Function _generateFunctionByItemActivation(bool itemActivation, String navigationRoute){
+  Function _generateFunctionByItemActivation(bool itemActivation, Function navigateToNextPage){
     if(itemActivation){
       return (){
-        Navigator.of(context).pushNamed(navigationRoute);
+        navigateToNextPage(context);
       };
     }else{
       return null;

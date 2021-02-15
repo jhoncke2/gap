@@ -4,8 +4,8 @@ import 'package:gap/logic/bloc/entities/visits/visits_bloc.dart';
 import 'package:gap/logic/bloc/widgets/commented_images/commented_images_bloc.dart';
 import 'package:gap/logic/bloc/widgets/index/index_bloc.dart';
 import 'package:gap/logic/blocs_manager/commented_images_index_manager.dart';
+import 'package:gap/logic/blocs_manager/pages_navigation_manager.dart';
 import 'package:gap/ui/pages/visit_detail_page.dart';
-import 'package:gap/ui/pages/visits_page.dart';
 import 'package:gap/ui/widgets/buttons/general_button.dart';
 import 'package:gap/ui/widgets/commented_images/commented_images_section.dart';
 import 'package:gap/ui/widgets/header/header.dart';
@@ -152,10 +152,11 @@ class _EndButton extends StatelessWidget {
   }
 
   void _endImgsEdition(){
-    _resetCommImgsBloc();
-    _resetIndexBloc();
+    //_resetCommImgsBloc();
+    //_resetIndexBloc();
+    PagesNavigationManager.endAdjuntarImages(_context);
     //TODO: llamar a servicio de enviar commentedImages al back
-    Navigator.of(_context).pushReplacementNamed(VisitDetailPage.route);
+    //Navigator.of(_context).pushReplacementNamed(VisitDetailPage.route);
   }
 
   void _resetCommImgsBloc(){

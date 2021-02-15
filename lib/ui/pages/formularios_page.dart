@@ -4,6 +4,7 @@ import 'package:gap/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/logic/bloc/entities/visits/visits_bloc.dart';
 import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/data/models/entities/entities.dart';
+import 'package:gap/logic/blocs_manager/pages_navigation_manager.dart';
 import 'package:gap/ui/pages/formulario_detail_page.dart';
 import 'package:gap/ui/widgets/header/header.dart';
 import 'package:gap/ui/widgets/navigation_list/navigation_list_with_stage_color_buttons.dart';
@@ -96,26 +97,6 @@ class _FormulariosComponents extends StatelessWidget {
   }
 
   void _onItemTap(EntityWithStage entity){
-    _addChosenFormToForms(entity);
-    //TODO: Revisar que esté haciendo algo que tenga sentido
-    _addEntityToFormInputsNav(entity);
-    _addFormToChosenFormBloc(entity);
-    Navigator.of(_context).pushNamed(FormularioDetailPage.route);
-  }
-
-  void _addChosenFormToForms(Formulario form){
-    final FormulariosBloc formsBloc = BlocProvider.of<FormulariosBloc>(_context);
-    final ChooseForm chooseFormEvent = ChooseForm(chosenOne: form);
-    formsBloc.add(chooseFormEvent);
-  }
-
-  void _addEntityToFormInputsNav(Formulario form){
-
-  }
-
-  void _addFormToChosenFormBloc(Formulario form){
-    final ChosenFormBloc cFBloc = BlocProvider.of<ChosenFormBloc>(_context);
-    final InitFormFillingOut initFormFOEvent = InitFormFillingOut(formulario: form);
-    cFBloc.add(initFormFOEvent);
+    PagesNavigationManager.navToFormDetail(entity, _context);
   }
 }

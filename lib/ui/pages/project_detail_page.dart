@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gap/logic/blocs_manager/pages_navigation_manager.dart';
 import 'package:gap/ui/pages/visits_page.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/header/header.dart';
@@ -35,7 +36,7 @@ class ProjectDetailPage extends StatelessWidget {
     _context = appContext;
     _sizeUtils = SizeUtils();
     onTapFunctions = [
-      () => Navigator.of(_context).pushNamed(VisitsPage.route),
+      () => PagesNavigationManager.navToVisits(_context),
       (){}
     ];
   }

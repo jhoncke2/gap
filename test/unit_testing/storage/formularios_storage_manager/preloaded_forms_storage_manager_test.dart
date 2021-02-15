@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gap/data/models/entities/entities.dart';
-import 'package:gap/logic/bloc/entities/formularios/preloaded_forms_storage_manager.dart';
+import 'package:gap/logic/storage_managers/forms/preloaded_forms_storage_manager.dart';
 import 'package:gap/data/fake_data/fake_data.dart' as fakeData;
 import 'package:gap/native_connectors/storage_connector.dart';
 import '../../../mock/storage/mock_flutter_secure_storage.dart';
@@ -13,8 +13,8 @@ void main(){
   _initStorageConnector();
   group(descriptions.preloadedFormsGroupDescription, (){
     _testSetPreloadedForm();
-    _testGetPreloadedVisitsByProjectId();
-    //_testRemovePreloadedVisit();
+    _testGetPreloadedFormsByVisitId();
+    _testRemovePreloadedForm();
   });
 }
 
@@ -45,13 +45,13 @@ List<Map<String, dynamic>> obtainFormsAsJsonByIndexFromCurrentData(int index){
   return PreloadedFormsStorageManager.currentPreloadedFormsHolder.currentData[fakeData.projects[index].id.toString()]??[ ];
 }
 
-void _testGetPreloadedVisitsByProjectId(){
+void _testGetPreloadedFormsByVisitId(){
   test(descriptions.testGetPreloadedFormsDescription, ()async{
-    await _tryTestGetPreloadedVisitsByProjectId();
+    await _tryTestGetPreloadedFormsByVisitId();
   });
 }
 
-Future<void> _tryTestGetPreloadedVisitsByProjectId()async{
+Future<void> _tryTestGetPreloadedFormsByVisitId()async{
   for(int i = 0; i < fakeData.visits.length; i++){
     final int initialFormForVisitIndex = _getInitialFormIndexForVisitIndex(i);
     final List<Formulario> formsByVisitId = await PreloadedFormsStorageManager.getPreloadedFormsByVisitId(fakeData.visits[i].id);
@@ -66,17 +66,17 @@ int _getInitialFormIndexForVisitIndex(int projIndex){
   return projIndex*nFormsPerVisit;
 }
 
-void _testRemovePreloadedVisit(){
+void _testRemovePreloadedForm(){
   test(descriptions.testRemovePreloadedFormsDescription, ()async{
     try{
-      await _tryTestRemovePreloadedVisit();
+      await _tryTestRemovePreloadedForm();
     }catch(err){
       fail('Ocurrió un error: $err');
     }
   });
 }
 
-Future<void> _tryTestRemovePreloadedVisit()async{
+Future<void> _tryTestRemovePreloadedForm()async{
   for(int i = 0; i < fakeData.projects.length; i++){
     final int initialVisitForProjIndex = _getInitialFormIndexForVisitIndex(i);
     for(int j = initialVisitForProjIndex; j < initialVisitForProjIndex + nFormsPerVisit; j++){

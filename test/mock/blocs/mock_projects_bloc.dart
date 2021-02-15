@@ -1,5 +1,5 @@
 import 'package:gap/logic/bloc/entities/projects/projects_bloc.dart';
-import 'package:gap/logic/bloc/entities/projects/projects_storage_manager.dart';
+import 'package:gap/logic/storage_managers/projects/projects_storage_manager.dart';
 
 class MockProjectsBloc extends ProjectsBloc{
 

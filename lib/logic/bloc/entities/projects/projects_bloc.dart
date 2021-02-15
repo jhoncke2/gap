@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
-import 'package:gap/logic/bloc/entities/projects/projects_storage_manager.dart';
+import 'package:gap/logic/storage_managers/projects/projects_storage_manager.dart';
 import 'package:gap/data/models/entities/entities.dart';
 import 'package:meta/meta.dart';
 

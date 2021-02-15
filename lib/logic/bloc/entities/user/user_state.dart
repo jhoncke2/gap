@@ -1,6 +1,14 @@
 part of 'user_bloc.dart';
 
 @immutable
-abstract class UserState {}
+class UserState {
+  final String authToken;
 
-class UserInitial extends UserState {}
+  UserState({this.authToken});
+
+  UserState copyWith({
+    String authToken
+  })=>UserState(
+    authToken: authToken??this.authToken
+  );
+}

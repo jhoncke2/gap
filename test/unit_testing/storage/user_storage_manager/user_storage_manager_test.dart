@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gap/logic/bloc/entities/user/user_storage_manager.dart';
+import 'package:gap/logic/storage_managers/user/user_storage_manager.dart';
 import 'package:gap/native_connectors/storage_connector.dart';
 import '../../../mock/storage/mock_flutter_secure_storage.dart';
 import './user_storage_manager_descriptions.dart' as descriptions;

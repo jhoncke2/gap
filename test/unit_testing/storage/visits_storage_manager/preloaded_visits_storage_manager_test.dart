@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gap/data/models/entities/entities.dart';
-import 'package:gap/logic/bloc/entities/visits/preloaded_visits_storage_manager.dart';
+import 'package:gap/logic/storage_managers/visits/preloaded_visits_storage_manager.dart';
 import 'package:gap/data/fake_data/fake_data.dart' as fakeData;
 import 'package:gap/native_connectors/storage_connector.dart';
 import '../../../mock/storage/mock_flutter_secure_storage.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gap/logic/bloc/entities/visits/visits_storage_manager.dart';
+import 'package:gap/logic/storage_managers/visits/visits_storage_manager.dart';
 import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/data/fake_data/fake_data.dart' as fakeData;
 import 'package:gap/native_connectors/storage_connector.dart';

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/logic/bloc/entities/projects/projects_bloc.dart';
 import 'package:gap/data/models/entities/entities.dart';
+import 'package:gap/logic/blocs_manager/pages_navigation_manager.dart';
 import 'package:gap/ui/pages/project_detail_page.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/header/header.dart';
@@ -85,18 +86,11 @@ class ProjectsPage extends StatelessWidget {
     projects.forEach((Project project){
       names.add(project.name);
       functions.add((){
-        _onChooseProject(project);
+        PagesNavigationManager.navToProjectDetail(project, _context);
       });
     });
     namesAndFunctions['names'] = names;
     namesAndFunctions['functions'] = functions;
     return namesAndFunctions;
-  }
-
-  void _onChooseProject(Project project){
-    final ProjectsBloc projectsBloc = BlocProvider.of<ProjectsBloc>(_context);
-    final ChooseProject chooseProjEvent = ChooseProject(chosenOne: project);
-    projectsBloc.add(chooseProjEvent);
-    Navigator.of(_context).pushNamed(ProjectDetailPage.route);
   }
 }

@@ -4,6 +4,7 @@ import 'package:gap/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/logic/bloc/entities/visits/visits_bloc.dart';
 import 'package:gap/data/enums/enums.dart';
 import 'package:gap/data/models/entities/entities.dart';
+import 'package:gap/logic/blocs_manager/pages_navigation_manager.dart';
 import 'package:gap/ui/pages/visit_detail_page.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/header/header.dart';
@@ -13,13 +14,12 @@ import 'package:gap/ui/widgets/unloaded_elements/unloaded_nav_items.dart';
 import 'package:gap/ui/widgets/visits_date_filter.dart';
 import 'package:gap/data/fake_data/fake_data.dart' as fakeData;
 class VisitsPage extends StatefulWidget {
-  static final String route = 'visitas';
+  static final String route = 'visits';
   @override
   _VisitsPageState createState() => _VisitsPageState();
 }
 
 class _VisitsPageState extends State<VisitsPage> {
-  final String _widgetTitle = 'Listado de visitas';
   BuildContext _context;
   SizeUtils _sizeUtils;
 
@@ -164,9 +164,9 @@ class _VisitsComponents extends StatelessWidget {
   }
 
   void _onTapFunction(EntityWithStage entity){
-    _choseVisit(entity);
-    _loadForms();
-    Navigator.of(_context).pushNamed(VisitDetailPage.route);
+    PagesNavigationManager.navToVisitDetail(entity, _context);
+    //_choseVisit(entity);
+    //_loadForms();
   }
 
   void _choseVisit(EntityWithStage entity){

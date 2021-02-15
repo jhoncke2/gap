@@ -7,7 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:gap/central_config/bloc_providers_creator.dart';
 import 'package:gap/data/enums/enums.dart';
 import 'package:gap/logic/bloc/entities/projects/projects_bloc.dart';
-import 'package:gap/logic/central_managers/storage_manager.dart';
+import 'package:gap/logic/storage_managers/storage_manager.dart';
 import 'package:gap/native_connectors/storage_connector.dart';
 import '../../../mock/storage/mock_flutter_secure_storage.dart';
 import 'recient_activity_storage_data.dart' as recientActivityStorageData;
@@ -62,7 +62,7 @@ void _testProjectsBloc(Map<String, SendPort> mainPorts)async{
 
   bool blocsAreUpdated = false;
   final Map<BlocName, Bloc> blocsMap = BlocProvidersCreator.blocsAsMap;
-  StorageManager.addRecientActivityDataToBlocs(blocsMap);
+  //StorageManager.addRecientActivityDataToBlocs(blocsMap);
   
   test('', ()async{
     final ProjectsBloc pb = blocsMap[BlocName.Projects];

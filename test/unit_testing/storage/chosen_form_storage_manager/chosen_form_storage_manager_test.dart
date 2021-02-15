@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_storage_manager.dart';
+import 'package:gap/logic/storage_managers/forms/chosen_form_storage_manager.dart';
 import 'package:gap/native_connectors/storage_connector.dart';
 
 import '../../../mock/storage/mock_flutter_secure_storage.dart';
