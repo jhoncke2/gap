@@ -13,7 +13,7 @@ class UserStorageManager{
     return await StorageConnectorSingleton.storageConnector.getStringResource(authTokenKey);
   }
 
-  static Future<void> deleteAuthToken()async{
+  static Future<void> removeAuthToken()async{
     await StorageConnectorSingleton.storageConnector.removeResource(authTokenKey);
   }
 }

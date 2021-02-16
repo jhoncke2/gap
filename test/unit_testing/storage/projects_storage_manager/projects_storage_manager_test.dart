@@ -184,7 +184,7 @@ Future<void> _testRemoveProjectWithPreloadedVisits()async{
 
 Future<void> _tryTestRemoveProjectWithPreloadedVisits()async{
   for(int i = 0; i < fakeData.projects.length; i++){
-    await ProjectsStorageManager.removeProjectWithPreloadedVisits(fakeData.projects[i]);
+    await ProjectsStorageManager.removeProjectWithPreloadedVisits(fakeData.projects[i].id);
     final List<Project> projectsWithPreloadedVisits = await ProjectsStorageManager.getProjectsWithPreloadedVisits();
     _ensureProjectIsntInProjects(fakeData.projects[i], projectsWithPreloadedVisits);
   }

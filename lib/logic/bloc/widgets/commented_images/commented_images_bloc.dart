@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/data/models/entities/entities.dart';
+import 'package:gap/logic/storage_managers/commented_images/commented_images_storage_manager.dart';
 import 'package:meta/meta.dart';
 
 part 'commented_images_event.dart';

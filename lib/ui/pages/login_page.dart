@@ -3,11 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/data/enums/enums.dart';
 import 'package:gap/logic/bloc/entities/projects/projects_bloc.dart';
 import 'package:gap/data/models/entities/entities.dart';
-import 'package:gap/logic/bloc/nav_routes/nav_routes_manager.dart';
+import 'package:gap/logic/bloc/nav_routes/routes_manager.dart';
 import 'package:gap/logic/blocs_manager/pages_navigation_manager.dart';
 import 'package:gap/native_connectors/net_connection_detector.dart';
 import 'package:gap/ui/pages/projects_page.dart';
 import 'package:gap/ui/utils/size_utils.dart';
+import 'package:gap/ui/utils/static_data/buttons_keys.dart';
 import 'package:gap/ui/widgets/buttons/general_button.dart';
 import 'package:gap/ui/widgets/logo.dart';
 import 'package:gap/data/fake_data/fake_data.dart' as fakeProjects;
@@ -168,6 +169,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _crearBotonLogin(){
     return GeneralButton(
+      key: ButtonsKeys.loginButtonKey,
       text: 'INGRESAR',
       backgroundColor: Theme.of(_context).primaryColor,
       onPressed: _login,

@@ -25,4 +25,13 @@ class IndexState {
     sePuedeAvanzar: sePuedeAvanzar??this.sePuedeAvanzar,
     sePuedeRetroceder: sePuedeRetroceder??this.sePuedeRetroceder,
   );
+
+  factory IndexState.fromJson(Map<String, dynamic> json){
+    return IndexState(
+      nPages: json['n_pages'],
+        currentIndexPage: json['current_index'],
+        sePuedeAvanzar: json['se_puede_avanzar'],
+        sePuedeRetroceder: json['se_puede_retroceder']
+    );
+  }
 }

@@ -5,10 +5,11 @@ import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/logic/bloc/entities/projects/projects_bloc.dart';
 import 'package:gap/logic/bloc/entities/visits/visits_bloc.dart';
-import 'package:gap/logic/bloc/nav_routes/nav_routes_manager.dart';
+import 'package:gap/logic/bloc/nav_routes/routes_manager.dart';
 import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/logic/bloc/widgets/commented_images/commented_images_bloc.dart';
 import 'package:gap/logic/bloc/widgets/index/index_bloc.dart';
+import 'package:gap/logic/blocs_manager/chosen_form_manager.dart';
 import 'package:gap/native_connectors/net_connection_detector.dart';
 import 'package:gap/data/fake_data/fake_data.dart' as fakeData;
 
@@ -95,6 +96,18 @@ class PagesNavigationManager{
     final ChosenFormBloc chosenFormBloc = BlocProvider.of<ChosenFormBloc>(context);
     final InitFormFillingOut iffoEvent = InitFormFillingOut(formulario: formulario);
     chosenFormBloc.add(iffoEvent);
+  }
+
+  static Future<void> endFormFirmers(BuildContext context)async{    
+    await _addFirmToFirmer();
+    //TODO: El service de enviar formulario Firmers (si hay internet)
+    ChosenFormManagerSingleton.chosenFormManager.finishFirms();
+    _goToNextPage(NavigationRoute.Formularios, context);
+    Navigator.of(context).pushReplacementNamed(NavigationRoute.Formularios.value);
+  }
+
+  static Future<void> _addFirmToFirmer()async{
+    await ChosenFormManagerSingleton.chosenFormManager.addFirmToFirmer();
   }
 
   static Future<void> navToAdjuntarImages(BuildContext context)async{

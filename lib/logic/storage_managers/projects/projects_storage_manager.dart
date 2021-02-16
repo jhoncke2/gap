@@ -42,10 +42,10 @@ class ProjectsStorageManager{
 
   // * * * * * * * * * Preloaded data
 
-  static Future<void> removeProjectWithPreloadedVisits(Project removedProject)async{
+  static Future<void> removeProjectWithPreloadedVisits(int removedProjectId)async{
     final List<Project> projects = await getProjectsWithPreloadedVisits();
     final List<Project> restantProjects = projects.where(
-      (Project p) => p.id != removedProject.id
+      (Project p) => p.id != removedProjectId
     ).toList();
     await StorageConnectorSingleton.storageConnector.setListResource(projectsWithPreloadedVisitsKey, Projects(projects: restantProjects).toJson());
   }

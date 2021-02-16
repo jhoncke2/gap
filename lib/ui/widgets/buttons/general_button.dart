@@ -17,7 +17,8 @@ class GeneralButton extends StatelessWidget {
     @required this.onPressed,
     @required this.backgroundColor,
     this.borderShape = BtnBorderShape.Ellyptic,
-  });
+    Key key
+  }):super(key: key);
 
   @override
   Widget build(BuildContext context) {

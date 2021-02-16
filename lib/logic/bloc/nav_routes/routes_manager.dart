@@ -1,7 +1,7 @@
 import 'package:gap/data/enums/enums.dart';
-import 'package:gap/logic/storage_managers/navigation_route/navigation_route_storage_manager.dart';
+import 'package:gap/logic/storage_managers/navigation_route/navigation_routes_storage_manager.dart';
 
-class NavRoutesManager{
+class RoutesManager{
   NavigationRoute _currentRoute;
   
   Future loadRoute()async{
@@ -26,6 +26,7 @@ class NavRoutesManager{
   }
 
   NavigationRoute get currentRoute => _currentRoute;
+  Future<List<NavigationRoute>> get routesTree async => await NavigationRoutesStorageManager.getNavigationRoutes();
 }
 
-final NavRoutesManager navRoutesManager = NavRoutesManager();
+final RoutesManager navRoutesManager = RoutesManager();

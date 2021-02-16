@@ -6,7 +6,7 @@ import 'package:gap/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/logic/storage_managers/forms/formularios_storage_manager.dart';
 import 'package:gap/logic/storage_managers/forms/preloaded_forms_storage_manager.dart';
 import 'package:gap/logic/bloc/entities/projects/projects_bloc.dart';
-import 'package:gap/logic/storage_managers/navigation_route/navigation_route_storage_manager.dart';
+import 'package:gap/logic/storage_managers/navigation_route/navigation_routes_storage_manager.dart';
 import 'package:gap/logic/storage_managers/projects/projects_storage_manager.dart';
 import 'package:gap/logic/storage_managers/visits/preloaded_visits_storage_manager.dart';
 import 'package:gap/logic/bloc/entities/visits/visits_bloc.dart';
@@ -17,7 +17,6 @@ import 'package:gap/logic/bloc/widgets/commented_images/commented_images_bloc.da
 import 'package:gap/logic/storage_managers/commented_images/commented_images_storage_manager.dart';
 import 'package:gap/logic/storage_managers/index/index_storage_manager.dart';
 import 'package:gap/logic/bloc/widgets/index/index_bloc.dart';
-import 'package:gap/logic/bloc/nav_routes/nav_routes_manager.dart';
 
 abstract class StorageBlocsManager{
   @protected
@@ -29,38 +28,37 @@ abstract class StorageBlocsManager{
     navRoutes = await NavigationRoutesStorageManager.getNavigationRoutes();
     dataAddedToBlocsByExistingNavs = {};
     this.blocs = blocs;
-    blocs.forEach((blocName, bloc){
-      _addStorageDataToBloc(blocName, bloc);
-    });
+    for(MapEntry<BlocName, Bloc> bloc in blocs.entries){
+      await _addStorageDataToBloc(bloc.key, bloc.value);
+    }
   }
 
-  void _addStorageDataToBloc(BlocName name, Bloc bloc){
+  Future<void> _addStorageDataToBloc(BlocName name, Bloc bloc)async{
     switch(name){
       case BlocName.UserBloc:
         // TODO: Handle this case.
         break;
       case BlocName.Projects:
-        addStorageDataToProjectsBlocIfExistsPagesInStorage(bloc);
+        await addStorageDataToProjectsBlocIfExistsPagesInStorage(bloc);
         break;
       case BlocName.Visits:
-        addStorageDataToVisitsBlocIfExistsPagesInStorage(bloc);
+        await addStorageDataToVisitsBlocIfExistsPagesInStorage(bloc);
         break;
       case BlocName.Formularios:
-        addStorageDataToFormulariosBlocIfExistsPageInStorage(bloc);
+        await addStorageDataToFormulariosBlocIfExistsPageInStorage(bloc);
         break;
       case BlocName.ChosenForm:
-        addStorageDataToChosenFormBlocIfExistsPageInStorage(bloc);
+        await addStorageDataToChosenFormBlocIfExistsPageInStorage(bloc);
         break;
       case BlocName.Images:
         break;
       case BlocName.CommentedImages:
-        addStorageDataToCommentedImagesBlocIfExistsPageInStorage(bloc);
+        await addStorageDataToCommentedImagesBlocIfExistsPageInStorage(bloc);
         break;
       case BlocName.FirmPaint:
         break;
       case BlocName.Index:
-        //TODO: Arreglar problema con index null desde storage
-        //addStorageDataToIndexBloc(bloc);
+        await addStorageDataToIndexBlocIfExistsPageInStorage(bloc);
         break;
     }
   }
@@ -79,8 +77,8 @@ abstract class StorageBlocsManager{
   Future<void> _addStorageDataToChosenProject(ProjectsBloc bloc)async{
     final Project chosenOne = await ProjectsStorageManager.getChosenProject();
     final ChooseProject cpEvent = ChooseProject(chosenOne: chosenOne);
-    dataAddedToBlocsByExistingNavs[NavigationRoute.ProjectDetail] = chosenOne;
     bloc.add(cpEvent);
+    dataAddedToBlocsByExistingNavs[NavigationRoute.ProjectDetail] = chosenOne;
   }
 
   @protected
@@ -142,8 +140,7 @@ abstract class StorageBlocsManager{
 
   @protected
   Future<void> _addStorageDataToIndexBloc(IndexBloc bloc)async{
-    final IndexStorageManager ism = IndexStorageManager();
-    final IndexState indexConfig = await ism.getIndexConfig();
+    final IndexState indexConfig = await IndexStorageManager.getIndex();
     final int nPages = indexConfig.nPages;
     final ChangeNPages cnpEvent = ChangeNPages(nPages: nPages);
     bloc.add(cnpEvent);

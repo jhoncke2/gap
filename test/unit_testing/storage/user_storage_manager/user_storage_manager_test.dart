@@ -61,5 +61,5 @@ void _testRemoveAuthToken(){
 }
 
 Future<void> _tryTestRemoveAuthToken()async{
-  await UserStorageManager.deleteAuthToken();
+  await UserStorageManager.removeAuthToken();
 }

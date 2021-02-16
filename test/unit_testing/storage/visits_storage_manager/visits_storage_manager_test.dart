@@ -80,7 +80,7 @@ void _testRemoveVisits(){
 }
 
 Future<void> _tryTestRemoveVisits()async{
-  await VisitsStorageManager.deleteVisits();
+  await VisitsStorageManager.removeVisits();
 }
 
 void _testSetChosenVisit(){

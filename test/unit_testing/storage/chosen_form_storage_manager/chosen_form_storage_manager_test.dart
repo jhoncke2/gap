@@ -7,8 +7,6 @@ import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/data/fake_data/fake_data.dart' as fakeData;
 import './chosen_form_storage_manager_descriptions.dart' as descriptions;
 
-final ChosenFormStorageManager cfSM = ChosenFormStorageManager();
-
 main(){
   _initStorageConnector();
   group(descriptions.chosenFormGroupDescription, (){

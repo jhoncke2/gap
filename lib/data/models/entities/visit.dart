@@ -27,7 +27,7 @@ class Visit extends EntityWithStage{
     this.date = DateTime.parse(json['date']),
     super(
       id: json['id'],
-      stage: (json['stage']=='pendiente')? ProcessStage.Pendiente : ProcessStage.Realizada,
+      stage:ProcessStage.fromValue(json['stage']),
       name: json['name']
     )
     ;

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gap/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/logic/blocs_manager/chosen_form_manager.dart';
 import 'package:gap/ui/utils/size_utils.dart';
@@ -29,6 +28,11 @@ class BottomFormFillingNavigation extends StatelessWidget {
     );
   }
 
+  void _initInitialConfiguration(BuildContext appContext){
+    _context = appContext;
+    _chosenFormState = BlocProvider.of<ChosenFormBloc>(_context).state;
+  }
+
   Widget _createIndexField(){
     if(_chosenFormState.formStep == FormStep.OnForm){
       return IndexPagination();
@@ -37,20 +41,17 @@ class BottomFormFillingNavigation extends StatelessWidget {
         height: _sizeUtils.xasisSobreYasis * 0.05,
       );
     }
-  }
-
-  void _initInitialConfiguration(BuildContext appContext){
-    _context = appContext;
-    _chosenFormState = BlocProvider.of<ChosenFormBloc>(_context).state;
-  }
+  } 
 }
+
 
 // ignore: must_be_immutable
 class _ChangeFormStepButton extends StatelessWidget {
+
   final ChosenFormState chosenFormState;
-  FormulariosState _formsWidgetsState;
   BuildContext _context;
   Function _onPressed;
+
   _ChangeFormStepButton({
     @required this.chosenFormState
   });
@@ -68,7 +69,6 @@ class _ChangeFormStepButton extends StatelessWidget {
 
   void _initInitialConfiguration(BuildContext appContext){
     _context = appContext; 
-    _formsWidgetsState = BlocProvider.of<FormulariosBloc>(_context).state;
   }
 
   void _generateOnPressedFunction(){

@@ -61,7 +61,7 @@ class _FormulariosComponents extends StatelessWidget {
   Widget build(BuildContext context) {
     _initInitialConfiguration(context);
     return Container(
-      height: _sizeUtils.xasisSobreYasis * 0.75,
+      height: _sizeUtils.xasisSobreYasis * 0.95,
       padding: EdgeInsets.only(left: _sizeUtils.xasisSobreYasis * 0.05),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

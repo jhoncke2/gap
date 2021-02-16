@@ -2,7 +2,7 @@ import 'package:gap/data/enums/enums.dart';
 import 'package:gap/native_connectors/storage_connector.dart';
 
 class NavigationRoutesStorageManager{
-  static final String navigationRoutesKey = 'navigation_routes';
+  static final String _navigationRoutesKey = 'navigation_routes';
 
   static Future<void> setNavigationRoute(NavigationRoute newRoute)async{
     final List<Map<String, dynamic>> routes = await _obtainNavigationRoutesFromStorage();
@@ -32,13 +32,12 @@ class NavigationRoutesStorageManager{
   }
 
   static Future<List<Map<String, dynamic>>> _obtainNavigationRoutesFromStorage()async{
-    final List<Map<String, dynamic>> routes = await StorageConnectorSingleton.storageConnector.getListResource(navigationRoutesKey);
+    final List<Map<String, dynamic>> routes = await StorageConnectorSingleton.storageConnector.getListResource(_navigationRoutesKey);
     return routes;
   }
 
   static Future<void> _updateStorageWithNewRoutes(List<Map<String, dynamic>> routes)async{
-    await StorageConnectorSingleton.storageConnector.setListResource(navigationRoutesKey, routes);
+    await StorageConnectorSingleton.storageConnector.setListResource(_navigationRoutesKey, routes);
   }
-
   
 }

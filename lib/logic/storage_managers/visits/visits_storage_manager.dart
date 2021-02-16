@@ -29,7 +29,7 @@ class VisitsStorageManager{
     ).toList();
   }
 
-  static Future<void> deleteVisits()async{
+  static Future<void> removeVisits()async{
     await StorageConnectorSingleton.storageConnector.removeResource(visitsKey);
   }
 

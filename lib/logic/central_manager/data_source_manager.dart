@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:gap/data/enums/enums.dart';
+import 'package:gap/logic/central_manager/preloaded_storage_to_services_manager.dart';
 import 'package:gap/logic/storage_managers/storage_manager.dart';
 
 class DataSourceManager{
@@ -27,6 +28,7 @@ class DataSourceManager{
 
   static void _manageDataWithConnection(){
     _storageRecentActivityBlocManager.addStorageDataToBlocs(_blocs);
+     PreloadedStorageToServicesManager.sendPreloadedStorageDataToServices();
     //TODO: Uso de services para enviar los preloaded formularios completados
   }
 

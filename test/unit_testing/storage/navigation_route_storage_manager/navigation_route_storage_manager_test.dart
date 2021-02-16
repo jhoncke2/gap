@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gap/data/enums/enums.dart';
-import 'package:gap/logic/storage_managers/navigation_route/navigation_route_storage_manager.dart';
+import 'package:gap/logic/storage_managers/navigation_route/navigation_routes_storage_manager.dart';
 import 'package:gap/native_connectors/storage_connector.dart';
 import '../../../mock/storage/mock_flutter_secure_storage.dart';
 import './navigation_route_storage_manager_descriptions.dart' as descriptions;

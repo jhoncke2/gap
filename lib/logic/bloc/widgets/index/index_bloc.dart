@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:bloc/bloc.dart';
+import 'package:gap/logic/storage_managers/index/index_storage_manager.dart';
 import 'package:meta/meta.dart';
 
 part 'index_event.dart';
@@ -24,11 +25,13 @@ class IndexBloc extends Bloc<IndexEvent, IndexState> {
       _resetAllOfIndex();
     }
     yield _currentStateToYield;
+    
   }
 
   void _changeSePuedeAvanzar(ChangeSePuedeAvanzar event){
     final bool sePuedeAvanzar = event.sePuede;
     _currentStateToYield = state.copyWith(sePuedeAvanzar: sePuedeAvanzar);
+    IndexStorageManager.setIndex(_currentStateToYield);
   }
 
   void _changeIndex(ChangeIndexPage event){
@@ -37,6 +40,7 @@ class IndexBloc extends Bloc<IndexEvent, IndexState> {
       currentIndex: newIndex,
     );
     _revisarActivacionesNavegacion();
+    IndexStorageManager.setIndex(_currentStateToYield);
   }
 
   void _cnahgeNPages(ChangeNPages event){
@@ -46,6 +50,7 @@ class IndexBloc extends Bloc<IndexEvent, IndexState> {
       nPages: nPages,
       currentIndex: currentIndex
     );
+    IndexStorageManager.setIndex(_currentStateToYield);
   }
 
   int _getValueToCurrentIndex(){
@@ -72,5 +77,6 @@ class IndexBloc extends Bloc<IndexEvent, IndexState> {
 
   void _resetAllOfIndex(){
     _currentStateToYield = IndexState();
+    IndexStorageManager.removeIndex();
   }
 }

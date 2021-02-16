@@ -8,11 +8,6 @@ enum DataSource{
   Services
 }
 
-enum ProcessStage{
-  Pendiente,
-  Realizada
-}
-
 enum BlocName{
   UserBloc,
   Projects,
@@ -28,6 +23,29 @@ enum BlocName{
 abstract class Enum<T>{
   final T value;
   const Enum(this.value);
+}
+
+class ProcessStage extends Enum<String>{
+
+  const ProcessStage(String value): super(value);
+
+  static const ProcessStage Pendiente = const ProcessStage('pendiente');
+  static const ProcessStage EnProceso = const ProcessStage('en_proceso');
+  static const ProcessStage Realizada = const ProcessStage('realizada');
+
+  factory ProcessStage.fromValue(String value){
+    if(value == Pendiente.value)
+      return Pendiente;
+    else if(value == EnProceso.value)
+      return EnProceso;
+    else if(value == Realizada.value)
+      return Realizada;
+    else{
+      //TODO: ¿Una excepción?
+      return Pendiente;
+    }
+      
+  }
 }
 
 abstract class NavRouteEnum extends Enum<String>{

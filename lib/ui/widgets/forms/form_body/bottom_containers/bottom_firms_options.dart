@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/logic/bloc/widgets/firm_paint/firm_paint_bloc.dart';
 import 'package:gap/logic/blocs_manager/chosen_form_manager.dart';
+import 'package:gap/logic/blocs_manager/pages_navigation_manager.dart';
 import 'package:gap/ui/pages/formularios_page.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/buttons/general_button.dart';
@@ -58,25 +58,20 @@ class BottomFirmsOptions extends StatelessWidget {
   }
 
   Future<void> _addNewFirm()async{
-    await _addFirmToFirmer();
+    await ChosenFormManagerSingleton.chosenFormManager.addFirmToFirmer();
     ChosenFormManagerSingleton.chosenFormManager.addNewFirm();
   }
 
   Widget _createFinishButton() {
     return GeneralButton(
-        text: 'Finalizar',
-        onPressed: _onFinishPressed,
-        backgroundColor: Theme.of(_context).secondaryHeaderColor);
+      
+      text: 'Finalizar',
+      onPressed: _onFinishPressed,
+      backgroundColor: Theme.of(_context).secondaryHeaderColor
+    );
   }
 
   Future<void> _finish()async{
-    await _addFirmToFirmer();
-    //TODO: El service de enviar formulario
-    ChosenFormManagerSingleton.chosenFormManager.finishFirms();
-    Navigator.of(_context).pushReplacementNamed(FormulariosPage.route);
-  }
-
-  Future<void> _addFirmToFirmer()async{
-    await ChosenFormManagerSingleton.chosenFormManager.addFirmToFirmer();
+    await PagesNavigationManager.endFormFirmers(_context);
   }
 }
