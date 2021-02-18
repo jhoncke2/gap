@@ -10,28 +10,26 @@ import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/logic/bloc/widgets/commented_images/commented_images_bloc.dart';
 import 'package:gap/logic/bloc/widgets/index/index_bloc.dart';
 import 'package:gap/logic/blocs_manager/chosen_form_manager.dart';
+import 'package:gap/logic/storage_managers/preloaded_data_uploader.dart';
+import 'package:gap/logic/storage_managers/source_data_manager.dart';
 import 'package:gap/native_connectors/net_connection_detector.dart';
 import 'package:gap/data/fake_data/fake_data.dart' as fakeData;
 
 class PagesNavigationManager{
+
+  static Future<void> pop(BuildContext context)async{
+    Navigator.of(context).pop();
+    routesManager.pop();
+  }
   
   static Future<void> navToProjects(BuildContext context)async{
-    if(await _thereIsNetConnection())
-      _loadProjectsFromServices(context);
+    await SourceDataManager.updateBlocData(NavigationRoute.Projects);     
     //TODO: evaluación de authToken
     _goToInitialPage(NavigationRoute.Projects, context);
   }
 
   static Future<bool> _thereIsNetConnection()async{
     return await NetConnectionDetector.netConnectionState == NetConnectionState.Connected;
-  }
-
-  static void _loadProjectsFromServices(BuildContext context){
-    //TODO: Uso de services
-    final ProjectsBloc projBloc = BlocProvider.of<ProjectsBloc>(context);
-    final List<Project> projects = fakeData.projects;
-    final SetProjects setProjecsEvent = SetProjects(projects: projects);
-    projBloc.add(setProjecsEvent);
   }
 
   static Future<void> navToProjectDetail(Project project, BuildContext context)async{
@@ -46,23 +44,15 @@ class PagesNavigationManager{
   }
 
   static Future<void> navToVisits(BuildContext context)async{
-    if(await _thereIsNetConnection())
-      _loadVisitsFromServices(context);
+    SourceDataManager.updateBlocData(NavigationRoute.Visits);     
     _goToNextPage(NavigationRoute.Visits, context);
-  }
-
-  static void _loadVisitsFromServices(BuildContext context){
-    //TODO: get visits from services
-    final VisitsBloc visitsBloc = BlocProvider.of<VisitsBloc>(context);
-    final List<Visit> visits = fakeData.visits;
-    final SetVisits svEvent = SetVisits(visits: visits);
-    visitsBloc.add(svEvent);
   }
 
   static Future<void> navToVisitDetail(Visit visit, BuildContext context)async{
     _updateVisitDetail(visit, context);
+    
     if(await _thereIsNetConnection())
-      _loadFormsFromServices(context);
+      _loadForms(context, visit.id);
     _goToNextPage(NavigationRoute.VisitDetail, context);
   }
 
@@ -72,11 +62,22 @@ class PagesNavigationManager{
     visitsBloc.add(svEvent);
   }
 
-  static void _loadFormsFromServices(BuildContext context){
+  static Future<void> _loadForms(BuildContext context, int visitId)async{
     //TODO: Implementar get from services
+    final List<Formulario> formsByVisit = await _obtainFormsFromServices(visitId);
+    _setFormsToBloc(context, formsByVisit);
+    PreloadedDataUploader.setPreloadedVisitData(formsByVisit, context);
+  }
+
+  static void _setFormsToBloc(BuildContext context, List<Formulario> formsByVisit){
     final FormulariosBloc formsBloc = BlocProvider.of<FormulariosBloc>(context);
-    final SetForms setFormsEvent = SetForms(forms: fakeData.formularios);
+    final SetForms setFormsEvent = SetForms(forms: formsByVisit);
     formsBloc.add(setFormsEvent);
+  }
+
+  static Future<List<Formulario>> _obtainFormsFromServices(int visitId)async{
+    final List<Formulario> forms = fakeData.formularios;
+    return forms;
   }
 
   static Future<void> navToForms(BuildContext context)async{
@@ -124,17 +125,17 @@ class PagesNavigationManager{
   }
 
   static void _goToNextPage(NavigationRoute route, BuildContext context){
-    navRoutesManager.setRoute(route);
+    routesManager.setRoute(route);
     Navigator.of(context).pushNamed(route.value);
   }
 
   static Future<void> _goToPageAfterPopping(NavigationRoute targetRoute, int nPops, BuildContext context)async{
-    await navRoutesManager.setRouteAfterPopping(targetRoute, nPops);
+    await routesManager.setRouteAfterPopping(targetRoute, nPops);
     Navigator.of(context).popUntil((route) => route.settings.name == targetRoute.value);
   }
 
   static void _goToInitialPage(NavigationRoute targetRoute, BuildContext context){
-    navRoutesManager.replaceAllRoutesForNew(targetRoute);
+    routesManager.replaceAllRoutesForNew(targetRoute);
     Navigator.of(context).pushReplacementNamed(targetRoute.value);
   }
 

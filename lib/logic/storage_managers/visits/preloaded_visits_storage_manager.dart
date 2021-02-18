@@ -4,18 +4,19 @@ import 'package:gap/native_connectors/storage_connector.dart';
 
 class PreloadedVisitsStorageManager{
   static final String preloadedVisitsKey = 'preloaded_visits';
+  static final String preloadedVisitsByChosenProject = 'preloaded_visits_by_chosen_project';
   @protected
   static final _PreloadedVisitsHolder currentPreloadedVisitsHolder = _PreloadedVisitsHolder();
 
-  static Future<void> removePreloadedVisit(int visitId, int projectId)async{
-    await _updateCurrentPreloadedVisitsHolderFromStorage();
-    final List<Visit> preloadedVisitsByProjectId = await _getPreloadedVisitsByProjectId(projectId);
-    final List<Visit> restantPreloadedVisitsByProjectId = _obtainRestantPreloadedVisitsByProjectId(preloadedVisitsByProjectId, visitId);
+  static Future<void> removeVisit(int visitId, int projectId)async{
+    await _updateCurrentVisitsHolderFromStorage();
+    final List<Visit> preloadedVisitsByProjectId = await _getVisitsByProjectId(projectId);
+    final List<Visit> restantPreloadedVisitsByProjectId = _obtainRestantVisitsByProjectId(preloadedVisitsByProjectId, visitId);
     await _executeRemoving(restantPreloadedVisitsByProjectId, projectId);
-    await _updateStorageFromCurrentPreloadedVisitsHolder();
+    await _updateStorageFromCurrentVisitsHolder();
   }
 
-  static List<Visit> _obtainRestantPreloadedVisitsByProjectId(List<Visit> preloadedVisitsByProjectId, int visitId){
+  static List<Visit> _obtainRestantVisitsByProjectId(List<Visit> preloadedVisitsByProjectId, int visitId){
     final List<Visit> restantPreloadedVisitsByProjectId = preloadedVisitsByProjectId.where(
       (Visit v)=>v.id != visitId
     ).toList();
@@ -36,42 +37,45 @@ class PreloadedVisitsStorageManager{
   static void _updateProjectIdMapWithoutRemovedVisit(List<Visit> restantPreloadedVisitsByProjectId, int projectId){
     final List<Map<String, dynamic>> restantPrelVisitsByProjIdAsJson = Visits(visits: restantPreloadedVisitsByProjectId).toJson();
     currentPreloadedVisitsHolder.currentData[projectId.toString()] = restantPrelVisitsByProjIdAsJson;
-  }
+  }  
 
-  
-
-  static Future<void> setPreloadedVisit(Visit visit, int projectId)async{
-    await _updateCurrentPreloadedVisitsHolderFromStorage();
-    final List<Visit> preloadedVisitsByProjectId = await _getPreloadedVisitsByProjectId(projectId);
+  static Future<void> setVisit(Visit visit, int projectId)async{
+    await _updateCurrentVisitsHolderFromStorage();
+    final List<Visit> preloadedVisitsByProjectId = await _getVisitsByProjectId(projectId);
     preloadedVisitsByProjectId.add(visit);
     final List<Map<String, dynamic>> preloadedVisitsByProjectIdAsJson = Visits(visits: preloadedVisitsByProjectId).toJson();
     currentPreloadedVisitsHolder.currentData[projectId.toString()] = preloadedVisitsByProjectIdAsJson;
-    await _updateStorageFromCurrentPreloadedVisitsHolder();
+    await _updateStorageFromCurrentVisitsHolder();
   }
 
-  static Future<List<Visit>> getPreloadedVisitsByProjectId(int projectId)async{
-    await _updateCurrentPreloadedVisitsHolderFromStorage();
-    final List<Visit> preloadedVisitsByProjectId = await _getPreloadedVisitsByProjectId(projectId);
+  static Future<List<Visit>> getVisitsByProjectId(int projectId)async{
+    await _updateCurrentVisitsHolderFromStorage();
+    final List<Visit> preloadedVisitsByProjectId = await _getVisitsByProjectId(projectId);
     return preloadedVisitsByProjectId;
   }
   
-  static Future<List<Visit>> _getPreloadedVisitsByProjectId(int projectId)async{
+  static Future<List<Visit>> _getVisitsByProjectId(int projectId)async{
     final List<Map<String, dynamic>> preloadedVisitsByProjectIdAsJson = currentPreloadedVisitsHolder.currentData[projectId.toString()];
     final List<Visit> preloadedVisitsByProjectId = Visits.fromJson( preloadedVisitsByProjectIdAsJson??[] ).visits;
     return preloadedVisitsByProjectId;
   }
 
-  static Future<void> _updateCurrentPreloadedVisitsHolderFromStorage()async{
+  static Future<void> setVisitsByChosenProject(int projectId)async{
+    await StorageConnectorSingleton.storageConnector.setStringResource(preloadedVisitsByChosenProject, projectId.toString());
+  }
+
+  static Future<void> _updateCurrentVisitsHolderFromStorage()async{
     //currentPreloadedVisitsHolder.currentData =  (await StorageConnectorSingleton.storageConnector.getMapResource(preloadedVisitsKey)).cast<String, List<Map<String, dynamic>>>();
     final Map<dynamic, dynamic> tempMap = (await StorageConnectorSingleton.storageConnector.getMapResource(preloadedVisitsKey));
     currentPreloadedVisitsHolder.initFromJson(tempMap);
   }
   
-  static Future<void> _updateStorageFromCurrentPreloadedVisitsHolder()async{
+  static Future<void> _updateStorageFromCurrentVisitsHolder()async{
     print(currentPreloadedVisitsHolder.currentData.runtimeType);
     await StorageConnectorSingleton.storageConnector.setMapResource(preloadedVisitsKey, currentPreloadedVisitsHolder.toJson());
   }
 
+  
   
 }
 

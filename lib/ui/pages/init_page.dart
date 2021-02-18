@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/data/enums/enums.dart';
@@ -6,24 +8,63 @@ import 'package:gap/logic/blocs_manager/chosen_form_manager.dart';
 import 'package:gap/logic/blocs_manager/commented_images_index_manager.dart';
 import 'package:gap/logic/bloc/nav_routes/routes_manager.dart';
 import 'package:gap/ui/utils/size_utils.dart';
-class InitPage extends StatelessWidget with WidgetsBindingObserver{
-  static final route = 'init';
+
+// ignore: must_be_immutable
+class InitPage extends StatelessWidget{
+  static final String route = 'init';
+
+  UserState _userState;
+  StreamController<UserState> _userStateController = StreamController();
   BuildContext _context;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context){
     _context = context;
-    _addPostFrameCallBack();
     return Scaffold(
-      body: Container(),
+      body: BlocBuilder<UserBloc, UserState>(
+        builder: (_, state){
+          return _AuthTokenWaiter(userState: state);
+        },
+      ),
     );
   }
+}
 
-  void _addPostFrameCallBack(){
+// ignore: must_be_immutable
+class _AuthTokenWaiter extends StatelessWidget {
+  
+  final UserState userState;
+  BuildContext _context;
+
+  _AuthTokenWaiter({
+    @required this.userState
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    _initContext(context);
+    _callBackAfterBuild();
+    return Container();
+  }
+
+  void _initContext(BuildContext context){
+    _context = context;
+  }
+
+  void _callBackAfterBuild(){
     WidgetsBinding.instance.addPostFrameCallback((_){
-      _validateInitialConfiguration();
-      _navigateToFirstPage();
+      _doValidationsIfAuthTokenIsLoaded();
     });
+  }
+
+  void _doValidationsIfAuthTokenIsLoaded(){  
+    if(userState.authTokenIsLoaded)
+      _doValidations();  
+  }
+
+  void _doValidations(){
+    _validateInitialConfiguration();
+    _navigateToFirstPage();
   }
 
   void _validateInitialConfiguration(){
@@ -43,10 +84,8 @@ class InitPage extends StatelessWidget with WidgetsBindingObserver{
   }
 
   void _navigateToFirstPage(){
-    final NavigationRoute initialRoute = navRoutesManager.currentRoute;
-    final UserBloc userBloc = BlocProvider.of<UserBloc>(_context);
-    final String authToken = userBloc.state.authToken;
-    if([initialRoute, authToken].contains(null))
+    final NavigationRoute initialRoute = routesManager.currentRoute;
+    if([initialRoute, userState.authToken].contains(null))
       _goToLogin();
     else
       _goToLoggedPage(initialRoute);
@@ -54,15 +93,14 @@ class InitPage extends StatelessWidget with WidgetsBindingObserver{
 
   void _goToLogin(){
     final NavigationRoute loginRoute = NavigationRoute.Login;
-    navRoutesManager.replaceAllRoutesForNew(loginRoute);
+    routesManager.replaceAllRoutesForNew(loginRoute);
     Navigator.of(_context).pushReplacementNamed(loginRoute.value);
   }
 
   void _goToLoggedPage(NavigationRoute route)async{
-    final List<NavigationRoute> routesTree = await navRoutesManager.routesTree;
-    //TODO: Probar
+    final List<NavigationRoute> routesTree = await routesManager.routesTree;
     routesTree.forEach((NavigationRoute route) {
-      Navigator.of(_context).pushReplacementNamed(route.value);
+      Navigator.of(_context).pushNamed(route.value);
     });
   }
 }

@@ -13,6 +13,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   Stream<UserState> mapEventToState(
     UserEvent event,
   ) async* {
-    // TODO: implement mapEventToState
+    if(event is SetAuthToken){
+      yield state.copyWith(authTokenIsLoaded: true, authToken: event.authToken);
+    }
   }
 }

@@ -25,8 +25,13 @@ class RoutesManager{
     await NavigationRoutesStorageManager.setNavigationRoute(newRoute);
   }
 
+  Future pop()async{
+    await NavigationRoutesStorageManager.removeNRoutes(1);
+    await loadRoute();
+  }
+
   NavigationRoute get currentRoute => _currentRoute;
   Future<List<NavigationRoute>> get routesTree async => await NavigationRoutesStorageManager.getNavigationRoutes();
 }
 
-final RoutesManager navRoutesManager = RoutesManager();
+final RoutesManager routesManager = RoutesManager();

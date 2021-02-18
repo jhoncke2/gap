@@ -25,7 +25,7 @@ class _ProjectEvaluater{
   bool projectIsFinished = true;
 
   Future<void> evaluatePreloadedProject(int projectId)async{
-    final List<Visit> preloadedVisits = await PreloadedVisitsStorageManager.getPreloadedVisitsByProjectId(projectId);
+    final List<Visit> preloadedVisits = await PreloadedVisitsStorageManager.getVisitsByProjectId(projectId);
     for(Visit v in preloadedVisits){
       await _evaluateVisit(v.id, projectId);
     }
@@ -75,7 +75,7 @@ class _VisitEvaluater{
 
   Future<void> _endPreloadedVisit(int visitId, int projectId)async{
     //TODO: postCommentedImagesToBack(v); ??
-    PreloadedVisitsStorageManager.removePreloadedVisit(visitId, projectId);
+    PreloadedVisitsStorageManager.removeVisit(visitId, projectId);
   }
 }
 
