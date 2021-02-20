@@ -34,7 +34,7 @@ class SizeUtils{
   }
 
   double get largeHorizontalScaffoldPadding{
-    return _xasisYasisProm * 0.12;
+    return _xasisYasisProm * 0.11;
   }
 
   double get titleSize{

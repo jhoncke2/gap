@@ -1,4 +1,4 @@
-import 'package:gap/logic/storage_managers/source_data_manager.dart';
+import 'package:gap/logic/central_manager/data_distributor/data_distributor.dart';
 
 enum NetConnectionState{
   Connected,
@@ -101,47 +101,47 @@ class NavigationRoute extends NavRouteEnum{
 }
 
 
-class SourceDadaFunctionTypeWithConnectionStateEnum extends Enum<SrcDataFunctionWithConnState>{
-  static const SrcDataFunctionWithConnState _connetedInitValue = SrcDataFunctionWithConnState( SourceDataFunctionType.Init, NetConnectionState.Connected);
-  static const SrcDataFunctionWithConnState _connectedUpdateValue = SrcDataFunctionWithConnState( SourceDataFunctionType.SingleUpdate, NetConnectionState.Connected);
-  static const SrcDataFunctionWithConnState _disConnectedInitValue = SrcDataFunctionWithConnState( SourceDataFunctionType.Init, NetConnectionState.Disonnected);
-  static const SrcDataFunctionWithConnState _disconnectedUpdateValue = SrcDataFunctionWithConnState( SourceDataFunctionType.SingleUpdate, NetConnectionState.Disonnected);
+class DistributionProcessDeterminant extends Enum<DataDistrFunctionWithConnState>{
+  static const DataDistrFunctionWithConnState _connetedInitValue = DataDistrFunctionWithConnState( DataDistributorFunction.AppUpdate, NetConnectionState.Connected);
+  static const DataDistrFunctionWithConnState _connectedUpdateValue = DataDistrFunctionWithConnState( DataDistributorFunction.SingleUpdate, NetConnectionState.Connected);
+  static const DataDistrFunctionWithConnState _disConnectedInitValue = DataDistrFunctionWithConnState( DataDistributorFunction.AppUpdate, NetConnectionState.Disonnected);
+  static const DataDistrFunctionWithConnState _disconnectedUpdateValue = DataDistrFunctionWithConnState( DataDistributorFunction.SingleUpdate, NetConnectionState.Disonnected);
 
-  const SourceDadaFunctionTypeWithConnectionStateEnum(SrcDataFunctionWithConnState value):super(value);
+  const DistributionProcessDeterminant(DataDistrFunctionWithConnState value):super(value);
 
-  static const SourceDadaFunctionTypeWithConnectionStateEnum ConnectedInit = const SourceDadaFunctionTypeWithConnectionStateEnum(_connetedInitValue);
-  static const SourceDadaFunctionTypeWithConnectionStateEnum ConnectedUpdate = const SourceDadaFunctionTypeWithConnectionStateEnum(_connectedUpdateValue);
-  static const SourceDadaFunctionTypeWithConnectionStateEnum DisConnectedInit = const SourceDadaFunctionTypeWithConnectionStateEnum(_disConnectedInitValue);
-  static const SourceDadaFunctionTypeWithConnectionStateEnum DisConnectedUpdate = const SourceDadaFunctionTypeWithConnectionStateEnum(_disconnectedUpdateValue);
+  static const DistributionProcessDeterminant ConnectedAppUpdate = const DistributionProcessDeterminant(_connetedInitValue);
+  static const DistributionProcessDeterminant ConnectedSingleUpdate = const DistributionProcessDeterminant(_connectedUpdateValue);
+  static const DistributionProcessDeterminant DisConnectedAppUpdate = const DistributionProcessDeterminant(_disConnectedInitValue);
+  static const DistributionProcessDeterminant DisConnectedSingleUpdate = const DistributionProcessDeterminant(_disconnectedUpdateValue);
 
-  factory SourceDadaFunctionTypeWithConnectionStateEnum.fromValue(SrcDataFunctionWithConnState value){
-    if(valuesAreEquals(value, ConnectedInit.value))
-      return ConnectedInit;
-    else if(valuesAreEquals(value, DisConnectedInit.value))
-      return DisConnectedInit;
-    else if(valuesAreEquals(value, ConnectedUpdate.value))
-      return ConnectedUpdate;
-    else if(valuesAreEquals(value, DisConnectedUpdate.value))
-      return DisConnectedUpdate;
+  factory DistributionProcessDeterminant.fromValue(DataDistrFunctionWithConnState value){
+    if(valuesAreEquals(value, ConnectedAppUpdate.value))
+      return ConnectedAppUpdate;
+    else if(valuesAreEquals(value, DisConnectedAppUpdate.value))
+      return DisConnectedAppUpdate;
+    else if(valuesAreEquals(value, ConnectedSingleUpdate.value))
+      return ConnectedSingleUpdate;
+    else if(valuesAreEquals(value, DisConnectedSingleUpdate.value))
+      return DisConnectedSingleUpdate;
     else
-      return ConnectedInit;
+      return ConnectedAppUpdate;
   }
 
-  static bool valuesAreEquals(SrcDataFunctionWithConnState v1, SrcDataFunctionWithConnState v2){
+  static bool valuesAreEquals(DataDistrFunctionWithConnState v1, DataDistrFunctionWithConnState v2){
     return (v1.connectionState == v2.connectionState && v1.functionType == v2.functionType);
   }
 }
 
-class SrcDataFunctionWithConnState{
-  final SourceDataFunctionType functionType;
+class DataDistrFunctionWithConnState{
+  final DataDistributorFunction functionType;
   final NetConnectionState connectionState;
-  const SrcDataFunctionWithConnState(
+  const DataDistrFunctionWithConnState(
     this.functionType, 
     this.connectionState
   );
 }
 
-enum SourceDataFunctionType{
-  Init,
+enum DataDistributorFunction{
+  AppUpdate,
   SingleUpdate
 }

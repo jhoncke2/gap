@@ -4,7 +4,7 @@ import 'package:gap/logic/storage_managers/forms/preloaded_forms_storage_manager
 import 'package:gap/logic/storage_managers/projects/projects_storage_manager.dart';
 import 'package:gap/logic/storage_managers/visits/preloaded_visits_storage_manager.dart';
 
-class PreloadedStorageToServicesManager{
+class PreloadedStorageToServices{
   static final _ProjectEvaluater _projectEvaluater = _ProjectEvaluater();
   
   static Future<void> sendPreloadedStorageDataToServices()async{
@@ -40,8 +40,12 @@ class _ProjectEvaluater{
 
   Future<void> _endPreloadedProjectIfFinished(int projectId)async{
     if(projectIsFinished){
-      await ProjectsStorageManager.removeProjectWithPreloadedVisits(projectId);
+      await _endPreloadedProject(projectId);
     }
+  }
+
+  Future<void> _endPreloadedProject(int projectId)async{
+    await ProjectsStorageManager.removeProjectWithPreloadedVisits(projectId);
   }
 
   void _resetVisitEvaluater(){

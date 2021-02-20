@@ -50,7 +50,7 @@ class ProjectsStorageManager{
     await StorageConnectorSingleton.storageConnector.setListResource(projectsWithPreloadedVisitsKey, Projects(projects: restantProjects).toJson());
   }
 
-  static Future<void> setToProjectWithPreloadedVisits(Project project)async{
+  static Future<void> setProjectWithPreloadedVisits(Project project)async{
     final List<Project> projectsWithPreloadedVisits = await getProjectsWithPreloadedVisits();
     projectsWithPreloadedVisits.add(project);
     await StorageConnectorSingleton.storageConnector.setListResource(projectsWithPreloadedVisitsKey, Projects(projects: projectsWithPreloadedVisits).toJson());

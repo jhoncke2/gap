@@ -139,7 +139,7 @@ void _testSetProjecstWithPreloadedVisits(){
 Future<void> _tryTestSetProjecstWithPreloadedVisits()async{
   for(int i = 0; i < fakeData.projects.length; i++){
     final Project p = fakeData.projects[i];
-    await ProjectsStorageManager.setToProjectWithPreloadedVisits(p);
+    await ProjectsStorageManager.setProjectWithPreloadedVisits(p);
   }
 }
 

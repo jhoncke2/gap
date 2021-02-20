@@ -11,15 +11,14 @@ import 'package:gap/ui/utils/size_utils.dart';
 
 // ignore: must_be_immutable
 class InitPage extends StatelessWidget{
-  static final String route = 'init';
 
-  UserState _userState;
-  StreamController<UserState> _userStateController = StreamController();
-  BuildContext _context;
+  static final String route = 'init';
+  static StreamController<BuildContext> _contextStreamController = StreamController();
+  static Stream<BuildContext> get contextStream => _contextStreamController.stream;
 
   @override
   Widget build(BuildContext context){
-    _context = context;
+    _callBackAfterBuild(context);
     return Scaffold(
       body: BlocBuilder<UserBloc, UserState>(
         builder: (_, state){
@@ -27,6 +26,12 @@ class InitPage extends StatelessWidget{
         },
       ),
     );
+  }
+
+  void _callBackAfterBuild(BuildContext context){
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      _contextStreamController.sink.add(context);
+    });
   }
 }
 

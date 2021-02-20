@@ -1,14 +1,13 @@
 part of 'entities.dart';
 
-abstract class EntityWithStage{
-  final int id;
+abstract class EntityWithStage extends Entity{
   final ProcessStage stage;
   final String name;
   EntityWithStage({
     @required this.stage,
     @required this.name,
-    @required this.id
-  });
+    int id
+  }):super(id:id);
 
   Map<String, dynamic> toJson() => {
     'id':this.id,

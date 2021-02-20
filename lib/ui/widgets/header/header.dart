@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gap/logic/blocs_manager/pages_navigation_manager.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 // ignore: must_be_immutable
 class Header extends StatelessWidget {
@@ -56,7 +57,7 @@ class Header extends StatelessWidget {
           Icons.arrow_back_ios
         ),
         onPressed: (){
-          Navigator.of(_context).pop();
+          PagesNavigationManager.pop(_context);
         },
       ),
     );

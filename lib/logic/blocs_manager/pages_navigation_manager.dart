@@ -2,109 +2,66 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/data/enums/enums.dart';
 import 'package:gap/data/models/entities/entities.dart';
-import 'package:gap/logic/bloc/entities/formularios/formularios_bloc.dart';
-import 'package:gap/logic/bloc/entities/projects/projects_bloc.dart';
-import 'package:gap/logic/bloc/entities/visits/visits_bloc.dart';
 import 'package:gap/logic/bloc/nav_routes/routes_manager.dart';
-import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/logic/bloc/widgets/commented_images/commented_images_bloc.dart';
 import 'package:gap/logic/bloc/widgets/index/index_bloc.dart';
 import 'package:gap/logic/blocs_manager/chosen_form_manager.dart';
-import 'package:gap/logic/storage_managers/preloaded_data_uploader.dart';
-import 'package:gap/logic/storage_managers/source_data_manager.dart';
-import 'package:gap/native_connectors/net_connection_detector.dart';
-import 'package:gap/data/fake_data/fake_data.dart' as fakeData;
+import 'package:gap/logic/central_manager/data_distributor/data_distributor.dart';
 
 class PagesNavigationManager{
 
   static Future<void> pop(BuildContext context)async{
     Navigator.of(context).pop();
-    routesManager.pop();
+    await routesManager.pop();
+    final NavigationRoute newRoute = routesManager.currentRoute;
+    await _chooseMethodByRoute(newRoute);
   }
   
   static Future<void> navToProjects(BuildContext context)async{
-    await SourceDataManager.updateBlocData(NavigationRoute.Projects);     
-    //TODO: evaluación de authToken
+    await _updateProjectsData();
     _goToInitialPage(NavigationRoute.Projects, context);
   }
 
-  static Future<bool> _thereIsNetConnection()async{
-    return await NetConnectionDetector.netConnectionState == NetConnectionState.Connected;
+  static Future<void> _updateProjectsData()async{
+    await DataDistributor.updateBlocData(NavigationRoute.Projects);
   }
 
   static Future<void> navToProjectDetail(Project project, BuildContext context)async{
-    _updateChosenProject(project, context);
+    DataDistributor.updateBlocData(NavigationRoute.ProjectDetail, project);
+    //_updateChosenProject(project, context);
     _goToNextPage(NavigationRoute.ProjectDetail, context);
   }
 
-  static void _updateChosenProject(Project project, BuildContext context){
-    final ProjectsBloc projectsBloc = BlocProvider.of<ProjectsBloc>(context);
-    final ChooseProject cpEvent = ChooseProject(chosenOne: project);
-    projectsBloc.add(cpEvent);
-  }
-
   static Future<void> navToVisits(BuildContext context)async{
-    SourceDataManager.updateBlocData(NavigationRoute.Visits);     
+    await _updateVisitsData();     
     _goToNextPage(NavigationRoute.Visits, context);
   }
 
+  static Future<void> _updateVisitsData()async{
+    await DataDistributor.updateBlocData(NavigationRoute.Visits);
+  }
+
   static Future<void> navToVisitDetail(Visit visit, BuildContext context)async{
-    _updateVisitDetail(visit, context);
-    
-    if(await _thereIsNetConnection())
-      _loadForms(context, visit.id);
+    await DataDistributor.updateBlocData(NavigationRoute.VisitDetail, visit);
+    await DataDistributor.updateBlocData(NavigationRoute.Formularios);
     _goToNextPage(NavigationRoute.VisitDetail, context);
-  }
-
-  static void _updateVisitDetail(Visit visit, BuildContext context){
-    final VisitsBloc visitsBloc = BlocProvider.of<VisitsBloc>(context);
-    final ChooseVisit svEvent = ChooseVisit(chosenOne: visit);
-    visitsBloc.add(svEvent);
-  }
-
-  static Future<void> _loadForms(BuildContext context, int visitId)async{
-    //TODO: Implementar get from services
-    final List<Formulario> formsByVisit = await _obtainFormsFromServices(visitId);
-    _setFormsToBloc(context, formsByVisit);
-    PreloadedDataUploader.setPreloadedVisitData(formsByVisit, context);
-  }
-
-  static void _setFormsToBloc(BuildContext context, List<Formulario> formsByVisit){
-    final FormulariosBloc formsBloc = BlocProvider.of<FormulariosBloc>(context);
-    final SetForms setFormsEvent = SetForms(forms: formsByVisit);
-    formsBloc.add(setFormsEvent);
-  }
-
-  static Future<List<Formulario>> _obtainFormsFromServices(int visitId)async{
-    final List<Formulario> forms = fakeData.formularios;
-    return forms;
   }
 
   static Future<void> navToForms(BuildContext context)async{
     _goToNextPage(NavigationRoute.Formularios, context);
   }
 
-  static Future<void> navToFormDetail(Formulario form, BuildContext context)async{
-    _updateChosenForm(form, context);
+  static Future<void> navToFormDetail(Formulario formulario, BuildContext context)async{
+    await DataDistributor.updateBlocData(NavigationRoute.FormularioDetailForms, formulario);
+    //_updateChosenForm(formulario, context);
     _goToNextPage(NavigationRoute.FormularioDetailForms, context);
-  }
-
-  static void _updateChosenForm(Formulario formulario, BuildContext context){
-    //TODO: Implementar get de información completa from services ??
-    final FormulariosBloc formsBloc = BlocProvider.of<FormulariosBloc>(context);
-    final ChooseForm chooseFormEvent = ChooseForm(chosenOne: formulario);
-    formsBloc.add(chooseFormEvent);
-    final ChosenFormBloc chosenFormBloc = BlocProvider.of<ChosenFormBloc>(context);
-    final InitFormFillingOut iffoEvent = InitFormFillingOut(formulario: formulario);
-    chosenFormBloc.add(iffoEvent);
   }
 
   static Future<void> endFormFirmers(BuildContext context)async{    
     await _addFirmToFirmer();
     //TODO: El service de enviar formulario Firmers (si hay internet)
     ChosenFormManagerSingleton.chosenFormManager.finishFirms();
-    _goToNextPage(NavigationRoute.Formularios, context);
-    Navigator.of(context).pushReplacementNamed(NavigationRoute.Formularios.value);
+    pop(context);
   }
 
   static Future<void> _addFirmToFirmer()async{
@@ -139,4 +96,10 @@ class PagesNavigationManager{
     Navigator.of(context).pushReplacementNamed(targetRoute.value);
   }
 
+  static Future<void> _chooseMethodByRoute(NavigationRoute route)async{
+    if(route == NavigationRoute.Projects)
+      await _updateProjectsData();
+    else if(route == NavigationRoute.Visits)
+      await _updateVisitsData();
+  }
 }

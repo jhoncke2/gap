@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:gap/data/enums/enums.dart';
 
+part 'entity.dart';
 part 'project.dart';
 part 'entity_with_stages.dart';
 part 'visit.dart';

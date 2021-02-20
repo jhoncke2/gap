@@ -4,7 +4,6 @@ import 'package:gap/native_connectors/storage_connector.dart';
 
 class PreloadedVisitsStorageManager{
   static final String preloadedVisitsKey = 'preloaded_visits';
-  static final String preloadedVisitsByChosenProject = 'preloaded_visits_by_chosen_project';
   @protected
   static final _PreloadedVisitsHolder currentPreloadedVisitsHolder = _PreloadedVisitsHolder();
 
@@ -58,10 +57,6 @@ class PreloadedVisitsStorageManager{
     final List<Map<String, dynamic>> preloadedVisitsByProjectIdAsJson = currentPreloadedVisitsHolder.currentData[projectId.toString()];
     final List<Visit> preloadedVisitsByProjectId = Visits.fromJson( preloadedVisitsByProjectIdAsJson??[] ).visits;
     return preloadedVisitsByProjectId;
-  }
-
-  static Future<void> setVisitsByChosenProject(int projectId)async{
-    await StorageConnectorSingleton.storageConnector.setStringResource(preloadedVisitsByChosenProject, projectId.toString());
   }
 
   static Future<void> _updateCurrentVisitsHolderFromStorage()async{

@@ -19,13 +19,12 @@ class Projects{
   ).toList();
 }
 
-class Project{
-  final int id;
+class Project extends Entity{
   final String name;
 
   Project.fromJson(Map<String, dynamic> json):
-    this.id = json['id'],
-    this.name = json['name']
+    this.name = json['name'],
+    super(id: json['id'])
     ;
 
   Map<String, dynamic> toJson() => {

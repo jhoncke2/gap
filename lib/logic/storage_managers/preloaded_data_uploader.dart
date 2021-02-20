@@ -11,7 +11,7 @@ class PreloadedDataUploader{
   static Future<void> setPreloadedVisitData(List<Formulario> forms, BuildContext context)async{
     final Project chosenProject = BlocProvider.of<ProjectsBloc>(context).state.chosenProject;
     final Visit chosenVisit = BlocProvider.of<VisitsBloc>(context).state.chosenVisit;
-    await ProjectsStorageManager.setToProjectWithPreloadedVisits(chosenProject);
+    await ProjectsStorageManager.setProjectWithPreloadedVisits(chosenProject);
     await PreloadedVisitsStorageManager.setVisit(chosenVisit, chosenProject.id);
     forms.forEach((Formulario form)async{
       await PreloadedFormsStorageManager.setPreloadedForm(form, chosenVisit.id);
