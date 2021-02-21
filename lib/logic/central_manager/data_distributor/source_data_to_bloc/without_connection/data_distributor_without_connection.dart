@@ -27,7 +27,7 @@ class SourceDataToBlocWithoutConnection extends SourceDataToBloc{
   }
 
   @override
-  Future<void> updateFormulariosBloc()async{
+  Future<void> updateFormularios()async{
     final FormulariosBloc fBloc = blocsAsMap[BlocName.Formularios];
     final Visit chosenVisit = UploadedBlocsData.dataContainer[NavigationRoute.VisitDetail];
     final List<Formulario> formsGroupedByPreloadedVisit = await PreloadedFormsStorageManager.getPreloadedFormsByVisitId(chosenVisit.id);

@@ -6,7 +6,7 @@ import 'package:gap/logic/bloc/nav_routes/routes_manager.dart';
 import 'package:gap/logic/bloc/widgets/commented_images/commented_images_bloc.dart';
 import 'package:gap/logic/bloc/widgets/index/index_bloc.dart';
 import 'package:gap/logic/blocs_manager/chosen_form_manager.dart';
-import 'package:gap/logic/central_manager/data_distributor/data_distributor.dart';
+import 'package:gap/logic/central_manager/data_distributor/data_distributor_manager.dart';
 
 class PagesNavigationManager{
 
@@ -16,45 +16,54 @@ class PagesNavigationManager{
     final NavigationRoute newRoute = routesManager.currentRoute;
     await _chooseMethodByRoute(newRoute);
   }
+
+  static Future<void> navToLogin()async{
+    await _goToInitialPage(NavigationRoute.Login, null);
+  }
   
   static Future<void> navToProjects(BuildContext context)async{
     await _updateProjectsData();
-    _goToInitialPage(NavigationRoute.Projects, context);
+    await _goToInitialPage(NavigationRoute.Projects, context);
   }
 
   static Future<void> _updateProjectsData()async{
-    await DataDistributor.updateBlocData(NavigationRoute.Projects);
+    //await DataDistributor.updateBlocData(NavigationRoute.Projects);
+    await DataDistributorManager.dataDistributor.updateProjects();
   }
 
   static Future<void> navToProjectDetail(Project project, BuildContext context)async{
-    DataDistributor.updateBlocData(NavigationRoute.ProjectDetail, project);
+    //DataDistributor.updateBlocData(NavigationRoute.ProjectDetail, project);
     //_updateChosenProject(project, context);
-    _goToNextPage(NavigationRoute.ProjectDetail, context);
+    await DataDistributorManager.dataDistributor.updateChosenProject(project);
+    await _goToNextPage(NavigationRoute.ProjectDetail, context);
   }
 
   static Future<void> navToVisits(BuildContext context)async{
     await _updateVisitsData();     
-    _goToNextPage(NavigationRoute.Visits, context);
+    await _goToNextPage(NavigationRoute.Visits, context);
   }
 
   static Future<void> _updateVisitsData()async{
-    await DataDistributor.updateBlocData(NavigationRoute.Visits);
+    await DataDistributorManager.dataDistributor.updateVisits();
   }
 
   static Future<void> navToVisitDetail(Visit visit, BuildContext context)async{
-    await DataDistributor.updateBlocData(NavigationRoute.VisitDetail, visit);
-    await DataDistributor.updateBlocData(NavigationRoute.Formularios);
-    _goToNextPage(NavigationRoute.VisitDetail, context);
+    //TODO: eliminar await DataDistributor.updateBlocData(NavigationRoute.VisitDetail, visit);
+    //TODO: eliminar await DataDistributor.updateBlocData(NavigationRoute.Formularios);
+    await DataDistributorManager.dataDistributor.updateChosenVisit(visit);
+    await DataDistributorManager.dataDistributor.updateFormularios();
+    await _goToNextPage(NavigationRoute.VisitDetail, context);
   }
 
   static Future<void> navToForms(BuildContext context)async{
-    _goToNextPage(NavigationRoute.Formularios, context);
+    await _goToNextPage(NavigationRoute.Formularios, context);
   }
 
   static Future<void> navToFormDetail(Formulario formulario, BuildContext context)async{
-    await DataDistributor.updateBlocData(NavigationRoute.FormularioDetailForms, formulario);
+    //await DataDistributor.updateBlocData(NavigationRoute.FormularioDetailForms, formulario);
+    await DataDistributorManager.dataDistributor.updateChosenForm(formulario);
     //_updateChosenForm(formulario, context);
-    _goToNextPage(NavigationRoute.FormularioDetailForms, context);
+    await _goToNextPage(NavigationRoute.FormularioDetailForms, context);
   }
 
   static Future<void> endFormFirmers(BuildContext context)async{    
@@ -69,7 +78,7 @@ class PagesNavigationManager{
   }
 
   static Future<void> navToAdjuntarImages(BuildContext context)async{
-    _goToNextPage(NavigationRoute.AdjuntarFotosVisita, context);
+    await _goToNextPage(NavigationRoute.AdjuntarFotosVisita, context);
   }
 
   static Future<void> endAdjuntarImages(BuildContext context)async{
@@ -81,19 +90,17 @@ class PagesNavigationManager{
     await _goToPageAfterPopping(NavigationRoute.VisitDetail, 1, context);
   }
 
-  static void _goToNextPage(NavigationRoute route, BuildContext context){
-    routesManager.setRoute(route);
-    Navigator.of(context).pushNamed(route.value);
+  static Future<void> _goToNextPage(NavigationRoute route, BuildContext context)async{
+    await routesManager.setRoute(route);
   }
 
   static Future<void> _goToPageAfterPopping(NavigationRoute targetRoute, int nPops, BuildContext context)async{
     await routesManager.setRouteAfterPopping(targetRoute, nPops);
-    Navigator.of(context).popUntil((route) => route.settings.name == targetRoute.value);
+    //Navigator.of(context).popUntil((route) => route.settings.name == targetRoute.value);
   }
 
-  static void _goToInitialPage(NavigationRoute targetRoute, BuildContext context){
-    routesManager.replaceAllRoutesForNew(targetRoute);
-    Navigator.of(context).pushReplacementNamed(targetRoute.value);
+  static Future<void> _goToInitialPage(NavigationRoute targetRoute, BuildContext context)async{
+    await routesManager.replaceAllRoutesForNew(targetRoute);
   }
 
   static Future<void> _chooseMethodByRoute(NavigationRoute route)async{

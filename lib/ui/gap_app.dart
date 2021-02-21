@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/central_config/bloc_providers_creator.dart';
 import 'package:gap/central_config/page_routes_creator.dart';
+import 'package:gap/logic/bloc/nav_routes/custom_navigator.dart';
 
 class GapApp extends StatefulWidget {
   @override
@@ -16,6 +17,7 @@ class _GapAppState extends State<GapApp> {
       child: MaterialApp(
         title: 'Material App',
         debugShowCheckedModeBanner: false,
+        navigatorKey: CustomNavigator.navigatorKey,
         theme: ThemeData(
           primaryColor: Color.fromRGBO(93, 92, 92, 1),
           secondaryHeaderColor: Colors.brown.withOpacity(0.35)

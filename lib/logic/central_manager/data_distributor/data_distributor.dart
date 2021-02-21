@@ -3,8 +3,8 @@ import 'package:gap/data/enums/enums.dart';
 import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/logic/central_manager/data_distributor/source_data_to_bloc/source_data_to_bloc.dart';
 import 'package:gap/logic/bloc/nav_routes/routes_manager.dart';
-import 'package:gap/logic/central_manager/data_distributor/source_data_to_bloc/with_connection/source_data_to_bloc_with_connection.dart';
-import 'package:gap/logic/central_manager/data_distributor/source_data_to_bloc/without_connection/source_data_to_bloc_without_connection.dart';
+import 'package:gap/logic/central_manager/data_distributor/source_data_to_bloc/with_connection/data_distributor_with_connection.dart';
+import 'package:gap/logic/central_manager/data_distributor/source_data_to_bloc/without_connection/data_distributor_without_connection.dart';
 import 'package:gap/native_connectors/net_connection_detector.dart';
 
 class DataDistributor{

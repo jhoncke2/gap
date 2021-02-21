@@ -37,7 +37,7 @@ class NavigationRoutesStorageManager{
   }
 
   static Future<void> _updateStorageWithNewRoutes(List<Map<String, dynamic>> routes)async{
-    await StorageConnectorSingleton.storageConnector.setListResource(_navigationRoutesKey, routes);
+    await StorageConnectorSingleton. storageConnector.setListResource(_navigationRoutesKey, routes);
   }
   
 }

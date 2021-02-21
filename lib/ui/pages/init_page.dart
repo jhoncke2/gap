@@ -18,7 +18,7 @@ class InitPage extends StatelessWidget{
 
   @override
   Widget build(BuildContext context){
-    _callBackAfterBuild(context);
+    _doInitialConfig(context);
     return Scaffold(
       body: BlocBuilder<UserBloc, UserState>(
         builder: (_, state){
@@ -26,6 +26,23 @@ class InitPage extends StatelessWidget{
         },
       ),
     );
+  }
+
+  void _doInitialConfig(BuildContext context){
+    _initSizeUtils(context);
+    _callBackAfterBuild(context);
+    initBlocsManagers(context);
+  }
+
+  void initBlocsManagers(BuildContext context){
+    CommentedImagesIndexManagerSingleton(appContext: context);
+    ChosenFormManagerSingleton(appContext: context);
+  }
+  
+  void _initSizeUtils(context){
+    final Size screenSize = MediaQuery.of(context).size;
+    SizeUtils sizeUtils = SizeUtils();
+    sizeUtils.initUtil(screenSize);
   }
 
   void _callBackAfterBuild(BuildContext context){
@@ -48,7 +65,7 @@ class _AuthTokenWaiter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _initContext(context);
-    _callBackAfterBuild();
+    //_callBackAfterBuild();
     return Container();
   }
 

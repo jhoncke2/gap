@@ -1,4 +1,5 @@
 import 'package:gap/data/enums/enums.dart';
+import 'package:gap/logic/bloc/nav_routes/custom_navigator.dart';
 import 'package:gap/logic/storage_managers/navigation_route/navigation_routes_storage_manager.dart';
 
 class RoutesManager{
@@ -14,20 +15,31 @@ class RoutesManager{
     await NavigationRoutesStorageManager.resetRoutes();
     await NavigationRoutesStorageManager.setNavigationRoute(initialRoute);
     _currentRoute = initialRoute;
+    await CustomNavigator.navigateReplacingTo(initialRoute);
   }
 
   Future setRoute(NavigationRoute newRoute)async{
     await NavigationRoutesStorageManager.setNavigationRoute(newRoute);
+    await CustomNavigator.navigateTo(newRoute);
   }
 
   Future setRouteAfterPopping(NavigationRoute newRoute, int nPoppings)async{
     await NavigationRoutesStorageManager.removeNRoutes(nPoppings);
     await NavigationRoutesStorageManager.setNavigationRoute(newRoute);
+    await _doNPoppingsToNavigator(nPoppings);
+    await CustomNavigator.navigateTo(newRoute);
+  }
+
+  Future _doNPoppingsToNavigator(int n)async{
+    for(int i = 0; i <  n; i++){
+      await CustomNavigator.pop();
+    }
   }
 
   Future pop()async{
     await NavigationRoutesStorageManager.removeNRoutes(1);
     await loadRoute();
+    //await CustomNavigator.pop();
   }
 
   NavigationRoute get currentRoute => _currentRoute;

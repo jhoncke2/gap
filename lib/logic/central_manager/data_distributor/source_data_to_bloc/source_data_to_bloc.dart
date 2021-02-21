@@ -11,17 +11,11 @@ import 'package:gap/logic/bloc/entities/visits/visits_bloc.dart';
 import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/logic/bloc/widgets/commented_images/commented_images_bloc.dart';
 import 'package:gap/logic/bloc/widgets/index/index_bloc.dart';
-import 'package:gap/logic/services_manager/forms_services_manager.dart';
-import 'package:gap/logic/services_manager/projects_services_manager.dart';
-import 'package:gap/logic/services_manager/visits_services_manager.dart';
 import 'package:gap/logic/storage_managers/commented_images/commented_images_storage_manager.dart';
 import 'package:gap/logic/storage_managers/forms/chosen_form_storage_manager.dart';
-import 'package:gap/logic/storage_managers/forms/formularios_storage_manager.dart';
-import 'package:gap/logic/storage_managers/forms/preloaded_forms_storage_manager.dart';
 import 'package:gap/logic/storage_managers/index/index_storage_manager.dart';
 import 'package:gap/logic/storage_managers/projects/projects_storage_manager.dart';
 import 'package:gap/logic/storage_managers/user/user_storage_manager.dart';
-import 'package:gap/logic/storage_managers/visits/preloaded_visits_storage_manager.dart';
 import 'package:gap/logic/storage_managers/visits/visits_storage_manager.dart';
 
 abstract class SourceDataToBloc{
@@ -78,7 +72,7 @@ abstract class SourceDataToBloc{
         await updateChosenVisit(entityToAdd);
         break;
       case NavigationRoute.Formularios:
-        await updateFormulariosBloc();
+        await updateFormularios();
         break;
       case NavigationRoute.FormularioDetailForms:
         await updateChosenForm(entityToAdd);
@@ -91,34 +85,27 @@ abstract class SourceDataToBloc{
     }
   }
 
-  @protected
   Future<void> updateProjects()async{}
 
-  @protected
   Future<void> updateChosenProject([Entity entityToAdd])async{
     final Project chosenOne = await ProjectsStorageManager.getChosenProject();
     await addChosenProjectToBloc(chosenOne);
   }
 
-  @protected
   Future<void> addChosenProjectToBloc(Project project)async{
     final ProjectsBloc pBloc = blocsAsMap[BlocName.Projects];
     final ChooseProject cpEvent = ChooseProject(chosenOne: project);
     pBloc.add(cpEvent);
-    dataAddedToBlocsByExistingNavs[NavigationRoute.ProjectDetail] = project;
     UploadedBlocsData.dataContainer[NavigationRoute.ProjectDetail] = project;
   }
 
-  @protected
   Future<void> updateVisits()async{}
-
-  @protected  
+  
   Future<void> updateChosenVisit([Entity entityToAdd])async{
     final Visit chosenOne = await VisitsStorageManager.getChosenVisit();
     await addChosenVisitToBloc(chosenOne);
   }
   
-  @protected
   Future<void> addChosenVisitToBloc(Visit visit)async{
     final VisitsBloc vBloc = blocsAsMap[BlocName.Visits];
     final ChooseVisit cvEvent = ChooseVisit(chosenOne: visit);
@@ -127,16 +114,13 @@ abstract class SourceDataToBloc{
     UploadedBlocsData.dataContainer[NavigationRoute.VisitDetail] = visit;
   }
 
-  @protected
-  Future<void> updateFormulariosBloc()async{}
+  Future<void> updateFormularios()async{}
   
-  @protected
   Future<void> updateChosenForm([Entity entityToAdd])async{
     final Formulario chosenOne = await ChosenFormStorageManager.getChosenForm();
     await addChosenFormToBlocs(chosenOne);
   }
 
-  @protected
   Future<void> addChosenFormToBlocs(Formulario form)async{
     final FormulariosBloc fBloc = blocsAsMap[BlocName.Formularios];
     final ChooseForm chooseFormEvent = ChooseForm(chosenOne: form);
@@ -153,7 +137,6 @@ abstract class SourceDataToBloc{
     ciBloc.add(sciEvent);
   }
 
-  @protected
   Future<void> addStorageDataToIndexBloc()async{
     final IndexBloc indexBloc = blocsAsMap[BlocName.Index];
     final IndexState indexConfig = await IndexStorageManager.getIndex();

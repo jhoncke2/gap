@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gap/data/enums/enums.dart';
+import 'package:gap/logic/central_manager/data_initializer.dart';
+import 'package:gap/native_connectors/storage_connector.dart';
+import 'package:gap/native_connectors/net_connection_detector.dart';
 import 'package:gap/logic/central_manager/data_distributor/data_distributor.dart';
 import 'package:gap/logic/storage_managers/user/user_storage_manager.dart';
-import 'package:gap/native_connectors/net_connection_detector.dart';
-import 'package:gap/native_connectors/storage_connector.dart';
 import 'package:gap/ui/gap_app.dart';
-import 'package:gap/logic/bloc/nav_routes/routes_manager.dart';
 import 'package:gap/ui/pages/init_page.dart';
 
 void main()async{
@@ -16,29 +16,23 @@ void main()async{
 
 @protected
 Future<void> doInitialConfig()async{
-  //await _initStorageManager();
-  _setOnConnectionChange();
-  _loadInitialRoute();
-  _testAddingAuthorization();
+  await _setOnConnectionChange();
   _listenInitPage();
+  _testAddAuthorizationToken();
   //await _testRemovePartOfStorage();
 }
 
-Future<void> _initStorageManager()async{
-  await DataDistributor.updateAppData(await NetConnectionDetector.netConnectionState);
+Future _setOnConnectionChange()async{
+  await NetConnectionDetector.initCurrentNavConnectionState();
+  NetConnectionDetector.onConnectionChange = _onConnectionChanged;
 }
 
-void _setOnConnectionChange(){
-  NetConnectionDetector.onConnectionChange = (NetConnectionState netConnState){
-    DataDistributor.updateAppData(netConnState);
-  };
+void _onConnectionChanged(NetConnectionState newConnState){
+  DataInitializer.init(null, newConnState);
 }
 
-void _loadInitialRoute(){
-  routesManager.loadRoute();
-}
 
-void _testAddingAuthorization(){
+void _testAddAuthorizationToken(){
   UserStorageManager.setAuthToken('new_auth_token');
 }
 
@@ -53,10 +47,10 @@ Future<void> _testRemovePartOfStorage()async{
 void _listenInitPage(){
   InitPage.contextStream.listen(
     (BuildContext context)async{
-      print('A new context is here: ');
-      print(context);
-      print('******');
-      await DataDistributor.updateAppData(await NetConnectionDetector.netConnectionState);
+      final NetConnectionState netConnectionState = await NetConnectionDetector.netConnectionState;
+      //TODO: borrar en su desuso
+      //await DataDistributor.updateAppData(await NetConnectionDetector.netConnectionState);
+      await DataInitializer.init(context, netConnectionState);
     }
   );
 }

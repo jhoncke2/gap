@@ -13,11 +13,49 @@ import 'package:gap/logic/storage_managers/projects/projects_storage_manager.dar
 import 'package:gap/logic/storage_managers/visits/preloaded_visits_storage_manager.dart';
 import 'package:gap/logic/storage_managers/visits/visits_storage_manager.dart';
 
-abstract class SourceDataToBlocWithConnection extends SourceDataToBloc{
+class SourceDataToBlocWithConnection extends SourceDataToBloc{
+  
   @override
   Future<void> updateProjects()async{
     final ProjectsBloc pBloc = blocsAsMap[BlocName.Projects];
     await ProjectsServicesManager.loadProjects(pBloc);
+  }
+
+  @override
+  Future<void> updateChosenProject([Entity entityToAdd])async{
+    await addChosenProjectToBloc(entityToAdd);
+    await ProjectsStorageManager.setProjectWithPreloadedVisits(entityToAdd);
+  }
+
+  @override
+  Future<void> updateChosenVisit([Entity entityToAdd])async{
+    await addChosenVisitToBloc(entityToAdd);
+    final Project chosenProject = UploadedBlocsData.dataContainer[NavigationRoute.ProjectDetail];
+    await PreloadedVisitsStorageManager.setVisit(entityToAdd, chosenProject.id);
+  }
+  
+  @override
+  Future<void> updateChosenForm([Entity entityToAdd])async{
+    await addChosenFormToBlocs(entityToAdd);
+    //final Visit chosenVisit = dataAddedToBlocsByExistingNavs[NavigationRoute.VisitDetail];
+    //await PreloadedFormsStorageManager.setPreloadedForm(entityToAdd, chosenVisit.id);
+  }
+
+  @override
+  Future<void> updateVisits()async{
+    final VisitsBloc vBloc = blocsAsMap[BlocName.Visits];
+    await VisitsServicesManager.loadVisits(vBloc);
+  }
+
+  @override
+  Future<void> updateFormularios()async{
+    final FormulariosBloc fBloc = blocsAsMap[BlocName.Formularios];
+    await FormsServicesManager.loadForms(fBloc);
+    final Visit chosenVisit = UploadedBlocsData.dataContainer[NavigationRoute.VisitDetail];
+    final List<Formulario> formularios = await FormulariosStorageManager.getForms();
+    for(Formulario form in formularios){
+      await PreloadedFormsStorageManager.setPreloadedForm(form, chosenVisit.id);
+    }
   }
 }
 
@@ -31,7 +69,7 @@ class SourceDataToBlocWithConnectionInitializer extends SourceDataToBlocWithConn
   }
 
   @override
-  Future<void> updateFormulariosBloc()async{
+  Future<void> updateFormularios()async{
     final FormulariosBloc fBloc = blocsAsMap[BlocName.Formularios];
     final List<Formulario> forms = await FormulariosStorageManager.getForms();
     final SetForms sfEvent = SetForms(forms: forms);
@@ -68,7 +106,7 @@ class SourceDataToBlocWithConnectionUpdater extends SourceDataToBlocWithConnecti
   }
 
   @override
-  Future<void> updateFormulariosBloc()async{
+  Future<void> updateFormularios()async{
     final FormulariosBloc fBloc = blocsAsMap[BlocName.Formularios];
     await FormsServicesManager.loadForms(fBloc);
     final Visit chosenVisit = UploadedBlocsData.dataContainer[NavigationRoute.VisitDetail];
