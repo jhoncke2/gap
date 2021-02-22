@@ -3,11 +3,11 @@ import 'package:gap/native_connectors/storage_connector.dart';
 
 class IndexStorageManager{
 
-  static final String indexConfigKey = 'index';
+  static final String _indexConfigKey = 'index';
 
   static Future<void> setIndex(IndexState indexConfig)async{
     final Map<String, dynamic> indexConfigAsJson = _convertIndexToJson(indexConfig);
-    await StorageConnectorSingleton.storageConnector.setMapResource(indexConfigKey, indexConfigAsJson);
+    await StorageConnectorSingleton.storageConnector.setMapResource(_indexConfigKey, indexConfigAsJson);
   }
 
   static Map<String, dynamic> _convertIndexToJson(IndexState indexConfig){
@@ -21,7 +21,7 @@ class IndexStorageManager{
   }
 
   static Future<IndexState> getIndex()async{
-    final Map<String, dynamic> indexConfigAsJson = await StorageConnectorSingleton.storageConnector.getMapResource(indexConfigKey);
+    final Map<String, dynamic> indexConfigAsJson = await StorageConnectorSingleton.storageConnector.getMapResource(_indexConfigKey);
     final IndexState indexConfig = _convertJsonIndexToObject(indexConfigAsJson);
     return indexConfig;
   }
@@ -35,6 +35,6 @@ class IndexStorageManager{
   }
 
   static Future<void> removeIndex()async{
-    await StorageConnectorSingleton.storageConnector.removeResource(indexConfigKey);
+    await StorageConnectorSingleton.storageConnector.removeResource(_indexConfigKey);
   }
 }

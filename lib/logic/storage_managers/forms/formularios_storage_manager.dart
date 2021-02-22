@@ -2,11 +2,11 @@ import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/native_connectors/storage_connector.dart';
 
 class FormulariosStorageManager{
-  static final String formsKey = 'formularios';
+  static final String _formsKey = 'formularios';
 
   static Future<void> setForms(List<Formulario> forms)async{
     final List<Map<String, dynamic>> formsAsJson = _convertFormsToJson(forms);
-    await StorageConnectorSingleton.storageConnector.setListResource(formsKey, formsAsJson);
+    await StorageConnectorSingleton.storageConnector.setListResource(_formsKey, formsAsJson);
   }
 
   static List<Map<String, dynamic>> _convertFormsToJson(List<Formulario> forms){
@@ -17,7 +17,7 @@ class FormulariosStorageManager{
   }
 
   static Future<List<Formulario>> getForms()async{
-    final List<Map<String, dynamic>> formsAsJson = await StorageConnectorSingleton.storageConnector.getListResource(formsKey);
+    final List<Map<String, dynamic>> formsAsJson = await StorageConnectorSingleton.storageConnector.getListResource(_formsKey);
     final List<Formulario> forms = _convertJsonFormsToObject(formsAsJson);
     return forms;
   }
@@ -29,6 +29,6 @@ class FormulariosStorageManager{
   }
 
   static Future<void> removeForms()async{
-    await StorageConnectorSingleton.storageConnector.removeResource(formsKey);
+    await StorageConnectorSingleton.storageConnector.removeResource(_formsKey);
   }
 }

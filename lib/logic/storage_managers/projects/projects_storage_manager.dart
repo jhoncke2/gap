@@ -2,13 +2,13 @@ import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/native_connectors/storage_connector.dart';
 
 class ProjectsStorageManager{
-  static final String projectsKey = 'projects';
-  static final String chosenProjectKey = 'chosen_project';
-  static final String projectsWithPreloadedVisitsKey = 'projects_with_preloaded_visits';
+  static final String _projectsKey = 'projects';
+  static final String _chosenProjectKey = 'chosen_project';
+  static final String _projectsWithPreloadedVisitsKey = 'projects_with_preloaded_visits';
   
   static Future<void> setProjects(List<Project> projects)async{
     final List<Map<String, dynamic>> projectsAsJson = _convertProjectsToJson(projects);
-    await StorageConnectorSingleton.storageConnector.setListResource(projectsKey, projectsAsJson);
+    await StorageConnectorSingleton.storageConnector.setListResource(_projectsKey, projectsAsJson);
   }
 
   static List<Map<String, dynamic>> _convertProjectsToJson(List<Project> projects){
@@ -18,26 +18,26 @@ class ProjectsStorageManager{
   }
 
   static Future<List<Project>> getProjects()async{
-    return await _getListOfProjects(projectsKey);
+    return await _getListOfProjects(_projectsKey);
   }
 
   static Future<void> removeProjects()async{
-    await StorageConnectorSingleton.storageConnector.removeResource(projectsKey);
+    await StorageConnectorSingleton.storageConnector.removeResource(_projectsKey);
   }
   
   static Future<void> setChosenProject(Project project)async{
     final Map<String, dynamic> projectAsMap = project.toJson();
-    await StorageConnectorSingleton.storageConnector.setMapResource(chosenProjectKey, projectAsMap);
+    await StorageConnectorSingleton.storageConnector.setMapResource(_chosenProjectKey, projectAsMap);
   }
 
   static Future<Project> getChosenProject()async{
-    final Map<String, dynamic> chosenProjectAsMap = await StorageConnectorSingleton.storageConnector.getMapResource(chosenProjectKey);
+    final Map<String, dynamic> chosenProjectAsMap = await StorageConnectorSingleton.storageConnector.getMapResource(_chosenProjectKey);
     final Project chosenProject = Project.fromJson(chosenProjectAsMap);
     return chosenProject;
   }
 
   static Future<void> removeChosenProject()async{
-    await StorageConnectorSingleton.storageConnector.removeResource(chosenProjectKey);
+    await StorageConnectorSingleton.storageConnector.removeResource(_chosenProjectKey);
   }
 
   // * * * * * * * * * Preloaded data
@@ -47,17 +47,17 @@ class ProjectsStorageManager{
     final List<Project> restantProjects = projects.where(
       (Project p) => p.id != removedProjectId
     ).toList();
-    await StorageConnectorSingleton.storageConnector.setListResource(projectsWithPreloadedVisitsKey, Projects(projects: restantProjects).toJson());
+    await StorageConnectorSingleton.storageConnector.setListResource(_projectsWithPreloadedVisitsKey, Projects(projects: restantProjects).toJson());
   }
 
   static Future<void> setProjectWithPreloadedVisits(Project project)async{
     final List<Project> projectsWithPreloadedVisits = await getProjectsWithPreloadedVisits();
     projectsWithPreloadedVisits.add(project);
-    await StorageConnectorSingleton.storageConnector.setListResource(projectsWithPreloadedVisitsKey, Projects(projects: projectsWithPreloadedVisits).toJson());
+    await StorageConnectorSingleton.storageConnector.setListResource(_projectsWithPreloadedVisitsKey, Projects(projects: projectsWithPreloadedVisits).toJson());
   }
 
   static Future<List<Project>> getProjectsWithPreloadedVisits()async{
-    return await _getListOfProjects(projectsWithPreloadedVisitsKey);
+    return await _getListOfProjects(_projectsWithPreloadedVisitsKey);
   }
 
   static Future<List<Project>> _getListOfProjects(String key)async{

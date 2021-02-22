@@ -3,7 +3,7 @@ import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/native_connectors/storage_connector.dart';
 
 class PreloadedFormsStorageManager{
-  static final String preloadedFormsKey = 'preloaded_forms';
+  static final String _preloadedFormsKey = 'preloaded_forms';
   @protected
   static final _PreloadedFormsHolder currentPreloadedFormsHolder = _PreloadedFormsHolder();
 
@@ -61,13 +61,13 @@ class PreloadedFormsStorageManager{
 
   static Future<void> _updateCurrentPreloadedFormsHolderFromStorage()async{
     //currentPreloadedVisitsHolder.currentData =  (await StorageConnectorSingleton.storageConnector.getMapResource(preloadedVisitsKey)).cast<String, List<Map<String, dynamic>>>();
-    final Map<dynamic, dynamic> tempMap = (await StorageConnectorSingleton.storageConnector.getMapResource(preloadedFormsKey));
+    final Map<dynamic, dynamic> tempMap = (await StorageConnectorSingleton.storageConnector.getMapResource(_preloadedFormsKey));
     currentPreloadedFormsHolder.initFromJson(tempMap);
   }
   
   static Future<void> _updateStorageFromCurrentPreloadedFormsHolder()async{
     print(currentPreloadedFormsHolder.currentData.runtimeType);
-    await StorageConnectorSingleton.storageConnector.setMapResource(preloadedFormsKey, currentPreloadedFormsHolder.toJson());
+    await StorageConnectorSingleton.storageConnector.setMapResource(_preloadedFormsKey, currentPreloadedFormsHolder.toJson());
   }
 
   

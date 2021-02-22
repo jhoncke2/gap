@@ -2,13 +2,13 @@ import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/native_connectors/storage_connector.dart';
 
 class VisitsStorageManager{
-  static final String visitsKey = 'visits';
-  static final String chosenVisitKey = 'chosen_visit';
-  static final String preloadedVisitsKey = 'preloaded_visits';
+  static final String _visitsKey = 'visits';
+  static final String _chosenVisitKey = 'chosen_visit';
+  static final String _preloadedVisitsKey = 'preloaded_visits';
 
   static Future<void> setVisits(List<Visit> visits)async{
     final List<Map<String, dynamic>> visitsAsJson = _convertVisitsToJson(visits);
-    await StorageConnectorSingleton.storageConnector.setListResource(visitsKey, visitsAsJson);
+    await StorageConnectorSingleton.storageConnector.setListResource(_visitsKey, visitsAsJson);
   }
   
   static List<Map<String, dynamic>> _convertVisitsToJson(List<Visit> visits){
@@ -18,7 +18,7 @@ class VisitsStorageManager{
   }
 
   static Future<List<Visit>> getVisits()async{
-    final List<Map<String, dynamic>> visitsAsJson = await StorageConnectorSingleton.storageConnector.getListResource(visitsKey);
+    final List<Map<String, dynamic>> visitsAsJson = await StorageConnectorSingleton.storageConnector.getListResource(_visitsKey);
     final List<Visit> visits = _convertJsonVisitsToObject(visitsAsJson);
     return visits;
   }
@@ -30,21 +30,21 @@ class VisitsStorageManager{
   }
 
   static Future<void> removeVisits()async{
-    await StorageConnectorSingleton.storageConnector.removeResource(visitsKey);
+    await StorageConnectorSingleton.storageConnector.removeResource(_visitsKey);
   }
 
   static Future<void> setChosenVisit(Visit visit)async{
     final Map<String, dynamic> visitAsJson = visit.toJson();
-    await StorageConnectorSingleton.storageConnector.setMapResource(chosenVisitKey, visitAsJson);
+    await StorageConnectorSingleton.storageConnector.setMapResource(_chosenVisitKey, visitAsJson);
   }
 
   static Future<Visit> getChosenVisit()async{
-    final Map<String, dynamic> visitAsJson = await StorageConnectorSingleton.storageConnector.getMapResource(chosenVisitKey);
+    final Map<String, dynamic> visitAsJson = await StorageConnectorSingleton.storageConnector.getMapResource(_chosenVisitKey);
     final Visit visit = Visit.fromJson(visitAsJson);
     return visit;
   }
 
   static Future<void> removeChosenVisit()async{
-    await StorageConnectorSingleton.storageConnector.removeResource(chosenVisitKey);
+    await StorageConnectorSingleton.storageConnector.removeResource(_chosenVisitKey);
   }
 }

@@ -2,7 +2,8 @@ import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/native_connectors/storage_connector.dart';
 
 class CommentedImagesStorageManager{
-  static final String commentedImagesKey = 'commented_images';
+  
+  static final String _commentedImagesKey = 'commented_images';
   final StorageConnector storageConnector;
   
   CommentedImagesStorageManager():
@@ -11,7 +12,7 @@ class CommentedImagesStorageManager{
 
   static Future<void> setCommentedImages(List<CommentedImage> projects)async{
     final List<Map<String, dynamic>> projectsAsJson = _convertCommentedImagesToJson(projects);
-    await StorageConnectorSingleton.storageConnector.setListResource(commentedImagesKey, projectsAsJson);
+    await StorageConnectorSingleton.storageConnector.setListResource(_commentedImagesKey, projectsAsJson);
   }
 
   static List<Map<String, dynamic>> _convertCommentedImagesToJson(List<CommentedImage> commentedImages){
@@ -24,7 +25,7 @@ class CommentedImagesStorageManager{
   }
 
   static Future<List<CommentedImage>> getCommentedImages()async{
-    final List<Map<String, dynamic>> commentedImagesAsJson = await StorageConnectorSingleton.storageConnector.getListResource(commentedImagesKey);
+    final List<Map<String, dynamic>> commentedImagesAsJson = await StorageConnectorSingleton.storageConnector.getListResource(_commentedImagesKey);
     final List<CommentedImage> commentedImages = _convertJsonCommentedImagesToObject(commentedImagesAsJson);
     return commentedImages;
   }
@@ -36,6 +37,6 @@ class CommentedImagesStorageManager{
   }
 
   static Future<void> removeCommentedImages()async{
-    await StorageConnectorSingleton.storageConnector.removeResource(commentedImagesKey);
+    await StorageConnectorSingleton.storageConnector.removeResource(_commentedImagesKey);
   }
 }

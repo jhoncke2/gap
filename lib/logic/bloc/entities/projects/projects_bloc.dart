@@ -26,7 +26,9 @@ class ProjectsBloc extends Bloc<ProjectsEvent, ProjectsState> {
       setProjects(event);
     }else if(event is ChooseProject){
       chooseProject(event);
-    }else if(event is ResetProyects){
+    }else if(event is RemoveChosenProject){
+      removeChosenProject();
+    }else if(event is ResetProjects){
       resetAll();
     }
     yield _currentYieldedState;
@@ -47,6 +49,10 @@ class ProjectsBloc extends Bloc<ProjectsEvent, ProjectsState> {
     final Project chosenOne = event.chosenOne;
     _currentYieldedState = state.copyWith(chosenProject: chosenOne);
     ProjectsStorageManager.setChosenProject(chosenOne);
+  }
+
+  void removeChosenProject(){
+
   }
 
   @protected

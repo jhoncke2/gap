@@ -130,6 +130,23 @@ abstract class SourceDataToBloc{
     cfBloc.add(iffoEvent);
   }
 
+  Future updateCommentedImages()async{
+    final List<CommentedImage> commentedImages = await CommentedImagesStorageManager.getCommentedImages();
+    _addCommentedImagesToBlocIfExistsInStorage(commentedImages);
+  }
+
+  void _addCommentedImagesToBlocIfExistsInStorage(List<CommentedImage> commentedImages)async{
+    if(commentedImages.length > 0){
+      _addCommentedImagesToBloc(commentedImages);
+    } 
+  }
+
+  void _addCommentedImagesToBloc(List<CommentedImage> commentedImages)async{
+    final CommentedImagesBloc ciBloc = blocsAsMap[BlocName.CommentedImages];
+    final SetCommentedImages sciEvent = SetCommentedImages(commentedImages: commentedImages);
+    ciBloc.add(sciEvent);
+  }
+
   Future<void> _addStorageDataToCommentedImagesBloc()async{
     final CommentedImagesBloc ciBloc = blocsAsMap[BlocName.CommentedImages];
     final List<CommentedImage> commentedImages = await CommentedImagesStorageManager.getCommentedImages();
@@ -147,6 +164,27 @@ abstract class SourceDataToBloc{
     final ChangeIndexPage ciEvent = ChangeIndexPage(newIndexPage: newIndexPage);
     indexBloc.add(ciEvent);
   }
+
+  Future resetChosenProject()async{
+    await ProjectsStorageManager.removeChosenProject();
+  }
+
+  Future resetVisits()async{
+    await VisitsStorageManager.removeVisits();
+  }
+
+  Future resetChosenVisit()async{
+    await CommentedImagesStorageManager.removeCommentedImages();
+    final CommentedImagesBloc cmBloc = blocsAsMap[BlocName.CommentedImages];
+    cmBloc.add(ResetCommentedImages());
+    await VisitsStorageManager.removeChosenVisit();
+  }
+
+  Future resetForms()async{}
+
+  Future resetChosenForm()async{}
+
+  Future resetCommentedImages()async{}
 }
 
 

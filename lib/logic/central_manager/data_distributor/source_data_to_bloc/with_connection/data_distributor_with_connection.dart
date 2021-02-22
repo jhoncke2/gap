@@ -57,6 +57,26 @@ class SourceDataToBlocWithConnection extends SourceDataToBloc{
       await PreloadedFormsStorageManager.setPreloadedForm(form, chosenVisit.id);
     }
   }
+
+  @override
+  Future resetForms()async{
+    final VisitsBloc vBloc = blocsAsMap[BlocName.Visits];
+    final Visit chosenVisit = vBloc.state.chosenVisit;
+    await _removeVisitFromPreloadedVisitsIfCompleted(chosenVisit);
+        
+  }
+
+  Future _removeVisitFromPreloadedVisitsIfCompleted(Visit visit)async{
+    if(visit.stage == ProcessStage.Realizada)
+      await _removeVisitFromPReloadedVisits(visit);
+  }
+
+  Future _removeVisitFromPReloadedVisits(Visit visit)async{
+    final ProjectsBloc pBloc = blocsAsMap[BlocName.Projects];
+    final Project chosenProject = pBloc.state.chosenProject;
+    await PreloadedVisitsStorageManager.removeVisit(visit.id, chosenProject.id);
+  }
+
 }
 
 class SourceDataToBlocWithConnectionInitializer extends SourceDataToBlocWithConnection{

@@ -4,6 +4,7 @@ import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/logic/bloc/nav_routes/routes_manager.dart';
 import 'package:gap/logic/blocs_manager/pages_navigation_manager.dart';
 import 'package:gap/logic/central_manager/data_distributor/data_distributor_manager.dart';
+import 'package:gap/logic/storage_managers/commented_images/commented_images_storage_manager.dart';
 import 'package:gap/logic/storage_managers/forms/chosen_form_storage_manager.dart';
 import 'package:gap/logic/storage_managers/projects/projects_storage_manager.dart';
 import 'package:gap/logic/storage_managers/user/user_storage_manager.dart';
@@ -59,57 +60,62 @@ class DataInitializer{
   static Future _doNavigation(NavigationRoute navRoute, BuildContext context)async{
     switch(navRoute){
       case NavigationRoute.Projects:
-        await _doNavigationToProjects(context);
+        await _doNavigationToProjects();
         break;
       case NavigationRoute.ProjectDetail:
-        await _doNavigationToProjectDetail(context);
+        await _doNavigationToProjectDetail();
         break;
       case NavigationRoute.Visits:
-        await _doNavigationToVisits(context);
+        await _doNavigationToVisits();
         break;
       case NavigationRoute.VisitDetail:
-        await _doNavigationToVisitDetail(context);
+        await _doNavigationToVisitDetail();
         break;
       case NavigationRoute.Formularios:
-        await _doNavigationToForms(context);
+        await _doNavigationToForms();
         break;    
       case NavigationRoute.FormularioDetailForms:
-        await _doNavigationToFormDetail(context);
+        await _doNavigationToFormDetail();
         break;
       case NavigationRoute.AdjuntarFotosVisita:
+        await _doNavigationToAdjuntarFotos();
         break;
     }
   }
 
-  static Future _doNavigationToProjects(BuildContext context)async{ 
+  static Future _doNavigationToProjects()async{ 
     await DataDistributorManager.dataDistributor.updateProjects();
   }
 
-  static Future _doNavigationToProjectDetail(BuildContext context)async{
+  static Future _doNavigationToProjectDetail()async{
     final Project chosenOne = await ProjectsStorageManager.getChosenProject();
     await DataDistributorManager.dataDistributor.updateChosenProject(chosenOne);
     //await PagesNavigationManager.navToProjectDetail(chosenOne, context);
   }
 
-  static Future _doNavigationToVisits(BuildContext context)async{
+  static Future _doNavigationToVisits()async{
     //await PagesNavigationManager.navToVisits(context);
     await DataDistributorManager.dataDistributor.updateVisits();
   }
 
-  static Future _doNavigationToVisitDetail(BuildContext context)async{
+  static Future _doNavigationToVisitDetail()async{
     final Visit chosenOne = await VisitsStorageManager.getChosenVisit();
     await DataDistributorManager.dataDistributor.updateChosenVisit(chosenOne);
     //await PagesNavigationManager.navToVisitDetail(chosenOne, context);
   }
 
-  static Future _doNavigationToForms(BuildContext context)async{
+  static Future _doNavigationToForms()async{
     await DataDistributorManager.dataDistributor.updateFormularios();
     //await PagesNavigationManager.navToForms(context);
   }
 
-  static Future _doNavigationToFormDetail(BuildContext context)async{
+  static Future _doNavigationToFormDetail()async{
     final Formulario chosenOne = await ChosenFormStorageManager.getChosenForm();
     await DataDistributorManager.dataDistributor.updateChosenForm(chosenOne);
     //await PagesNavigationManager.navToFormDetail(chosenOne, context);
+  }
+
+  static Future _doNavigationToAdjuntarFotos()async{
+    await DataDistributorManager.dataDistributor.updateCommentedImages();
   }
 }

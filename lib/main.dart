@@ -3,7 +3,6 @@ import 'package:gap/data/enums/enums.dart';
 import 'package:gap/logic/central_manager/data_initializer.dart';
 import 'package:gap/native_connectors/storage_connector.dart';
 import 'package:gap/native_connectors/net_connection_detector.dart';
-import 'package:gap/logic/central_manager/data_distributor/data_distributor.dart';
 import 'package:gap/logic/storage_managers/user/user_storage_manager.dart';
 import 'package:gap/ui/gap_app.dart';
 import 'package:gap/ui/pages/init_page.dart';
