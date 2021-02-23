@@ -15,6 +15,7 @@ class InitPage extends StatelessWidget{
   static final String route = 'init';
   static StreamController<BuildContext> _contextStreamController = StreamController();
   static Stream<BuildContext> get contextStream => _contextStreamController.stream;
+  bool _alreadyInit = false;
 
   @override
   Widget build(BuildContext context){
@@ -30,11 +31,12 @@ class InitPage extends StatelessWidget{
 
   void _doInitialConfig(BuildContext context){
     _initSizeUtils(context);
-    _callBackAfterBuild(context);
-    initBlocsManagers(context);
+    _initBlocsManagers(context);
+    _callBackAfterBuildIfAlreadyInit(context);
+    
   }
 
-  void initBlocsManagers(BuildContext context){
+  void _initBlocsManagers(BuildContext context){
     CommentedImagesIndexManagerSingleton(appContext: context);
     ChosenFormManagerSingleton(appContext: context);
   }
@@ -43,6 +45,13 @@ class InitPage extends StatelessWidget{
     final Size screenSize = MediaQuery.of(context).size;
     SizeUtils sizeUtils = SizeUtils();
     sizeUtils.initUtil(screenSize);
+  }
+
+  void _callBackAfterBuildIfAlreadyInit(BuildContext context){
+    if(!_alreadyInit){
+      _alreadyInit = true;
+      _callBackAfterBuild(context);
+    }
   }
 
   void _callBackAfterBuild(BuildContext context){

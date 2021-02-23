@@ -10,34 +10,33 @@ import 'package:gap/logic/central_manager/data_distributor/data_distributor_mana
 
 class PagesNavigationManager{
 
-  static Future<void> pop(BuildContext context)async{
-    await routesManager.pop();
-    final NavigationRoute newRoute = routesManager.currentRoute;
-    await _choosePoMethodByDestinationRoute(newRoute);
+  static Future<void> pop()async{
+    if(await routesManager.hasPreviousRoute){
+      final NavigationRoute previousRoute = await routesManager.lastNavRoute;
+      await _chooseMethodByDestinationRoute(previousRoute);
+      await routesManager.pop();
+    }   
   }
 
   static Future<void> navToLogin()async{
-    await _goToInitialPage(NavigationRoute.Login, null);
+    await _goToInitialPage(NavigationRoute.Login);
   }
   
-  static Future<void> navToProjects(BuildContext context)async{
+  static Future<void> navToProjects( )async{
     await _updateProjectsData();
-    await _goToInitialPage(NavigationRoute.Projects, context);
+    await _goToInitialPage(NavigationRoute.Projects);
   }
 
   static Future<void> _updateProjectsData()async{
-    //await DataDistributor.updateBlocData(NavigationRoute.Projects);
     await DataDistributorManager.dataDistributor.updateProjects();
   }
 
-  static Future<void> navToProjectDetail(Project project, BuildContext context)async{
-    //DataDistributor.updateBlocData(NavigationRoute.ProjectDetail, project);
-    //_updateChosenProject(project, context);
+  static Future<void> navToProjectDetail(Project project,  )async{
     await DataDistributorManager.dataDistributor.updateChosenProject(project);
     await _goToNextPage(NavigationRoute.ProjectDetail);
   }
 
-  static Future<void> navToVisits(BuildContext context)async{
+  static Future<void> navToVisits( )async{
     await _updateVisitsData();     
     await _goToNextPage(NavigationRoute.Visits);
   }
@@ -46,9 +45,8 @@ class PagesNavigationManager{
     await DataDistributorManager.dataDistributor.updateVisits();
   }
 
-  static Future<void> navToVisitDetail(Visit visit, BuildContext context)async{
+  static Future<void> navToVisitDetail(Visit visit,  )async{
     await DataDistributorManager.dataDistributor.updateChosenVisit(visit);
-    await DataDistributorManager.dataDistributor.updateFormularios();
     await _goToNextPage(NavigationRoute.VisitDetail);
   }
 
@@ -56,7 +54,7 @@ class PagesNavigationManager{
     await _goToNextPage(NavigationRoute.Formularios);
   }
 
-  static Future<void> navToFormDetail(Formulario formulario, BuildContext context)async{
+  static Future<void> navToFormDetail(Formulario formulario,  )async{
     await DataDistributorManager.dataDistributor.updateChosenForm(formulario);
     await _goToNextPage(NavigationRoute.FormularioDetailForms);
   }
@@ -69,13 +67,13 @@ class PagesNavigationManager{
 
   }
 
-  static Future<void> endFormFirmers(BuildContext context)async{    
+  static Future<void> endFormFirmers( )async{    
     await ChosenFormManagerSingleton.chosenFormManager.addFirmToFirmer();
     ChosenFormManagerSingleton.chosenFormManager.finishFirms();
-    pop(null);
+    await pop();
   }
 
-  static Future<void> navToAdjuntarImages(BuildContext context)async{
+  static Future<void> navToAdjuntarImages( )async{
     await DataDistributorManager.dataDistributor.updateCommentedImages();
     await _goToNextPage(NavigationRoute.AdjuntarFotosVisita);
   }
@@ -94,7 +92,7 @@ class PagesNavigationManager{
     commImgsBloc.add(ResetCommentedImages());
     final IndexBloc indexBloc = BlocProvider.of<IndexBloc>(context);
     indexBloc.add(ResetAllOfIndex());
-    await pop(null);
+    await pop();
   }
 
   static Future<void> _backToProjects()async{
@@ -126,11 +124,11 @@ class PagesNavigationManager{
     //Navigator.of(context).popUntil((route) => route.settings.name == targetRoute.value);
   }
 
-  static Future<void> _goToInitialPage(NavigationRoute targetRoute, BuildContext context)async{
+  static Future<void> _goToInitialPage(NavigationRoute targetRoute)async{
     await routesManager.replaceAllRoutesForNew(targetRoute);
   }
 
-  static Future<void> _choosePoMethodByDestinationRoute(NavigationRoute route)async{
+  static Future<void> _chooseMethodByDestinationRoute(NavigationRoute route)async{
     if(route == NavigationRoute.Projects)
       await _backToProjects();
     else if(route == NavigationRoute.ProjectDetail)

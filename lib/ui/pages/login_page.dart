@@ -177,7 +177,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _login()async{
-    PagesNavigationManager.navToProjects(context);
+    PagesNavigationManager.navToProjects();
   }
   
   Widget _createBottomComponents(){

@@ -86,7 +86,7 @@ class ProjectsPage extends StatelessWidget {
     projects.forEach((Project project){
       names.add(project.name);
       functions.add((){
-        PagesNavigationManager.navToProjectDetail(project, _context);
+        PagesNavigationManager.navToProjectDetail(project);
       });
     });
     namesAndFunctions['names'] = names;

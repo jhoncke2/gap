@@ -72,6 +72,6 @@ class BottomFirmsOptions extends StatelessWidget {
   }
 
   Future<void> _finish()async{
-    await PagesNavigationManager.endFormFirmers(_context);
+    await PagesNavigationManager.endFormFirmers();
   }
 }

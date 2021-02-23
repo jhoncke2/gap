@@ -164,7 +164,7 @@ class _VisitsComponents extends StatelessWidget {
   }
 
   void _onTapFunction(EntityWithStage entity){
-    PagesNavigationManager.navToVisitDetail(entity, _context);
+    PagesNavigationManager.navToVisitDetail(entity);
     //_choseVisit(entity);
     //_loadForms();
   }

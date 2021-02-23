@@ -26,7 +26,7 @@ class RoutesManager{
   Future setRouteAfterPopping(NavigationRoute newRoute, int nPoppings)async{
     await NavigationRoutesStorageManager.removeNRoutes(nPoppings);
     await NavigationRoutesStorageManager.setNavigationRoute(newRoute);
-    await _doNPoppingsToNavigator(nPoppings);
+    //await _doNPoppingsToNavigator(nPoppings);
     await CustomNavigator.navigateReplacingTo(newRoute);
   }
 
@@ -40,11 +40,19 @@ class RoutesManager{
     await NavigationRoutesStorageManager.removeNRoutes(1);
     await loadRoute();
     await CustomNavigator.navigateReplacingTo(_currentRoute);
-    //await CustomNavigator.pop();
   }
 
   NavigationRoute get currentRoute => _currentRoute;
   Future<List<NavigationRoute>> get routesTree async => await NavigationRoutesStorageManager.getNavigationRoutes();
+  
+  Future<bool> get hasPreviousRoute async{
+    final List<NavigationRoute> navRoutesTree = await routesTree;
+    return navRoutesTree.length > 1;
+  }
+  Future<NavigationRoute> get lastNavRoute async{
+    final List<NavigationRoute> navRoutesTree = await routesTree;
+    return navRoutesTree[navRoutesTree.length - 2];
+  }
 }
 
 final RoutesManager routesManager = RoutesManager();

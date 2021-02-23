@@ -4,7 +4,6 @@ import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/logic/bloc/nav_routes/routes_manager.dart';
 import 'package:gap/logic/blocs_manager/pages_navigation_manager.dart';
 import 'package:gap/logic/central_manager/data_distributor/data_distributor_manager.dart';
-import 'package:gap/logic/storage_managers/commented_images/commented_images_storage_manager.dart';
 import 'package:gap/logic/storage_managers/forms/chosen_form_storage_manager.dart';
 import 'package:gap/logic/storage_managers/projects/projects_storage_manager.dart';
 import 'package:gap/logic/storage_managers/user/user_storage_manager.dart';

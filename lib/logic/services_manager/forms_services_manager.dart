@@ -4,7 +4,7 @@ import 'package:gap/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/logic/storage_managers/forms/formularios_storage_manager.dart';
 
 class FormsServicesManager{
-  static Future<void> loadForms(FormulariosBloc bloc)async{
+  static Future<void> loadForms(FormulariosBloc bloc, int visitId)async{
     //TODO: Iplementar services
     final List<Formulario> forms = fakeData.formularios;
     bloc.add(SetForms(forms: forms));

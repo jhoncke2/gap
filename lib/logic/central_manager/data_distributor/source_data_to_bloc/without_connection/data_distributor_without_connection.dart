@@ -3,12 +3,13 @@ import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/logic/bloc/entities/projects/projects_bloc.dart';
 import 'package:gap/logic/bloc/entities/visits/visits_bloc.dart';
-import 'package:gap/logic/central_manager/data_distributor/source_data_to_bloc/source_data_to_bloc.dart';
+import 'package:gap/logic/central_manager/data_distributor/source_data_to_bloc/data_distributor.dart';
 import 'package:gap/logic/storage_managers/forms/preloaded_forms_storage_manager.dart';
 import 'package:gap/logic/storage_managers/projects/projects_storage_manager.dart';
 import 'package:gap/logic/storage_managers/visits/preloaded_visits_storage_manager.dart';
 
-class SourceDataToBlocWithoutConnection extends SourceDataToBloc{
+class SourceDataToBlocWithoutConnection extends DataDistributor{
+  
   @override
   Future<void> updateProjects()async{
     final ProjectsBloc pBloc = blocsAsMap[BlocName.Projects];
@@ -24,6 +25,19 @@ class SourceDataToBlocWithoutConnection extends SourceDataToBloc{
     final List<Visit> preloadedVisits = await PreloadedVisitsStorageManager.getVisitsByProjectId(chosenProject.id);
     final SetVisits svEvent = SetVisits(visits: preloadedVisits);
     vBloc.add(svEvent);
+  }
+
+  @override
+  Future updateChosenVisit(Visit visit)async{
+    await addChosenVisitToBloc(visit);
+    _updateFormularios(visit);
+  }
+
+  Future _updateFormularios(Visit chosenVisit)async{
+    final FormulariosBloc fBloc = blocsAsMap[BlocName.Formularios];
+    final List<Formulario> formsGroupedByPreloadedVisit = await PreloadedFormsStorageManager.getPreloadedFormsByVisitId(chosenVisit.id);
+    final SetForms sfEvent = SetForms(forms: formsGroupedByPreloadedVisit);
+    fBloc.add(sfEvent);
   }
 
   @override

@@ -36,7 +36,7 @@ class ProjectDetailPage extends StatelessWidget {
     _context = appContext;
     _sizeUtils = SizeUtils();
     onTapFunctions = [
-      () => PagesNavigationManager.navToVisits(_context),
+      () => PagesNavigationManager.navToVisits(),
       (){}
     ];
   }

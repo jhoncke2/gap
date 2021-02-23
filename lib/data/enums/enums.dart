@@ -1,5 +1,3 @@
-import 'package:gap/logic/central_manager/data_distributor/data_distributor.dart';
-
 enum NetConnectionState{
   Connected,
   Disonnected

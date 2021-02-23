@@ -57,7 +57,7 @@ class Header extends StatelessWidget {
           Icons.arrow_back_ios
         ),
         onPressed: (){
-          PagesNavigationManager.pop(_context);
+          PagesNavigationManager.pop();
         },
       ),
     );
