@@ -23,24 +23,31 @@ class DataDistributorWithConnection extends DataDistributor{
   @override
   Future<void> updateChosenProject([Entity entityToAdd])async{
     await addChosenProjectToBloc(entityToAdd);
-    await ProjectsStorageManager.setProjectWithPreloadedVisits(entityToAdd);
+    //await ProjectsStorageManager.setProjectWithPreloadedVisits(entityToAdd);
   }
 
   @override
   Future<void> updateChosenVisit(Visit visit)async{
-    await addChosenVisitToBloc(visit);
+    await super.addChosenVisitToBloc(visit);
+    _addPreloadedDataRelatedToChosenProject(visit);
     await _loadFormsByChosenVisits(visit.id);
-    await _addChosenVisitIntoPreloadedStorage(visit);
+  }
+
+  Future _addPreloadedDataRelatedToChosenProject(Visit visit)async{
+    final Project chosenProject = UploadedBlocsData.dataContainer[NavigationRoute.ProjectDetail];
+    await ProjectsStorageManager.setProjectWithPreloadedVisits(chosenProject);
+    await PreloadedVisitsStorageManager.setVisit(visit, chosenProject.id);
   }
 
   Future _loadFormsByChosenVisits(int visitId)async{
     final FormulariosBloc fBloc = blocsAsMap[BlocName.Formularios];
-    await FormsServicesManager.loadForms(fBloc, visitId);
+    final List<Formulario> forms = await FormsServicesManager.loadForms(fBloc, visitId);
+    for(Formulario form in forms)
+      await _addFormToPreloadedStorage(form, visitId);
   }
 
-  Future _addChosenVisitIntoPreloadedStorage(Visit visit)async{
-    final Project chosenProject = UploadedBlocsData.dataContainer[NavigationRoute.ProjectDetail];
-    await PreloadedVisitsStorageManager.setVisit(visit, chosenProject.id);
+  Future _addFormToPreloadedStorage(Formulario form, int visitId)async{
+    await PreloadedFormsStorageManager.setPreloadedForm(form, visitId);
   }
 
   @override
@@ -51,6 +58,7 @@ class DataDistributorWithConnection extends DataDistributor{
 
   @override
   Future<void> updateFormularios()async{
+    /*
     final FormulariosBloc fBloc = blocsAsMap[BlocName.Formularios];
     //await FormsServicesManager.loadForms(fBloc);
     final Visit chosenVisit = UploadedBlocsData.dataContainer[NavigationRoute.VisitDetail];
@@ -58,6 +66,7 @@ class DataDistributorWithConnection extends DataDistributor{
     for(Formulario form in formularios){
       await PreloadedFormsStorageManager.setPreloadedForm(form, chosenVisit.id);
     }
+    */
   }
 
   @override

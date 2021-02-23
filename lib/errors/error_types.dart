@@ -1,0 +1,4 @@
+enum ErrorTypes{
+  SERVICE,
+  FILEFORMAT
+}

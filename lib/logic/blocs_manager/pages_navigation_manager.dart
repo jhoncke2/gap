@@ -67,13 +67,13 @@ class PagesNavigationManager{
 
   }
 
-  static Future<void> endFormFirmers( )async{    
+  static Future<void> endFormFirmers()async{    
     await ChosenFormManagerSingleton.chosenFormManager.addFirmToFirmer();
     ChosenFormManagerSingleton.chosenFormManager.finishFirms();
     await pop();
   }
 
-  static Future<void> navToAdjuntarImages( )async{
+  static Future<void> navToAdjuntarImages()async{
     await DataDistributorManager.dataDistributor.updateCommentedImages();
     await _goToNextPage(NavigationRoute.AdjuntarFotosVisita);
   }

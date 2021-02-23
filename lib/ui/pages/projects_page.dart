@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/logic/bloc/entities/projects/projects_bloc.dart';
 import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/logic/blocs_manager/pages_navigation_manager.dart';
-import 'package:gap/ui/pages/project_detail_page.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/header/header.dart';
 import 'package:gap/ui/widgets/navigation_list/navigation_list.dart';
@@ -13,7 +12,6 @@ import 'package:gap/ui/widgets/unloaded_elements/unloaded_nav_items.dart';
 // ignore: must_be_immutable
 class ProjectsPage extends StatelessWidget {
   static final String route = 'projects';
-  BuildContext _context;
   SizeUtils _sizeUtils;
 
   @override
@@ -31,7 +29,6 @@ class ProjectsPage extends StatelessWidget {
   }
 
   void _initInitialConfiguration(BuildContext appContext) {
-    _context = appContext;
     _sizeUtils = SizeUtils();
     _sizeUtils.initUtil(MediaQuery.of(appContext).size);
   }

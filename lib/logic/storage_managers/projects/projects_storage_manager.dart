@@ -52,8 +52,18 @@ class ProjectsStorageManager{
 
   static Future<void> setProjectWithPreloadedVisits(Project project)async{
     final List<Project> projectsWithPreloadedVisits = await getProjectsWithPreloadedVisits();
-    projectsWithPreloadedVisits.add(project);
+    _addProjectToProjectsIfDoesntExists(projectsWithPreloadedVisits, project);
     await StorageConnectorSingleton.storageConnector.setListResource(_projectsWithPreloadedVisitsKey, Projects(projects: projectsWithPreloadedVisits).toJson());
+  }
+
+  static void _addProjectToProjectsIfDoesntExists(List<Project> projects, Project project){
+    if(!_projectsContainProject(projects, project))
+      projects.add(project);
+  }
+
+  static bool _projectsContainProject(List<Project> projects, Project project){
+    final List<Project> projectsWithSameId = projects.where((Project p) => p.id == project.id).toList();
+    return (projectsWithSameId != null && projectsWithSameId.length > 0);
   }
 
   static Future<List<Project>> getProjectsWithPreloadedVisits()async{

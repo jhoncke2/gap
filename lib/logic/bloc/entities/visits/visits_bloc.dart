@@ -72,13 +72,6 @@ class VisitsBloc extends Bloc<VisitsEvent, VisitsState> {
   }
 
   @protected
-  void chooseVisit(ChooseVisit event){
-    final Visit chosenOne = event.chosenOne;
-    _currentYieldedState = state.copyWith(chosenVisit: chosenOne);
-    VisitsStorageManager.setChosenVisit(chosenOne);
-  }
-
-  @protected
   List<Visit> _getVisitsWithSameDateThanFilter(DateTime filterDate){
     final List<Visit> currentShowedVisits = state.visitsByCurrentSelectedStep;
     final Iterable<Visit> filterVisits = currentShowedVisits.where(
@@ -90,6 +83,15 @@ class VisitsBloc extends Bloc<VisitsEvent, VisitsState> {
     );
     return filterVisits.toList();
   }
+
+  @protected
+  void chooseVisit(ChooseVisit event){
+    final Visit chosenOne = event.chosenOne;
+    _currentYieldedState = state.copyWith(chosenVisit: chosenOne);
+    VisitsStorageManager.setChosenVisit(chosenOne);
+  }
+
+  
 
   @protected
   void resetAllOfVisits(){

@@ -93,7 +93,6 @@ class DataInitializer{
   }
 
   static Future _doNavigationToVisits()async{
-    //await PagesNavigationManager.navToVisits(context);
     await DataDistributorManager.dataDistributor.updateVisits();
   }
 
