@@ -9,8 +9,8 @@ class UnloadedNavItems extends StatelessWidget {
       child: Container(   
         height: _sizeUtils.xasisSobreYasis * 0.35,
         decoration: BoxDecoration(
-          color: Theme.of(context).primaryColor,
-          borderRadius: BorderRadius.circular(_sizeUtils.xasisSobreYasis * 0.02)
+          color: Theme.of(context).primaryColor.withOpacity(0.5),
+          borderRadius: BorderRadius.circular(_sizeUtils.xasisSobreYasis * 0.015)
         ),
       ),
     );

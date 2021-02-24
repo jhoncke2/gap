@@ -15,6 +15,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   ) async* {
     if(event is SetAuthToken){
       yield state.copyWith(authTokenIsLoaded: true, authToken: event.authToken);
+    }else if(event is ChangeLoginButtopnAvaibleless){
+      yield state.copyWith(loginButtonIsAvaible: event.isAvaible);
     }
   }
 }

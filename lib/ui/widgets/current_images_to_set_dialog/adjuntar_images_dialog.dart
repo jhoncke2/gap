@@ -1,4 +1,5 @@
 
+import 'package:gap/logic/blocs_manager/pages_navigation_manager.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -109,9 +110,9 @@ class AdjuntarFotosDialog extends StatelessWidget {
       source: ImageSource.gallery
     );
     final File photo = File(pickedFile.path);
-    final ImagesBloc adjuntarImgsAVisitBloc = BlocProvider.of<ImagesBloc>(_context);
+    final ImagesBloc imagesBloc = BlocProvider.of<ImagesBloc>(_context);
     final LoadPhoto loadPhotoEvent = LoadPhoto(photo: photo);
-    adjuntarImgsAVisitBloc.add(loadPhotoEvent);
+    imagesBloc.add(loadPhotoEvent);
   }
 
   Widget _createSubirArchivoButton(){
@@ -123,21 +124,15 @@ class AdjuntarFotosDialog extends StatelessWidget {
   }
 
   void _onSubirArchivoPressed(){
-    _addCurrentTemporalPhotosToMainPhotos();
-    //TODO: Verificar que no haya problemas de continuidad
-    _addMainPhotosToCommentedImages();
-    _resetFotosPorAgregar();
-    Navigator.of(_context).pop();
+    //_addCurrentPhotosToCommentedImages();
+    //_resetFotosPorAgregar();
+    //Navigator.of(_context).pop();
+    PagesNavigationManager.updateImgsToCommentedImgs();
   }
 
-  void _addCurrentTemporalPhotosToMainPhotos(){
-    final List<File> photosToSet = _imagesBloc.state.currentPhotosToSet;
-    final SetPhotos setPhotosEvent = SetPhotos(photos: photosToSet);
-    _imagesBloc.add(setPhotosEvent);
-  }
 
-  void _addMainPhotosToCommentedImages(){
-    final AddImages addImagesEvent = AddImages(images: _imagesBloc.state.photos, onEnd: _changeNPagesToIndex);
+  void _addCurrentPhotosToCommentedImages(){
+    final AddImages addImagesEvent = AddImages(images: _imagesBloc.state.currentPhotosToSet, onEnd: _changeNPagesToIndex);
     _commImagesWidgBloc.add(addImagesEvent);
   }
 

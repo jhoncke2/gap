@@ -76,7 +76,7 @@ class NavigationListWithIcons extends NavigationList{
   Function _generateFunctionByItemActivation(bool itemActivation, Function navigateToNextPage){
     if(itemActivation){
       return (){
-        navigateToNextPage(context);
+        navigateToNextPage();
       };
     }else{
       return null;

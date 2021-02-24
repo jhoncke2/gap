@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gap/data/enums/enums.dart';
-import 'package:gap/logic/bloc/entities/projects/projects_bloc.dart';
-import 'package:gap/data/models/entities/entities.dart';
-import 'package:gap/logic/bloc/nav_routes/routes_manager.dart';
+import 'package:gap/logic/bloc/entities/user/user_bloc.dart';
 import 'package:gap/logic/blocs_manager/pages_navigation_manager.dart';
-import 'package:gap/native_connectors/net_connection_detector.dart';
-import 'package:gap/ui/pages/projects_page.dart';
+import 'package:gap/logic/services_manager/user_services_manager.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/utils/static_data/buttons_keys.dart';
 import 'package:gap/ui/widgets/buttons/general_button.dart';
 import 'package:gap/ui/widgets/logo.dart';
-import 'package:gap/data/fake_data/fake_data.dart' as fakeProjects;
+import 'package:gap/services/auth_service.dart';
 
 class LoginPage extends StatefulWidget {
   static final String route = 'login';
@@ -25,9 +21,9 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   BuildContext _context;
   SizeUtils _sizeUtils;
-  String _email;
-  String _password;
   bool _mantenermeEnElSistema = false;
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -117,6 +113,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _crearEmailInput(){
     return TextField(
+      controller: _emailController,
       keyboardType: TextInputType.emailAddress,
       cursorColor: Colors.black,
       textAlignVertical: TextAlignVertical.center,
@@ -128,15 +125,13 @@ class _LoginPageState extends State<LoginPage> {
         ),
         enabledBorder: _crearInputBorder(),
         border: _crearInputBorder(),
-      ),
-      onChanged: (String newValue){
-        _email = newValue;
-      }
+      )
     );
   }
 
   Widget _crearPasswordInput(){
     return TextField(
+      controller: _passwordController,
       keyboardType: TextInputType.text,
       obscureText: true,
       cursorColor: Colors.black,
@@ -150,10 +145,7 @@ class _LoginPageState extends State<LoginPage> {
         ),
         border: _crearInputBorder(),
         enabledBorder: _crearInputBorder()
-      ),
-      onChanged: (String newValue){
-        _password = newValue;
-      }
+      )
     );
   }
 
@@ -168,16 +160,17 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _crearBotonLogin(){
+    final bool buttonIsAvaible = BlocProvider.of<UserBloc>(_context).state.loginButtonIsAvaible;
     return GeneralButton(
       key: ButtonsKeys.loginButtonKey,
       text: 'INGRESAR',
       backgroundColor: Theme.of(_context).primaryColor,
-      onPressed: _login,
+      onPressed: (buttonIsAvaible)? _login : null,
     );
   }
 
   void _login()async{
-    PagesNavigationManager.navToProjects();
+    await UserServicesManager.login(_emailController.text, _passwordController.text, _context);
   }
   
   Widget _createBottomComponents(){

@@ -32,7 +32,7 @@ class UnloadedIndexPagination extends StatelessWidget {
       width: _sizeUtils.xasisSobreYasis * widthPercent,
       height: _sizeUtils.xasisSobreYasis * heightPercent,
       decoration: BoxDecoration(
-        color: Theme.of(_context).primaryColor.withOpacity(0.75),
+        color: Theme.of(_context).primaryColor.withOpacity(0.5),
         borderRadius: BorderRadius.circular(_sizeUtils.xasisSobreYasis * 0.045)
       ),
     );

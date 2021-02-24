@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:gap/data/enums/enums.dart';
 import 'package:gap/logic/central_manager/data_initializer.dart';
@@ -17,7 +19,7 @@ void main()async{
 Future<void> doInitialConfig()async{
   await _setOnConnectionChange();
   _listenInitPage();
-  _testAddAuthorizationToken();
+  //_testAddAuthorizationToken();
   //await _testRemovePartOfStorage();
 }
 
@@ -47,8 +49,6 @@ void _listenInitPage(){
   InitPage.contextStream.listen(
     (BuildContext context)async{
       final NetConnectionState netConnectionState = await NetConnectionDetector.netConnectionState;
-      //TODO: borrar en su desuso
-      //await DataDistributor.updateAppData(await NetConnectionDetector.netConnectionState);
       await DataInitializer.init(context, netConnectionState);
     }
   );

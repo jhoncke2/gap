@@ -17,8 +17,6 @@ class ImagesBloc extends Bloc<ImagesEvent, ImagesState> {
   ) async* {
     if(event is LoadPhoto){
       loadPhoto(event);
-    }else if(event is SetPhotos){
-      setPhotos(event);
     }else if(event is ResetImages){
       resetAll();
     }
@@ -32,16 +30,6 @@ class ImagesBloc extends Bloc<ImagesEvent, ImagesState> {
     currentPhotosToSet.add(photo);
     _currentStateToYield = state.copyWith(
       currentPhotosToSet: currentPhotosToSet
-    );
-  }
-
-  @protected
-  void setPhotos(SetPhotos event){
-    final List<File> newPhotos = event.photos;
-    final List<File> photos = state.photos;
-    photos.addAll(newPhotos);
-    _currentStateToYield = state.copyWith(
-      photos: photos
     );
   }
 

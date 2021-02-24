@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
+import 'package:gap/central_config/bloc_providers_creator.dart';
 import 'package:gap/data/enums/enums.dart';
 import 'package:gap/data/models/entities/entities.dart';
+import 'package:gap/logic/bloc/entities/user/user_bloc.dart';
 import 'package:gap/logic/bloc/nav_routes/routes_manager.dart';
 import 'package:gap/logic/blocs_manager/pages_navigation_manager.dart';
 import 'package:gap/logic/central_manager/data_distributor/data_distributor_manager.dart';
@@ -16,13 +18,12 @@ class DataInitializer{
     //TODO: post preloaded data
     DataDistributorManager.netConnectionState = netConnState;
     await _routesManager.loadRoute();
-    await _doAllNavigationByEvaluatingInitialConditions(context);
-    
+    await _doAllNavigationByEvaluatingInitialConditions(context, netConnState);
   }
 
-  static Future _doAllNavigationByEvaluatingInitialConditions(BuildContext context)async{
+  static Future _doAllNavigationByEvaluatingInitialConditions(BuildContext context, NetConnectionState netConnState)async{
     if(await _hasToInitAtLogin()){
-      await _navigateToLogin(context);
+      await _navigateToLogin(context, netConnState);
     }else{
       await _doAllNavigationTree(context);
     }
@@ -42,10 +43,16 @@ class DataInitializer{
     return (currentNavRoute == NavigationRoute.Login);
   }
 
-  static Future _navigateToLogin(BuildContext context)async{
+  static Future _navigateToLogin(BuildContext context, NetConnectionState netConnState)async{
+    _defineLogginButtonAvaibleless(netConnState);
     await PagesNavigationManager.navToLogin();
     //await _routesManager.replaceAllRoutesForNew(NavigationRoute.Login);
     //Navigator.of(context).pushReplacementNamed(NavigationRoute.Login.value);
+  }
+
+  static void _defineLogginButtonAvaibleless(NetConnectionState netConnState)async{
+    final bool loginButtonAvaibleless = (netConnState == NetConnectionState.Connected)? true : false;
+  BlocProvidersCreator.userBloc.add(ChangeLoginButtopnAvaibleless(isAvaible: loginButtonAvaibleless));
   }
 
   static Future _doAllNavigationTree(BuildContext context)async{

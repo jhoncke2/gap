@@ -4,6 +4,7 @@ import 'package:gap/central_config/bloc_providers_creator.dart';
 import 'package:gap/data/enums/enums.dart';
 import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/logic/bloc/entities/formularios/formularios_bloc.dart';
+import 'package:gap/logic/bloc/entities/images/images_bloc.dart';
 import 'package:gap/logic/bloc/entities/projects/projects_bloc.dart';
 import 'package:gap/logic/bloc/entities/visits/visits_bloc.dart';
 import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
@@ -103,12 +104,12 @@ abstract class DataDistributor{
     _addNewFirmer(InitFirmsFillingOut());
   }
 
-  Future initFirstFirmerFillingOut(){
+  void initFirstFirmerFillingOut(){
     final ChosenFormBloc chosenFormB = blocsAsMap[BlocName.ChosenForm];
     chosenFormB.add(InitFirmsFillingOut());
   }
 
-  Future initFirstFirmerFirm(){
+  void initFirstFirmerFirm(){
     _addNewFirmer(InitFirstFirmerFirm());
   }
 
@@ -134,6 +135,32 @@ abstract class DataDistributor{
     final CommentedImagesBloc ciBloc = blocsAsMap[BlocName.CommentedImages];
     final SetCommentedImages sciEvent = SetCommentedImages(commentedImages: commentedImages);
     ciBloc.add(sciEvent);
+  }
+
+  void addCurrentPhotosToCommentedImages(){
+    final CommentedImagesBloc commImagesBloc = blocsAsMap[BlocName.CommentedImages];
+    final IndexBloc indexBloc = blocsAsMap[BlocName.Index];
+    final ImagesBloc imgsBloc = blocsAsMap[BlocName.Images];
+    _addCurrentPhotosToCommentedImages(commImagesBloc, indexBloc, imgsBloc);
+    _resetFotosPorAgregar(imgsBloc);
+  }
+
+
+  void _addCurrentPhotosToCommentedImages(CommentedImagesBloc commImagesBloc, IndexBloc indexBloc, ImagesBloc imgsBloc){
+    final AddImages addImagesEvent = AddImages(images: imgsBloc.state.currentPhotosToSet, onEnd: (){ _changeNPagesToIndex(commImagesBloc, indexBloc); });
+    commImagesBloc.add(addImagesEvent);
+  }
+
+  void _changeNPagesToIndex(CommentedImagesBloc commImagesBloc, IndexBloc indexBloc){
+    final CommentedImagesState commImgsState = commImagesBloc.state;
+    final int newIndexNPages = commImgsState.nPaginasDeCommImages;
+    final ChangeNPages changesNPagesEvent = ChangeNPages(nPages: newIndexNPages);
+    indexBloc.add(changesNPagesEvent);
+  }
+
+  void _resetFotosPorAgregar(ImagesBloc imgsBloc){ 
+    final ResetImages resetAllEvent = ResetImages();
+    imgsBloc.add(resetAllEvent);
   }
 
   Future<void> addStorageDataToIndexBloc()async{

@@ -9,14 +9,39 @@ Future<void> showAdjuntarFotosDialog(BuildContext context)async{
     context: context,
     barrierColor: Colors.black.withOpacity(0.0175),
     child: Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(_sizeUtils.xasisSobreYasis * 0.045),
-        side: BorderSide(
-          color: Theme.of(context).primaryColor.withOpacity(0.7),
-          width: 3
-        )
+      child: AdjuntarFotosDialog(),
+      shape: _createGeneralDialogBorder(context)
+    )
+  );
+}
+
+Future showErrDialog(BuildContext context, String errorMsg)async{
+  await showDialog(
+    context: context,
+    child: Dialog(
+      child: Container(
+        height: _sizeUtils.xasisSobreYasis * 0.275,
+        child: Center(
+          child: Text(
+            'Ocurrió un error: $errorMsg',
+            style: TextStyle(
+              color: Colors.black87,
+              fontSize: 16
+            ),
+          ),
+        ),
       ),
-      child: AdjuntarFotosDialog()
+      shape: _createGeneralDialogBorder(context)
+    )
+  );
+}
+
+RoundedRectangleBorder _createGeneralDialogBorder(BuildContext context){
+  return RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(_sizeUtils.xasisSobreYasis * 0.045),
+    side: BorderSide(
+      color: Theme.of(context).primaryColor.withOpacity(0.7),
+      width: 3
     )
   );
 }

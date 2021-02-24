@@ -6,7 +6,6 @@ import 'package:gap/logic/bloc/nav_routes/routes_manager.dart';
 import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/logic/bloc/widgets/commented_images/commented_images_bloc.dart';
 import 'package:gap/logic/bloc/widgets/index/index_bloc.dart';
-import 'package:gap/logic/blocs_manager/chosen_form_manager.dart';
 import 'package:gap/logic/central_manager/data_distributor/data_distributor_manager.dart';
 
 class PagesNavigationManager{
@@ -51,7 +50,7 @@ class PagesNavigationManager{
     await _goToNextPage(NavigationRoute.VisitDetail);
   }
 
-  static Future<void> navToForms(BuildContext context)async{
+  static Future<void> navToForms()async{
     await _goToNextPage(NavigationRoute.Formularios);
   }
 
@@ -95,7 +94,8 @@ class PagesNavigationManager{
   }
 
   static Future<void> updateImgsToCommentedImgs()async{
-
+    DataDistributorManager.dataDistributor.addCurrentPhotosToCommentedImages();
+    await pop();
   }
 
   static Future<void> endAdjuntarImages(BuildContext context)async{

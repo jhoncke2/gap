@@ -4,17 +4,21 @@ part of 'user_bloc.dart';
 class UserState {
   final bool authTokenIsLoaded;
   final String authToken;
+  final bool loginButtonIsAvaible;
 
   UserState({
     this.authTokenIsLoaded = false,
-    this.authToken
+    this.authToken,
+    this.loginButtonIsAvaible = true
   });
 
   UserState copyWith({
     bool authTokenIsLoaded,
-    String authToken
+    String authToken,
+    bool loginButtonIsAvaible
   })=>UserState(
     authTokenIsLoaded: authTokenIsLoaded??this.authTokenIsLoaded,
-    authToken: authToken??this.authToken
+    authToken: authToken??this.authToken,
+    loginButtonIsAvaible: loginButtonIsAvaible??this.loginButtonIsAvaible
   );
 }

@@ -9,3 +9,10 @@ class SetAuthToken extends UserEvent{
     @required this.authToken
   });
 }
+
+class ChangeLoginButtopnAvaibleless extends UserEvent{
+  final bool isAvaible;
+  ChangeLoginButtopnAvaibleless({
+    @required this.isAvaible
+  });
+}
