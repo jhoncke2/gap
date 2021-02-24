@@ -40,11 +40,34 @@ class PreloadedFormsStorageManager{
 
   static Future<void> setPreloadedForm(Formulario form, int visitId)async{
     await _updateCurrentPreloadedFormsHolderFromStorage();
-    final List<Formulario> preloadedFormsByVisittId = await _getPreloadedFormsByVisitId(visitId);
-    preloadedFormsByVisittId.add(form);
-    final List<Map<String, dynamic>> preloadedFormsByVisitIdAsJson = Formularios(formularios: preloadedFormsByVisittId).toJson();
+    final List<Formulario> preloadedFormsByVisitId = await _getPreloadedFormsByVisitId(visitId);
+    //preloadedFormsByVisittId.add(form);
+    _upgradeCurrentFormInForms(form, preloadedFormsByVisitId);
+    final List<Map<String, dynamic>> preloadedFormsByVisitIdAsJson = Formularios(formularios: preloadedFormsByVisitId).toJson();
     currentPreloadedFormsHolder.currentData[visitId.toString()] = preloadedFormsByVisitIdAsJson;
     await _updateStorageFromCurrentPreloadedFormsHolder();
+  }
+
+  static void _upgradeCurrentFormInForms(Formulario form, List<Formulario> forms){
+    final int indexOfFormInList = forms.indexWhere(
+      (Formulario f)=>f.id == form.id
+    );
+    _addFormsDecidedByTheIndexOfFormInList(form, indexOfFormInList, forms);
+  }
+
+  static void _addFormsDecidedByTheIndexOfFormInList(Formulario form, int indexOfFormInList, List<Formulario> forms){
+    if(indexOfFormInList != -1)
+      _addFormInIndex(form, indexOfFormInList, forms);
+    else
+      _addFormAtLast(form, forms);
+  }
+
+  static void _addFormInIndex(Formulario form, int index, List<Formulario> forms){
+    forms[index] = form;
+  }
+
+  static void _addFormAtLast(Formulario form, List<Formulario> forms){
+    forms.add(form);
   }
 
   static Future<List<Formulario>> getPreloadedFormsByVisitId(int visitId)async{

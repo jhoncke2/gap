@@ -21,21 +21,50 @@ class Formularios{
 
 class Formulario extends EntityWithStage {
   final Date date;
-  final FormFields _fields;
+  CustomFormFields fieldsContainer;
+  List<PersonalInformation> firmers;
+  FormStep _formStep;
   
   Formulario.fromJson(Map<String, dynamic> json):
     date = Date( DateTime.parse(json['date']) ),
-    _fields = FormFields.fromJson( json['fields'].cast<Map<String, dynamic>>() ),
+    fieldsContainer = CustomFormFields.fromJson( json['fields'].cast<Map<String, dynamic>>() ),
+    this.firmers = PersonalInformations.fromJson((json['firmers']??[]).cast<Map<String, dynamic>>()).personalInformations,
     super(
       id: json['id'],
       stage: ProcessStage.fromValue(json['stage']),
       name: json['name']
-    )
-    ;
- 
+    ){
+    _initFormStep();
+  }
+
+  void _initFormStep(){
+    if(fieldsAreCompleted()){
+      if(!_thereAreFirmers())
+        _formStep = FormStep.OnFirstFirmerInformation;
+      else
+        _formStep = FormStep.OnSecondaryFirms;
+    }else{
+      _formStep = FormStep.OnForm;
+    }
+  }
+
+  @protected
+  bool fieldsAreCompleted(){
+    for(CustomFormField ff in fieldsContainer.formFields){
+      if(!ff.isFilled)
+        return false;
+    }
+    return true;
+  }
+
+  bool _thereAreFirmers(){
+    return firmers != null && firmers.length > 0;
+  }
+  
   String get initialDate => '${date.year}-${date.month}-${date.day}';
   String get initialTime => '${date.hour}:${date.minute} ${date.partOfDay}';
-  List<FormField> get fields => _fields.formFields;
+  List<CustomFormField> get fields => fieldsContainer.formFields;
+  FormStep get formStep => _formStep;
 
   Map<String, dynamic> toJson(){
     final Map<String, dynamic> json = super.toJson();
@@ -43,7 +72,8 @@ class Formulario extends EntityWithStage {
     json['name'] = name;
     json['stage'] = stage == ProcessStage.Pendiente? 'pendiente' : 'realizada';
     json['date'] = date.toString();
-    json['fields'] = _fields.toJson();
+    json['fields'] = fieldsContainer.toJson();
+    json['firmers'] = PersonalInformations.toJson(firmers);
     return json;
   }
 }

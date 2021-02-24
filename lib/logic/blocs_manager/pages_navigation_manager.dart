@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/data/enums/enums.dart';
 import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/logic/bloc/nav_routes/routes_manager.dart';
+import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/logic/bloc/widgets/commented_images/commented_images_bloc.dart';
 import 'package:gap/logic/bloc/widgets/index/index_bloc.dart';
 import 'package:gap/logic/blocs_manager/chosen_form_manager.dart';
@@ -22,7 +23,7 @@ class PagesNavigationManager{
     await _goToInitialPage(NavigationRoute.Login);
   }
   
-  static Future<void> navToProjects( )async{
+  static Future<void> navToProjects()async{
     await _updateProjectsData();
     await _goToInitialPage(NavigationRoute.Projects);
   }
@@ -31,12 +32,12 @@ class PagesNavigationManager{
     await DataDistributorManager.dataDistributor.updateProjects();
   }
 
-  static Future<void> navToProjectDetail(Project project,  )async{
+  static Future<void> navToProjectDetail(Project project)async{
     await DataDistributorManager.dataDistributor.updateChosenProject(project);
     await _goToNextPage(NavigationRoute.ProjectDetail);
   }
 
-  static Future<void> navToVisits( )async{
+  static Future<void> navToVisits()async{
     await _updateVisitsData();     
     await _goToNextPage(NavigationRoute.Visits);
   }
@@ -45,7 +46,7 @@ class PagesNavigationManager{
     await DataDistributorManager.dataDistributor.updateVisits();
   }
 
-  static Future<void> navToVisitDetail(Visit visit,  )async{
+  static Future<void> navToVisitDetail(Visit visit)async{
     await DataDistributorManager.dataDistributor.updateChosenVisit(visit);
     await _goToNextPage(NavigationRoute.VisitDetail);
   }
@@ -54,22 +55,33 @@ class PagesNavigationManager{
     await _goToNextPage(NavigationRoute.Formularios);
   }
 
-  static Future<void> navToFormDetail(Formulario formulario,  )async{
+  static Future<void> navToFormDetail(Formulario formulario)async{
     await DataDistributorManager.dataDistributor.updateChosenForm(formulario);
     await _goToNextPage(NavigationRoute.FormularioDetailForms);
   }
 
   static Future<void> advanceOnChosenFormFieldsPage()async{
+    await DataDistributorManager.dataDistributor.advanceOnFormFieldsPage();
+  }
 
+  static Future initFirstFirmerFillingOut(ChosenFormEvent firstFirmerStep)async{
+    //await DataDistributorManager.dataDistributor.
+    await DataDistributorManager.dataDistributor.initFirstFirmerFillingOut();
+  }
+
+  static Future initFirstFirmerFirm(ChosenFormEvent firstFirmerStep)async{
+    //await DataDistributorManager.dataDistributor.
+    await DataDistributorManager.dataDistributor.initFirstFirmerFirm();
   }
 
   static Future<void> addFirmer()async{
-
+    await DataDistributorManager.dataDistributor.updateFirmers();
   }
 
   static Future<void> endFormFirmers()async{    
-    await ChosenFormManagerSingleton.chosenFormManager.addFirmToFirmer();
-    ChosenFormManagerSingleton.chosenFormManager.finishFirms();
+    //await ChosenFormManagerSingleton.chosenFormManager.addFirmToFirmer();
+    //ChosenFormManagerSingleton.chosenFormManager.finishFirms();
+    await DataDistributorManager.dataDistributor.updateFirmers();
     await pop();
   }
 
@@ -117,11 +129,6 @@ class PagesNavigationManager{
 
   static Future<void> _goToNextPage(NavigationRoute route)async{
     await routesManager.setRoute(route);
-  }
-
-  static Future<void> _goToPageAfterPopping(NavigationRoute targetRoute, int nPops, BuildContext context)async{
-    await routesManager.setRouteAfterPopping(targetRoute, nPops);
-    //Navigator.of(context).popUntil((route) => route.settings.name == targetRoute.value);
   }
 
   static Future<void> _goToInitialPage(NavigationRoute targetRoute)async{

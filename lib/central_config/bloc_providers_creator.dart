@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/data/enums/enums.dart';
 import 'package:gap/logic/bloc/entities/formularios/formularios_bloc.dart';
@@ -5,6 +6,7 @@ import 'package:gap/logic/bloc/entities/images/images_bloc.dart';
 import 'package:gap/logic/bloc/entities/projects/projects_bloc.dart';
 import 'package:gap/logic/bloc/entities/user/user_bloc.dart';
 import 'package:gap/logic/bloc/entities/visits/visits_bloc.dart';
+import 'package:gap/logic/bloc/entities/visits/visits_singleton.dart';
 import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/logic/bloc/widgets/commented_images/commented_images_bloc.dart';
 import 'package:gap/logic/bloc/widgets/firm_paint/firm_paint_bloc.dart';
@@ -20,6 +22,7 @@ class BlocProvidersCreator{
   static final ImagesBloc imagesBloc = ImagesBloc();
   static final CommentedImagesBloc commentedImagesBloc = CommentedImagesBloc();
   static final FirmPaintBloc firmPaintBloc = FirmPaintBloc();
+  static final VisitsSingleton visitsSingleton = VisitsSingleton();
 
   static final blocProviders = [
     BlocProvider<ProjectsBloc>(create: (_)=>projectsBloc),
@@ -31,6 +34,10 @@ class BlocProvidersCreator{
     BlocProvider<CommentedImagesBloc>(create: (_)=>commentedImagesBloc),
     BlocProvider<FirmPaintBloc>(create: (_)=>firmPaintBloc),
     BlocProvider<UserBloc>(create: (_)=>userBloc),
+  ];
+
+  static final singletons = [
+    visitsSingleton
   ];
 
   static void dispose(){
@@ -53,6 +60,11 @@ class BlocProvidersCreator{
     BlocName.Images: imagesBloc,
     BlocName.CommentedImages: commentedImagesBloc,
     BlocName.FirmPaint: firmPaintBloc,
-    BlocName.UserBloc: userBloc
+    BlocName.UserBloc: userBloc,
+    
+  };
+
+  static Map<BlocName, ChangeNotifier> get singletonesAsMap => {
+    BlocName.VisitsSingleton: visitsSingleton
   };
 }

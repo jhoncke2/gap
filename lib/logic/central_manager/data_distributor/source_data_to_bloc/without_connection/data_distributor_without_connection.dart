@@ -7,6 +7,7 @@ import 'package:gap/logic/central_manager/data_distributor/source_data_to_bloc/d
 import 'package:gap/logic/storage_managers/forms/preloaded_forms_storage_manager.dart';
 import 'package:gap/logic/storage_managers/projects/projects_storage_manager.dart';
 import 'package:gap/logic/storage_managers/visits/preloaded_visits_storage_manager.dart';
+import 'package:gap/logic/storage_managers/visits/visits_storage_manager.dart';
 
 class SourceDataToBlocWithoutConnection extends DataDistributor{
   
@@ -16,6 +17,7 @@ class SourceDataToBlocWithoutConnection extends DataDistributor{
     final List<Project> projectsWithPreloadedVisits = await ProjectsStorageManager.getProjectsWithPreloadedVisits();
     final SetProjects spEvent = SetProjects(projects: projectsWithPreloadedVisits);
     pBloc.add(spEvent);
+    ProjectsStorageManager.setProjects(projectsWithPreloadedVisits);
   }
 
   @override
@@ -30,7 +32,8 @@ class SourceDataToBlocWithoutConnection extends DataDistributor{
   @override
   Future updateChosenVisit(Visit visit)async{
     await addChosenVisitToBloc(visit);
-    _updateFormularios(visit);
+    await _updateFormularios(visit);
+    await _addVisitToStorage(visit);
   }
 
   Future _updateFormularios(Visit chosenVisit)async{
@@ -38,6 +41,10 @@ class SourceDataToBlocWithoutConnection extends DataDistributor{
     final List<Formulario> formsGroupedByPreloadedVisit = await PreloadedFormsStorageManager.getPreloadedFormsByVisitId(chosenVisit.id);
     final SetForms sfEvent = SetForms(forms: formsGroupedByPreloadedVisit);
     fBloc.add(sfEvent);
+  }
+
+  Future _addVisitToStorage(Visit visit)async{
+    await VisitsStorageManager.setChosenVisit(visit);
   }
 
   @override

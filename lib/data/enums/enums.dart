@@ -17,7 +17,8 @@ enum BlocName{
   Images,
   CommentedImages,
   FirmPaint,
-  Index
+  Index,
+  VisitsSingleton
 }
 
 abstract class Enum<T>{
@@ -142,4 +143,12 @@ class DataDistrFunctionWithConnState{
 enum DataDistributorFunction{
   AppUpdate,
   SingleUpdate
+}
+
+
+class InputType extends Enum<String>{
+  const InputType(String value): super(value);
+
+  static const InputType TextField = InputType('input');
+  static const InputType Select = InputType('select');
 }

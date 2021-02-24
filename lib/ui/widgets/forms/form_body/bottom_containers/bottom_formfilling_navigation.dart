@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/logic/blocs_manager/chosen_form_manager.dart';
+import 'package:gap/logic/blocs_manager/pages_navigation_manager.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/buttons/general_button.dart';
 import 'package:gap/ui/widgets/indexing/index_pagination.dart';
@@ -88,6 +89,7 @@ class _ChangeFormStepButton extends StatelessWidget {
       initNewStepEvent = InitFirstFirmerFirm();
     }
     _ejecutarEvento(initNewStepEvent);
+    PagesNavigationManager.advanceOnChosenFormFieldsPage();
   }
 
   void _ejecutarEvento(ChosenFormEvent event){

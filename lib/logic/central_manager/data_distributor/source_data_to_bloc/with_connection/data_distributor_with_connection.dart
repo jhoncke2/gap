@@ -11,19 +11,20 @@ import 'package:gap/logic/storage_managers/forms/formularios_storage_manager.dar
 import 'package:gap/logic/storage_managers/forms/preloaded_forms_storage_manager.dart';
 import 'package:gap/logic/storage_managers/projects/projects_storage_manager.dart';
 import 'package:gap/logic/storage_managers/visits/preloaded_visits_storage_manager.dart';
+import 'package:gap/logic/storage_managers/visits/visits_storage_manager.dart';
 
 class DataDistributorWithConnection extends DataDistributor{
   
   @override
   Future<void> updateProjects()async{
     final ProjectsBloc pBloc = blocsAsMap[BlocName.Projects];
-    await ProjectsServicesManager.loadProjects(pBloc);
+    await ProjectsServicesManager.loadProjects(pBloc); 
   }
 
   @override
-  Future<void> updateChosenProject([Entity entityToAdd])async{
-    await addChosenProjectToBloc(entityToAdd);
-    //await ProjectsStorageManager.setProjectWithPreloadedVisits(entityToAdd);
+  Future<void> updateChosenProject(Project project)async{
+    super.updateChosenProject(project);
+    ProjectsStorageManager.setChosenProject(project);
   }
 
   @override
@@ -31,6 +32,7 @@ class DataDistributorWithConnection extends DataDistributor{
     await super.addChosenVisitToBloc(visit);
     _addPreloadedDataRelatedToChosenProject(visit);
     await _loadFormsByChosenVisits(visit.id);
+    await _addVisitToStorage(visit);
   }
 
   Future _addPreloadedDataRelatedToChosenProject(Visit visit)async{
@@ -50,6 +52,10 @@ class DataDistributorWithConnection extends DataDistributor{
     await PreloadedFormsStorageManager.setPreloadedForm(form, visitId);
   }
 
+  Future _addVisitToStorage(Visit visit)async{
+    await VisitsStorageManager.setChosenVisit(visit);
+  }
+
   @override
   Future<void> updateVisits()async{
     final VisitsBloc vBloc = blocsAsMap[BlocName.Visits];
@@ -58,15 +64,6 @@ class DataDistributorWithConnection extends DataDistributor{
 
   @override
   Future<void> updateFormularios()async{
-    /*
-    final FormulariosBloc fBloc = blocsAsMap[BlocName.Formularios];
-    //await FormsServicesManager.loadForms(fBloc);
-    final Visit chosenVisit = UploadedBlocsData.dataContainer[NavigationRoute.VisitDetail];
-    final List<Formulario> formularios = await FormulariosStorageManager.getForms();
-    for(Formulario form in formularios){
-      await PreloadedFormsStorageManager.setPreloadedForm(form, chosenVisit.id);
-    }
-    */
   }
 
   @override
@@ -74,7 +71,7 @@ class DataDistributorWithConnection extends DataDistributor{
     final VisitsBloc vBloc = blocsAsMap[BlocName.Visits];
     final Visit chosenVisit = vBloc.state.chosenVisit;
     await _removeVisitFromPreloadedVisitsIfCompleted(chosenVisit);
-        
+    await _removeFormsFromStorage();
   }
 
   Future _removeVisitFromPreloadedVisitsIfCompleted(Visit visit)async{
@@ -86,5 +83,9 @@ class DataDistributorWithConnection extends DataDistributor{
     final ProjectsBloc pBloc = blocsAsMap[BlocName.Projects];
     final Project chosenProject = pBloc.state.chosenProject;
     await PreloadedVisitsStorageManager.removeVisit(visit.id, chosenProject.id);
+  }
+
+  Future _removeFormsFromStorage()async{
+    await FormulariosStorageManager.removeForms();
   }
 }

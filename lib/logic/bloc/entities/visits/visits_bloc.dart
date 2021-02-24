@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:gap/data/enums/enums.dart';
 import 'package:gap/data/models/entities/entities.dart';
-import 'package:gap/logic/storage_managers/visits/visits_storage_manager.dart';
 import 'package:meta/meta.dart';
 
 part 'visits_event.dart';
@@ -50,7 +49,6 @@ class VisitsBloc extends Bloc<VisitsEvent, VisitsState> {
       pendientesVisits: pendientesVisits,
       realizadasVisits: realizadasVisits
     );
-    VisitsStorageManager.setVisits(visits);
   }
 
   @protected
@@ -88,7 +86,7 @@ class VisitsBloc extends Bloc<VisitsEvent, VisitsState> {
   void chooseVisit(ChooseVisit event){
     final Visit chosenOne = event.chosenOne;
     _currentYieldedState = state.copyWith(chosenVisit: chosenOne);
-    VisitsStorageManager.setChosenVisit(chosenOne);
+    
   }
 
   
@@ -96,8 +94,6 @@ class VisitsBloc extends Bloc<VisitsEvent, VisitsState> {
   @protected
   void resetAllOfVisits(){
     _currentYieldedState = state.reset();
-    VisitsStorageManager.removeVisits();
-    VisitsStorageManager.removeChosenVisit();
   }
 
   @protected

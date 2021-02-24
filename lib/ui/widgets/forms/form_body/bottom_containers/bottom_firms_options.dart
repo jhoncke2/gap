@@ -58,8 +58,9 @@ class BottomFirmsOptions extends StatelessWidget {
   }
 
   Future<void> _addNewFirm()async{
-    await ChosenFormManagerSingleton.chosenFormManager.addFirmToFirmer();
-    ChosenFormManagerSingleton.chosenFormManager.addNewFirm();
+    //await ChosenFormManagerSingleton.chosenFormManager.addFirmToFirmer();
+    //ChosenFormManagerSingleton.chosenFormManager.addNewFirm();
+    await PagesNavigationManager.addFirmer();
   }
 
   Widget _createFinishButton() {

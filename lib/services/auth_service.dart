@@ -5,7 +5,8 @@ class AuthService extends BasicService{
 
   Future<Map<String, dynamic>> login(Map<String, dynamic> loginInfo)async{
     final String requestUrl = _authUrl + 'login';
-    final Map<String, Map<String, dynamic>> headersAndBody = createHeadersAndBodyForARequest(body: loginInfo);
+    final Map<String, String> headers = { 'accept':'application/json' };
+    final Map<String, Map<String, dynamic>> headersAndBody = createHeadersAndBodyForARequest(body: loginInfo, headers: headers);
     await executeGeneralEndOfRequest(requestType: RequestType.POST, headersAndBody: headersAndBody, requestUrl: requestUrl);
     return currentResponseBody;
   }

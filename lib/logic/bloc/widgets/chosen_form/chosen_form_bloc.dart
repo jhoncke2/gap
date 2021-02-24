@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:gap/data/models/entities/entities.dart';
-import 'package:gap/logic/storage_managers/forms/chosen_form_storage_manager.dart';
 import 'package:meta/meta.dart';
 
 part 'chosen_form_event.dart';
@@ -37,9 +36,9 @@ class ChosenFormBloc extends Bloc<ChosenFormEvent, ChosenFormState> {
     //TODO: Implementar la creación de los formfields
     _currentStateToYield = state.copyWith(
       formStep: FormStep.OnForm,
+      firmers: formulario.firmers,
       
-    );
-    ChosenFormStorageManager.setChosenForm(formulario);   
+    ); 
   }
 
   void _initFirstFirmerFillingOut(InitFirstFirmerFillingOut event){
@@ -78,6 +77,6 @@ class ChosenFormBloc extends Bloc<ChosenFormEvent, ChosenFormState> {
 
   void _resetChosenForm(){
     _currentStateToYield = ChosenFormState();
-    ChosenFormStorageManager.removeChosenForm();
+    //ChosenFormStorageManager.removeChosenForm();
   }
 }

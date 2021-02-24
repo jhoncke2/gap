@@ -11,8 +11,8 @@ main(){
   _initStorageConnector();
   group(descriptions.formsGroupDescription, (){
     _testSetForms();
-    _testGetForms();
-    _testRemoveForms();
+    //_testGetForms();
+    //_testRemoveForms();
   });
 }
 

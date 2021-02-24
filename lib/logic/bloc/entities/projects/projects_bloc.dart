@@ -41,14 +41,13 @@ class ProjectsBloc extends Bloc<ProjectsEvent, ProjectsState> {
       projectsAreLoaded: true, 
       projects: projects
     );
-    ProjectsStorageManager.setProjects(projects);
+    
   }
 
   @protected
   void chooseProject(ChooseProject event){
     final Project chosenOne = event.chosenOne;
     _currentYieldedState = state.copyWith(chosenProject: chosenOne);
-    ProjectsStorageManager.setChosenProject(chosenOne);
   }
 
   void removeChosenProject(){
@@ -58,10 +57,7 @@ class ProjectsBloc extends Bloc<ProjectsEvent, ProjectsState> {
   @protected
   void resetAll(){
     _currentYieldedState = state.reset();
-    ProjectsStorageManager.removeProjects();
-    ProjectsStorageManager.removeChosenProject();
   }
-
 }
 
 

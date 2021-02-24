@@ -76,7 +76,7 @@ abstract class BasicService{
 
   Future<void> executeGeneralEndOfPOSTRequest({@required String requestUrl, @required Map<String, Map<String, dynamic>> headersAndBody})async{
     this.executedServiceFunction = 'post';//for testing
-    //headersAndBody['headers']['Content-Type'] = 'application/json';
+    headersAndBody['headers']['Content-Type'] = 'application/json';
     final http.Response serverResponse = await http.post(
       requestUrl,
       headers: ((headersAndBody['headers']).cast<String, String>())??{},

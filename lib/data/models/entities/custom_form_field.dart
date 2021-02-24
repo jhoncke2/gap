@@ -1,30 +1,29 @@
 part of 'entities.dart';
+class CustomFormFields{
+  List<CustomFormField> formFields;
+  
+  CustomFormFields(List<CustomFormField> formFields){
+    this.formFields = formFields;
+  }
 
-enum InputType{
-  TextField,
-  Select,
-}
-
-class FormFields{
-  List<FormField> formFields;
-  FormFields.fromJson(List<Map<String, dynamic>> fields){
-    this.formFields = fields.map<FormField>(
-      (Map<String, dynamic> field) => FormField.fromJson(field)
+  CustomFormFields.fromJson(List<Map<String, dynamic>> fields){
+    this.formFields = fields.map<CustomFormField>(
+      (Map<String, dynamic> field) => CustomFormField.fromJson(field)
     ).toList();
   }
   List<Map<String, dynamic>> toJson()=> formFields.map<Map<String, dynamic>>(
-    (FormField f)=>f.toJson()
+    (CustomFormField f)=>f.toJson()
   ).toList();
 }
 
-class FormField{
+class CustomFormField{
   int id;
   String name;
   InputType type;
   bool isFilled;
-  String currentValue;
+  String value;
 
-  FormField({
+  CustomFormField({
     @required this.id, 
     @required this.name, 
     @required this.type
@@ -32,12 +31,14 @@ class FormField{
     this.isFilled = false
     ;
 
-  FormField.fromJson(Map<String, dynamic> json):
+  CustomFormField.fromJson(Map<String, dynamic> json):
     this.id = json['id'],
-    this.name = json['name']
+    this.name = json['name'],
+    this.isFilled = json['is_filled']??false,
+    this.value = json['value']
   {
     _defineType(json['type']);
-    this.isFilled = false;
+    
   }
   
   void _defineType(String type){
@@ -54,8 +55,8 @@ class FormField{
   Map<String, dynamic> toJson() => {
     'id':id,
     'name':name,
-    'type':type,
+    'type':type.value,
     'is_filled':isFilled,
-    'current_value':currentValue
+    'value':value
   };
 }
