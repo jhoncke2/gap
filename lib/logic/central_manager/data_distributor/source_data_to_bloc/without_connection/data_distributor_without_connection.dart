@@ -14,8 +14,8 @@ class SourceDataToBlocWithoutConnection extends DataDistributor{
   @override
   Future<void> updateProjects()async{
     final ProjectsBloc pBloc = blocsAsMap[BlocName.Projects];
-    final List<Project> projectsWithPreloadedVisits = await ProjectsStorageManager.getProjectsWithPreloadedVisits();
-    final SetProjects spEvent = SetProjects(projects: projectsWithPreloadedVisits);
+    final List<OldProject> projectsWithPreloadedVisits = await ProjectsStorageManager.getProjectsWithPreloadedVisits();
+    final SetOldProjects spEvent = SetOldProjects(oldProjects: projectsWithPreloadedVisits);
     pBloc.add(spEvent);
     ProjectsStorageManager.setProjects(projectsWithPreloadedVisits);
   }
@@ -23,35 +23,35 @@ class SourceDataToBlocWithoutConnection extends DataDistributor{
   @override
   Future<void> updateVisits()async{
     final VisitsBloc vBloc = blocsAsMap[BlocName.Visits];
-    final Project chosenProject = UploadedBlocsData.dataContainer[NavigationRoute.ProjectDetail];
-    final List<Visit> preloadedVisits = await PreloadedVisitsStorageManager.getVisitsByProjectId(chosenProject.id);
+    final OldProject chosenProject = UploadedBlocsData.dataContainer[NavigationRoute.ProjectDetail];
+    final List<OldVisit> preloadedVisits = await PreloadedVisitsStorageManager.getVisitsByProjectId(chosenProject.id);
     final SetVisits svEvent = SetVisits(visits: preloadedVisits);
     vBloc.add(svEvent);
   }
 
   @override
-  Future updateChosenVisit(Visit visit)async{
+  Future updateChosenVisit(OldVisit visit)async{
     await addChosenVisitToBloc(visit);
     await _updateFormularios(visit);
     await _addVisitToStorage(visit);
   }
 
-  Future _updateFormularios(Visit chosenVisit)async{
+  Future _updateFormularios(OldVisit chosenVisit)async{
     final FormulariosBloc fBloc = blocsAsMap[BlocName.Formularios];
-    final List<Formulario> formsGroupedByPreloadedVisit = await PreloadedFormsStorageManager.getPreloadedFormsByVisitId(chosenVisit.id);
+    final List<OldFormulario> formsGroupedByPreloadedVisit = await PreloadedFormsStorageManager.getPreloadedFormsByVisitId(chosenVisit.id);
     final SetForms sfEvent = SetForms(forms: formsGroupedByPreloadedVisit);
     fBloc.add(sfEvent);
   }
 
-  Future _addVisitToStorage(Visit visit)async{
+  Future _addVisitToStorage(OldVisit visit)async{
     await VisitsStorageManager.setChosenVisit(visit);
   }
 
   @override
   Future<void> updateFormularios()async{
     final FormulariosBloc fBloc = blocsAsMap[BlocName.Formularios];
-    final Visit chosenVisit = UploadedBlocsData.dataContainer[NavigationRoute.VisitDetail];
-    final List<Formulario> formsGroupedByPreloadedVisit = await PreloadedFormsStorageManager.getPreloadedFormsByVisitId(chosenVisit.id);
+    final OldVisit chosenVisit = UploadedBlocsData.dataContainer[NavigationRoute.VisitDetail];
+    final List<OldFormulario> formsGroupedByPreloadedVisit = await PreloadedFormsStorageManager.getPreloadedFormsByVisitId(chosenVisit.id);
     final SetForms sfEvent = SetForms(forms: formsGroupedByPreloadedVisit);
     fBloc.add(sfEvent);
   }

@@ -11,12 +11,12 @@ enum FormStep{
 @immutable
 class ChosenFormState{
   final FormStep formStep;
-  final List<List<CustomFormField>> _formFieldsPerPage;
+  final List<List<OldCustomFormField>> _formFieldsPerPage;
   final List<PersonalInformation> firmers;
   
   ChosenFormState({
     this.formStep = FormStep.WithoutForm,
-    List<List<CustomFormField>> formFieldsPerPage, 
+    List<List<OldCustomFormField>> formFieldsPerPage, 
     this.firmers
   }):
     _formFieldsPerPage = formFieldsPerPage??[]
@@ -24,7 +24,7 @@ class ChosenFormState{
 
   ChosenFormState copyWith({
     FormStep formStep,
-    List<List<CustomFormField>> formFieldsPerPage,
+    List<List<OldCustomFormField>> formFieldsPerPage,
     List<PersonalInformation> firmers,
   })=>ChosenFormState(
     formStep:formStep??this.formStep,
@@ -32,13 +32,13 @@ class ChosenFormState{
     firmers:firmers??this.firmers
   );
 
-  List<CustomFormField> getFormFieldsByIndex(int index){
+  List<OldCustomFormField> getFormFieldsByIndex(int index){
     return _formFieldsPerPage[index];
   }
 
-  List<CustomFormField> get allFields{
-    final List<CustomFormField> fields = [];
-    for(List<CustomFormField> section in _formFieldsPerPage)
+  List<OldCustomFormField> get allFields{
+    final List<OldCustomFormField> fields = [];
+    for(List<OldCustomFormField> section in _formFieldsPerPage)
       fields.addAll(section);
     return fields;
   }

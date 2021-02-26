@@ -3,11 +3,11 @@ part of 'fake_data.dart';
 
 
 final DateTime nowTime = DateTime.now();
-List<Formulario> formularios = [
-  Formulario.fromJson(formAtFormFieldsFillingOut),
-  Formulario.fromJson(formAtFirstFirmerFillingOut),
-  Formulario.fromJson(formAtSecondaryFirmersFillingOut),
-  Formulario.fromJson({
+List<OldFormulario> formularios = [
+  OldFormulario.fromJson(formAtFormFieldsFillingOut),
+  OldFormulario.fromJson(formAtFirstFirmerFillingOut),
+  OldFormulario.fromJson(formAtSecondaryFirmersFillingOut),
+  OldFormulario.fromJson({
     'id':3,
     'stage':'realizada',
     'name':'Formulario Profesorado',
@@ -15,7 +15,7 @@ List<Formulario> formularios = [
     'fields':[],
     'firmers':[]
   }),
-  Formulario.fromJson({
+  OldFormulario.fromJson({
     'id':4,
     'stage':'pendiente',
     'name':'Formulario Exportación',
@@ -23,7 +23,7 @@ List<Formulario> formularios = [
     'fields':[],
     'firmers':[]
   }),
-  Formulario.fromJson({
+  OldFormulario.fromJson({
     'id':5,
     'stage':'pendiente',
     'name':'Formulario proyectos',
@@ -31,7 +31,7 @@ List<Formulario> formularios = [
     'fields':[],
     'firmers':[]
   }),
-  Formulario.fromJson({
+  OldFormulario.fromJson({
     'id':6,
     'stage':'realizada',
     'name':'Formulario Permutaciones',
@@ -39,7 +39,7 @@ List<Formulario> formularios = [
     'fields':[],
     'firmers':[]
   }),
-  Formulario.fromJson({
+  OldFormulario.fromJson({
     'id':7,
     'stage':'pendiente',
     'name':'Formulario Transporte',
@@ -47,7 +47,7 @@ List<Formulario> formularios = [
     'fields':[],
     'firmers':[]
   }),
-  Formulario.fromJson({
+  OldFormulario.fromJson({
     'id':8,
     'stage':'pendiente',
     'name':'Formulario inmobiliarias',
@@ -55,7 +55,7 @@ List<Formulario> formularios = [
     'fields':[],
     'firmers':[]
   }),
-  Formulario.fromJson({
+  OldFormulario.fromJson({
     'id':9,
     'stage':'realizada',
     'name':'Formulario PAE 2021C',
@@ -63,7 +63,7 @@ List<Formulario> formularios = [
     'fields':[],
     'firmers':[]
   }),
-  Formulario.fromJson({
+  OldFormulario.fromJson({
     'id':10,
     'stage':'pendiente',
     'name':'Formulario Pavimentación',
@@ -71,7 +71,7 @@ List<Formulario> formularios = [
     'fields':[],
     'firmers':[]
   }),
-  Formulario.fromJson({
+  OldFormulario.fromJson({
     'id':11,
     'stage':'pendiente',
     'name':'Formulario localidades',
@@ -79,7 +79,7 @@ List<Formulario> formularios = [
     'fields':[],
     'firmers':[]
   }),
-  Formulario.fromJson({
+  OldFormulario.fromJson({
     'id':12,
     'stage':'realizada',
     'name':'Formulario PAE 2021D',
@@ -87,7 +87,7 @@ List<Formulario> formularios = [
     'fields':[],
     'firmers':[]
   }),
-  Formulario.fromJson({
+  OldFormulario.fromJson({
     'id':13,
     'stage':'pendiente',
     'name':'Formulario Producción',
@@ -95,7 +95,7 @@ List<Formulario> formularios = [
     'fields':[],
     'firmers':[]
   }),
-  Formulario.fromJson({
+  OldFormulario.fromJson({
     'id':14,
     'stage':'pendiente',
     'name':'Formulario demandas',
@@ -103,7 +103,7 @@ List<Formulario> formularios = [
     'fields':[],
     'firmers':[]
   }),
-  Formulario.fromJson({
+  OldFormulario.fromJson({
     'id':15,
     'stage':'realizada',
     'name':'Formulario PAE 2021E',
@@ -111,7 +111,7 @@ List<Formulario> formularios = [
     'fields':[],
     'firmers':[]
   }),
-  Formulario.fromJson({
+  OldFormulario.fromJson({
     'id':16,
     'stage':'pendiente',
     'name':'Formulario Trabajadores',
@@ -119,7 +119,7 @@ List<Formulario> formularios = [
     'fields':[],
     'firmers':[]
   }),
-  Formulario.fromJson({
+  OldFormulario.fromJson({
     'id':17,
     'stage':'pendiente',
     'name':'Formulario administración',

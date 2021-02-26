@@ -31,7 +31,7 @@ class PagesNavigationManager{
     await DataDistributorManager.dataDistributor.updateProjects();
   }
 
-  static Future<void> navToProjectDetail(Project project)async{
+  static Future<void> navToProjectDetail(OldProject project)async{
     await DataDistributorManager.dataDistributor.updateChosenProject(project);
     await _goToNextPage(NavigationRoute.ProjectDetail);
   }
@@ -45,7 +45,7 @@ class PagesNavigationManager{
     await DataDistributorManager.dataDistributor.updateVisits();
   }
 
-  static Future<void> navToVisitDetail(Visit visit)async{
+  static Future<void> navToVisitDetail(OldVisit visit)async{
     await DataDistributorManager.dataDistributor.updateChosenVisit(visit);
     await _goToNextPage(NavigationRoute.VisitDetail);
   }
@@ -54,7 +54,7 @@ class PagesNavigationManager{
     await _goToNextPage(NavigationRoute.Formularios);
   }
 
-  static Future<void> navToFormDetail(Formulario formulario)async{
+  static Future<void> navToFormDetail(OldFormulario formulario)async{
     await DataDistributorManager.dataDistributor.updateChosenForm(formulario);
     await _goToNextPage(NavigationRoute.FormularioDetailForms);
   }

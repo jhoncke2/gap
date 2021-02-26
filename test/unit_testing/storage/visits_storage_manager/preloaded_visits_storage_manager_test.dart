@@ -32,10 +32,10 @@ void _testSetPreloadedVisit(){
 }
 
 Future<void> _tryTestSetPreloadedVisit()async{
-  for(int i = 0; i < fakeData.projects.length; i++){
+  for(int i = 0; i < fakeData.oldProjects.length; i++){
     final int initialVisitForProjIndex = _getInitialVisitIndexForProjIndex(i);
     for(int j = initialVisitForProjIndex; j < initialVisitForProjIndex + nVisitsPerProject; j++){
-      await PreloadedVisitsStorageManager.setVisit(fakeData.visits[j], fakeData.projects[i].id);
+      await PreloadedVisitsStorageManager.setVisit(fakeData.visits[j], fakeData.oldProjects[i].id);
     }
     expect(obtainVisitsAsJsonByIndexFromCurrentData(i), isNotNull, reason: 'Las visits by project recientemente agregadas no deben ser null en el currentData del manager');
     expect(obtainVisitsAsJsonByIndexFromCurrentData(i).length, nVisitsPerProject, reason: 'El número de visits del currentData debe ser el mismo que se agregó');
@@ -43,7 +43,7 @@ Future<void> _tryTestSetPreloadedVisit()async{
 }
 
 List<Map<String, dynamic>> obtainVisitsAsJsonByIndexFromCurrentData(int index){
-  return PreloadedVisitsStorageManager.currentPreloadedVisitsHolder.currentData[fakeData.projects[index].id.toString()]??[ ];
+  return PreloadedVisitsStorageManager.currentPreloadedVisitsHolder.currentData[fakeData.oldProjects[index].id.toString()]??[ ];
 }
 
 void _testGetPreloadedVisitsByProjectId(){
@@ -53,9 +53,9 @@ void _testGetPreloadedVisitsByProjectId(){
 }
 
 Future<void> _tryTestGetPreloadedVisitsByProjectId()async{
-  for(int i = 0; i < fakeData.projects.length; i++){
+  for(int i = 0; i < fakeData.oldProjects.length; i++){
     final int initialVisitForProjIndex = _getInitialVisitIndexForProjIndex(i);
-    final List<Visit> visitsByProjectId = await PreloadedVisitsStorageManager.getVisitsByProjectId(fakeData.projects[i].id);
+    final List<OldVisit> visitsByProjectId = await PreloadedVisitsStorageManager.getVisitsByProjectId(fakeData.oldProjects[i].id);
     for(int j = 0; j < visitsByProjectId.length; j++){
       expect(visitsByProjectId.length, nVisitsPerProject, reason: 'El length de las visits del projectId actual debe ser igual al estipulado por el test');
       expect(jsonEncode(visitsByProjectId[j]), jsonEncode(fakeData.visits[initialVisitForProjIndex + j]), reason: 'Las visits retornadas por el getVisitByProjectId deben venir en agrupadas y en el mismo orden como se agregaron');
@@ -78,13 +78,13 @@ void _testRemovePreloadedVisit(){
 }
 
 Future<void> _tryTestRemovePreloadedVisit()async{
-  for(int i = 0; i < fakeData.projects.length; i++){
+  for(int i = 0; i < fakeData.oldProjects.length; i++){
     final int initialVisitForProjIndex = _getInitialVisitIndexForProjIndex(i);
     for(int j = initialVisitForProjIndex; j < initialVisitForProjIndex + nVisitsPerProject; j++){
-       await PreloadedVisitsStorageManager.removeVisit(fakeData.visits[j].id, fakeData.projects[i].id);
+       await PreloadedVisitsStorageManager.removeVisit(fakeData.visits[j].id, fakeData.oldProjects[i].id);
        final int jIndexFromZero = j - initialVisitForProjIndex;
        final int expectedVisitsByProjectIdLength = nVisitsPerProject - jIndexFromZero - 1;
-       expect(obtainVisitsAsJsonByIndexFromCurrentData(fakeData.projects[i].id).length, expectedVisitsByProjectIdLength, reason: 'El length de las visitas con el projectId actual debería haber disminuido en 1');
+       expect(obtainVisitsAsJsonByIndexFromCurrentData(fakeData.oldProjects[i].id).length, expectedVisitsByProjectIdLength, reason: 'El length de las visitas con el projectId actual debería haber disminuido en 1');
     }
   }
 }

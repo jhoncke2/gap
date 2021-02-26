@@ -34,10 +34,10 @@ class VisitsBloc extends Bloc<VisitsEvent, VisitsState> {
 
   @protected
   void setVisits(SetVisits event){
-    final List<Visit> visits = event.visits;
-    final List<Visit> pendientesVisits = [];
-    final List<Visit> realizadasVisits = [];
-    visits.forEach((Visit visit) {
+    final List<OldVisit> visits = event.visits;
+    final List<OldVisit> pendientesVisits = [];
+    final List<OldVisit> realizadasVisits = [];
+    visits.forEach((OldVisit visit) {
       if(visit.stage == ProcessStage.Pendiente)
         pendientesVisits.add(visit);
       else if(visit.stage == ProcessStage.Realizada)
@@ -61,7 +61,7 @@ class VisitsBloc extends Bloc<VisitsEvent, VisitsState> {
   void changeDateFilterItem(ChangeDateFilterItem event){
     final int filterItemIndex = event.filterItemIndex;
     final DateTime filterDate = event.filterDate;
-    final List<Visit> filterVisits = _getVisitsWithSameDateThanFilter(filterDate);
+    final List<OldVisit> filterVisits = _getVisitsWithSameDateThanFilter(filterDate);
     _currentYieldedState = state.copyWith(
       indexOfChosenFilterItem: filterItemIndex,
       filterDate: filterDate,
@@ -70,10 +70,10 @@ class VisitsBloc extends Bloc<VisitsEvent, VisitsState> {
   }
 
   @protected
-  List<Visit> _getVisitsWithSameDateThanFilter(DateTime filterDate){
-    final List<Visit> currentShowedVisits = state.visitsByCurrentSelectedStep;
-    final Iterable<Visit> filterVisits = currentShowedVisits.where(
-      (Visit visit){
+  List<OldVisit> _getVisitsWithSameDateThanFilter(DateTime filterDate){
+    final List<OldVisit> currentShowedVisits = state.visitsByCurrentSelectedStep;
+    final Iterable<OldVisit> filterVisits = currentShowedVisits.where(
+      (OldVisit visit){
         final String visitDateString = visit.date.toString().split(' ')[0];
         final String filterDateString = filterDate.toString().split(' ')[0];
         return visitDateString == filterDateString;
@@ -84,7 +84,7 @@ class VisitsBloc extends Bloc<VisitsEvent, VisitsState> {
 
   @protected
   void chooseVisit(ChooseVisit event){
-    final Visit chosenOne = event.chosenOne;
+    final OldVisit chosenOne = event.chosenOne;
     _currentYieldedState = state.copyWith(chosenVisit: chosenOne);
     
   }

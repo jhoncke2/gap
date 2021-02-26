@@ -4,27 +4,27 @@ import 'package:gap/native_connectors/storage_connector.dart';
 class FormulariosStorageManager{
   static final String _formsKey = 'formularios';
 
-  static Future<void> setForms(List<Formulario> forms)async{
+  static Future<void> setForms(List<OldFormulario> forms)async{
     final List<Map<String, dynamic>> formsAsJson = _convertFormsToJson(forms);
     await StorageConnectorSingleton.storageConnector.setListResource(_formsKey, formsAsJson);
   }
 
-  static List<Map<String, dynamic>> _convertFormsToJson(List<Formulario> forms){
+  static List<Map<String, dynamic>> _convertFormsToJson(List<OldFormulario> forms){
     final List<Map<String, dynamic>> formsAsJson = forms.map<Map<String, dynamic>>(
-      (Formulario form)=>form.toJson()
+      (OldFormulario form)=>form.toJson()
     ).toList();
     return formsAsJson;
   }
 
-  static Future<List<Formulario>> getForms()async{
+  static Future<List<OldFormulario>> getForms()async{
     final List<Map<String, dynamic>> formsAsJson = await StorageConnectorSingleton.storageConnector.getListResource(_formsKey);
-    final List<Formulario> forms = _convertJsonFormsToObject(formsAsJson);
+    final List<OldFormulario> forms = _convertJsonFormsToObject(formsAsJson);
     return forms;
   }
 
-  static List<Formulario> _convertJsonFormsToObject(List<Map<String, dynamic>> formsAsJson){
-    return formsAsJson.map<Formulario>(
-      (Map<String, dynamic> jsonForm) => Formulario.fromJson(jsonForm)
+  static List<OldFormulario> _convertJsonFormsToObject(List<Map<String, dynamic>> formsAsJson){
+    return formsAsJson.map<OldFormulario>(
+      (Map<String, dynamic> jsonForm) => OldFormulario.fromJson(jsonForm)
     ).toList();
   }
 

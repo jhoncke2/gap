@@ -81,9 +81,10 @@ class ProjectsPage extends StatelessWidget {
     final List<String> names = [];
     final Map<String, List<dynamic>> namesAndFunctions = {};
     projects.forEach((Project project){
-      names.add(project.name);
+      names.add(project.nombre);
       functions.add((){
-        PagesNavigationManager.navToProjectDetail(project);
+        //TODO: Arreglar
+        PagesNavigationManager.navToProjectDetail(null);
       });
     });
     namesAndFunctions['names'] = names;

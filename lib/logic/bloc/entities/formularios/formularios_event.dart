@@ -4,14 +4,14 @@ part of 'formularios_bloc.dart';
 abstract class FormulariosEvent {}
 
 class SetForms extends FormulariosEvent{
-  final List<Formulario> forms;
+  final List<OldFormulario> forms;
   SetForms({
     @required this.forms
   });
 }
 
 class ChooseForm extends FormulariosEvent{
-  final Formulario chosenOne;
+  final OldFormulario chosenOne;
   ChooseForm({
     @required this.chosenOne
   });

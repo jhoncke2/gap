@@ -18,10 +18,10 @@ main(){
 void _testBloc1(){
   //Nueva forma para testear blocs
   test('test bloc 1', ()async{
-    final SetProjects spEvent = SetProjects(projects: fakeData.projects);
+    final SetOldProjects spEvent = SetOldProjects(oldProjects: fakeData.oldProjects);
     await for(ProjectsState newState in projectsBloc.mapEventToState(spEvent)){
-      print('new state: ${newState.projects}');
-      expect(newState.projects.length, fakeData.projects.length, reason: 'El length de los objects del state del bloc debe ser el mismo que el de la fakeData');
+      print('new state: ${newState.oldProjects}');
+      expect(newState.oldProjects.length, fakeData.oldProjects.length, reason: 'El length de los objects del state del bloc debe ser el mismo que el de la fakeData');
     }
   });
 }

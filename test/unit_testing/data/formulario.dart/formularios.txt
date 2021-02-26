@@ -1,0 +1,14 @@
+[
+    {
+        "formulario_pivot_id": 5,
+        "completo": false,
+        "nombre": "Prueba",
+        "campos": "[]"
+    },
+    {
+        "formulario_pivot_id": 6,
+        "completo": false,
+        "nombre": "INFORME DIARIO",
+        "campos": "[{\"name\": \"date-1606317918372\", \"type\": \"date\", \"label\": \"Campo de Fecha\", \"access\": false, \"required\": false, \"className\": \"form-control\"}, {\"name\": \"radio-group-1606406173514\", \"type\": \"radio-group\", \"label\": \"Grado\", \"other\": false, \"access\": false, \"inline\": false, \"values\": [{\"label\": \"Opcion 1\", \"value\": \"opcion-1\"}, {\"label\": \"Opcion 2\", \"value\": \"opcion-2\"}, {\"label\": \"Opcion 3\", \"value\": \"opcion-3\"}], \"required\": false}, {\"name\": \"radio-group-1606317935519\", \"type\": \"radio-group\", \"label\": \"Actividad 1\", \"other\": false, \"access\": false, \"inline\": false, \"values\": [{\"label\": \"Ordenaciòn\", \"value\": \"opcion-1\"}, {\"label\": \"Digitalización\", \"value\": \"opcion-2\"}], \"required\": false}, {\"name\": \"number-1606317975326\", \"type\": \"number\", \"label\": \"Número\", \"access\": false, \"required\": false, \"className\": \"form-control\"}, {\"name\": \"radio-group-1606406117638\", \"type\": \"radio-group\", \"label\": \"Actividad 2\", \"other\": false, \"access\": false, \"inline\": false, \"values\": [{\"label\": \"Ordenaciòn\", \"value\": \"opcion-1\"}, {\"label\": \"Digitalización\", \"value\": \"opcion-2\"}], \"required\": false}, {\"name\": \"number-1606406138794\", \"type\": \"number\", \"label\": \"Número\", \"access\": false, \"required\": false, \"className\": \"form-control\"}, {\"name\": \"textarea-1606406144755\", \"type\": \"textarea\", \"label\": \"Observaciones\", \"access\": false, \"subtype\": \"textarea\", \"required\": false, \"className\": \"form-control\"}, {\"name\": \"checkbox-group-1606406190761\", \"type\": \"checkbox-group\", \"label\": \"Grupo de casillas\", \"other\": false, \"access\": false, \"inline\": false, \"toggle\": false, \"values\": [{\"label\": \"Opcion 1\", \"value\": \"opcion-1\", \"selected\": true}, {\"label\": \"2\", \"value\": \"\"}, {\"label\": \"3\", \"value\": \"\"}, {\"label\": \"4\", \"value\": \"\"}], \"required\": false}]"
+    }
+]

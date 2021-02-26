@@ -6,7 +6,7 @@ import 'package:gap/logic/storage_managers/visits/visits_storage_manager.dart';
 class VisitsServicesManager{
   static Future<void> loadVisits(VisitsBloc bloc)async{
     //TODO: Iplementar services
-    final List<Visit> visits = fakeData.visits;
+    final List<OldVisit> visits = fakeData.visits;
     bloc.add(SetVisits(visits: visits));
     await VisitsStorageManager.setVisits(visits);
   }

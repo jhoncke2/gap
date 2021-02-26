@@ -37,7 +37,7 @@ class  PersonalInformation{
     id = json['id'];
     name = json['name'];
     identifDocumentType = json['identif_document_type'];
-    identifDocumentNumber = json['identif_Document_number'];
+    identifDocumentNumber = json['identif_document_number'];
     _convertFirmToFile(json['firm']);
   }
 
@@ -50,7 +50,7 @@ class  PersonalInformation{
     'id':id,    
     'name':name,
     'identif_document_type':identifDocumentType,
-    'identif_Docuument_number':identifDocumentNumber,
+    'identif_document_number':identifDocumentNumber,
     //TODO: Convertir a data que se pueda desconvertir más tarde
     'firm':firm.toString(),    
   };

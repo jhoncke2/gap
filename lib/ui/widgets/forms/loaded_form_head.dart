@@ -9,7 +9,7 @@ import 'package:gap/ui/utils/size_utils.dart';
 class LoadedFormHead extends StatelessWidget {
   final SizeUtils _sizeUtils = SizeUtils();
   final FormulariosState formsState;
-  final Formulario _formulario;
+  final OldFormulario _formulario;
   BuildContext _context;
   LoadedFormHead({
     @required this.formsState

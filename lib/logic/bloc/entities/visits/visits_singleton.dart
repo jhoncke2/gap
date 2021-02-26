@@ -5,18 +5,18 @@ import 'package:gap/logic/storage_managers/visits/visits_storage_manager.dart';
 
 class VisitsSingleton extends ChangeNotifier{
   bool _visitsAreLoaded = false;
-  List<Visit> _visits;
+  List<OldVisit> _visits;
   ProcessStage _selectedStepInNav;
-  List<Visit> _pendientesVisits;
-  List<Visit> _realizadasVisits;
+  List<OldVisit> _pendientesVisits;
+  List<OldVisit> _realizadasVisits;
   int _indexOfChosenFilterItem;
   DateTime _filterDate;
-  List<Visit> _visitsByFilterDate;
-  Visit _chosenVisit;
+  List<OldVisit> _visitsByFilterDate;
+  OldVisit _chosenVisit;
 
-  Future setVisits(List<Visit> visits)async{
-    final List<Visit> pendientesVisits = [];
-    final List<Visit> realizadasVisits = [];
+  Future setVisits(List<OldVisit> visits)async{
+    final List<OldVisit> pendientesVisits = [];
+    final List<OldVisit> realizadasVisits = [];
     _setVisitsToPendientesAndRealizadas(visits, pendientesVisits, realizadasVisits);
     _visitsAreLoaded = true;
     _visits = visits;
@@ -26,8 +26,8 @@ class VisitsSingleton extends ChangeNotifier{
     notifyListeners();
   }
 
-  void _setVisitsToPendientesAndRealizadas(List<Visit> visits, List<Visit> pendientesVisits, List<Visit> realizadasVisits){
-    visits.forEach((Visit visit) {
+  void _setVisitsToPendientesAndRealizadas(List<OldVisit> visits, List<OldVisit> pendientesVisits, List<OldVisit> realizadasVisits){
+    visits.forEach((OldVisit visit) {
       if(visit.stage == ProcessStage.Pendiente)
         pendientesVisits.add(visit);
       else if(visit.stage == ProcessStage.Realizada)
@@ -43,14 +43,14 @@ class VisitsSingleton extends ChangeNotifier{
   void changeDateFilterItem(int filterItemIndex, DateTime filterDate){
     _indexOfChosenFilterItem = filterItemIndex;
     _filterDate = filterDate;
-    final List<Visit> filterVisits = _getVisitsWithSameDateThanFilter(filterDate);
+    final List<OldVisit> filterVisits = _getVisitsWithSameDateThanFilter(filterDate);
     _visitsByFilterDate = filterVisits;
     notifyListeners();
   }
 
-  List<Visit> _getVisitsWithSameDateThanFilter(DateTime filterDate){
-    final Iterable<Visit> filterVisits = currentShowedVisits.where(
-      (Visit visit){
+  List<OldVisit> _getVisitsWithSameDateThanFilter(DateTime filterDate){
+    final Iterable<OldVisit> filterVisits = currentShowedVisits.where(
+      (OldVisit visit){
         final String visitDateString = visit.date.toString().split(' ')[0];
         final String filterDateString = filterDate.toString().split(' ')[0];
         return visitDateString == filterDateString;
@@ -59,7 +59,7 @@ class VisitsSingleton extends ChangeNotifier{
     return filterVisits.toList();
   }
 
-  void chooseVisit(Visit visit){
+  void chooseVisit(OldVisit visit){
     _chosenVisit = visit;
     VisitsStorageManager.setChosenVisit(visit);
     notifyListeners();
@@ -86,16 +86,16 @@ class VisitsSingleton extends ChangeNotifier{
   }
 
   bool get visitsAreLoaded => _visitsAreLoaded;
-  List<Visit> get visits => _visits;
+  List<OldVisit> get visits => _visits;
   ProcessStage get selectedStepInNav => _selectedStepInNav;
-  List<Visit> get pendientesVisits => _pendientesVisits;
-  List<Visit> get realizadasVisits => _realizadasVisits;
+  List<OldVisit> get pendientesVisits => _pendientesVisits;
+  List<OldVisit> get realizadasVisits => _realizadasVisits;
   int get indexOfChosenFilterItem => _indexOfChosenFilterItem;
   DateTime get filterDate => _filterDate;
-  List<Visit> get visitsByFilterDate => _visitsByFilterDate;
-  Visit get chosenVisit => _chosenVisit;
+  List<OldVisit> get visitsByFilterDate => _visitsByFilterDate;
+  OldVisit get chosenVisit => _chosenVisit;
 
-  List<Visit> get currentShowedVisits{
+  List<OldVisit> get currentShowedVisits{
     if(indexOfChosenFilterItem != null){
       return visitsByFilterDate;
     }else{
@@ -105,7 +105,7 @@ class VisitsSingleton extends ChangeNotifier{
     }
   }
 
-  List<Visit> get visitsByCurrentSelectedStep{
+  List<OldVisit> get visitsByCurrentSelectedStep{
     if(selectedStepInNav == ProcessStage.Pendiente)
       return pendientesVisits;
     else if(selectedStepInNav == ProcessStage.Realizada)

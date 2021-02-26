@@ -16,7 +16,7 @@ abstract class BasicService{
    * para guardar la respuesta del servidor, momentaneamente, para luego ser retornada desde la
    * función principal.
    */
-  Map<String, dynamic> currentResponseBody;
+  dynamic currentResponseBody;
 //for testing
   http.Response currentResponse;
   String executedServiceFunction;
@@ -122,11 +122,15 @@ abstract class BasicService{
   void evaluateServerResponse(http.Response serverResponse){
     try{
       currentResponseBody = json.decode(serverResponse.body);
-      if(currentResponseBody['error'] != null)
+      if(_currentResponseBodyHasNoErrorAsMap())
         throw ServiceStatusErr(status: currentResponseBody['code'], extraInformation: currentResponseBody['error']); 
     }catch(err){
       throw ServiceStatusErr(status: serverResponse.statusCode, message: serverResponse.reasonPhrase, extraInformation: serverResponse.reasonPhrase);
     }
+  }
+
+  bool _currentResponseBodyHasNoErrorAsMap(){
+    return currentResponseBody is Map && currentResponseBody['error'] != null;
   }
 
   /**

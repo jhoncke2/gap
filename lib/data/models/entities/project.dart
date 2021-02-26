@@ -1,35 +1,43 @@
+// To parse this JSON data, do
+//
+//     final project = projectFromJson(jsonString);
+
 part of 'entities.dart';
 
-class Projects{
-  List<Project> projects;
+List<Project> projectsFromJson(List<Map> jsonData) => List<Project>.from(jsonData.map((x) => Project.fromJson(x)));
 
-  Projects({
-    @required this.projects
-  });
+String projectsToJson(List<Project> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
-  Projects.fromJson(List<Map<String, dynamic>> json){
-    projects = [];
-    json.forEach((Map<String, dynamic> projectAsJson) {
-      projects.add(Project.fromJson(projectAsJson));
+class Project {
+    Project({
+        this.id,
+        this.nombre,
+        this.visits,
     });
-  }
 
-  List<Map<String, dynamic>> toJson() => projects.map<Map<String, dynamic>>(
-    (Project p)=>p.toJson()
-  ).toList();
+    int id;
+    String nombre;
+    List<Visit> visits;
+
+    factory Project.fromJson(Map<String, dynamic> json) => Project(
+        id: json["id"],
+        nombre: json["nombre"],
+        visits: json["visitas"] != [] ? visitsFromJson(json["visitas"]) : [],
+    );
+
+    Map<String, dynamic> toJson() => {
+        "id": id,
+        "nombre": nombre,
+        "visitas": visits,
+    };
 }
 
-class Project extends Entity{
-  final String name;
+class VisitasClass {
+    VisitasClass();
 
-  Project.fromJson(Map<String, dynamic> json):
-    this.name = json['name'],
-    super(id: json['id'])
-    ;
+    factory VisitasClass.fromJson(Map<String, dynamic> json) => VisitasClass(
+    );
 
-  Map<String, dynamic> toJson() => {
-    'id':this.id,
-    'name':this.name
-  };
-
+    Map<String, dynamic> toJson() => {
+    };
 }

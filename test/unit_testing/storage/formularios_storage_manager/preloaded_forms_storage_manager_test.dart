@@ -31,10 +31,10 @@ void _testSetPreloadedForm(){
 }
 
 Future<void> _tryTestSetPreloadedForm()async{
-  for(int i = 0; i < fakeData.projects.length; i++){
+  for(int i = 0; i < fakeData.oldProjects.length; i++){
     final int initialVisitForProjIndex = _getInitialFormIndexForVisitIndex(i);
     for(int j = initialVisitForProjIndex; j < initialVisitForProjIndex + nFormsPerVisit; j++){
-      await PreloadedFormsStorageManager.setPreloadedForm(fakeData.formularios[j], fakeData.projects[i].id);
+      await PreloadedFormsStorageManager.setPreloadedForm(fakeData.formularios[j], fakeData.oldProjects[i].id);
     }
     expect(obtainFormsAsJsonByIndexFromCurrentData(i), isNotNull, reason: 'Las Forms by project recientemente agregadas no deben ser null en el currentData del manager');
     expect(obtainFormsAsJsonByIndexFromCurrentData(i).length, nFormsPerVisit, reason: 'El número de Forms del currentData debe ser el mismo que se agregó');
@@ -42,7 +42,7 @@ Future<void> _tryTestSetPreloadedForm()async{
 }
 
 List<Map<String, dynamic>> obtainFormsAsJsonByIndexFromCurrentData(int index){
-  return PreloadedFormsStorageManager.currentPreloadedFormsHolder.currentData[fakeData.projects[index].id.toString()]??[ ];
+  return PreloadedFormsStorageManager.currentPreloadedFormsHolder.currentData[fakeData.oldProjects[index].id.toString()]??[ ];
 }
 
 void _testGetPreloadedFormsByVisitId(){
@@ -54,7 +54,7 @@ void _testGetPreloadedFormsByVisitId(){
 Future<void> _tryTestGetPreloadedFormsByVisitId()async{
   for(int i = 0; i < fakeData.visits.length; i++){
     final int initialFormForVisitIndex = _getInitialFormIndexForVisitIndex(i);
-    final List<Formulario> formsByVisitId = await PreloadedFormsStorageManager.getPreloadedFormsByVisitId(fakeData.visits[i].id);
+    final List<OldFormulario> formsByVisitId = await PreloadedFormsStorageManager.getPreloadedFormsByVisitId(fakeData.visits[i].id);
     for(int j = 0; j < formsByVisitId.length; j++){
       expect(formsByVisitId.length, nFormsPerVisit, reason: 'El length de los Forms del Visit Id actual debe ser igual al estipulado por el test');
       expect(jsonEncode(formsByVisitId[j]), jsonEncode(fakeData.formularios[initialFormForVisitIndex + j]), reason: 'Los Forms retornadas por el getVisitByVisit Id deben venir en agrupadas y en el mismo orden como se agregaron');
@@ -77,13 +77,13 @@ void _testRemovePreloadedForm(){
 }
 
 Future<void> _tryTestRemovePreloadedForm()async{
-  for(int i = 0; i < fakeData.projects.length; i++){
+  for(int i = 0; i < fakeData.oldProjects.length; i++){
     final int initialVisitForProjIndex = _getInitialFormIndexForVisitIndex(i);
     for(int j = initialVisitForProjIndex; j < initialVisitForProjIndex + nFormsPerVisit; j++){
-       await PreloadedFormsStorageManager.removePreloadedForm(fakeData.visits[j].id, fakeData.projects[i].id);
+       await PreloadedFormsStorageManager.removePreloadedForm(fakeData.visits[j].id, fakeData.oldProjects[i].id);
        final int jIndexFromZero = j - initialVisitForProjIndex;
        final int expectedVisitsByProjectIdLength = nFormsPerVisit - jIndexFromZero - 1;
-       expect(obtainFormsAsJsonByIndexFromCurrentData(fakeData.projects[i].id).length, expectedVisitsByProjectIdLength, reason: 'El length de las visitas con el projectId actual debería haber disminuido en 1');
+       expect(obtainFormsAsJsonByIndexFromCurrentData(fakeData.oldProjects[i].id).length, expectedVisitsByProjectIdLength, reason: 'El length de las visitas con el projectId actual debería haber disminuido en 1');
     }
   }
 }

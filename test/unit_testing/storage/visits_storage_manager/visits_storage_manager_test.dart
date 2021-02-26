@@ -51,7 +51,7 @@ void _testGetVisits(){
 }
 
 Future<void> _tryTestGetVisits()async{
-  final List<Visit> visits = await VisitsStorageManager.getVisits();
+  final List<OldVisit> visits = await VisitsStorageManager.getVisits();
   _verifyStorageGetReturnedElements(visits);
 }
 
@@ -63,7 +63,7 @@ void _verifyStorageGetReturnedElements(List<dynamic> storageReturnedElements){
   }
 }
 
-void _compararParDeVisits(Visit v1, Visit v2){
+void _compararParDeVisits(OldVisit v1, OldVisit v2){
   expect(v1.name, v2.name, reason: 'El name del current visit del storageSaver debe ser el mismo que el de los fakeVisits');
   expect(v1.date, v2.date, reason: 'El date del current visit del storageSaver debe ser el mismo que el de los fakeVisits');
   expect(v1.stage, v2.stage, reason: 'El stage del current visit del storageSaver debe ser el mismo que el de los fakeVisits');
@@ -94,7 +94,7 @@ void _testSetChosenVisit(){
 }
 
 Future<void> _tryTestSetChosenVisit()async{
-  final Visit chosenOne = fakeData.visits[0];
+  final OldVisit chosenOne = fakeData.visits[0];
   await VisitsStorageManager.setChosenVisit(chosenOne);
 }
 
@@ -109,7 +109,7 @@ void _testGetChosenVisit(){
 }
 
 Future<void> _tryTestGetChosenVisit()async{
-  final Visit chosenOne = await VisitsStorageManager.getChosenVisit();
+  final OldVisit chosenOne = await VisitsStorageManager.getChosenVisit();
   expect(chosenOne, isNotNull, reason: 'El visit retornado por el storage no debería ser null');
   _compararParDeVisits(chosenOne, fakeData.visits[0]);
 }

@@ -22,10 +22,14 @@ class ProjectsBloc extends Bloc<ProjectsEvent, ProjectsState> {
   Stream<ProjectsState> mapEventToState(
     ProjectsEvent event,
   ) async* {
-    if(event is SetProjects){
-      setProjects(event);
+    if(event is SetOldProjects){
+      setOldProjects(event);
+    }else if(event is SetProjects){
+      _setProjects(event);
     }else if(event is ChooseProject){
-      chooseProject(event);
+      _chooseProject(event);
+    }else if(event is ChooseProjectOld){
+      chooseProjectOld(event);
     }else if(event is RemoveChosenProject){
       removeChosenProject();
     }else if(event is ResetProjects){
@@ -35,19 +39,32 @@ class ProjectsBloc extends Bloc<ProjectsEvent, ProjectsState> {
   }
 
   @protected
-  void setProjects(SetProjects event){
-    final List<Project> projects = event.projects;
+  void setOldProjects(SetOldProjects event){
+    final List<OldProject> oldProjects = event.oldProjects;
     _currentYieldedState = state.copyWith(
       projectsAreLoaded: true, 
-      projects: projects
+      oldProjects: oldProjects
     );
     
   }
 
-  @protected
-  void chooseProject(ChooseProject event){
+  void _setProjects(SetProjects event){
+    final List<Project> projects = event.projects;
+    _currentYieldedState = state.copyWith(
+      projectsAreLoaded: true,
+      projects: projects
+    );
+  }
+
+  void _chooseProject(ChooseProject event){
     final Project chosenOne = event.chosenOne;
     _currentYieldedState = state.copyWith(chosenProject: chosenOne);
+  }
+
+  @protected
+  void chooseProjectOld(ChooseProjectOld event){
+    final OldProject chosenOne = event.chosenOne;
+    _currentYieldedState = state.copyWith(chosenProjectOld: chosenOne);
   }
 
   void removeChosenProject(){

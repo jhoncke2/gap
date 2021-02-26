@@ -45,7 +45,7 @@ class _VisitsPageState extends State<VisitsPage> {
   //Testing, mientras se implementan los VisitsManager
   void _initFakeVisits(){
     final VisitsBloc visitsBloc = BlocProvider.of<VisitsBloc>(_context);
-    final List<Visit> visits = fakeData.visits;
+    final List<OldVisit> visits = fakeData.visits;
     final SetVisits event = SetVisits(visits: visits);
     visitsBloc.add(event);
   }
@@ -159,7 +159,7 @@ class _VisitsComponents extends StatelessWidget {
   }
 
   Widget _createNavigationList(VisitsState state){
-    final List<Visit> visits = state.currentShowedVisits;
+    final List<OldVisit> visits = state.currentShowedVisits;
     return NavigationListWithStageButtons(itemsFunction: _onTapFunction, entitiesWithStages: visits);
   }
 
@@ -170,7 +170,7 @@ class _VisitsComponents extends StatelessWidget {
   }
 
   void _choseVisit(EntityWithStage entity){
-    final Visit visit = entity as Visit;
+    final OldVisit visit = entity as OldVisit;
     final VisitsBloc visitsBloc = BlocProvider.of<VisitsBloc>(_context);
     final ChooseVisit chooseVisitEvent = ChooseVisit(chosenOne: visit);
     visitsBloc.add(chooseVisitEvent);

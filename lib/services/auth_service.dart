@@ -8,7 +8,7 @@ class AuthService extends BasicService{
     final Map<String, String> headers = { 'accept':'application/json' };
     final Map<String, Map<String, dynamic>> headersAndBody = createHeadersAndBodyForARequest(body: loginInfo, headers: headers);
     await executeGeneralEndOfRequest(requestType: RequestType.POST, headersAndBody: headersAndBody, requestUrl: requestUrl);
-    return currentResponseBody;
+    return (currentResponseBody as Map).cast<String, dynamic>();
   }
 }
 

@@ -9,14 +9,14 @@ class ChosenFormStorageManager{
     ; 
 
 
-  static Future<void> setChosenForm(Formulario form)async{
+  static Future<void> setChosenForm(OldFormulario form)async{
     final Map<String, dynamic> chosenOneAsJson = form.toJson();
     await StorageConnectorSingleton.storageConnector.setMapResource(_chosenFormKey, chosenOneAsJson);
   }
 
-  static Future<Formulario> getChosenForm()async{
+  static Future<OldFormulario> getChosenForm()async{
     final Map<String, dynamic> chosenOneAsJson = await StorageConnectorSingleton.storageConnector.getMapResource(_chosenFormKey);
-    final Formulario chosenOne = Formulario.fromJson(chosenOneAsJson);
+    final OldFormulario chosenOne = OldFormulario.fromJson(chosenOneAsJson);
     return chosenOne;
   }
 

@@ -4,7 +4,7 @@ part of 'visits_bloc.dart';
 abstract class VisitsEvent {}
 
 class SetVisits extends VisitsEvent{
-  final List<Visit> visits;
+  final List<OldVisit> visits;
   SetVisits({
     @required this.visits,
   });
@@ -27,7 +27,7 @@ class ChangeDateFilterItem extends VisitsEvent{
 }
 
 class ChooseVisit extends VisitsEvent{
-  final Visit chosenOne;
+  final OldVisit chosenOne;
   ChooseVisit({
     @required this.chosenOne,
   });

@@ -17,7 +17,7 @@ import 'package:gap/ui/widgets/unloaded_elements/unloaded_nav_items.dart';
 class LoadedFormBody extends StatelessWidget{
   final SizeUtils _sizeUtils = SizeUtils();
   final FormulariosState formsState;
-  final Formulario _formulario;
+  final OldFormulario _formulario;
 
   LoadedFormBody({
     @required this.formsState

@@ -66,7 +66,7 @@ void _testProjectsBloc(Map<String, SendPort> mainPorts)async{
   test('', ()async{
     final ProjectsBloc pb = blocsMap[BlocName.Projects];
     pb.listen((ProjectsState state) {
-      expect(jsonEncode(state.chosenProject.toJson()), recientActivityStorageData.chosenProjectAsString, reason: 'El chosen project del bloc debería ser igual al fake');
+      expect(jsonEncode(state.chosenProjectOld.toJson()), recientActivityStorageData.chosenProjectAsString, reason: 'El chosen project del bloc debería ser igual al fake');
       blocsAreUpdated = true;
     });
   });

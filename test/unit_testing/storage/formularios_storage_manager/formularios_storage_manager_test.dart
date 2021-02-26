@@ -46,7 +46,7 @@ void _testGetForms(){
 }
 
 Future<void> _tryTestGetForms()async{
-  final List<Formulario> visits = await FormulariosStorageManager.getForms();
+  final List<OldFormulario> visits = await FormulariosStorageManager.getForms();
   _verifyStorageGetReturnedElements(visits);
 }
 
@@ -58,7 +58,7 @@ void _verifyStorageGetReturnedElements(List<dynamic> storageReturnedElements){
   }
 }
 
-void _compararParDeForms(Formulario f1, Formulario f2){
+void _compararParDeForms(OldFormulario f1, OldFormulario f2){
   expect(f1.name, f2.name, reason: 'El name del current Form del storageSaver debe ser el mismo que el de los fakeForms');
   expect(f1.date.toString(), f2.date.toString(), reason: 'El date del current Form del storageSaver debe ser el mismo que el de los fakeForms');
   expect(f1.stage, f2.stage, reason: 'El stage del current Form del storageSaver debe ser el mismo que el de los fakeForms');

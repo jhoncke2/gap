@@ -32,7 +32,7 @@ class ChosenFormBloc extends Bloc<ChosenFormEvent, ChosenFormState> {
   }
 
   void _initFormFillingOut(InitFormFillingOut event){
-    final Formulario formulario = event.formulario;
+    final OldFormulario formulario = event.formulario;
     //TODO: Implementar la creación de los formfields
     _currentStateToYield = state.copyWith(
       formStep: FormStep.OnForm,

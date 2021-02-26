@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/logic/bloc/entities/visits/visits_bloc.dart';
-import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/logic/blocs_manager/pages_navigation_manager.dart';
-import 'package:gap/ui/pages/formulario_detail_page.dart';
 import 'package:gap/ui/widgets/header/header.dart';
 import 'package:gap/ui/widgets/navigation_list/navigation_list_with_stage_color_buttons.dart';
 import 'package:gap/ui/widgets/page_title.dart';
@@ -50,8 +48,8 @@ class FormulariosPage extends StatelessWidget {
 // ignore: must_be_immutable
 class _FormulariosComponents extends StatelessWidget {
   final SizeUtils _sizeUtils = SizeUtils();
-  final List<Formulario> visitForms;
-  Visit visit;
+  final List<OldFormulario> visitForms;
+  OldVisit visit;
   BuildContext _context;
   _FormulariosComponents({
     @required this.visitForms

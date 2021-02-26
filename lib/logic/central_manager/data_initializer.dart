@@ -94,7 +94,7 @@ class DataInitializer{
   }
 
   static Future _doNavigationToProjectDetail()async{
-    final Project chosenOne = await ProjectsStorageManager.getChosenProject();
+    final OldProject chosenOne = await ProjectsStorageManager.getChosenProject();
     await DataDistributorManager.dataDistributor.updateChosenProject(chosenOne);
     //await PagesNavigationManager.navToProjectDetail(chosenOne, context);
   }
@@ -104,7 +104,7 @@ class DataInitializer{
   }
 
   static Future _doNavigationToVisitDetail()async{
-    final Visit chosenOne = await VisitsStorageManager.getChosenVisit();
+    final OldVisit chosenOne = await VisitsStorageManager.getChosenVisit();
     await DataDistributorManager.dataDistributor.updateChosenVisit(chosenOne);
     //await PagesNavigationManager.navToVisitDetail(chosenOne, context);
   }
@@ -115,7 +115,7 @@ class DataInitializer{
   }
 
   static Future _doNavigationToFormDetail()async{
-    final Formulario chosenOne = await ChosenFormStorageManager.getChosenForm();
+    final OldFormulario chosenOne = await ChosenFormStorageManager.getChosenForm();
     await DataDistributorManager.dataDistributor.updateChosenForm(chosenOne);
     //await PagesNavigationManager.navToFormDetail(chosenOne, context);
   }
