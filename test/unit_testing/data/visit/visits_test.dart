@@ -30,7 +30,7 @@ Future _testListOfVisits()async{
 void _expectVisit(Visit visit, int visitIndex){
   expect(visit.id, isNotNull);
   expect(visit.completo, isNotNull);
-  expect(visit.fecha, isNotNull);
+  expect(visit.date, isNotNull);
   expect(visit.sede, isNotNull);
   if(visitIndex == 0)
     expect(visit.formularios.length, 2);

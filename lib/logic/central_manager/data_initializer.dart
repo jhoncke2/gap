@@ -15,10 +15,13 @@ class DataInitializer{
   static final RoutesManager _routesManager = RoutesManager();
 
   static Future init(BuildContext context, NetConnectionState netConnState)async{
-    //TODO: post preloaded data
     DataDistributorManager.netConnectionState = netConnState;
     await _routesManager.loadRoute();
-    await _doAllNavigationByEvaluatingInitialConditions(context, netConnState);
+    try{
+      await _doAllNavigationByEvaluatingInitialConditions(context, netConnState);
+    }catch(err){
+      PagesNavigationManager.navToProjects();
+    }
   }
 
   static Future _doAllNavigationByEvaluatingInitialConditions(BuildContext context, NetConnectionState netConnState)async{
@@ -94,7 +97,7 @@ class DataInitializer{
   }
 
   static Future _doNavigationToProjectDetail()async{
-    final OldProject chosenOne = await ProjectsStorageManager.getChosenProject();
+    final Project chosenOne = await ProjectsStorageManager.getChosenProject();
     await DataDistributorManager.dataDistributor.updateChosenProject(chosenOne);
     //await PagesNavigationManager.navToProjectDetail(chosenOne, context);
   }
@@ -104,7 +107,7 @@ class DataInitializer{
   }
 
   static Future _doNavigationToVisitDetail()async{
-    final OldVisit chosenOne = await VisitsStorageManager.getChosenVisit();
+    final Visit chosenOne = await VisitsStorageManager.getChosenVisit();
     await DataDistributorManager.dataDistributor.updateChosenVisit(chosenOne);
     //await PagesNavigationManager.navToVisitDetail(chosenOne, context);
   }
@@ -115,7 +118,7 @@ class DataInitializer{
   }
 
   static Future _doNavigationToFormDetail()async{
-    final OldFormulario chosenOne = await ChosenFormStorageManager.getChosenForm();
+    final Formulario chosenOne = await ChosenFormStorageManager.getChosenForm();
     await DataDistributorManager.dataDistributor.updateChosenForm(chosenOne);
     //await PagesNavigationManager.navToFormDetail(chosenOne, context);
   }

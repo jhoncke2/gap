@@ -57,66 +57,66 @@ class CustomFormField {
         case FormFieldType.PARAGRAPH:
           return ParagraphFormField.fromJson(json);
         case FormFieldType.SINGLE_TEXT:
-          return CustomFormField.fromJson(json);
+          return SingleText.fromJson(json);
         case FormFieldType.TEXT_AREA:
-          return CustomFormField.fromJson(json);
+          return TextArea.fromJson(json);
         case FormFieldType.NUMBER:
           return Number.fromJson(json);
         case FormFieldType.DATE:
-          return CustomFormField.fromJson(json);
+          return DateField.fromJson(json);
         case FormFieldType.TIME:
-          return CustomFormField.fromJson(json);
+          return TimeField.fromJson(json);
         case FormFieldType.CHECKBOX_GROUP:
-          return CustomFormField.fromJson(json);
+          return CheckBoxGroup.fromJson(json);
         case FormFieldType.RADIO_GROUP:
-          return CustomFormField.fromJson(json);
+          return RadioGroup.fromJson(json);
         case FormFieldType.SELECT:
-          return CustomFormField.fromJson(json);
+          return Select.fromJson(json);
       }
       return null;
     }
 
     CustomFormField.fromJson(Map<String, dynamic> json){
         this.type = typeValues.map[ json["type"] ];
-        this.isRequired = json["required"] ?? false;
+        //this.isRequired = json["required"] ?? false;
         this.label = json["label"];
         this.toggle = json["toggle"] ?? null;
-        this.inline = json["inline"] ?? null;
-        this.name = json["name"] ?? null;
-        this.other = json["other"] ?? null;
-        this.values = json["values"] == null ? null : List<Value>.from(json["values"].map((x) => Value.fromJson(x)));
-        this.multiple = json["multiple"] ?? null;
-        this.min = json["min"] ?? null;
-        this.max = json["max"] ?? null;
-        this.step = json["step"] ?? null;
-        this.oldSubType = json["subtype"] == null ? null : subtypeValues.map[json['subtype']];
-        this.maxlength = json["maxlength"] ?? null;
-        this.rows = json["rows"] ?? null;
-        this.value = json["value"] ?? null;
-        this.placeholder = json["placeholder"] ?? null;
-        this.description = json["description"] ?? null;
+        //this.inline = json["inline"] ?? null;
+        //this.name = json["name"] ?? null;
+        //this.other = json["other"] ?? null;
+        //this.values = json["values"] == null ? null : List<Value>.from(json["values"].map((x) => Value.fromJson(x)));
+        //this.multiple = json["multiple"] ?? null;
+        //this.min = json["min"] ?? null;
+        //this.max = json["max"] ?? null;
+        //this.step = json["step"] ?? null;
+        //this.oldSubType = json["subtype"] == null ? null : subtypeValues.map[json['subtype']];
+        //this.maxlength = json["maxlength"] ?? null;
+        //this.rows = json["rows"] ?? null;
+        //this.value = json["value"] ?? null;
+        //this.placeholder = json["placeholder"] ?? null;
+        //this.description = json["description"] ?? null;
     
     }
 
     Map<String, dynamic> toJson() => {
         "type": typeValues.reverse[type],
-        "required": isRequired,
+        //"required": isRequired,
         "label": label,
         "toggle": toggle,
-        "inline": inline,
-        "name": name,
-        "other": other,
-        "values": values == null ? null : List<dynamic>.from(values.map((x) => x.toJson())),
-        "multiple": multiple,
-        "min": min,
-        "max": max,
-        "step": step,
-        "subtype": oldSubType == null ? null : subtypeValues.reverse[oldSubType],
-        "maxlength": maxlength,
-        "rows": rows,
-        "value": value,
-        "placeholder": placeholder ?? null,
-        "description": description,
+        //"inline": inline,
+        //"name": name,
+        //"other": other,
+        //"values": values == null ? null : List<dynamic>.from(values.map((x) => x.toJson())),
+        //"multiple": multiple,
+        //"min": min,
+        //"max": max,
+        //"step": step,
+        //"subtype": oldSubType == null ? null : subtypeValues.reverse[oldSubType],
+        //"maxlength": maxlength,
+        //"rows": rows,
+        //"value": value,
+        //"placeholder": placeholder ?? null,
+        //"description": description,
     };
 }
 

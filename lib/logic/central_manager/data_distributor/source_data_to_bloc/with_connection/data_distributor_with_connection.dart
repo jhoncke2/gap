@@ -24,48 +24,55 @@ class DataDistributorWithConnection extends DataDistributor{
     
     final String accessToken = await UserStorageManager.getAuthToken();
     final List<Project> projects = await ProjectsServicesManager.loadProjects(pBloc, accessToken);
-    await pBloc.add(SetProjects(projects: projects));
+    pBloc.add(SetProjects(projects: projects));
   }
 
   @override
-  Future<void> updateChosenProject(OldProject project)async{
+  Future<void> updateChosenProject(Project project)async{
     super.updateChosenProject(project);
     ProjectsStorageManager.setChosenProject(project);
+    UploadedBlocsData.dataContainer[NavigationRoute.ProjectDetail] = project;
+  }
+
+   @override
+  Future<void> updateVisits()async{
+    final VisitsBloc vBloc = blocsAsMap[BlocName.Visits];
+    final Project chosenProject = UploadedBlocsData.dataContainer[NavigationRoute.ProjectDetail];
+    final List<Visit> visits = chosenProject.visits;
+    vBloc.add(SetVisits(visits: visits));
+    //await VisitsServicesManager.loadVisits(vBloc);
   }
 
   @override
-  Future<void> updateChosenVisit(OldVisit visit)async{
+  Future<void> updateChosenVisit(Visit visit)async{
     await super.addChosenVisitToBloc(visit);
     _addPreloadedDataRelatedToChosenProject(visit);
-    await _loadFormsByChosenVisits(visit.id);
+    await _loadFormsByChosenVisit(visit.id);
     await _addVisitToStorage(visit);
   }
 
-  Future _addPreloadedDataRelatedToChosenProject(OldVisit visit)async{
-    final OldProject chosenProject = UploadedBlocsData.dataContainer[NavigationRoute.ProjectDetail];
+  Future _addPreloadedDataRelatedToChosenProject(Visit visit)async{
+    final Project chosenProject = UploadedBlocsData.dataContainer[NavigationRoute.ProjectDetail];
     await ProjectsStorageManager.setProjectWithPreloadedVisits(chosenProject);
     await PreloadedVisitsStorageManager.setVisit(visit, chosenProject.id);
   }
 
-  Future _loadFormsByChosenVisits(int visitId)async{
+  Future _loadFormsByChosenVisit(int visitId)async{
     final FormulariosBloc fBloc = blocsAsMap[BlocName.Formularios];
-    final List<OldFormulario> forms = await FormsServicesManager.loadForms(fBloc, visitId);
-    for(OldFormulario form in forms)
+    //final List<Formulario> forms = await FormsServicesManager.loadForms(fBloc, visitId);
+    final Visit chosenVisit = UploadedBlocsData.dataContainer[NavigationRoute.VisitDetail];
+    final List<Formulario> forms = chosenVisit.formularios;
+    fBloc.add(SetForms(forms: forms));
+    for(Formulario form in forms)
       await _addFormToPreloadedStorage(form, visitId);
   }
 
-  Future _addFormToPreloadedStorage(OldFormulario form, int visitId)async{
+  Future _addFormToPreloadedStorage(Formulario form, int visitId)async{
     await PreloadedFormsStorageManager.setPreloadedForm(form, visitId);
   }
 
-  Future _addVisitToStorage(OldVisit visit)async{
+  Future _addVisitToStorage(Visit visit)async{
     await VisitsStorageManager.setChosenVisit(visit);
-  }
-
-  @override
-  Future<void> updateVisits()async{
-    final VisitsBloc vBloc = blocsAsMap[BlocName.Visits];
-    await VisitsServicesManager.loadVisits(vBloc);
   }
 
   @override
@@ -75,19 +82,19 @@ class DataDistributorWithConnection extends DataDistributor{
   @override
   Future resetForms()async{
     final VisitsBloc vBloc = blocsAsMap[BlocName.Visits];
-    final OldVisit chosenVisit = vBloc.state.chosenVisit;
+    final Visit chosenVisit = vBloc.state.chosenVisit;
     await _removeVisitFromPreloadedVisitsIfCompleted(chosenVisit);
     await _removeFormsFromStorage();
   }
 
-  Future _removeVisitFromPreloadedVisitsIfCompleted(OldVisit visit)async{
+  Future _removeVisitFromPreloadedVisitsIfCompleted(Visit visit)async{
     if(visit.stage == ProcessStage.Realizada)
       await _removeVisitFromPReloadedVisits(visit);
   }
 
-  Future _removeVisitFromPReloadedVisits(OldVisit visit)async{
+  Future _removeVisitFromPReloadedVisits(Visit visit)async{
     final ProjectsBloc pBloc = blocsAsMap[BlocName.Projects];
-    final OldProject chosenProject = pBloc.state.chosenProjectOld;
+    final Project chosenProject = pBloc.state.chosenProjectOld;
     await PreloadedVisitsStorageManager.removeVisit(visit.id, chosenProject.id);
   }
 

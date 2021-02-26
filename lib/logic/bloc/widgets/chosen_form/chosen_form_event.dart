@@ -4,7 +4,7 @@ part of 'chosen_form_bloc.dart';
 abstract class ChosenFormEvent{}
 
 class InitFormFillingOut extends ChosenFormEvent{
-  final OldFormulario formulario;
+  final Formulario formulario;
   InitFormFillingOut({
     @required this.formulario
   });

@@ -1,4 +1,5 @@
 import 'package:gap/data/models/entities/custom_form_field/static/static_form_field.dart';
+import 'package:gap/data/models/entities/custom_form_field/variable/multi_value/with_alignment.dart';
 import 'package:gap/data/models/entities/custom_form_field/variable/single_value/number.dart';
 import 'package:gap/data/models/entities/custom_form_field/variable/variable_form_field.dart';
 import 'package:test/test.dart';
@@ -121,22 +122,22 @@ void _expectParagraphField(StaticFormField cff){
   nParagraphs++;
   _expectStaticSubType(cff);
   _expectIsWithoutValue(cff);
-  print('-*-*-*-*-*-*-*-*');
-  print('paragraf:');
-  print(cff.toJson());
+  //print('-*-*-*-*-*-*-*-*');
+  //print('paragraf:');
+  //print(cff.toJson());
 }
 
 void _expectTextField(CustomFormField cff){
   nTexts++;
   _expectRequiredAndName(cff);
-  _expectOldSubType(cff);
+  //_expectOldSubType(cff);
   _expectIsSingleValue(cff);
 }
 
 void _expectTextAreaField(CustomFormField cff){
   nTextAreas++;
   _expectRequiredAndName(cff);
-  _expectOldSubType(cff);
+  //_expectOldSubType(cff);
   _expectIsSingleValue(cff);
 }
 
@@ -159,10 +160,10 @@ void _expectTimeField(CustomFormField cff){
   _expectIsSingleValue(cff);
 }
 
-void _expectCheckBoxGroupField(CustomFormField cff){
+void _expectCheckBoxGroupField(CheckBoxGroup cff){
   nCheckBoxGroups++;
   _expectRequiredAndName(cff);
-  expect(cff.toggle, isNotNull, reason: 'El toggle de un ckeckbox no deberia ser null');
+  expect(cff.withSwitchType, isNotNull, reason: 'El toggle de un ckeckbox no deberia ser null');
   _expectLineal(cff);
   _expectIsMultiValue(cff);
 }
@@ -198,8 +199,8 @@ void _expectOldSubType(CustomFormField cff){
   expect(cff.oldSubType, isNotNull, reason: 'El subtype del formfield actual no debería ser null');
 }
 
-void _expectLineal(CustomFormField cff){
-  expect(cff.inline, isNotNull, reason: 'El inLine del formField actual no deberia ser null');
+void _expectLineal(MultiValueWithAlignment cff){
+  expect(cff.inVerticalAlignment, isNotNull, reason: 'El inLine del formField actual no deberia ser null');
 }
 
 void _expectIsMultiValue(CustomFormField cff){

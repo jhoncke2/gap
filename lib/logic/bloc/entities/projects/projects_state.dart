@@ -3,8 +3,8 @@ part of 'projects_bloc.dart';
 @immutable
 class ProjectsState {
   final bool projectsAreLoaded;
-  final List<OldProject> oldProjects;
-  final OldProject chosenProjectOld;
+  final List<Project> oldProjects;
+  final Project chosenProjectOld;
   final List<Project> projects;
   final Project chosenProject;
 
@@ -18,10 +18,10 @@ class ProjectsState {
 
   ProjectsState copyWith({
     bool projectsAreLoaded, 
-    List<OldProject> oldProjects, 
+    List<Project> oldProjects, 
     List<Project> projects,
     Project chosenProject,
-    OldProject chosenProjectOld
+    Project chosenProjectOld
   }) => ProjectsState(
     projectsAreLoaded: projectsAreLoaded??this.projectsAreLoaded,
     oldProjects: oldProjects??this.oldProjects,

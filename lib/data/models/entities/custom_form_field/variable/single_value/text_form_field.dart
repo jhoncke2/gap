@@ -23,6 +23,11 @@ class SingleText extends VariableFormField{
     subType = TextSubType.fromValue(json['subtype']),
     super.fromJson(json)
     ;
+  Map<String, dynamic> toJson(){
+    final Map<String, dynamic> json = super.toJson();
+    json['subtype'] = subType.value;
+    return json;
+  }
 }
 
 class TextArea extends VariableFormField{
@@ -33,6 +38,12 @@ class TextArea extends VariableFormField{
     rows = json['rows'],
     super.fromJson(json)
     ;
+    
+  Map<String, dynamic> toJson(){
+    final Map<String, dynamic> json = super.toJson();
+    json['subtype'] = subType.value;
+    return json;
+  }
 }
 
 class TextSubType extends FormFieldSubType{

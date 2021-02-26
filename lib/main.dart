@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:gap/data/enums/enums.dart';
 import 'package:gap/logic/central_manager/data_initializer.dart';
@@ -40,6 +38,7 @@ void _testAddAuthorizationToken(){
 Future<void> _testRemovePartOfStorage()async{
   UserStorageManager.removeAuthToken();
   StorageConnector sc = StorageConnector();
+  await sc.removeResource('new_auth_token');
   await sc.removeResource('projects_with_preloaded_visits');
   await sc.removeResource('preloaded_visits');
   await sc.removeResource('preloaded_forms');

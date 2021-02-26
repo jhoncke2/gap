@@ -4,7 +4,7 @@ part of 'projects_bloc.dart';
 abstract class ProjectsEvent {}
 
 class SetOldProjects extends ProjectsEvent{
-  final List<OldProject> oldProjects;
+  final List<Project> oldProjects;
   SetOldProjects({
     @required this.oldProjects,
   });
@@ -18,7 +18,7 @@ class SetProjects extends ProjectsEvent{
 }
 
 class ChooseProjectOld extends ProjectsEvent{
-  final OldProject chosenOne;
+  final Project chosenOne;
   ChooseProjectOld({
     @required this.chosenOne,
   });

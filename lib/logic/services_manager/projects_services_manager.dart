@@ -6,7 +6,7 @@ import 'package:gap/services/projects_service.dart';
 class ProjectsServicesManager{
   static Future<List<Project>> loadProjects(ProjectsBloc bloc, String accessToken)async{
     //TODO: Iplementar services
-    final List<OldProject> oldProjects = fakeData.oldProjects;
+    final List<Project> oldProjects = fakeData.oldProjects;
     bloc.add(SetOldProjects(oldProjects: oldProjects));
     ProjectsStorageManager.setProjects(oldProjects);
     

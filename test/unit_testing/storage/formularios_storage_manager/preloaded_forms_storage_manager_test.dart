@@ -54,7 +54,7 @@ void _testGetPreloadedFormsByVisitId(){
 Future<void> _tryTestGetPreloadedFormsByVisitId()async{
   for(int i = 0; i < fakeData.visits.length; i++){
     final int initialFormForVisitIndex = _getInitialFormIndexForVisitIndex(i);
-    final List<OldFormulario> formsByVisitId = await PreloadedFormsStorageManager.getPreloadedFormsByVisitId(fakeData.visits[i].id);
+    final List<Formulario> formsByVisitId = await PreloadedFormsStorageManager.getPreloadedFormsByVisitId(fakeData.visits[i].id);
     for(int j = 0; j < formsByVisitId.length; j++){
       expect(formsByVisitId.length, nFormsPerVisit, reason: 'El length de los Forms del Visit Id actual debe ser igual al estipulado por el test');
       expect(jsonEncode(formsByVisitId[j]), jsonEncode(fakeData.formularios[initialFormForVisitIndex + j]), reason: 'Los Forms retornadas por el getVisitByVisit Id deben venir en agrupadas y en el mismo orden como se agregaron');

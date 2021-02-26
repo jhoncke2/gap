@@ -55,7 +55,7 @@ void _testGetPreloadedVisitsByProjectId(){
 Future<void> _tryTestGetPreloadedVisitsByProjectId()async{
   for(int i = 0; i < fakeData.oldProjects.length; i++){
     final int initialVisitForProjIndex = _getInitialVisitIndexForProjIndex(i);
-    final List<OldVisit> visitsByProjectId = await PreloadedVisitsStorageManager.getVisitsByProjectId(fakeData.oldProjects[i].id);
+    final List<Visit> visitsByProjectId = await PreloadedVisitsStorageManager.getVisitsByProjectId(fakeData.oldProjects[i].id);
     for(int j = 0; j < visitsByProjectId.length; j++){
       expect(visitsByProjectId.length, nVisitsPerProject, reason: 'El length de las visits del projectId actual debe ser igual al estipulado por el test');
       expect(jsonEncode(visitsByProjectId[j]), jsonEncode(fakeData.visits[initialVisitForProjIndex + j]), reason: 'Las visits retornadas por el getVisitByProjectId deben venir en agrupadas y en el mismo orden como se agregaron');

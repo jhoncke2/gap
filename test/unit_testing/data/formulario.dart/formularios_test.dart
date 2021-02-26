@@ -3,7 +3,7 @@ import 'package:test/test.dart';
 
 import './formularios_map.dart';
 
-List<Formulario> formularios;
+List<FormularioTemp> formularios;
 
 void main(){
   group('Probando métodos en base a .fromJson', (){
@@ -15,7 +15,7 @@ void main(){
 Future _testFromJson()async{
   test('probando método fromJson', ()async{
     final List<Map<String, dynamic>> data = await getDataAsJson();
-    formularios = formulariosFromJson(data);
+    formularios = formulariosTempFromJson(data);
   });
 }
 
@@ -27,13 +27,13 @@ Future _testListOfForms()async{
   });
 }
 
-void _expectForm(Formulario form, int formIndex){
+void _expectForm(FormularioTemp form, int formIndex){
   expect(form.id, isNotNull);
   expect(form.nombre, isNotNull);
   expect(form.completo, isNotNull);
   expect(form.campos, isNotNull);
-  if(formIndex == 0)
-    expect(form.campos.length, 0);
-  else
-    expect(form.campos.length, isNot(0));
+  //if(formIndex == 0)
+    //expect(form.campos.length, 0);
+  //else
+    //expect(form.campos.length, isNot(0));
 }

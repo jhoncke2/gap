@@ -17,9 +17,16 @@ class MultiValueWithAlignment extends MultiValueFormField{
 
 class CheckBoxGroup extends MultiValueWithAlignment{
   bool withSwitchType;
-  CheckBoxGroup.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+  CheckBoxGroup.fromJson(Map<String, dynamic> json): 
+    withSwitchType = json['toggle'],
+    super.fromJson(json)
+    ;
   
-  Map<String, dynamic> toJson()=>super.toJson();
+  Map<String, dynamic> toJson(){
+    final Map<String, dynamic> json = super.toJson();
+    json['toggle'] = withSwitchType;
+    return json;
+  }
 }
 
 class RadioGroup extends MultiValueWithAlignment{

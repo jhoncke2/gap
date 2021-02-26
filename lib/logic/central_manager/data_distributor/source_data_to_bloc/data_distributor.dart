@@ -26,7 +26,7 @@ abstract class DataDistributor{
 
   Future<void> updateProjects()async{}
 
-  Future<void> updateChosenProject(OldProject project)async{
+  Future<void> updateChosenProject(Project project)async{
     final ProjectsBloc pBloc = blocsAsMap[BlocName.Projects];
     final ChooseProjectOld cpEvent = ChooseProjectOld(chosenOne: project);
     pBloc.add(cpEvent);
@@ -35,10 +35,10 @@ abstract class DataDistributor{
 
   Future<void> updateVisits()async{}
   
-  Future<void> updateChosenVisit(OldVisit visit)async{}
+  Future<void> updateChosenVisit(Visit visit)async{}
 
   @protected
-  Future addChosenVisitToBloc(OldVisit visit)async{
+  Future addChosenVisitToBloc(Visit visit)async{
     final VisitsBloc vBloc = blocsAsMap[BlocName.Visits];
     final ChooseVisit cvEvent = ChooseVisit(chosenOne: visit);
     vBloc.add(cvEvent);
@@ -47,7 +47,7 @@ abstract class DataDistributor{
 
   Future<void> updateFormularios()async{}
   
-  Future<void> updateChosenForm(OldFormulario form)async{
+  Future<void> updateChosenForm(Formulario form)async{
     final FormulariosBloc formsBloc = blocsAsMap[BlocName.Formularios];
     final ChooseForm chooseFormEvent = ChooseForm(chosenOne: form);
     formsBloc.add(chooseFormEvent);
@@ -58,7 +58,7 @@ abstract class DataDistributor{
     await _chooseChosenFormStep(form, chosenFormB);
   }
 
-  Future _chooseChosenFormStep(OldFormulario form, ChosenFormBloc chosenFormB)async{
+  Future _chooseChosenFormStep(Formulario form, ChosenFormBloc chosenFormB)async{
     switch(form.formStep){ 
       case FormStep.WithoutForm:
         break;
@@ -79,7 +79,7 @@ abstract class DataDistributor{
   Future advanceOnFormFieldsPage()async{
     //TODO: Falta terminar cuando estén los formularios del back
     final FormulariosBloc formsB = blocsAsMap[BlocName.Formularios];
-    final OldFormulario chosenForm = formsB.state.chosenForm;
+    final Formulario chosenForm = formsB.state.chosenForm;
     final ChosenFormBloc chosenFormB = blocsAsMap[BlocName.ChosenForm];
     final List<OldCustomFormField> fields = chosenFormB.state.allFields;
     chosenForm.fieldsContainer = OldCustomFormFields(fields);
@@ -96,7 +96,7 @@ abstract class DataDistributor{
   Future updateFirmers()async{
     final ChosenFormBloc chosenFormB = blocsAsMap[BlocName.ChosenForm];
     final FormulariosBloc formsB = blocsAsMap[BlocName.Formularios];
-    final OldFormulario chosenForm = formsB.state.chosenForm;
+    final Formulario chosenForm = formsB.state.chosenForm;
     chosenForm.firmers = chosenFormB.state.firmers;
     await ChosenFormStorageManager.setChosenForm(chosenForm);
     final VisitsBloc visitsB = blocsAsMap[BlocName.Visits];

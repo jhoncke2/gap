@@ -1,60 +1,163 @@
 part of 'fake_data.dart';
 
-final List<OldVisit> visits = [
+final List<Visit> visits = [
   //Pendientes
-  OldVisit.fromJson({
+  Visit.fromJson({
     'id':0,
-    'name': 'Colegio San Cristobal',
-    'date':DateTime.now().toIso8601String(),
-    'stage':'pendiente'
+    'nombre': 'Colegio San Cristobal',
+    'fecha': _transformDateInToString( DateTime.now() ),
+    'stage':'pendiente',
+    'completo':false,
+    "sede": {
+        "id": 1,
+        "nombre": "Colegio San Cristobal",
+        "departamento": "Sucre",
+        "ciudad": "Tolú",
+        "direccion": "5",
+        "telefono": "310452",
+        "barrio": "el rosario"
+    },
+    "formularios":[]
   }),
-  OldVisit.fromJson({
+  Visit.fromJson({
     'id':1,
-    'name': 'Colegio La Merced',
-    'date':DateTime.now().toIso8601String(),
-    'stage':'pendiente'
+    'nombre': 'Colegio La Merced',
+    'fecha': _transformDateInToString( DateTime.now() ),
+    'stage':'pendiente',
+    'completo':false,
+    "sede": {
+        "id": 1,
+        "nombre": "Colegio La Merced",
+        "departamento": "Sucre",
+        "ciudad": "Tolú",
+        "direccion": "5",
+        "telefono": "310452",
+        "barrio": "el rosario"
+    },
+    "formularios":[] 
   }),
-  OldVisit.fromJson({
+  Visit.fromJson({
     'id':2,
-    'name': 'Colegio Maria Merced',
-    'date':DateTime.now().add(Duration(days: 1)).toIso8601String(),
-    'stage':'pendiente'
+    'nombre': 'Colegio Maria Merced',
+    'fecha': _transformDateInToString( DateTime.now().add(Duration(days: 1)) ),
+    'stage':'pendiente',
+    'completo':false,
+    "sede": {
+        "id": 1,
+        "nombre": "Colegio Maria Merced",
+        "departamento": "Sucre",
+        "ciudad": "Tolú",
+        "direccion": "5",
+        "telefono": "310452",
+        "barrio": "el rosario"
+    },
+    "formularios":[] 
   }),
-  OldVisit.fromJson({
+  Visit.fromJson({
     'id':3,
-    'name': 'Colegio La Providencia',
-    'date':DateTime.now().add(Duration(days: 1)).toIso8601String(),
-    'stage':'pendiente'
+    'nombre': 'Colegio La Providencia',
+    'fecha': _transformDateInToString( DateTime.now().add(Duration(days: 1)) ),
+    'stage':'pendiente',
+    'completo':false,
+    "sede": {
+        "id": 1,
+        "nombre": "Colegio La Providencia",
+        "departamento": "Sucre",
+        "ciudad": "Tolú",
+        "direccion": "5",
+        "telefono": "310452",
+        "barrio": "el rosario"
+    },
+    "formularios":[]
   }),
   //Realizadas
-  OldVisit.fromJson({
+  Visit.fromJson({
     'id':4,
-    'name': 'Escuela Normal Superior',
-    'date':DateTime.now().toIso8601String(),
-    'stage':'realizada'
+    'nombre': 'Escuela Normal Superior',
+    'fecha': _transformDateInToString( DateTime.now() ),
+    'stage':'realizada',
+    'completo':false,
+    "sede": {
+        "id": 1,
+        "nombre": "Escuela Normal Superior",
+        "departamento": "Sucre",
+        "ciudad": "Tolú",
+        "direccion": "5",
+        "telefono": "310452",
+        "barrio": "el rosario"
+    },
+    "formularios":[]
   }),
-  OldVisit.fromJson({
+  Visit.fromJson({
     'id':5,
-    'name': 'Colegio El Americano',
-    'date':DateTime.now().toIso8601String(),
-    'stage':'realizada'
+    'nombre': 'Colegio El Americano',
+    'fecha': _transformDateInToString( DateTime.now() ),
+    'stage':'realizada',
+    'completo':true,
+    "sede": {
+        "id": 1,
+        "nombre": "Colegio El Americano",
+        "departamento": "Sucre",
+        "ciudad": "Tolú",
+        "direccion": "5",
+        "telefono": "310452",
+        "barrio": "el rosario"
+    },
+    "formularios":[]
   }),
-  OldVisit.fromJson({
+  Visit.fromJson({
     'id':6,
-    'name': 'Colegio Departamental',
-    'date':DateTime.now().subtract(Duration(days: 1)).toIso8601String(),
-    'stage':'realizada'
+    'nombre': 'Colegio Departamental',
+    'fecha': _transformDateInToString( DateTime.now().subtract(Duration(days: 1)) ),
+    'stage':'realizada',
+    'completo':true,
+    "sede": {
+        "id": 1,
+        "nombre": "Colegio Departamental",
+        "departamento": "Sucre",
+        "ciudad": "Tolú",
+        "direccion": "5",
+        "telefono": "310452",
+        "barrio": "el rosario"
+    },
+    "formularios":[]
   }),
-  OldVisit.fromJson({
+  Visit.fromJson({
     'id':7,
-    'name': 'Colegio La Golondrina',
-    'date':DateTime.now().subtract(Duration(days: 2)).toIso8601String(),
-    'stage':'realizada'
+    'nombre': 'Colegio La Golondrina',
+    'fecha': _transformDateInToString( DateTime.now().subtract(Duration(days: 2)) ),
+    'stage':'realizada',
+    'completo':true,
+    "sede": {
+        "id": 1,
+        "nombre": "Colegio La Golondrina",
+        "departamento": "Sucre",
+        "ciudad": "Tolú",
+        "direccion": "5",
+        "telefono": "310452",
+        "barrio": "el rosario"
+    },
+    "formularios":[]
   }),
-  OldVisit.fromJson({
+  Visit.fromJson({
     'id':8,
-    'name': 'Polideportivo San Antonio',
-    'date':DateTime.now().subtract(Duration(days: 2)).toIso8601String(),
-    'stage':'realizada'
+    'nombre': 'Polideportivo San Antonio',
+    'fecha': _transformDateInToString( DateTime.now().subtract(Duration(days: 2)) ),
+    'stage':'realizada',
+    'completo':true,
+    "sede": {
+        "id": 1,
+        "nombre": "Polideportivo San Antonio",
+        "departamento": "Sucre",
+        "ciudad": "Tolú",
+        "direccion": "5",
+        "telefono": "310452",
+        "barrio": "el rosario"
+    },
+    "formularios":[]
   }),
 ];
+
+String _transformDateInToString(DateTime date){
+  return '${date.year}-${date.month}-${date.day}';
+}

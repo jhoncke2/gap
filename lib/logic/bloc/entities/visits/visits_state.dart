@@ -3,25 +3,25 @@ part of 'visits_bloc.dart';
 @immutable
 class VisitsState {
   final bool visitsAreLoaded;
-  final List<OldVisit> visits;
+  final List<Visit> visits;
   final ProcessStage selectedStepInNav;
-  final List<OldVisit> pendientesVisits;
-  final List<OldVisit> realizadasVisits;
+  final List<Visit> pendientesVisits;
+  final List<Visit> realizadasVisits;
   final int indexOfChosenFilterItem;
   final DateTime filterDate;
-  final List<OldVisit> visitsByFilterDate;
-  final OldVisit chosenVisit;
+  final List<Visit> visitsByFilterDate;
+  final Visit chosenVisit;
 
   VisitsState({
     this.visitsAreLoaded = false,
-    List<OldVisit> visits,
+    List<Visit> visits,
     ProcessStage selectedStepInNav,
-    List<OldVisit> pendientesVisits,    
-    List<OldVisit> realizadasVisits,
+    List<Visit> pendientesVisits,    
+    List<Visit> realizadasVisits,
     int indexOfChosenFilterItem,
     DateTime filterDate,
-    List<OldVisit> visitsByFilterDate,
-    OldVisit chosenVisit   
+    List<Visit> visitsByFilterDate,
+    Visit chosenVisit   
   }):
     this.visits = visits??[],
     this.selectedStepInNav = selectedStepInNav??ProcessStage.Pendiente,
@@ -35,14 +35,14 @@ class VisitsState {
 
   VisitsState copyWith({
     bool visitsAreLoaded,
-    List<OldVisit> visits,
+    List<Visit> visits,
     ProcessStage selectedStepInNav,
-    List<OldVisit> pendientesVisits,    
-    List<OldVisit> realizadasVisits,
+    List<Visit> pendientesVisits,    
+    List<Visit> realizadasVisits,
     int indexOfChosenFilterItem,    
     DateTime filterDate,
-    List<OldVisit> visitsByFilterDate,
-    OldVisit chosenVisit    
+    List<Visit> visitsByFilterDate,
+    Visit chosenVisit    
   })=>VisitsState(
     visitsAreLoaded: visitsAreLoaded??this.visitsAreLoaded,
     visits: visits??this.visits,
@@ -56,7 +56,7 @@ class VisitsState {
   );
 
   VisitsState reset() => VisitsState();
-  List<OldVisit> get currentShowedVisits{
+  List<Visit> get currentShowedVisits{
     if(indexOfChosenFilterItem != null){
       return visitsByFilterDate;
     }else{
@@ -66,7 +66,7 @@ class VisitsState {
     }
   }
 
-  List<OldVisit> get visitsByCurrentSelectedStep{
+  List<Visit> get visitsByCurrentSelectedStep{
     if(selectedStepInNav == ProcessStage.Pendiente)
       return pendientesVisits;
     else if(selectedStepInNav == ProcessStage.Realizada)

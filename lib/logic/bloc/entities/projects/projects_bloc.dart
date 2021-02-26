@@ -40,7 +40,7 @@ class ProjectsBloc extends Bloc<ProjectsEvent, ProjectsState> {
 
   @protected
   void setOldProjects(SetOldProjects event){
-    final List<OldProject> oldProjects = event.oldProjects;
+    final List<Project> oldProjects = event.oldProjects;
     _currentYieldedState = state.copyWith(
       projectsAreLoaded: true, 
       oldProjects: oldProjects
@@ -63,7 +63,7 @@ class ProjectsBloc extends Bloc<ProjectsEvent, ProjectsState> {
 
   @protected
   void chooseProjectOld(ChooseProjectOld event){
-    final OldProject chosenOne = event.chosenOne;
+    final Project chosenOne = event.chosenOne;
     _currentYieldedState = state.copyWith(chosenProjectOld: chosenOne);
   }
 

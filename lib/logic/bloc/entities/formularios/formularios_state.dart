@@ -4,10 +4,10 @@ part of 'formularios_bloc.dart';
 @immutable
 class FormulariosState{
   final bool formsAreLoaded;
-  final List<OldFormulario> forms;
-  final List<OldFormulario> pendientesForms;
-  final List<OldFormulario> realizadosForms;
-  final OldFormulario chosenForm;
+  final List<Formulario> forms;
+  final List<Formulario> pendientesForms;
+  final List<Formulario> realizadosForms;
+  final Formulario chosenForm;
 
   FormulariosState({
     this.formsAreLoaded = false,
@@ -19,10 +19,10 @@ class FormulariosState{
 
   FormulariosState copyWith({
     bool formsAreLoaded,
-    List<OldFormulario> forms,
-    List<OldFormulario> pendientesForms,
-    List<OldFormulario> realizadosForms,
-    OldFormulario chosenForm    
+    List<Formulario> forms,
+    List<Formulario> pendientesForms,
+    List<Formulario> realizadosForms,
+    Formulario chosenForm    
   }) => FormulariosState(
     formsAreLoaded: formsAreLoaded??this.formsAreLoaded,
     forms: forms??this.forms,

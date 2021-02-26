@@ -5,26 +5,26 @@ class VisitsStorageManager{
   static final String _visitsKey = 'visits';
   static final String _chosenVisitKey = 'chosen_visit';
 
-  static Future<void> setVisits(List<OldVisit> visits)async{
+  static Future<void> setVisits(List<Visit> visits)async{
     final List<Map<String, dynamic>> visitsAsJson = _convertVisitsToJson(visits);
     await StorageConnectorSingleton.storageConnector.setListResource(_visitsKey, visitsAsJson);
   }
   
-  static List<Map<String, dynamic>> _convertVisitsToJson(List<OldVisit> visits){
+  static List<Map<String, dynamic>> _convertVisitsToJson(List<Visit> visits){
     return visits.map<Map<String, dynamic>>(
-      (OldVisit v)=> v.toJson()
+      (Visit v)=> v.toJson()
     ).toList();
   }
 
-  static Future<List<OldVisit>> getVisits()async{
+  static Future<List<Visit>> getVisits()async{
     final List<Map<String, dynamic>> visitsAsJson = await StorageConnectorSingleton.storageConnector.getListResource(_visitsKey);
-    final List<OldVisit> visits = _convertJsonVisitsToObject(visitsAsJson);
+    final List<Visit> visits = _convertJsonVisitsToObject(visitsAsJson);
     return visits;
   }
 
-  static List<OldVisit> _convertJsonVisitsToObject(List<Map<String, dynamic>> visitsAsJson){
-    return visitsAsJson.map<OldVisit>(
-      (Map<String, dynamic> jsonProject) => OldVisit.fromJson(jsonProject)
+  static List<Visit> _convertJsonVisitsToObject(List<Map<String, dynamic>> visitsAsJson){
+    return visitsAsJson.map<Visit>(
+      (Map<String, dynamic> jsonProject) => Visit.fromJson(jsonProject)
     ).toList();
   }
 
@@ -32,14 +32,14 @@ class VisitsStorageManager{
     await StorageConnectorSingleton.storageConnector.removeResource(_visitsKey);
   }
 
-  static Future<void> setChosenVisit(OldVisit visit)async{
+  static Future<void> setChosenVisit(Visit visit)async{
     final Map<String, dynamic> visitAsJson = visit.toJson();
     await StorageConnectorSingleton.storageConnector.setMapResource(_chosenVisitKey, visitAsJson);
   }
 
-  static Future<OldVisit> getChosenVisit()async{
+  static Future<Visit> getChosenVisit()async{
     final Map<String, dynamic> visitAsJson = await StorageConnectorSingleton.storageConnector.getMapResource(_chosenVisitKey);
-    final OldVisit visit = OldVisit.fromJson(visitAsJson);
+    final Visit visit = Visit.fromJson(visitAsJson);
     return visit;
   }
 

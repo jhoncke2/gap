@@ -27,10 +27,10 @@ class FormulariosBloc extends Bloc<FormulariosEvent, FormulariosState> {
   }
 
   void _setForms(SetForms event){
-    final List<OldFormulario> forms = event.forms;
-    final List<OldFormulario> pendientesForms = [];
-    final List<OldFormulario> realizadosForms = [];
-    forms.forEach((OldFormulario form) {
+    final List<Formulario> forms = event.forms;
+    final List<Formulario> pendientesForms = [];
+    final List<Formulario> realizadosForms = [];
+    forms.forEach((Formulario form) {
       if(form.stage == ProcessStage.Pendiente)
         pendientesForms.add(form);
       else if(form.stage == ProcessStage.Realizada)
@@ -49,7 +49,7 @@ class FormulariosBloc extends Bloc<FormulariosEvent, FormulariosState> {
   }
 
   void _chooseForm(ChooseForm event){
-    final OldFormulario chosenOne = event.chosenOne;
+    final Formulario chosenOne = event.chosenOne;
     _currentYieldedState = state.copyWith(
       chosenForm: chosenOne
     );

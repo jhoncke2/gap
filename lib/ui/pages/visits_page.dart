@@ -5,14 +5,12 @@ import 'package:gap/logic/bloc/entities/visits/visits_bloc.dart';
 import 'package:gap/data/enums/enums.dart';
 import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/logic/blocs_manager/pages_navigation_manager.dart';
-import 'package:gap/ui/pages/visit_detail_page.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/header/header.dart';
 import 'package:gap/ui/widgets/navigation_list/navigation_list_with_stage_color_buttons.dart';
 import 'package:gap/ui/widgets/page_title.dart';
 import 'package:gap/ui/widgets/unloaded_elements/unloaded_nav_items.dart';
 import 'package:gap/ui/widgets/visits_date_filter.dart';
-import 'package:gap/data/fake_data/fake_data.dart' as fakeData;
 class VisitsPage extends StatefulWidget {
   static final String route = 'visits';
   @override
@@ -26,7 +24,6 @@ class _VisitsPageState extends State<VisitsPage> {
   @override
   Widget build(BuildContext context){
     _initInitialConfiguration(context);
-    _initFakeVisits();
     return Scaffold(
        body: SafeArea(
         child: Container(
@@ -40,14 +37,6 @@ class _VisitsPageState extends State<VisitsPage> {
     _context = appContext;
     _sizeUtils = SizeUtils();
     _sizeUtils.initUtil(MediaQuery.of(appContext).size);
-  }
-
-  //Testing, mientras se implementan los VisitsManager
-  void _initFakeVisits(){
-    final VisitsBloc visitsBloc = BlocProvider.of<VisitsBloc>(_context);
-    final List<OldVisit> visits = fakeData.visits;
-    final SetVisits event = SetVisits(visits: visits);
-    visitsBloc.add(event);
   }
 
   Widget _createBodyComponents(){
@@ -159,7 +148,7 @@ class _VisitsComponents extends StatelessWidget {
   }
 
   Widget _createNavigationList(VisitsState state){
-    final List<OldVisit> visits = state.currentShowedVisits;
+    final List<Visit> visits = state.currentShowedVisits;
     return NavigationListWithStageButtons(itemsFunction: _onTapFunction, entitiesWithStages: visits);
   }
 
@@ -168,9 +157,10 @@ class _VisitsComponents extends StatelessWidget {
     //_choseVisit(entity);
     //_loadForms();
   }
-
+  
+  /*
   void _choseVisit(EntityWithStage entity){
-    final OldVisit visit = entity as OldVisit;
+    final Visit visit = entity as Visit;
     final VisitsBloc visitsBloc = BlocProvider.of<VisitsBloc>(_context);
     final ChooseVisit chooseVisitEvent = ChooseVisit(chosenOne: visit);
     visitsBloc.add(chooseVisitEvent);
@@ -181,6 +171,7 @@ class _VisitsComponents extends StatelessWidget {
     final SetForms setFormsEvent = SetForms(forms: fakeData.formularios);
     formsBloc.add(setFormsEvent);
   }
+  */
 
 
 }

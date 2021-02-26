@@ -10,6 +10,7 @@ class MultiValueFormField extends VariableFormField{
   Map<String, dynamic> toJson(){
     final Map<String, dynamic> json = super.toJson();
     json['values'] = values;
+    return json;
   }
 
 }

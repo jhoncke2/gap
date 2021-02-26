@@ -1,150 +1,164 @@
 part of 'fake_data.dart';
 
-
-
 final DateTime nowTime = DateTime.now();
-List<OldFormulario> formularios = [
-  OldFormulario.fromJson(formAtFormFieldsFillingOut),
-  OldFormulario.fromJson(formAtFirstFirmerFillingOut),
-  OldFormulario.fromJson(formAtSecondaryFirmersFillingOut),
-  OldFormulario.fromJson({
-    'id':3,
-    'stage':'realizada',
-    'name':'Formulario Profesorado',
+List<Formulario> formularios = [
+  Formulario.fromJson(formAtFormFieldsFillingOut),
+  Formulario.fromJson(formAtFirstFirmerFillingOut),
+  Formulario.fromJson(formAtSecondaryFirmersFillingOut),
+  Formulario.fromJson({
+    'formulario_pivot_id':3,
+    'completo':true,
+    'nombre':'Formulario Profesorado',
     'date':nowTime.toString(),
+    'fecha':'2021-02-29',
     'fields':[],
     'firmers':[]
   }),
-  OldFormulario.fromJson({
-    'id':4,
-    'stage':'pendiente',
-    'name':'Formulario Exportación',
+  Formulario.fromJson({
+    'formulario_pivot_id':4,
+    'completo':false,
+    'nombre':'Formulario Exportación',
     'date':nowTime.toString(),
+    'fecha':'2021-02-29',
     'fields':[],
     'firmers':[]
   }),
-  OldFormulario.fromJson({
-    'id':5,
-    'stage':'pendiente',
-    'name':'Formulario proyectos',
+  Formulario.fromJson({
+    'formulario_pivot_id':5,
+    'completo':false,
+    'nombre':'Formulario proyectos',
     'date':nowTime.toString(),
+    'fecha':'2021-02-29',
     'fields':[],
     'firmers':[]
   }),
-  OldFormulario.fromJson({
-    'id':6,
-    'stage':'realizada',
-    'name':'Formulario Permutaciones',
+  Formulario.fromJson({
+    'formulario_pivot_id':6,
+    'completo':true,
+    'nombre':'Formulario Permutaciones',
     'date':nowTime.toString(),
+    'fecha':'2021-02-29',
     'fields':[],
     'firmers':[]
   }),
-  OldFormulario.fromJson({
-    'id':7,
-    'stage':'pendiente',
-    'name':'Formulario Transporte',
+  Formulario.fromJson({
+    'formulario_pivot_id':7,
+    'completo':false,
+    'nombre':'Formulario Transporte',
     'date':nowTime.toString(),
+    'fecha':'2021-02-29',
     'fields':[],
     'firmers':[]
   }),
-  OldFormulario.fromJson({
-    'id':8,
-    'stage':'pendiente',
-    'name':'Formulario inmobiliarias',
+  Formulario.fromJson({
+    'formulario_pivot_id':8,
+    'completo':false,
+    'nombre':'Formulario inmobiliarias',
     'date':nowTime.toString(),
+    'fecha':'2021-02-29',
     'fields':[],
     'firmers':[]
   }),
-  OldFormulario.fromJson({
-    'id':9,
-    'stage':'realizada',
-    'name':'Formulario PAE 2021C',
+  Formulario.fromJson({
+    'formulario_pivot_id':9,
+    'completo':true,
+    'nombre':'Formulario PAE 2021C',
     'date':nowTime.toString(),
+    'fecha':'2021-02-29',
     'fields':[],
     'firmers':[]
   }),
-  OldFormulario.fromJson({
-    'id':10,
-    'stage':'pendiente',
-    'name':'Formulario Pavimentación',
+  Formulario.fromJson({
+    'formulario_pivot_id':10,
+    'completo':false,
+    'nombre':'Formulario Pavimentación',
     'date':nowTime.toString(),
+    'fecha':'2021-02-29',
     'fields':[],
     'firmers':[]
   }),
-  OldFormulario.fromJson({
-    'id':11,
-    'stage':'pendiente',
-    'name':'Formulario localidades',
+  Formulario.fromJson({
+    'formulario_pivot_id':11,
+    'completo':false,
+    'nombre':'Formulario localidades',
     'date':nowTime.toString(),
+    'fecha':'2021-02-29',
     'fields':[],
     'firmers':[]
   }),
-  OldFormulario.fromJson({
-    'id':12,
-    'stage':'realizada',
-    'name':'Formulario PAE 2021D',
+  Formulario.fromJson({
+    'formulario_pivot_id':12,
+    'completo':true,
+    'nombre':'Formulario PAE 2021D',
     'date':nowTime.toString(),
+    'fecha':'2021-02-29',
     'fields':[],
     'firmers':[]
   }),
-  OldFormulario.fromJson({
-    'id':13,
-    'stage':'pendiente',
-    'name':'Formulario Producción',
+  Formulario.fromJson({
+    'formulario_pivot_id':13,
+    'completo':false,
+    'nombre':'Formulario Producción',
     'date':nowTime.toString(),
+    'fecha':'2021-02-29',
     'fields':[],
     'firmers':[]
   }),
-  OldFormulario.fromJson({
-    'id':14,
-    'stage':'pendiente',
-    'name':'Formulario demandas',
+  Formulario.fromJson({
+    'formulario_pivot_id':14,
+    'completo':false,
+    'nombre':'Formulario demandas',
     'date':nowTime.toString(),
+    'fecha':'2021-02-29',
     'fields':[],
     'firmers':[]
   }),
-  OldFormulario.fromJson({
-    'id':15,
-    'stage':'realizada',
-    'name':'Formulario PAE 2021E',
+  Formulario.fromJson({
+    'formulario_pivot_id':15,
+    'completo':true,
+    'nombre':'Formulario PAE 2021E',
     'date':nowTime.toString(),
+    'fecha':'2021-02-29',
     'fields':[],
     'firmers':[]
   }),
-  OldFormulario.fromJson({
-    'id':16,
-    'stage':'pendiente',
-    'name':'Formulario Trabajadores',
+  Formulario.fromJson({
+    'formulario_pivot_id':16,
+    'completo':false,
+    'nombre':'Formulario Trabajadores',
     'date':nowTime.toString(),
+    'fecha':'2021-02-29',
     'fields':[],
     'firmers':[]
   }),
-  OldFormulario.fromJson({
-    'id':17,
-    'stage':'pendiente',
-    'name':'Formulario administración',
+  Formulario.fromJson({
+    'formulario_pivot_id':17,
+    'completo':false,
+    'nombre':'Formulario administración',
     'date':nowTime.toString(),
+    'fecha':'2021-02-29',
     'fields':[],
     'firmers':[]
   }),
 ];
 
 final Map<String, dynamic> formAtFormFieldsFillingOut = {
-  'id':0,
-  'stage':'realizada',
-  'name':'Formulario PAE 2021A',
+  'formulario_pivot_id':0,
+  'completo':true,
+  'nombre':'Formulario PAE 2021A',
   'date':nowTime.toString(),
+  'fecha':'2021-02-29',
   'fields':[
     {
-      'id':0,
-      'name':'f1',
+      'formulario_pivot_id':0,
+      'nombre':'f1',
       'type':'input',
       'is_filled':true,
       'value':'parangaricutirimicuaro'
     },
     {
-      'id':1,
-      'name':'f2',
+      'formulario_pivot_id':1,
+      'nombre':'f2',
       'type':'input',
       'is_filled':false,
       'value':'parangaricutirimicuaro'
@@ -154,21 +168,22 @@ final Map<String, dynamic> formAtFormFieldsFillingOut = {
 };
 
 final Map<String, dynamic> formAtFirstFirmerFillingOut = {
-  'id':1,
-  'stage':'pendiente',
-  'name':'Formulario Calidad',
+  'formulario_pivot_id':1,
+  'completo':false,
+  'nombre':'Formulario Calidad',
   'date':nowTime.toString(),
+  'fecha':'2021-02-29',
   'fields':[
     {
-      'id':2,
-      'name':'f1',
+      'formulario_pivot_id':2,
+      'nombre':'f1',
       'type':'input',
       'is_filled':true,
       'value':'parangaricutirimicuaro'
     },
     {
-      'id':3,
-      'name':'f2',
+      'formulario_pivot_id':3,
+      'nombre':'f2',
       'type':'input',
       'is_filled':true,
       'value':'parangaricutirimicuaro'
@@ -178,14 +193,15 @@ final Map<String, dynamic> formAtFirstFirmerFillingOut = {
 };
 
 final Map<String, dynamic> formAtSecondaryFirmersFillingOut = {
-  'id':2,
-  'stage':'pendiente',
-  'name':'Formulario infraestructuras',
+  'formulario_pivot_id':2,
+  'completo':false,
+  'nombre':'Formulario infraestructuras',
   'date':nowTime.toString(),
+  'fecha':'2021-02-29',
   'fields':[
     {
-      'id':2,
-      'name':'f1',
+      'formulario_pivot_id':2,
+      'nombre':'f1',
       'type':'input',
       'is_filled':true,
       'value':'parangaricutirimicuaro'
@@ -193,8 +209,8 @@ final Map<String, dynamic> formAtSecondaryFirmersFillingOut = {
   ],
   'firmers':[
     {
-      'id':0,
-      'name':'Firmer1',
+      'formulario_pivot_id':0,
+      'nombre':'Firmer1',
       'identif_document_type':'CC',
       'identif_Document_number':12345,
       'firm':File('assets/logos/logo_con_fondo.png').toString()      

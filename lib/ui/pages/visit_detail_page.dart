@@ -53,7 +53,7 @@ class VisitDetailPage extends StatelessWidget {
 // ignore: must_be_immutable
 class _VisitDetailComponents extends StatelessWidget {
   final SizeUtils _sizeUtils = SizeUtils();
-  final OldVisit visit;
+  final Visit visit;
   BuildContext _context;
   _VisitDetailComponents({
     @required this.visit

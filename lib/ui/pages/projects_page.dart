@@ -64,8 +64,7 @@ class ProjectsPage extends StatelessWidget {
         if(state.projectsAreLoaded){
           final List<Project> projects = state.projects;
           final Map<String, List<dynamic>> namesAndFunctions =_createProjectsItemsNamesAndFunctions(projects);
-          return NavigationList(
-            itemsNames: namesAndFunctions['names'],
+          return NavigationList(itemsNames: namesAndFunctions['names'],
             itemsFunctions: namesAndFunctions['functions'],
             horizontalPadding: 0.075,
           );
@@ -84,7 +83,7 @@ class ProjectsPage extends StatelessWidget {
       names.add(project.nombre);
       functions.add((){
         //TODO: Arreglar
-        PagesNavigationManager.navToProjectDetail(null);
+        PagesNavigationManager.navToProjectDetail(project);
       });
     });
     namesAndFunctions['names'] = names;

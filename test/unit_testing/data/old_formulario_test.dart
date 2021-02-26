@@ -3,7 +3,7 @@ import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:test/test.dart';
 
-OldFormulario testingForm;
+Formulario testingForm;
 
 void main(){
   _testFalseFieldsAreCompleted();
@@ -22,7 +22,7 @@ void _testFalseFieldsAreCompleted(){
 }
 
 void _tryTestFalseFieldsAreCompleted(){
-  testingForm = OldFormulario.fromJson(fakeData.formAtFormFieldsFillingOut);
+  testingForm = Formulario.fromJson(fakeData.formAtFormFieldsFillingOut);
   // ignore: invalid_use_of_protected_member
   expect(testingForm.fieldsAreCompleted(), false, reason: 'el método deberia dar false, pues los fields no están completos');
 }
@@ -38,7 +38,7 @@ void _testTrueFieldsAreCompleted(){
 }
 
 void _tryTestTrueFieldsAreCompleted(){
-  testingForm = OldFormulario.fromJson(fakeData.formAtFirstFirmerFillingOut);
+  testingForm = Formulario.fromJson(fakeData.formAtFirstFirmerFillingOut);
   // ignore: invalid_use_of_protected_member
   expect(testingForm.fieldsAreCompleted(), true, reason: 'el método deberia dar true, pues los fields sí están completos');
 }
@@ -50,10 +50,10 @@ void _testFormStep(){
 } 
 
 void _tryTestFormStep(){
-  testingForm = OldFormulario.fromJson(fakeData.formAtFormFieldsFillingOut);
+  testingForm = Formulario.fromJson(fakeData.formAtFormFieldsFillingOut);
   expect(testingForm.formStep, FormStep.OnForm, reason: 'El form step del formulario debe ser: on Form');
-  testingForm = OldFormulario.fromJson(fakeData.formAtFirstFirmerFillingOut);
+  testingForm = Formulario.fromJson(fakeData.formAtFirstFirmerFillingOut);
   expect(testingForm.formStep, FormStep.OnFirstFirmerInformation, reason: 'El form step del formulario debe ser: on iirst iirmer information');
-  testingForm = OldFormulario.fromJson(fakeData.formAtSecondaryFirmersFillingOut);
+  testingForm = Formulario.fromJson(fakeData.formAtSecondaryFirmersFillingOut);
   expect(testingForm.formStep, FormStep.OnSecondaryFirms, reason: 'El form step del formulario debe ser: on secondary firms');
 }
