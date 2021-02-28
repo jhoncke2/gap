@@ -34,7 +34,7 @@ class PreloadedVisitsStorageManager{
   }
   
   static void _updateProjectIdMapWithoutRemovedVisit(List<Visit> restantPreloadedVisitsByProjectId, int projectId){
-    final List<Map<String, dynamic>> restantPrelVisitsByProjIdAsJson = Visits(visits: restantPreloadedVisitsByProjectId).toJson();
+    final List<Map<String, dynamic>> restantPrelVisitsByProjIdAsJson =  visitsToStorageJson(restantPreloadedVisitsByProjectId);//   Visits(visits: restantPreloadedVisitsByProjectId).toJson();
     currentPreloadedVisitsHolder.currentData[projectId.toString()] = restantPrelVisitsByProjIdAsJson;
   }  
 
@@ -42,7 +42,7 @@ class PreloadedVisitsStorageManager{
     await _updateCurrentVisitsHolderFromStorage();
     final List<Visit> preloadedVisitsByProjectId = await _getVisitsByProjectId(projectId);
     preloadedVisitsByProjectId.add(visit);
-    final List<Map<String, dynamic>> preloadedVisitsByProjectIdAsJson = Visits(visits: preloadedVisitsByProjectId).toJson();
+    final List<Map<String, dynamic>> preloadedVisitsByProjectIdAsJson =  visitsToStorageJson(preloadedVisitsByProjectId); //   Visits(visits: preloadedVisitsByProjectId).toJson();
     currentPreloadedVisitsHolder.currentData[projectId.toString()] = preloadedVisitsByProjectIdAsJson;
     await _updateStorageFromCurrentVisitsHolder();
   }
@@ -55,7 +55,7 @@ class PreloadedVisitsStorageManager{
   
   static Future<List<Visit>> _getVisitsByProjectId(int projectId)async{
     final List<Map<String, dynamic>> preloadedVisitsByProjectIdAsJson = currentPreloadedVisitsHolder.currentData[projectId.toString()];
-    final List<Visit> preloadedVisitsByProjectId = Visits.fromJson( preloadedVisitsByProjectIdAsJson??[] ).visits;
+    final List<Visit> preloadedVisitsByProjectId =  visitsFromStorageJson(preloadedVisitsByProjectIdAsJson);  // Visits.fromJson( preloadedVisitsByProjectIdAsJson??[] ).visits;
     return preloadedVisitsByProjectId;
   }
 

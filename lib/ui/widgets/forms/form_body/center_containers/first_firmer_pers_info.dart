@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/ui/utils/size_utils.dart';
-import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/form_select/form_select_with_name.dart';
-import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/form_single_text/form_single_text_with_name.dart';
+import 'package:gap/ui/widgets/forms/form_body/center_containers/firm_fields/firm_select/firm_select_with_name.dart';
+import 'package:gap/ui/widgets/forms/form_body/center_containers/firm_fields/firm_text_field/text_field_with_name.dart';
 import 'package:gap/ui/utils/static_data/types_of_identif_document.dart' as typesOfIdentfDocument;
 // ignore: must_be_immutable
 class FirstFirmerPersInfo extends StatelessWidget {
@@ -22,9 +22,9 @@ class FirstFirmerPersInfo extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          FormSingleTextWithName(fieldName: 'Nombre de quien atiende', onFieldChanged: _onNombreChanged),
-          FormSelectWithName(fieldName: 'Tipo de documento', items: typesOfIdentfDocument.typesOfIdentfDocument, initialValue: _firmer.identifDocumentType, onFieldChanged: _onTipoDocumentoChanged),
-          FormSingleTextWithName(fieldName: 'Número de documento', onFieldChanged: _onNumDocumentoChanged)
+          TextFieldWithName(fieldName: 'Nombre de quien atiende', onFieldChanged: _onNombreChanged),
+          FirmSelectWithName(fieldName: 'Tipo de documento', items: typesOfIdentfDocument.typesOfIdentfDocument, initialValue: _firmer.identifDocumentType, onFieldChanged: _onTipoDocumentoChanged),
+          TextFieldWithName(fieldName: 'Número de documento', onFieldChanged: _onNumDocumentoChanged)
         ],
       ),
     );

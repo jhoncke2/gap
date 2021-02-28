@@ -3,7 +3,6 @@ import 'package:mockito/mockito.dart';
 
 class MockFlutterSecureStorage extends Mock implements FlutterSecureStorage{
 
-
   Map<String, String> storage = {};
 
   @override

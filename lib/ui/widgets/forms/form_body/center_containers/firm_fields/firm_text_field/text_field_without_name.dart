@@ -3,9 +3,9 @@ import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/for
 import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/general_form_field_without_name.dart';
 
 // ignore: must_be_immutable
-class FormSingleTextWithoutName extends GeneralFormFieldWithoutName implements FormFieldStructure{
+class TextFieldWithoutName extends GeneralFormFieldWithoutName implements FormFieldStructure{
   final String initialValue;
-  FormSingleTextWithoutName({
+  TextFieldWithoutName({
     Key key,
     @required Function onFieldChanged,
     @required ValueNotifier controller,

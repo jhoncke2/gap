@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:gap/data/enums/enums.dart';
 import 'package:gap/data/models/entities/entities.dart';

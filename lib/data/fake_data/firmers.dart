@@ -1,5 +1,6 @@
 part of 'fake_data.dart';
 
+/*
 final List<Map<String, dynamic>> firmersAsMapList = [
   {
     'id':0,
@@ -16,3 +17,4 @@ final List<Map<String, dynamic>> firmersAsMapList = [
     'firm': File('assets/logos/logo_sin_fondo.png')
   },
 ];
+*/

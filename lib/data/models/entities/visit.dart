@@ -20,6 +20,22 @@ Map<String, dynamic> visitsToJson(List<Visit> visits){
   return json;
 }
 
+List<Visit> visitsFromStorageJson(List<Map<String, dynamic>> jsonVisits){
+  if(jsonVisits == null)
+    return [];
+  final List<Visit> visits = jsonVisits.map(
+    (Map<String, dynamic> jV) => Visit.fromJson(jV)
+  ).toList();
+  return visits;
+}
+
+List<Map<String, dynamic>> visitsToStorageJson(List<Visit> visits){
+  final List<Map<String, dynamic>> jsonVisits = visits.map(
+    (Visit v)=>v.toJson()
+  ).toList();
+  return jsonVisits;
+}
+
 class Visit extends EntityWithStage{
   DateTime date;
   bool completo;
@@ -41,7 +57,8 @@ class Visit extends EntityWithStage{
   factory Visit.fromJson(Map<String, dynamic> json)=>Visit(
     id: json['id'],
     completo: json['completo'],
-    date: _transformStringInToDate(json['fecha']),
+    //TODO: Arreglar cuando me hayan informado qué hacer
+    date: json['fecha'] == null? DateTime.now() : _transformStringInToDate(json['fecha']),
     sede: Sede.fromJson(json['sede']),
     formularios: formulariosFromJson((json["formularios"]).cast<Map<String, dynamic>>()),
   );
@@ -99,21 +116,23 @@ class Sede {
     };
 }
 
-//Date format: yyyy-mm-dd
-DateTime _transformStringInToDate(String stringDate){
-  final List<String> stringDateParts = stringDate.split('-');
-  final int year =  int.parse( stringDateParts[0] );
-  final int month =  int.parse( stringDateParts[1] );
-  final int day =  int.parse( stringDateParts[2] );
-  final DateTime date = DateTime(year, month, day);
-  return date;
-}
 
-String _transformDateInToString(DateTime date){
-  return '${date.year}-${date.month}-${date.day}';
-}
 
-//TODO: Eliminar en su desuso
+/*
+Visit.fromJson(Map<String, dynamic> json)
+    :
+    this.date = DateTime.parse(json['date']),
+    completo = json['completo'],
+    sede = json['sede'],
+    formularios = formulariosFromJson(json["formularios"].cast<Map<String, dynamic>>()),
+    super(
+      id: json['id'],
+      stage:ProcessStage.fromValue(json['stage']),
+      name: json['name']
+    )
+    ;
+
+    //TODO: Eliminar en su desuso
 class Visits{
   List<Visit> visits;
 
@@ -132,18 +151,4 @@ class Visits{
     (Visit v)=>v.toJson()
   ).toList();
 }
-
-/*
-Visit.fromJson(Map<String, dynamic> json)
-    :
-    this.date = DateTime.parse(json['date']),
-    completo = json['completo'],
-    sede = json['sede'],
-    formularios = formulariosFromJson(json["formularios"].cast<Map<String, dynamic>>()),
-    super(
-      id: json['id'],
-      stage:ProcessStage.fromValue(json['stage']),
-      name: json['name']
-    )
-    ;
 */

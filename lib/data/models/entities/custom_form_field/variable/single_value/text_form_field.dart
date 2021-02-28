@@ -1,11 +1,10 @@
 import 'package:gap/data/models/entities/custom_form_field/variable/single_value/single_value_form_field.dart';
-import 'package:gap/data/models/entities/custom_form_field/variable/variable_form_field.dart';
 import 'package:gap/data/models/entities/entities.dart';
 
-abstract class TextFormField extends SingleValueFormField{
+abstract class RawTextFormField extends SingleValueFormField{
   int maxLength;
 
-  TextFormField.fromJson(Map<String, dynamic> json):
+  RawTextFormField.fromJson(Map<String, dynamic> json):
     maxLength = json['maxlength'],
     super.fromJson(json)
     ;
@@ -17,10 +16,10 @@ abstract class TextFormField extends SingleValueFormField{
   }
 }
 
-class SingleText extends VariableFormField{
+class UniqueLineText extends RawTextFormField{
   TextSubType subType;
-  SingleText.fromJson(Map<String, dynamic> json):
-    subType = TextSubType.fromValue(json['subtype']),
+  UniqueLineText.fromJson(Map<String, dynamic> json):
+    subType = json['subtype'] == null? TextSubType.TEXT : TextSubType.fromValue(json['subtype']),
     super.fromJson(json)
     ;
   Map<String, dynamic> toJson(){
@@ -30,7 +29,7 @@ class SingleText extends VariableFormField{
   }
 }
 
-class TextArea extends VariableFormField{
+class TextArea extends RawTextFormField{
   TextAreaSubType subType;
   int rows;
   TextArea.fromJson(Map<String, dynamic> json):
@@ -42,6 +41,7 @@ class TextArea extends VariableFormField{
   Map<String, dynamic> toJson(){
     final Map<String, dynamic> json = super.toJson();
     json['subtype'] = subType.value;
+    json['rows'] = rows;
     return json;
   }
 }

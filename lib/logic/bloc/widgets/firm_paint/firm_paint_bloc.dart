@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/firm_field/firm_paint.dart';
+import 'package:gap/ui/widgets/forms/form_body/center_containers/firm_fields/firm_draw_field/firm_paint.dart';
 import 'package:meta/meta.dart';
 
 part 'firm_paint_event.dart';

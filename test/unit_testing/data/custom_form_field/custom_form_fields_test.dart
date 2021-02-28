@@ -1,13 +1,23 @@
+import 'dart:convert';
+
 import 'package:gap/data/models/entities/custom_form_field/static/static_form_field.dart';
+import 'package:gap/data/models/entities/custom_form_field/variable/multi_value/multi_value_form_field.dart';
+import 'package:gap/data/models/entities/custom_form_field/variable/multi_value/select.dart';
 import 'package:gap/data/models/entities/custom_form_field/variable/multi_value/with_alignment.dart';
 import 'package:gap/data/models/entities/custom_form_field/variable/single_value/number.dart';
+import 'package:gap/data/models/entities/custom_form_field/variable/single_value/single_value_picker_form_field.dart';
+import 'package:gap/data/models/entities/custom_form_field/variable/single_value/text_form_field.dart';
 import 'package:gap/data/models/entities/custom_form_field/variable/variable_form_field.dart';
 import 'package:test/test.dart';
 
 import 'package:gap/data/models/entities/entities.dart';
+// Para lectura de archivo de data.
 import 'cocar_form_fields_data.dart';
+import 'custom_form_fields_string.dart';
+//*********** ************
 
 List<CustomFormField> formFields;
+List<Map<String, dynamic>> initialJsonFormFields;
 int numberOfElementsTraveled = 0;
 int nHeaders = 0;
 int nParagraphs = 0;
@@ -27,7 +37,7 @@ String typesWithInLine = '[';
 void main(){
   group('Se testeará el .fromJson y se verificarán cualidades de los elementos de la lista.', (){
     _testFromJson();
-    _testJsonElements();
+    _testCustFormFieldElements();
   });
   
 }
@@ -39,17 +49,18 @@ Future _testFromJson()async{
 }
 
 Future _tryFromJson()async{
-  //final String dataAsString = await getDataAsString();
-  final String dataAsString = getCocarDataAsString();
+  final String dataAsString = await getDataAsString();
+  //final String dataAsString = getCocarDataAsString();
   formFields = customFormFieldsFromJsonString(dataAsString);
+  initialJsonFormFields = jsonDecode(dataAsString).cast<Map<String, dynamic>>();
   expect(formFields, isNotNull, reason: 'Los formFields no deben ser null');
   expect(formFields.length, isNot(0), reason: 'La cantidad de custom form fields debe ser mayor a 0');
 }
 
-Future _testJsonElements()async{
+Future _testCustFormFieldElements()async{
   test('Se testeará el .fromJson de una lista de customFormFields', ()async{
     try{ 
-      await _tryTestJsonElements();
+      await _tryTestCustFormFieldElements();
     }catch(err){
       print('Número de elementos recorridos. $numberOfElementsTraveled');
       final CustomFormField errCustomFormField = formFields[numberOfElementsTraveled-1];
@@ -60,7 +71,7 @@ Future _testJsonElements()async{
   });
 }
 
-Future _tryTestJsonElements()async{
+Future _tryTestCustFormFieldElements()async{
   for(CustomFormField cff in formFields)
     _expectCustomFormField(cff);
   _printNElementsOfEveryType();
@@ -112,33 +123,60 @@ void _expectByType(CustomFormField cff, FormFieldType type){
   }
 }
 
-void _expectHeaderField(StaticFormField cff){
+void _expectHeaderField(HeaderFormField cff){
   nHeaders++;
   _expectStaticSubType(cff);
   _expectIsWithoutValue(cff);
+  _expectCustFormFieldToJson(cff);
 }
 
-void _expectParagraphField(StaticFormField cff){
+void _expectCustFormFieldToJson(CustomFormField cff){
+  final Map<String, dynamic> initialJson = _getCurrentInitialJson();
+  final Map<String, dynamic> currentFormFieldJson = cff.toJson();
+  _transformCurrentFormFieldJson(currentFormFieldJson);
+  // que primero sea igual al segundo. Expected: segundo
+  expect(currentFormFieldJson, initialJson);
+}
+
+Map<String, dynamic> _getCurrentInitialJson(){
+  final Map<String, dynamic> initialJson = initialJsonFormFields[numberOfElementsTraveled-1];
+  _transformWildFormFIeldJson(initialJson);
+  return initialJson;
+}
+
+void _transformWildFormFIeldJson(Map<String, dynamic> json){
+  json.remove('access');
+  json.remove('className');
+}
+
+void _transformCurrentFormFieldJson(Map<String, dynamic> formFieldJson){
+  formFieldJson.removeWhere((key, value) => value == null);
+}
+
+void _expectParagraphField(ParagraphFormField cff){
   nParagraphs++;
   _expectStaticSubType(cff);
   _expectIsWithoutValue(cff);
+  _expectCustFormFieldToJson(cff);
   //print('-*-*-*-*-*-*-*-*');
   //print('paragraf:');
   //print(cff.toJson());
 }
 
-void _expectTextField(CustomFormField cff){
+void _expectTextField(UniqueLineText cff){
   nTexts++;
   _expectRequiredAndName(cff);
   //_expectOldSubType(cff);
   _expectIsSingleValue(cff);
+  _expectCustFormFieldToJson(cff);
 }
 
-void _expectTextAreaField(CustomFormField cff){
+void _expectTextAreaField(TextArea cff){
   nTextAreas++;
   _expectRequiredAndName(cff);
   //_expectOldSubType(cff);
   _expectIsSingleValue(cff);
+  _expectCustFormFieldToJson(cff);
 }
 
 void _expectNumberField(Number cff){
@@ -146,18 +184,21 @@ void _expectNumberField(Number cff){
   //_expectRequiredAndName(cff);
   _expectIsSingleValue(cff);
   _expectVariableFormField(cff);
+  _expectCustFormFieldToJson(cff);
 }
 
-void _expectDateField(CustomFormField cff){
+void _expectDateField(DateField cff){
   nDates++;
   _expectRequiredAndName(cff);
   _expectIsSingleValue(cff);
+  _expectCustFormFieldToJson(cff);
 }
 
-void _expectTimeField(CustomFormField cff){
+void _expectTimeField(TimeField cff){
   nTimes++;
   _expectRequiredAndName(cff);
   _expectIsSingleValue(cff);
+  _expectCustFormFieldToJson(cff);
 }
 
 void _expectCheckBoxGroupField(CheckBoxGroup cff){
@@ -166,22 +207,43 @@ void _expectCheckBoxGroupField(CheckBoxGroup cff){
   expect(cff.withSwitchType, isNotNull, reason: 'El toggle de un ckeckbox no deberia ser null');
   _expectLineal(cff);
   _expectIsMultiValue(cff);
+  _expectMultiValueFieldToJson(cff);
 }
 
-void _expectRadioGroupField(CustomFormField cff){
+void _expectMultiValueFieldToJson(MultiValueFormField cff){
+  final Map<String, dynamic> initialJson = _getCurrentInitialJson();
+  final Map<String, dynamic> currentFormFieldJson = cff.toJson();
+  _transformCurrentFormFieldJson(currentFormFieldJson);
+  _transformMultiValueWildFormFieldJson(initialJson);
+  expect(currentFormFieldJson, initialJson);
+}
+
+void _transformMultiValueWildFormFieldJson(Map<String, dynamic> json){
+  _transformWildFormFIeldJson(json);
+  (json['values'].cast<Map<String, dynamic>>()).forEach(
+    (Map<String, dynamic> v){
+      if(v['selected'] == null)
+        v['selected'] = false;
+    }
+  );
+}
+
+void _expectRadioGroupField(RadioGroup cff){
   nRadioGroups++;
   _expectRequiredAndName(cff);
   _expectLineal(cff);
   _expectIsMultiValue(cff);
+  _expectMultiValueFieldToJson(cff);
 }
 
-void _expectSelectField(CustomFormField cff){
+void _expectSelectField(Select cff){
   nSelects++;
   _expectRequiredAndName(cff);
   _expectIsMultiValue(cff);
+  _expectMultiValueFieldToJson(cff);
 }
 
-void _expectRequiredAndName(CustomFormField cff){
+void _expectRequiredAndName(VariableFormField cff){
   expect(cff.isRequired, isNotNull, reason: 'El isRequired del formfield actual no debería ser null');
   expect(cff.name, isNotNull, reason: 'El name del formfield actual no debería ser null');
 }
@@ -195,56 +257,29 @@ void _expectVariableFormField(VariableFormField vff){
   expect(vff.name, isNotNull, reason: 'El name del formfield actual no debería ser null');
 }
 
-void _expectOldSubType(CustomFormField cff){
-  expect(cff.oldSubType, isNotNull, reason: 'El subtype del formfield actual no debería ser null');
-}
-
 void _expectLineal(MultiValueWithAlignment cff){
-  expect(cff.inVerticalAlignment, isNotNull, reason: 'El inLine del formField actual no deberia ser null');
+  expect(cff.withVerticalAlignment, isNotNull, reason: 'El inLine del formField actual no deberia ser null');
 }
 
-void _expectIsMultiValue(CustomFormField cff){
-  expect(cff.values, isNotNull, reason: 'Los values de un multivalue no pueden ser null');
-  expect(cff.values.length, isNot(0), reason: 'Los values de un multivalue deben ser al menos uno en cantidad');
-  expect(cff.value, isNull, reason: 'El value unitario de un multivalue debe ser null');
-
+void _expectIsMultiValue(MultiValueFormField mvff){
+  expect(mvff.values, isNotNull, reason: 'Los values de un multivalue no pueden ser null');
+  expect(mvff.values.length, isNot(0), reason: 'Los values de un multivalue deben ser al menos uno en cantidad');
 }
 
 void _expectIsSingleValue(CustomFormField cff){
   //expect(cff.value, isNotNull, reason: 'El value unitario de un singleValue no debe ser null');
-  expect(cff.values, isNull, reason: 'Los values de un singleValue deben ser null');  
+  //expect(cff.values, isNull, reason: 'Los values de un singleValue deben ser null');  
 }
 
-void _expectIsWithoutValue(CustomFormField cff){
-  expect(cff.values, isNull, reason: 'Los values de un static form field deben ser null'); 
-  expect(cff.value, isNull, reason: 'El value unitario de un static form field debe ser null');
+void _expectIsWithoutValue(StaticFormField cff){
+  //expect(cff.values, isNull, reason: 'Los values de un static form field deben ser null'); 
+  //expect(cff.value, isNull, reason: 'El value unitario de un static form field debe ser null');
 }
 
 void _printNotRequiredVariables(CustomFormField cff){
-  if(cff.max != null || cff.min != null || cff.multiple != null){
-    _printCffInformation(cff);
-    String notRequiredVariables = '[';
-    if(cff.max != null){
-      notRequiredVariables += 'Max: ${cff.max};';
-      typesWithMax += '${typeValues.reverse[cff.type]},';
-    }
-      
-    if(cff.min != null)
-      notRequiredVariables += 'Min: ${cff.min};';
-    if(cff.multiple != null)
-      notRequiredVariables += 'Multiple: ${cff.multiple}';
-    notRequiredVariables += ']';
-    print(notRequiredVariables);
-  }
-  if(cff.maxlength != null)
-    typesWithMaxLength += '${typeValues.reverse[cff.type]},';
-  if(cff.inline != null)
-    typesWithInLine += '${cff.type}, ';
-  if(cff.placeholder != null && [FormFieldType.CHECKBOX_GROUP, FormFieldType.RADIO_GROUP, FormFieldType.SELECT].contains(cff.type)){
-    _printCffInformation(cff);
-    print('is multiOption with placeholder');
-    print('${cff.placeholder}');
-  }
+  if(cff.other != null)
+    print('[[ With Other: ${cff.type}::${cff.label}::${cff.other} ]]');
+  
 }
 
 void _printCffInformation(CustomFormField cff){

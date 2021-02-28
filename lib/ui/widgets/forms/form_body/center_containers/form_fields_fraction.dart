@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/ui/utils/size_utils.dart';
-import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/form_single_text/form_single_text_with_name.dart';
+import 'package:gap/ui/widgets/forms/form_body/center_containers/firm_fields/firm_text_field/text_field_with_name.dart';
 class FormInputsFraction extends StatelessWidget {
   final SizeUtils _sizeUtils = SizeUtils();
   FormInputsFraction({Key key}) : super(key: key);
@@ -24,7 +24,7 @@ class FormInputsFraction extends StatelessWidget {
     final List<Widget> inputsItems = [];
     for(int i = 0; i < 4; i++){
       inputsItems.add(
-        FormSingleTextWithName(
+        TextFieldWithName(
           fieldName: 'Campo ${i+1}',
           onFieldChanged: _onFieldChanged,
         )

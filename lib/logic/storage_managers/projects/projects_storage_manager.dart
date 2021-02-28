@@ -7,7 +7,7 @@ class ProjectsStorageManager{
   static final String _projectsWithPreloadedVisitsKey = 'projects_with_preloaded_visits';
   
   static Future<void> setProjects(List<Project> projects)async{
-    final List<Map<String, dynamic>> projectsAsJson = _convertProjectsToJson(projects);
+    final List<Map<String, dynamic>> projectsAsJson = projectsToJson(projects);
     await StorageConnectorSingleton.storageConnector.setListResource(_projectsKey, projectsAsJson);
   }
 

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/ui/utils/size_utils.dart';
-import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/firm_field/draw_detector.dart';
-import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/firm_field/firm_paint.dart';
+import 'package:gap/ui/widgets/forms/form_body/center_containers/firm_fields/firm_draw_field/draw_detector.dart';
+import 'package:gap/ui/widgets/forms/form_body/center_containers/firm_fields/firm_draw_field/firm_paint.dart';
+
 // ignore: must_be_immutable
 class FirmField extends StatelessWidget {
   final SizeUtils _sizeUtils = SizeUtils();

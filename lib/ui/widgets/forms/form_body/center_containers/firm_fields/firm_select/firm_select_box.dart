@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/buttons/general_button.dart';
 // ignore: must_be_immutable
-class FormSelectBox extends StatelessWidget{
+class FirmSelectBox extends StatelessWidget{
   final SizeUtils _sizeUtils = SizeUtils();
   final List<String> items;
   final Function onSelected;
@@ -12,7 +12,7 @@ class FormSelectBox extends StatelessWidget{
   List<PopupMenuEntry<int>> _popupItems;
   String _selectedValue;
   
-  FormSelectBox({
+  FirmSelectBox({
     @required this.items,
     @required this.onSelected,
     @required this.borderShape,

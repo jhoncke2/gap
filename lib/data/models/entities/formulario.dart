@@ -1,10 +1,8 @@
-part of '../entities.dart';
+part of 'entities.dart';
 
 List<Formulario> formulariosFromJson(List<Map<String, dynamic>> jsonData) => List<Formulario>.from(jsonData.map((x) => Formulario.fromJson(x)));
 
-List<Map> formulariosToJson(List<Formulario> data) => List<Map>.from(data.map((x) => x.toJson()));
-
-
+List<Map<String, dynamic>> formulariosToJson(List<Formulario> data) => List<Map<String, dynamic>>.from(data.map((x) => x.toJson()));
 
 class Formulario extends EntityWithStage {
   bool completo;
@@ -37,7 +35,8 @@ class Formulario extends EntityWithStage {
         completo: json["completo"],
         nombre: json["nombre"],
         //campos: customFormFieldsFromJsonString(json["campos"].toString()),
-        campos: [],
+        campos: customFormFieldsFromJsonString(json['campos']),
+        //campos: [],
         date: _transformStringInToDate(json['fecha']??'2021-02-28'),
         firmers: PersonalInformations.fromJson((json['firmers']??[]).cast<Map<String, dynamic>>()).personalInformations
     );
@@ -55,9 +54,10 @@ class Formulario extends EntityWithStage {
 
   @protected
   bool fieldsAreCompleted(){
-    for(OldCustomFormField ff in fieldsContainer.formFields){
-      if(!ff.isFilled)
-        return false;
+    for(CustomFormField cff in campos){
+      if(cff is VariableFormField)
+        if(cff.isRequired && !cff.isCompleted)
+          return false;
     }
     return true;
   }
@@ -70,7 +70,8 @@ class Formulario extends EntityWithStage {
   String get initialTime => '${date.hour}:${date.minute} Am';
   List<OldCustomFormField> get fields => fieldsContainer.formFields;
   FormStep get formStep => _formStep;
-
+  
+  @override
   Map<String, dynamic> toJson(){
     final Map<String, dynamic> json = super.toJson();
     json['formulario_pivot_id'] = id;
@@ -80,6 +81,7 @@ class Formulario extends EntityWithStage {
     json['fields'] = fieldsContainer.toJson();
     json['firmers'] = PersonalInformations.toJson(firmers??[]);
     json['fecha'] = initialDate;
+    json['campos'] = customFormFieldsToJson(campos);
     return json;
   }
 }
@@ -125,22 +127,3 @@ Formulario.fromJson(Map<String, dynamic> json):
 
 
 */
-
-class Formularios{
-  List<Formulario> formularios;
-
-  Formularios({
-    @required this.formularios
-  });
-
-  Formularios.fromJson(List<Map<String, dynamic>> json){
-    formularios = [];
-    json.forEach((Map<String, dynamic> formularioAsJson) {
-      formularios.add(Formulario.fromJson(formularioAsJson));
-    });
-  }
-
-  List<Map<String, dynamic>> toJson() => formularios.map<Map<String, dynamic>>(
-    (Formulario f)=>f.toJson()
-  ).toList();
-}

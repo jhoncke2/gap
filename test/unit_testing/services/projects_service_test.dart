@@ -25,7 +25,7 @@ void _testGetProjects(){
       print(_);
       return;
     }catch(err){
-      fail('No debería ocurrir algún error que no sea ServiceStatus');
+      throw err;
     }
   });
 }

@@ -24,7 +24,7 @@ class HeaderFormField extends StaticFormField{
   HeaderFormField.fromJson(Map<String, dynamic> json):
     super.fromJson(
       json: json,
-      subType: HeaderSubType(json['subtype'])
+      subType: HeaderSubType.fromValue(json['subtype'])
     );
 }
 

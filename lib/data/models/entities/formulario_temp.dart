@@ -1,5 +1,6 @@
 part of 'entities.dart';
 
+/*
 List<FormularioTemp> formulariosTempFromJson(List<Map<String, dynamic>> jsonData) => List<FormularioTemp>.from(jsonData.map((x) => FormularioTemp.fromJson(x)));
 
 List<Map> formulariosTempToJson(List<FormularioTemp> data) => List<Map>.from(data.map((x) => x.toJson()));
@@ -32,3 +33,4 @@ class FormularioTemp {
         "campos": campos,
     };
 }
+*/

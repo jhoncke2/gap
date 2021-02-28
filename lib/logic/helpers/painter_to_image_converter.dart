@@ -4,7 +4,7 @@ import 'dart:ui';
 import 'package:gap/logic/helpers/temp_dir.dart';
 
 import 'package:flutter/material.dart';
-import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/firm_field/firm_paint.dart';
+import 'package:gap/ui/widgets/forms/form_body/center_containers/firm_fields/firm_draw_field/firm_paint.dart';
 
 class PainterToImageConverter{
 

@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/ui/utils/size_utils.dart';
-import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/firm_field/firm_field.dart';
-import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/form_select/form_select_without_name.dart';
-import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/form_single_text/form_single_text_without_name.dart';
+import 'package:gap/ui/widgets/forms/form_body/center_containers/firm_fields/firm_draw_field/firm_field.dart';
+import 'package:gap/ui/widgets/forms/form_body/center_containers/firm_fields/firm_select/firm_select_without_name.dart';
+import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/form_single_text/firm_text_field_without_name.dart';
 import 'package:gap/ui/utils/static_data/types_of_identif_document.dart' as typesOfIdentfDocuments;
 // ignore: must_be_immutable
 class SecondaryFirmerFirm extends StatelessWidget {
@@ -79,7 +79,7 @@ class SecondaryFirmerFirm extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           _createNameText(),
-          FormSingleTextWithoutName(onFieldChanged: _onNameChange, width: _sizeUtils.xasisSobreYasis * 0.4, controller: _nameController)
+          FirmTextFieldWithoutName(onFieldChanged: _onNameChange, width: _sizeUtils.xasisSobreYasis * 0.4, controller: _nameController)
         ],
       ),
     );
@@ -96,8 +96,8 @@ class SecondaryFirmerFirm extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          FormSelectWitouthName(items: typesOfIdentfDocuments.typesOfIdentfDocument, onFieldChanged: _onIdDocumentTypeChanged, width: _sizeUtils.xasisSobreYasis * 0.14, initialValue: _firmer.identifDocumentType),
-          FormSingleTextWithoutName(onFieldChanged: _onIdDocumentNumberChanged, width: _sizeUtils.xasisSobreYasis * 0.4, controller: _identifDocNumberController)
+          FirmSelectWitouthName(items: typesOfIdentfDocuments.typesOfIdentfDocument, onFieldChanged: _onIdDocumentTypeChanged, width: _sizeUtils.xasisSobreYasis * 0.14, initialValue: _firmer.identifDocumentType),
+          FirmTextFieldWithoutName(onFieldChanged: _onIdDocumentNumberChanged, width: _sizeUtils.xasisSobreYasis * 0.4, controller: _identifDocNumberController)
         ],
       ),
     );

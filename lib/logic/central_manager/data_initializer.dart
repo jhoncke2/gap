@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:gap/central_config/bloc_providers_creator.dart';
 import 'package:gap/data/enums/enums.dart';
 import 'package:gap/data/models/entities/entities.dart';
+import 'package:gap/errors/services/service_status_err.dart';
 import 'package:gap/logic/bloc/entities/user/user_bloc.dart';
 import 'package:gap/logic/bloc/nav_routes/routes_manager.dart';
 import 'package:gap/logic/blocs_manager/pages_navigation_manager.dart';
@@ -19,6 +20,8 @@ class DataInitializer{
     await _routesManager.loadRoute();
     try{
       await _doAllNavigationByEvaluatingInitialConditions(context, netConnState);
+    }on ServiceStatusErr catch(err){
+      _navigateToLogin(context, netConnState);
     }catch(err){
       PagesNavigationManager.navToProjects();
     }

@@ -12,6 +12,7 @@ List<Formulario> formularios = [
     'date':nowTime.toString(),
     'fecha':'2021-02-29',
     'fields':[],
+    'campos':'[]',
     'firmers':[]
   }),
   Formulario.fromJson({
@@ -21,6 +22,7 @@ List<Formulario> formularios = [
     'date':nowTime.toString(),
     'fecha':'2021-02-29',
     'fields':[],
+    'campos':'[]',
     'firmers':[]
   }),
   Formulario.fromJson({
@@ -30,6 +32,7 @@ List<Formulario> formularios = [
     'date':nowTime.toString(),
     'fecha':'2021-02-29',
     'fields':[],
+    'campos':'[]',
     'firmers':[]
   }),
   Formulario.fromJson({
@@ -39,6 +42,7 @@ List<Formulario> formularios = [
     'date':nowTime.toString(),
     'fecha':'2021-02-29',
     'fields':[],
+    'campos':'[]',
     'firmers':[]
   }),
   Formulario.fromJson({
@@ -48,6 +52,7 @@ List<Formulario> formularios = [
     'date':nowTime.toString(),
     'fecha':'2021-02-29',
     'fields':[],
+    'campos':'[]',
     'firmers':[]
   }),
   Formulario.fromJson({
@@ -57,6 +62,7 @@ List<Formulario> formularios = [
     'date':nowTime.toString(),
     'fecha':'2021-02-29',
     'fields':[],
+    'campos':'[]',
     'firmers':[]
   }),
   Formulario.fromJson({
@@ -66,6 +72,7 @@ List<Formulario> formularios = [
     'date':nowTime.toString(),
     'fecha':'2021-02-29',
     'fields':[],
+    'campos':'[]',
     'firmers':[]
   }),
   Formulario.fromJson({
@@ -75,6 +82,7 @@ List<Formulario> formularios = [
     'date':nowTime.toString(),
     'fecha':'2021-02-29',
     'fields':[],
+    'campos':'[]',
     'firmers':[]
   }),
   Formulario.fromJson({
@@ -84,6 +92,7 @@ List<Formulario> formularios = [
     'date':nowTime.toString(),
     'fecha':'2021-02-29',
     'fields':[],
+    'campos':'[]',
     'firmers':[]
   }),
   Formulario.fromJson({
@@ -93,6 +102,7 @@ List<Formulario> formularios = [
     'date':nowTime.toString(),
     'fecha':'2021-02-29',
     'fields':[],
+    'campos':'[]',
     'firmers':[]
   }),
   Formulario.fromJson({
@@ -102,6 +112,7 @@ List<Formulario> formularios = [
     'date':nowTime.toString(),
     'fecha':'2021-02-29',
     'fields':[],
+    'campos':'[]',
     'firmers':[]
   }),
   Formulario.fromJson({
@@ -111,6 +122,7 @@ List<Formulario> formularios = [
     'date':nowTime.toString(),
     'fecha':'2021-02-29',
     'fields':[],
+    'campos':'[]',
     'firmers':[]
   }),
   Formulario.fromJson({
@@ -120,6 +132,7 @@ List<Formulario> formularios = [
     'date':nowTime.toString(),
     'fecha':'2021-02-29',
     'fields':[],
+    'campos':'[]',
     'firmers':[]
   }),
   Formulario.fromJson({
@@ -129,6 +142,7 @@ List<Formulario> formularios = [
     'date':nowTime.toString(),
     'fecha':'2021-02-29',
     'fields':[],
+    'campos':'[]',
     'firmers':[]
   }),
   Formulario.fromJson({
@@ -138,6 +152,7 @@ List<Formulario> formularios = [
     'date':nowTime.toString(),
     'fecha':'2021-02-29',
     'fields':[],
+    'campos':'[]',
     'firmers':[]
   }),
 ];
@@ -148,22 +163,8 @@ final Map<String, dynamic> formAtFormFieldsFillingOut = {
   'nombre':'Formulario PAE 2021A',
   'date':nowTime.toString(),
   'fecha':'2021-02-29',
-  'fields':[
-    {
-      'formulario_pivot_id':0,
-      'nombre':'f1',
-      'type':'input',
-      'is_filled':true,
-      'value':'parangaricutirimicuaro'
-    },
-    {
-      'formulario_pivot_id':1,
-      'nombre':'f2',
-      'type':'input',
-      'is_filled':false,
-      'value':'parangaricutirimicuaro'
-    }
-  ],
+  'fields':[],
+  'campos':jsonEncode(camposAtFormFieldsFillingOut),
   'firmers':[]
 };
 
@@ -173,22 +174,8 @@ final Map<String, dynamic> formAtFirstFirmerFillingOut = {
   'nombre':'Formulario Calidad',
   'date':nowTime.toString(),
   'fecha':'2021-02-29',
-  'fields':[
-    {
-      'formulario_pivot_id':2,
-      'nombre':'f1',
-      'type':'input',
-      'is_filled':true,
-      'value':'parangaricutirimicuaro'
-    },
-    {
-      'formulario_pivot_id':3,
-      'nombre':'f2',
-      'type':'input',
-      'is_filled':true,
-      'value':'parangaricutirimicuaro'
-    }
-  ],
+  'fields':[],
+  'campos':jsonEncode(camposAtFirstFirmerFillingOut),
   'firmers':[]
 };
 
@@ -198,18 +185,11 @@ final Map<String, dynamic> formAtSecondaryFirmersFillingOut = {
   'nombre':'Formulario infraestructuras',
   'date':nowTime.toString(),
   'fecha':'2021-02-29',
-  'fields':[
-    {
-      'formulario_pivot_id':2,
-      'nombre':'f1',
-      'type':'input',
-      'is_filled':true,
-      'value':'parangaricutirimicuaro'
-    }
-  ],
+  'fields':[],
+  'campos':jsonEncode(camposForSecondaryFirmersFillingOut),
   'firmers':[
     {
-      'formulario_pivot_id':0,
+      'id':0,
       'nombre':'Firmer1',
       'identif_document_type':'CC',
       'identif_Document_number':12345,
@@ -217,3 +197,45 @@ final Map<String, dynamic> formAtSecondaryFirmersFillingOut = {
     }
   ]
 };
+
+final List<Map<String, dynamic>> camposAtFormFieldsFillingOut = [{
+  'name':'input_1',
+  'type':'text',
+  'subtype':'text',
+  'label':'input 1',
+  'value':'',
+  'required':true
+},
+{
+  'name':'input_2',
+  'type':'text',
+  'subtype':'text',
+  'label':'input 2',
+  'required':false
+}];
+
+final List<Map<String, dynamic>> camposAtFirstFirmerFillingOut = [{
+  'name':'input_3',
+  'type':'text',
+  'subtype':'text',
+  'label':'input 3',
+  'value':'parangaricutirimicuaro',
+  'required':true
+},
+{
+  'name':'input_4',
+  'type':'text',
+  'subtype':'email',
+  'label':'input 4',
+  'value':'parangaricutirimicuaro',
+  'required':false
+}];
+
+final List<Map<String, dynamic>> camposForSecondaryFirmersFillingOut = [{
+  'name':'input_5',
+  'type':'text',
+  'subtype':'email',
+  'label':'input 5',
+  'value':'parangaricutirimicuaro',
+  'required':true
+}];

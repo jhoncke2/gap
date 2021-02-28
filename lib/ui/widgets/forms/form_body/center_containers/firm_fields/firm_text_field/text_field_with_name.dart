@@ -1,14 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:gap/ui/widgets/buttons/general_button.dart';
 import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/form_field_structure.dart';
 import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/general_form_field_with_name.dart';
 // ignore: must_be_immutable
-class FormSingleTextWithName extends GeneralFormFieldWithName implements FormFieldStructure {
+class TextFieldWithName extends GeneralFormFieldWithName implements FormFieldStructure {
 
-  FormSingleTextWithName({
+  final TextInputType keyboardType;
+  final bool obscureText;
+  final String initialValue;
+  final String helperText;
+
+  TextFieldWithName({
     Key key,
     @required String fieldName,
     @required Function onFieldChanged,
+    this.keyboardType = TextInputType.text,
+    this.obscureText = false,
+    this.initialValue,
+    this.helperText
   }) : super(
     key: key,
     fieldName: fieldName,
@@ -24,8 +32,12 @@ class FormSingleTextWithName extends GeneralFormFieldWithName implements FormFie
 
   @override
   void createFieldBox(){
-    this.fieldBox = TextField(
+    this.fieldBox = TextFormField(
+      initialValue: initialValue??'',
+      obscureText: obscureText,
+      keyboardType: keyboardType,
       decoration: InputDecoration(
+        helperText: helperText,
         isDense: true,
         border: _createInputBorder(),
         enabledBorder: _createInputBorder()
