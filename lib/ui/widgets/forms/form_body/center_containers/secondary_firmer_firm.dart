@@ -5,8 +5,10 @@ import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/forms/form_body/center_containers/firm_fields/firm_draw_field/firm_field.dart';
 import 'package:gap/ui/widgets/forms/form_body/center_containers/firm_fields/firm_select/firm_select_without_name.dart';
-import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/form_single_text/firm_text_field_without_name.dart';
 import 'package:gap/ui/utils/static_data/types_of_identif_document.dart' as typesOfIdentfDocuments;
+
+import 'firm_fields/text_field/text_field_without_name.dart';
+
 // ignore: must_be_immutable
 class SecondaryFirmerFirm extends StatelessWidget {
   final SizeUtils _sizeUtils = SizeUtils();
@@ -79,7 +81,7 @@ class SecondaryFirmerFirm extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           _createNameText(),
-          FirmTextFieldWithoutName(onFieldChanged: _onNameChange, width: _sizeUtils.xasisSobreYasis * 0.4, controller: _nameController)
+          TextFieldWithoutName(onFieldChanged: _onNameChange, width: _sizeUtils.xasisSobreYasis * 0.4, controller: _nameController)
         ],
       ),
     );
@@ -97,7 +99,7 @@ class SecondaryFirmerFirm extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           FirmSelectWitouthName(items: typesOfIdentfDocuments.typesOfIdentfDocument, onFieldChanged: _onIdDocumentTypeChanged, width: _sizeUtils.xasisSobreYasis * 0.14, initialValue: _firmer.identifDocumentType),
-          FirmTextFieldWithoutName(onFieldChanged: _onIdDocumentNumberChanged, width: _sizeUtils.xasisSobreYasis * 0.4, controller: _identifDocNumberController)
+          TextFieldWithoutName(onFieldChanged: _onIdDocumentNumberChanged, width: _sizeUtils.xasisSobreYasis * 0.4, controller: _identifDocNumberController)
         ],
       ),
     );

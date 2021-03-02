@@ -33,7 +33,7 @@ class CustomFormField {
         case FormFieldType.TEXT_AREA:
           return TextArea.fromJson(json);
         case FormFieldType.NUMBER:
-          return Number.fromJson(json);
+          return NumberFormField.fromJson(json);
         case FormFieldType.DATE:
           return DateField.fromJson(json);
         case FormFieldType.TIME:
@@ -41,9 +41,9 @@ class CustomFormField {
         case FormFieldType.CHECKBOX_GROUP:
           return CheckBoxGroup.fromJson(json);
         case FormFieldType.RADIO_GROUP:
-          return RadioGroup.fromJson(json);
+          return RadioGroupFormField.fromJson(json);
         case FormFieldType.SELECT:
-          return Select.fromJson(json);
+          return SelectFormField.fromJson(json);
       }
       return null;
     }

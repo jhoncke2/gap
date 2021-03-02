@@ -5,8 +5,10 @@ abstract class ChosenFormEvent{}
 
 class InitFormFillingOut extends ChosenFormEvent{
   final Formulario formulario;
+  final void Function(int) onEndEvent;
   InitFormFillingOut({
-    @required this.formulario
+    @required this.formulario,
+    @required this.onEndEvent
   });
 }
 

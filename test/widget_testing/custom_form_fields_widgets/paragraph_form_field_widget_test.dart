@@ -41,7 +41,7 @@ Future _testHeaderFormFieldWidgetCreationH1(WidgetTester tester)async{
 }
 
 Future _testHeaderFormFieldWidgetCreationH6(WidgetTester tester)async{
-  ParagraphFormFieldWidget paragraphWidget = ParagraphFormFieldWidget(paragraphFormField: paragraphFormFieldAddress);
+  ParagraphFormFieldWidget paragraphWidget = ParagraphFormFieldWidget(paragraphFormField: paragraphFormFieldOutput);
   final MockApp app = MockApp(paragraphWidget);
   await tester.pumpWidget(app);
   final titleFinder = find.text(paragraphFormFieldOutput.label);

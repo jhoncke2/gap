@@ -4,8 +4,9 @@ import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/forms/form_body/center_containers/firm_fields/firm_select/firm_select_with_name.dart';
-import 'package:gap/ui/widgets/forms/form_body/center_containers/firm_fields/firm_text_field/text_field_with_name.dart';
 import 'package:gap/ui/utils/static_data/types_of_identif_document.dart' as typesOfIdentfDocument;
+
+import 'firm_fields/text_field/text_field_with_name.dart';
 // ignore: must_be_immutable
 class FirstFirmerPersInfo extends StatelessWidget {
   final SizeUtils _sizeUtils = SizeUtils();

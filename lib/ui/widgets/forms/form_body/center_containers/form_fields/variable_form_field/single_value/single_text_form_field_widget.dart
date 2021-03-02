@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gap/data/models/entities/custom_form_field/variable/single_value/text_form_field.dart';
-import 'package:gap/ui/widgets/forms/form_body/center_containers/firm_fields/firm_text_field/text_field_with_name.dart';
+import 'package:gap/data/models/entities/custom_form_field/variable/single_value/raw_text_form_field.dart';
+import 'package:gap/ui/widgets/forms/form_body/center_containers/firm_fields/text_field/text_field_with_name.dart';
 // ignore: must_be_immutable
 class SingleTextFormFieldWidget extends StatelessWidget {
 
@@ -68,6 +68,6 @@ class SingleTextFormFieldWidget extends StatelessWidget {
   }
 
   void _onChanged(String newValue){
-    uniqueLineText.label = newValue;
+    uniqueLineText.uniqueValue = newValue;
   }
 }

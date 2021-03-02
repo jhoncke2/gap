@@ -4,9 +4,9 @@ import 'package:gap/data/models/entities/custom_form_field/static/static_form_fi
 import 'package:gap/data/models/entities/custom_form_field/variable/multi_value/multi_value_form_field.dart';
 import 'package:gap/data/models/entities/custom_form_field/variable/multi_value/select.dart';
 import 'package:gap/data/models/entities/custom_form_field/variable/multi_value/with_alignment.dart';
-import 'package:gap/data/models/entities/custom_form_field/variable/single_value/number.dart';
+import 'package:gap/data/models/entities/custom_form_field/variable/single_value/number_form_field.dart';
 import 'package:gap/data/models/entities/custom_form_field/variable/single_value/single_value_picker_form_field.dart';
-import 'package:gap/data/models/entities/custom_form_field/variable/single_value/text_form_field.dart';
+import 'package:gap/data/models/entities/custom_form_field/variable/single_value/raw_text_form_field.dart';
 import 'package:gap/data/models/entities/custom_form_field/variable/variable_form_field.dart';
 import 'package:test/test.dart';
 
@@ -132,6 +132,7 @@ void _expectHeaderField(HeaderFormField cff){
 
 void _expectCustFormFieldToJson(CustomFormField cff){
   final Map<String, dynamic> initialJson = _getCurrentInitialJson();
+  _expectTextSingleValue(cff, initialJson);
   final Map<String, dynamic> currentFormFieldJson = cff.toJson();
   _transformCurrentFormFieldJson(currentFormFieldJson);
   // que primero sea igual al segundo. Expected: segundo
@@ -179,7 +180,7 @@ void _expectTextAreaField(TextArea cff){
   _expectCustFormFieldToJson(cff);
 }
 
-void _expectNumberField(Number cff){
+void _expectNumberField(NumberFormField cff){
   nNumbers++;
   //_expectRequiredAndName(cff);
   _expectIsSingleValue(cff);
@@ -228,7 +229,7 @@ void _transformMultiValueWildFormFieldJson(Map<String, dynamic> json){
   );
 }
 
-void _expectRadioGroupField(RadioGroup cff){
+void _expectRadioGroupField(RadioGroupFormField cff){
   nRadioGroups++;
   _expectRequiredAndName(cff);
   _expectLineal(cff);
@@ -236,7 +237,7 @@ void _expectRadioGroupField(RadioGroup cff){
   _expectMultiValueFieldToJson(cff);
 }
 
-void _expectSelectField(Select cff){
+void _expectSelectField(SelectFormField cff){
   nSelects++;
   _expectRequiredAndName(cff);
   _expectIsMultiValue(cff);
@@ -268,7 +269,7 @@ void _expectIsMultiValue(MultiValueFormField mvff){
 
 void _expectIsSingleValue(CustomFormField cff){
   //expect(cff.value, isNotNull, reason: 'El value unitario de un singleValue no debe ser null');
-  //expect(cff.values, isNull, reason: 'Los values de un singleValue deben ser null');  
+  //expect(cff.values, isNull, reason: 'Los values de un singleValue deben ser null');
 }
 
 void _expectIsWithoutValue(StaticFormField cff){
@@ -276,16 +277,36 @@ void _expectIsWithoutValue(StaticFormField cff){
   //expect(cff.value, isNull, reason: 'El value unitario de un static form field debe ser null');
 }
 
+void _expectTextSingleValue(CustomFormField cff, Map<String, dynamic> initialJson){
+  if(cff is RawTextFormField){
+    _processAndExpectDefaultValuesOfRawTextFormField(cff, initialJson);
+  }if(cff is NumberFormField){
+    _processAndExpectDefaultValuesOfNumber(cff, initialJson);
+  }
+}
+
+void _processAndExpectDefaultValuesOfRawTextFormField(RawTextFormField rtff, Map<String, dynamic> initialJson){
+  if(initialJson['maxlength'] == null){
+    expect(rtff.maxLength, RawTextFormField.defaultMaxLength);
+    rtff.maxLength = null;
+  }
+  if(rtff is TextArea){
+    expect(rtff.rows, TextArea.defaultNumberOfRows);
+    rtff.rows = null;
+  }
+}
+
+void _processAndExpectDefaultValuesOfNumber(NumberFormField nff, Map<String, dynamic> initialJson){
+  if(initialJson['step'] == null){
+    expect(nff.step, NumberFormField.defaultStep);
+    nff.step = null;
+  }
+}
+
 void _printNotRequiredVariables(CustomFormField cff){
   if(cff.other != null)
     print('[[ With Other: ${cff.type}::${cff.label}::${cff.other} ]]');
   
-}
-
-void _printCffInformation(CustomFormField cff){
-  print('********************************');
-  print(cff.label);
-  print(cff.type);
 }
 
 _printNElementsOfEveryType(){

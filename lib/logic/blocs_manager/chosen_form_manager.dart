@@ -1,9 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/data/models/entities/custom_form_field/variable/variable_form_field.dart';
+import 'package:gap/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/logic/bloc/widgets/firm_paint/firm_paint_bloc.dart';
 import 'package:gap/data/models/entities/entities.dart';
+import 'package:gap/logic/bloc/widgets/index/index_bloc.dart';
 import 'package:gap/logic/helpers/painter_to_image_converter.dart';
 import 'package:gap/ui/widgets/forms/form_body/center_containers/firm_fields/firm_draw_field/firm_paint.dart';
 
@@ -22,7 +25,10 @@ class ChosenFormManagerSingleton{
   static void _initInitialElements(BuildContext appContext){
     chosenFormManager..appContext = appContext
     ..chosenFormBloc = BlocProvider.of<ChosenFormBloc>(appContext)
-    ..firmPaintBloc = BlocProvider.of<FirmPaintBloc>(appContext);
+    ..firmPaintBloc = BlocProvider.of<FirmPaintBloc>(appContext)
+    ..formsBloc = BlocProvider.of<FormulariosBloc>(appContext)
+    ..indexBloc = BlocProvider.of<IndexBloc>(appContext)
+      ;
   }
 
   @protected
@@ -49,15 +55,39 @@ class ChosenFormManager{
   ChosenFormBloc chosenFormBloc;
   ChosenFormState chosenFormState;
   FirmPaintBloc firmPaintBloc;
+  FormulariosBloc formsBloc;
+  FormulariosState formsState;
+  IndexBloc indexBloc;
+
+  void updateIndexByFormFieldsChange(){
+    _updateStates();
+    final int currentIndexPage = indexBloc.state.currentIndexPage;
+    final List<CustomFormField> pageFormFields = chosenFormState.getFormFieldsByIndex(currentIndexPage);
+    final bool allFormFieldsFromPageAreCompleted = Formulario.thoseFormFieldsAreCompleted(pageFormFields);
+    _updateIndexIfPageFormFieldsAreCompleted(allFormFieldsFromPageAreCompleted, currentIndexPage);
+  }
+
+  void _updateIndexIfPageFormFieldsAreCompleted(bool pageFormFieldsAreCompleted, int currentIndexPage){
+    if(pageFormFieldsAreCompleted)
+      _updateIndexIfCurrentIndexIsNotLast(currentIndexPage);
+  }
+
+  void _updateIndexIfCurrentIndexIsNotLast(int currentIndexPage){
+    if(currentIndexPage < indexBloc.state.nPages -1)
+      _updateIndex();
+  }
+
+  void _updateIndex(){
+    indexBloc.add(ChangeSePuedeAvanzar(sePuede: true));
+  }
 
   bool canGoToNextFormStep(){
-    _updateState();
+    _updateStates();
     switch(chosenFormState.formStep){
       case FormStep.WithoutForm:
         return true;
       case FormStep.OnForm:
-        // TODO: Implementar recorrido de formularios cuando se hayan implementado estos.
-        return true;
+        return _sePuedeAvanzarDesdeOnFormFillingOut();
       case FormStep.OnFirstFirmerInformation:
         return _sePuedeAvanzarDesdeFirstFirmerInfo();
       case FormStep.OnFirstFirmerFirm:
@@ -67,6 +97,10 @@ class ChosenFormManager{
       default:
         return true;
     }
+  }
+
+  bool _sePuedeAvanzarDesdeOnFormFillingOut(){
+    return formsState.chosenForm.allFieldsAreCompleted();
   }
 
   bool _sePuedeAvanzarDesdeFirstFirmerInfo(){
@@ -118,7 +152,7 @@ class ChosenFormManager{
   }
 
   Future<void> addFirmToFirmer()async{
-    _updateState();
+    _updateStates();
     final int lastFirmerIndex = chosenFormState.firmers.length - 1;
     final FirmPainter firmPainter = firmPaintBloc.state.firmPainter;
     final File firmFile = await PainterToImageConverter.createFileFromFirmPainter(firmPainter, lastFirmerIndex);
@@ -129,8 +163,9 @@ class ChosenFormManager{
     //TODO: ¿Se llamará al service a add firm to form en lugar de solo guardarla en el bloc?
   }
 
-  void _updateState(){
+  void _updateStates(){
     chosenFormState = chosenFormBloc.state;
+    formsState = formsBloc.state;
   }
 }
 

@@ -37,12 +37,12 @@ class Formulario extends EntityWithStage {
         //campos: customFormFieldsFromJsonString(json["campos"].toString()),
         campos: customFormFieldsFromJsonString(json['campos']),
         //campos: [],
-        date: _transformStringInToDate(json['fecha']??'2021-02-28'),
+        date: transformStringInToDate(json['fecha']??'2021-02-28'),
         firmers: PersonalInformations.fromJson((json['firmers']??[]).cast<Map<String, dynamic>>()).personalInformations
     );
 
   void _initFormStep(){
-    if(fieldsAreCompleted()){
+    if(allFieldsAreCompleted()){
       if(!_thereAreFirmers())
         _formStep = FormStep.OnFirstFirmerInformation;
       else
@@ -52,14 +52,10 @@ class Formulario extends EntityWithStage {
     }
   }
 
-  @protected
-  bool fieldsAreCompleted(){
-    for(CustomFormField cff in campos){
-      if(cff is VariableFormField)
-        if(cff.isRequired && !cff.isCompleted)
-          return false;
-    }
-    return true;
+  bool allFieldsAreCompleted(){
+    if(campos.length == 0)
+      return true;
+    return thoseFormFieldsAreCompleted(campos);
   }
 
   bool _thereAreFirmers(){
@@ -70,6 +66,15 @@ class Formulario extends EntityWithStage {
   String get initialTime => '${date.hour}:${date.minute} Am';
   List<OldCustomFormField> get fields => fieldsContainer.formFields;
   FormStep get formStep => _formStep;
+
+  //TODO: Borrar en su desuso
+  bool subListOfCamposIsCompleted(int initIndex, int finalIndex){
+    final List<CustomFormField> subList = campos.sublist(initIndex, finalIndex);
+    for(CustomFormField cff in subList)
+      if(!_formFieldIsCompleted(cff))
+        return false;
+    return true;
+  }
   
   @override
   Map<String, dynamic> toJson(){
@@ -84,8 +89,22 @@ class Formulario extends EntityWithStage {
     json['campos'] = customFormFieldsToJson(campos);
     return json;
   }
+
+  static bool thoseFormFieldsAreCompleted(List<CustomFormField> formFields){
+    for(CustomFormField cff in formFields)
+      if(!_formFieldIsCompleted(cff))
+        return false;
+    return true;
+  }
+
+  static bool _formFieldIsCompleted(CustomFormField cff){
+    return !(cff is VariableFormField && cff.isRequired && !cff.isCompleted);
+  }
+  
 }
 
+
+//TODO: Borrar en su desuso
 class Date{
   final int year;
   final int month;
@@ -107,23 +126,3 @@ class Date{
 
   String toString() => _stringDateTime;
 }
-
-
-//TODO: Eliminar en su desuso
-
-/*
-Formulario.fromJson(Map<String, dynamic> json):
-  dateOld = Date( DateTime.parse(json['date']) ),
-  fieldsContainer = OldCustomFormFields.fromJson( json['fields'].cast<Map<String, dynamic>>() ),
-  this.firmers = PersonalInformations.fromJson((json['firmers']??[]).cast<Map<String, dynamic>>()).personalInformations,
-  super(
-    id: json['id'],
-    stage: ProcessStage.fromValue(json['completo']?'realizada':'pendiente'),
-    name: json['name']
-  ){
-  _initFormStep();
-}
-
-
-
-*/

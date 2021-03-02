@@ -52,10 +52,13 @@ abstract class DataDistributor{
     final ChooseForm chooseFormEvent = ChooseForm(chosenOne: form);
     formsBloc.add(chooseFormEvent);
     final ChosenFormBloc chosenFormB = blocsAsMap[BlocName.ChosenForm];
-    final InitFormFillingOut iffoEvent= InitFormFillingOut(formulario: form);
-    chosenFormB.add(iffoEvent);
     await ChosenFormStorageManager.setChosenForm(form);
     await _chooseChosenFormStep(form, chosenFormB);
+  }
+
+  void _onEndInitFormFillingOut(int formFieldsPages){
+    final IndexBloc indexBloc = blocsAsMap[BlocName.Index];
+    indexBloc.add(ChangeNPages(nPages: formFieldsPages));
   }
 
   Future _chooseChosenFormStep(Formulario form, ChosenFormBloc chosenFormB)async{
@@ -63,7 +66,7 @@ abstract class DataDistributor{
       case FormStep.WithoutForm:
         break;
       case FormStep.OnForm:
-        chosenFormB.add(InitFormFillingOut(formulario: form));
+        chosenFormB.add(InitFormFillingOut(formulario: form, onEndEvent: _onEndInitFormFillingOut));
         break;
       case FormStep.OnFirstFirmerInformation:
         chosenFormB.add(InitFirstFirmerFillingOut());
@@ -81,8 +84,8 @@ abstract class DataDistributor{
     final FormulariosBloc formsB = blocsAsMap[BlocName.Formularios];
     final Formulario chosenForm = formsB.state.chosenForm;
     final ChosenFormBloc chosenFormB = blocsAsMap[BlocName.ChosenForm];
-    final List<OldCustomFormField> fields = chosenFormB.state.allFields;
-    chosenForm.fieldsContainer = OldCustomFormFields(fields);
+    //final List<CustomFormField> fields = chosenFormB.state.allFields;
+    //chosenForm.campos = customFormFieldsToJson(fields);
     ChosenFormStorageManager.setChosenForm(chosenForm);
     final VisitsBloc visitsB = blocsAsMap[BlocName.Visits];
     await PreloadedFormsStorageManager.setPreloadedForm(chosenForm, visitsB.state.chosenVisit.id);

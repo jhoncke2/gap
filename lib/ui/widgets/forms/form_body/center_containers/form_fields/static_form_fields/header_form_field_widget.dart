@@ -6,6 +6,7 @@ class HeaderFormFieldWidget extends StatelessWidget {
   
   final SizeUtils _sizeUtils = SizeUtils();
   final HeaderFormField headerFormField;
+  BuildContext _context;
   @protected
   TextStyle textStyle;
 
@@ -17,6 +18,7 @@ class HeaderFormFieldWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _context = context;
     _defineTextStyleBySubtype();
     return Container(
       width: double.infinity,
@@ -24,6 +26,7 @@ class HeaderFormFieldWidget extends StatelessWidget {
       child: Text(
         headerFormField.label,
         textDirection: TextDirection.ltr,
+        textAlign: TextAlign.center,
         style: textStyle,
       ),
     );
@@ -31,27 +34,27 @@ class HeaderFormFieldWidget extends StatelessWidget {
 
   void _defineTextStyleBySubtype(){
     if(headerFormField.subType == HeaderSubType.H1){
-      _defineTextStyle(_sizeUtils.subtitleSize, FontWeight.bold);
+      _defineTextStyle(_sizeUtils.subtitleSize * 1.075, FontWeight.bold);
     }else if(headerFormField.subType == HeaderSubType.H2){
-      _defineTextStyle(_sizeUtils.subtitleSize * 0.9, FontWeight.bold);
+      _defineTextStyle(_sizeUtils.subtitleSize, FontWeight.bold);
     }
     else if(headerFormField.subType == HeaderSubType.H3){
-      _defineTextStyle(_sizeUtils.subtitleSize * 0.85, FontWeight.bold);      
+      _defineTextStyle(_sizeUtils.subtitleSize * 0.925, FontWeight.bold);      
     }
     else if(headerFormField.subType == HeaderSubType.H4){
-      _defineTextStyle(_sizeUtils.subtitleSize * 0.8, FontWeight.w800);      
+      _defineTextStyle(_sizeUtils.subtitleSize * 0.85, FontWeight.w800);      
     }
     else if(headerFormField.subType == HeaderSubType.H5){
-      _defineTextStyle(_sizeUtils.subtitleSize * 0.75, FontWeight.w700);      
+      _defineTextStyle(_sizeUtils.subtitleSize * 0.8, FontWeight.w700);      
     }
     else if(headerFormField.subType == HeaderSubType.H6){
-      _defineTextStyle(_sizeUtils.subtitleSize * 0.7, FontWeight.w600);      
+      _defineTextStyle(_sizeUtils.subtitleSize * 0.75, FontWeight.w600);      
     }
   }
 
   void _defineTextStyle(double fontSize, FontWeight fontWeight){
     textStyle = TextStyle(
-      color: Colors.black,
+      color: Theme.of(_context).primaryColor,
       fontSize: fontSize,
       fontWeight: fontWeight
     );

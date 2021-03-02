@@ -1,21 +1,23 @@
+import 'package:flutter/material.dart';
 import 'package:gap/data/models/entities/custom_form_field/variable/variable_form_field.dart';
 
 class SingleValueFormField extends VariableFormField{
-  String value;
+  @protected
+  dynamic uniqueValue;
   String placeholder;
   
   SingleValueFormField.fromJson(Map<String, dynamic> json):
-    value = json['value'],
+    uniqueValue = json['value'],
     placeholder = json['placeholder'],
     super.fromJson(json)
     ;
 
   Map<String, dynamic> toJson(){
     final Map<String, dynamic> json = super.toJson();
-    json['value'] = value;
+    json['value'] = uniqueValue;
     json['placeholder'] = placeholder;
     return json;
   }
 
-  bool get isCompleted => ![null, ''].contains(value);
+  bool get isCompleted => ![null, ''].contains(uniqueValue);
 }

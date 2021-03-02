@@ -2,10 +2,12 @@ import 'package:gap/data/models/entities/custom_form_field/variable/single_value
 import 'package:gap/data/models/entities/entities.dart';
 
 abstract class RawTextFormField extends SingleValueFormField{
+
+  static final int defaultMaxLength = 2000;
   int maxLength;
 
   RawTextFormField.fromJson(Map<String, dynamic> json):
-    maxLength = json['maxlength'],
+    maxLength = json['maxlength']??defaultMaxLength,
     super.fromJson(json)
     ;
 
@@ -13,6 +15,11 @@ abstract class RawTextFormField extends SingleValueFormField{
     final Map<String, dynamic> json = super.toJson();
     json['maxlength'] = maxLength;
     return json;
+  }
+
+  String get value => super.uniqueValue;
+  set value(String newValue){
+    super.uniqueValue = newValue;
   }
 }
 
@@ -30,11 +37,13 @@ class UniqueLineText extends RawTextFormField{
 }
 
 class TextArea extends RawTextFormField{
+
+  static final defaultNumberOfRows = 5;  
   TextAreaSubType subType;
   int rows;
   TextArea.fromJson(Map<String, dynamic> json):
     subType = TextAreaSubType.fromValue(json['subtype']),
-    rows = json['rows'],
+    rows = json['rows']??defaultNumberOfRows,
     super.fromJson(json)
     ;
     

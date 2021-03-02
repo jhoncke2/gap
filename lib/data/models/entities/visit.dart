@@ -58,7 +58,7 @@ class Visit extends EntityWithStage{
     id: json['id'],
     completo: json['completo'],
     //TODO: Arreglar cuando me hayan informado qué hacer
-    date: json['fecha'] == null? DateTime.now() : _transformStringInToDate(json['fecha']),
+    date: json['fecha'] == null? DateTime.now() : transformStringInToDate(json['fecha']),
     sede: Sede.fromJson(json['sede']),
     formularios: formulariosFromJson((json["formularios"]).cast<Map<String, dynamic>>()),
   );
@@ -68,12 +68,12 @@ class Visit extends EntityWithStage{
     final Map<String, dynamic> json = super.toJson();
     json['sede'] = sede.toJson();
     json['completo'] = (stage.value == 'realizada')? true : false;
-    json['fecha'] = _transformDateInToString(date);
+    json['fecha'] = transformDateInToString(date);
     json['formularios'] = formulariosToJson(formularios);
     return json;
   }
 
-  String get stringDate => _transformDateInToString(date);
+  String get stringDate => transformDateInToString(date);
 }
 
 class Sede {

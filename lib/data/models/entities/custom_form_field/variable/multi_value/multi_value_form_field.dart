@@ -1,7 +1,7 @@
 import 'package:gap/data/models/entities/custom_form_field/variable/variable_form_field.dart';
 
 class MultiValueFormField extends VariableFormField{
-  List<Value> values;
+  List<MultiFormFieldValue> values;
   //TODO: Averiguar qué significa
   bool multiple;
   MultiValueFormField.fromJson(Map<String, dynamic> json): 
@@ -19,15 +19,15 @@ class MultiValueFormField extends VariableFormField{
 
   bool get isCompleted => values.where((value) => _valueIsReallySelected(value)).length > 0;
 
-  bool _valueIsReallySelected(Value v) => (v.selected && v.value != null);
+  bool _valueIsReallySelected(MultiFormFieldValue v) => (v.selected && v.value != null);
 }
 
-List<Value> _valuesFromJson(List<Map<String, dynamic>> jsonValues) => List<Value>.from(jsonValues.map((x) => Value.fromJson(x)));
-List<Map<String, dynamic>> valuesToJson(List<Value> values)=> List<Map<String, dynamic>>.from(values.map((v) => v.toJson()));
+List<MultiFormFieldValue> _valuesFromJson(List<Map<String, dynamic>> jsonValues) => List<MultiFormFieldValue>.from(jsonValues.map((x) => MultiFormFieldValue.fromJson(x)));
+List<Map<String, dynamic>> valuesToJson(List<MultiFormFieldValue> values)=> List<Map<String, dynamic>>.from(values.map((v) => v.toJson()));
 
 
-class Value {
-    Value({
+class MultiFormFieldValue {
+    MultiFormFieldValue({
         this.label,
         this.value,
         this.selected,
@@ -37,7 +37,7 @@ class Value {
     String value;
     bool selected;
 
-    factory Value.fromJson(Map<String, dynamic> json) => Value(
+    factory MultiFormFieldValue.fromJson(Map<String, dynamic> json) => MultiFormFieldValue(
         label: json["label"],
         value: json["value"],
         selected: json["selected"] == null ? false : json["selected"],

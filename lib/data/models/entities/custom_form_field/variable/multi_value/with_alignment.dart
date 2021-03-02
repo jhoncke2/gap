@@ -32,8 +32,8 @@ class CheckBoxGroup extends MultiValueWithAlignment{
   }
 }
 
-class RadioGroup extends MultiValueWithAlignment{
+class RadioGroupFormField extends MultiValueWithAlignment{
 
-  RadioGroup.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+  RadioGroupFormField.fromJson(Map<String, dynamic> json) : super.fromJson(json);
   Map<String, dynamic> toJson()=>super.toJson();
 }
