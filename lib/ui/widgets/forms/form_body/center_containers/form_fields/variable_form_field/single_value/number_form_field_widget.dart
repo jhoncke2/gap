@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/data/models/entities/custom_form_field/variable/single_value/number_form_field.dart';
 import 'package:gap/ui/utils/size_utils.dart';
+import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/variable_form_field/variable_form_field_container.dart';
 class NumberFormFieldWidget extends StatefulWidget{
   
   final NumberFormField number;
@@ -8,73 +9,84 @@ class NumberFormFieldWidget extends StatefulWidget{
 
   NumberFormFieldWidget({Key key, @required this.number}):
     _textFieldController = TextEditingController(text: number.placeholder),
-    super(key: key)
-    ;
+    super(key: Key('${number.name}')){
+      _textFieldController.selection = TextSelection.fromPosition(TextPosition(offset: _textFieldController.text.length));
+    }
+    
 
   @override
   _NumberFormFieldWidgetState createState() => _NumberFormFieldWidgetState();
 }
 
 class _NumberFormFieldWidgetState extends State<NumberFormFieldWidget> {
+
   final SizeUtils _sizeUtils = SizeUtils();
+  BuildContext _context;
+  int currentValue;
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          Text(
-            widget.number.label
-          ),
-          SizedBox(height: 10),
-          _createCounter()
-        ],
-      ),
+  void initState() {
+    widget._textFieldController.addListener(_onControllerChange);
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context){
+    _context = context;
+    return VariableFormFieldContainer(
+      title: widget.number.label,
+      child: _createCounter(),
     );
   }
 
   Widget _createCounter(){
     return Container(
-      width: _sizeUtils.xasisSobreYasis * 0.25,
+      width: _sizeUtils.xasisSobreYasis * 0.5,
       height: _sizeUtils.xasisSobreYasis * 0.17,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           _createCounterBox(),
-          SizedBox(width: 5),
+          SizedBox(width: 10),
           _createCounterButtons()
         ],
       ),
     );
   }
 
+  void _onControllerChange(){
+    print('controller.text: ${widget._textFieldController.text}');
+  }
+
   Widget _createCounterBox(){
+    widget._textFieldController.text = currentValue.toString();
     return Container(
-      width: _sizeUtils.xasisSobreYasis * 0.1,
+      width: _sizeUtils.xasisSobreYasis * 0.3,
       child: TextFormField(
         key: Key('${widget.number.name}_textfield'),
         controller: widget._textFieldController,
-        //initialValue: _defineInitialValue(),
         keyboardType: TextInputType.number,
         onChanged: _onChanged,
+        decoration: _createInputDecoration(),
+        textAlign: TextAlign.center,
       ),
     );
   }
 
-  String _defineInitialValue(){
-    if(widget.number.value != null)
-      return widget.number.value.toString();
-    else if(widget.number.placeholder != null)
-      return widget.number.placeholder;
-    return null;
+  InputDecoration _createInputDecoration(){
+    return InputDecoration(
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(20)
+      )
+    );
   }
 
   void _onChanged(String newValue){
-    final int newNum = int.parse(newValue);
-    if(!_newNumberIsBetweenLimits(newNum))
+    currentValue = int.parse(newValue);
+    if(!_newNumberIsBetweenLimits(currentValue))
       return;
-    widget.number.value = newNum;
-    widget._textFieldController.text = newValue;
+    widget.number.value = currentValue;
   }
 
   bool _newNumberIsBetweenLimits(int newNumber){
@@ -93,23 +105,33 @@ class _NumberFormFieldWidgetState extends State<NumberFormFieldWidget> {
 
   Widget _createCounterButtons(){
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         _createCounterButton(Icons.add, _plus, Key('${widget.number.name}_plus')),
+        SizedBox(height: 5),
         _createCounterButton(Icons.remove, _subtract, Key('${widget.number.name}_subtract'))
       ],
     );
   }
 
   Widget _createCounterButton(IconData icon, Function operation, Key key){
-    return MaterialButton(
-      key: key,
-      height: _sizeUtils.xasisSobreYasis * 0.01,
-      minWidth: _sizeUtils.xasisSobreYasis * 0.02,
-      child: Icon(
-        icon,
-        size: _sizeUtils.xasisSobreYasis * 0.03
+    return Container(
+      height: _sizeUtils.xasisSobreYasis * 0.05,
+      width: _sizeUtils.xasisSobreYasis * 0.05,
+      child: RaisedButton(
+        padding: EdgeInsets.zero,
+        elevation: 0,
+        key: key,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10)
+        ),
+        color: Theme.of(_context).primaryColor.withOpacity(0.3),
+        child: Icon(
+          icon,
+          size: _sizeUtils.littleIconSize
+        ),
+        onPressed: (){_onChangeByButtons(operation);},
       ),
-      onPressed: (){_onChangeByButtons(operation);},
     );
   }
 
@@ -122,8 +144,11 @@ class _NumberFormFieldWidgetState extends State<NumberFormFieldWidget> {
   }
 
   void _onChangeByButtons(Function operateNumberValue){
-    int newNumber = _obtainInitialNumberForCounterButtons(operateNumberValue);
-    _onChanged(newNumber.toString());
+    currentValue = _obtainInitialNumberForCounterButtons(operateNumberValue);
+    if(_newNumberIsBetweenLimits(currentValue)){
+      widget.number.value = currentValue;
+      widget._textFieldController.text = currentValue.toString();
+    }
   }
 
   int _obtainInitialNumberForCounterButtons(Function operateNumberValue){

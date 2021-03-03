@@ -24,7 +24,7 @@ void _testFalseFieldsAreCompleted(){
 void _tryTestFalseFieldsAreCompleted(){
   testingForm = Formulario.fromJson(fakeData.formAtFormFieldsFillingOut);
   // ignore: invalid_use_of_protected_member
-  expect(testingForm.fieldsAreCompleted(), false, reason: 'el método deberia dar false, pues los fields no están completos');
+  expect(testingForm.allFieldsAreCompleted(), false, reason: 'el método deberia dar false, pues los fields no están completos');
 }
 
 void _testTrueFieldsAreCompleted(){
@@ -40,7 +40,7 @@ void _testTrueFieldsAreCompleted(){
 void _tryTestTrueFieldsAreCompleted(){
   testingForm = Formulario.fromJson(fakeData.formAtFirstFirmerFillingOut);
   // ignore: invalid_use_of_protected_member
-  expect(testingForm.fieldsAreCompleted(), true, reason: 'el método deberia dar true, pues los fields sí están completos');
+  expect(testingForm.allFieldsAreCompleted(), true, reason: 'el método deberia dar true, pues los fields sí están completos');
 }
 
 void _testFormStep(){

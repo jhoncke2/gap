@@ -27,7 +27,6 @@ class _AlignmentedMultiOptionListState extends State<AlignmentedMultiOptionList>
   Widget build(BuildContext context) {
     _defineListOfItems();
     return Container(
-      height: _sizeUtils.xasisSobreYasis * 0.2,
       width: double.infinity,
        child: _items,
     );

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:gap/data/models/entities/custom_form_field/variable/single_value/single_value_form_field.dart';
 
 import '../../../entities.dart';
@@ -34,8 +35,10 @@ class TimeField extends SingleValuePickerFormField{
   TimeField.fromJson(Map<String, dynamic> json) : super.fromJson(json);
   Map<String, dynamic> toJson()=>super.toJson();
 
-  Duration get value => transformStringIntoDuration(super.uniqueValue);
-  set value(Duration newDuration){
-    super.uniqueValue = transformDurationInToString(newDuration);
+  TimeOfDay get value => super.uniqueValue == null? null : transformStringIntoTime(super.uniqueValue);
+  set value(TimeOfDay newDuration){
+    super.uniqueValue = transformTimeInToString(newDuration);
   }
+
+  String get valueAsString => super.uniqueValue == null? null :  uniqueValue;
 }

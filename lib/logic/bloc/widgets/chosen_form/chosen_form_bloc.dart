@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:gap/data/models/entities/custom_form_field/static/static_form_field.dart';
 import 'package:gap/data/models/entities/entities.dart';
 import 'package:meta/meta.dart';
 

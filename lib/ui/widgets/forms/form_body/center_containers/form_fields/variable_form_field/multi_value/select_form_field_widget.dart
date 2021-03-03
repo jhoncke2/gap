@@ -1,20 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:gap/data/models/entities/custom_form_field/variable/multi_value/multi_value_form_field.dart';
 import 'package:gap/data/models/entities/custom_form_field/variable/multi_value/select.dart';
+import 'package:gap/ui/utils/size_utils.dart';
+import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/variable_form_field/variable_form_field_container.dart';
 class SelectFormFieldWidget extends StatelessWidget {
   final SelectFormField selectFormField;
   SelectFormFieldWidget({Key key, @required this.selectFormField}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          Text(selectFormField.label),
-          SizedBox(height: 10),
-          _CustomSelect(selectFormField: selectFormField)
-        ],
-      ),
+    return VariableFormFieldContainer(
+      title: selectFormField.label,
+      child: _CustomSelect(selectFormField: selectFormField),
     );
   }
 }
@@ -29,16 +26,29 @@ class _CustomSelect extends StatefulWidget {
 
 class __CustomSelectState extends State<_CustomSelect> {
 
+  final SizeUtils _sizeUtils = SizeUtils();
   String _currentSelectedValue;
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: EdgeInsets.symmetric(horizontal: 15),
+      decoration: _createMainContainerDecoration(),
       child: DropdownButton<String>(
         items: _createItems(),
         value: _currentSelectedValue,
         onChanged: _onChanged,
       ),
+    );
+  }
+
+  BoxDecoration _createMainContainerDecoration(){
+    return BoxDecoration(
+      border: Border.all(
+        color: Theme.of(context).primaryColor,
+        width: 1.0
+      ),
+      borderRadius: BorderRadius.circular(25)
     );
   }
 

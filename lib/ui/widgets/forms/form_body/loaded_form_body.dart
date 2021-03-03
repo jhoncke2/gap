@@ -51,7 +51,6 @@ class LoadedFormBody extends StatelessWidget{
       right: _sizeUtils.xasisSobreYasis * 0.045
     );
   }
-  
 }
 
 // ignore: must_be_immutable

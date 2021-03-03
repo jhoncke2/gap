@@ -66,7 +66,7 @@ class SizeUtils{
   }
 
   double get littleIconSize{
-    return _xasisYasisProm * 0.045;
+    return _xasisYasisProm * 0.0425;
   }
 
   double get normalIconSize{

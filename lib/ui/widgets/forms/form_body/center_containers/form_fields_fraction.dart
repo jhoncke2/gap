@@ -6,6 +6,7 @@ import 'package:gap/logic/bloc/widgets/index/index_bloc.dart';
 import 'package:gap/logic/blocs_manager/chosen_form_manager.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/form_field_widget_factory.dart';
+// ignore: must_be_immutable
 class FormInputsFraction extends StatelessWidget {
   final SizeUtils _sizeUtils = SizeUtils();
   BuildContext _context;
@@ -28,14 +29,17 @@ class FormInputsFraction extends StatelessWidget {
   }
 
   Widget _createFormFieldsWithIndex(){
+    List<CustomFormField> formFIeldsByPage = _getFormFIeldsByCurrentPage();
     return SingleChildScrollView(
       child: Container(
         height: _sizeUtils.xasisSobreYasis * 0.65,
         width: double.infinity,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: _createFormFieldItemsByPage(),
+        child: ListView.separated(
+          //mainAxisAlignment: MainAxisAlignment.spaceAround,
+          //crossAxisAlignment: CrossAxisAlignment.center,
+          itemCount: formFIeldsByPage.length,
+          separatorBuilder: (_, __)=>SizedBox(height: _sizeUtils.xasisSobreYasis * 0.05),
+          itemBuilder: (_, int i)=>FormFieldWidgetFactory.createFormFieldWidget(formFIeldsByPage[i]),
         ),
       )
     );
@@ -47,6 +51,13 @@ class FormInputsFraction extends StatelessWidget {
 
   Widget _createFormFieldsWithoutIndex(){
     return Container();
+  }
+
+  List<CustomFormField> _getFormFIeldsByCurrentPage(){
+    final int currentPage = _indexState.currentIndexPage;
+    final ChosenFormBloc cfBloc = BlocProvider.of<ChosenFormBloc>(_context);
+    final List<CustomFormField> formFieldsByCurrentPage = cfBloc.state.getFormFieldsByIndex(currentPage);
+    return formFieldsByCurrentPage;
   }
 
   List<Widget> _createFormFieldItemsByPage(){

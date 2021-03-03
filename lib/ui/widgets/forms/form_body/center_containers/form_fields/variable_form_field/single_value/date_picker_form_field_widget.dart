@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/data/models/entities/custom_form_field/variable/single_value/single_value_picker_form_field.dart';
 import 'package:gap/ui/utils/size_utils.dart';
+import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/variable_form_field/variable_form_field_container.dart';
 // ignore: must_be_immutable
 class DatePickerFormFieldWidget extends StatefulWidget {
 
@@ -14,30 +15,26 @@ class DatePickerFormFieldWidget extends StatefulWidget {
 }
 
 class _DatePickerFormFieldWidgetState extends State<DatePickerFormFieldWidget> {
-  final SizeUtils _sizeUtils = SizeUtils();
 
-  DateTime initialDate;
-
+  DateTime pickerInitialDate;
   BuildContext _context;
 
   @override
   Widget build(BuildContext context) {
     _context = context;
-    _defineInitialDate();
-    return Container(
-      child: Column(
-        children: [
-          Text(widget.dateFormField.label),
-          SizedBox(height: 10),
-          _createDatePickerButton(),
-        ],
-      )
+    _definePickerInitialDate();
+    return VariableFormFieldContainer(
+      title: widget.dateFormField.label,
+      child: _createDatePickerButton(),
     );
   }
 
   Widget _createDatePickerButton(){
     return MaterialButton(
-      color: Theme.of(_context).secondaryHeaderColor.withOpacity(0.1),
+      color: Theme.of(_context).primaryColor.withOpacity(0.2),
+      elevation: 0,
+      padding: EdgeInsets.symmetric(horizontal: 20),
+      shape: _createButtonShape(),
       child: Text(
         widget.dateFormField.valueAsString??'Seleccionar fecha',
         textDirection: TextDirection.ltr,
@@ -46,28 +43,29 @@ class _DatePickerFormFieldWidgetState extends State<DatePickerFormFieldWidget> {
     );
   }
 
+  ShapeBorder _createButtonShape(){
+    return RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(25),
+      side: BorderSide(
+        color: Theme.of(_context).primaryColor.withOpacity(0.4),
+        width: 1.25
+      )
+    );
+  }
+
   Future _onSelectDatePressed()async{
-    _defineInitialDate();
+    _definePickerInitialDate();
     final DateTime newDate = await showDatePicker(
       context: _context, 
-      initialDate: initialDate, 
+      initialDate: pickerInitialDate, 
       firstDate: DateTime(1930, 1, 1), 
       lastDate: DateTime(2035, 11, 11)
     );
     _onDateChanged(newDate);
   }
 
-  Widget _createCalendarDatePicker(){
-    return CalendarDatePicker(
-      firstDate: DateTime(1930, 1, 1),
-      lastDate: DateTime(2035, 11, 11),
-      initialDate: initialDate,
-      onDateChanged: _onDateChanged, 
-    );
-  }
-
-  void _defineInitialDate(){
-    initialDate = widget.dateFormField.value ?? widget.dateFormField.initialDate ?? DateTime.now();
+  void _definePickerInitialDate(){
+    pickerInitialDate = widget.dateFormField.value ?? widget.dateFormField.initialDate ?? DateTime.now();
   }
 
   void _onDateChanged(DateTime newDate){

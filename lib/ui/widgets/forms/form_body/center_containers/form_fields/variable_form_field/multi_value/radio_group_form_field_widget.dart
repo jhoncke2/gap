@@ -3,25 +3,27 @@ import 'package:gap/data/models/entities/custom_form_field/variable/multi_value/
 import 'package:gap/data/models/entities/custom_form_field/variable/multi_value/with_alignment.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/variable_form_field/multi_value/alignment_multi_option_list.dart';
-class RadiousGroupFormFieldWidget extends StatelessWidget {
-  final SizeUtils _sizeUtils = SizeUtils();
+import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/variable_form_field/variable_form_field_container.dart';
+class RadiousGroupFormFieldWidget extends StatefulWidget {
   final RadioGroupFormField radioGroupFormField;
 
   RadiousGroupFormFieldWidget({Key key, @required this.radioGroupFormField}) : super(key: key);
 
   @override
+  _RadiousGroupFormFieldWidgetState createState() => _RadiousGroupFormFieldWidgetState();
+}
+
+class _RadiousGroupFormFieldWidgetState extends State<RadiousGroupFormFieldWidget> {
+  final SizeUtils _sizeUtils = SizeUtils();
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          Text(radioGroupFormField.label),
-          SizedBox(height: 10),
-          AlignmentedMultiOptionList(
-            withVerticalAlignment: radioGroupFormField.withVerticalAlignment, 
-            values: radioGroupFormField.values, 
-            onItemCreated: _onItemCreated
-          )
-        ],
+    return VariableFormFieldContainer(
+      title: widget.radioGroupFormField.label,
+      child: AlignmentedMultiOptionList(
+        withVerticalAlignment: widget.radioGroupFormField.withVerticalAlignment, 
+        values: widget.radioGroupFormField.values, 
+        onItemCreated: _onItemCreated
       ),
     );
   }
@@ -31,22 +33,42 @@ class RadiousGroupFormFieldWidget extends StatelessWidget {
       margin: EdgeInsets.symmetric(vertical: 5),
       width: _sizeUtils.xasisSobreYasis * 0.25,
       child: RadioListTile<String>(
+        key: Key('${widget.radioGroupFormField.name}_${value.value}'),
         title: Text(value.label),
-        groupValue: radioGroupFormField.name,
-        value: value.value,
+        groupValue: _getSelectedValueValue(),
+        value: '${widget.radioGroupFormField.name}_${value.value}',
+        selected: value.selected,
+        activeColor: Colors.lightGreen[600],
         onChanged: (String newSelected){
-          onSetState((){
-            _changeItemStateByNewSelected(value, newSelected);
+          setState(() {
+            _changeItemStateByNewSelected(value, newSelected); 
+            
           });
         },
       ),
     );
   }
-  
+
+  String _getSelectedValueValue(){
+    final List<MultiFormFieldValue> selected = widget.radioGroupFormField.values.where((element) => element.selected).toList();
+    if(selected.length > 0)
+      return _getUniqueValue(selected[0].value);
+    return ''; 
+  }
+
   void _changeItemStateByNewSelected(MultiFormFieldValue value, String newSelected){
-    if(value.value == newSelected)
-      value.selected = true;
-    else
-      value.selected = false;    
+    _disSelectAll();
+    if(_getUniqueValue(value.value) == newSelected)
+      value.selected = true;  
+  }
+
+  String _getUniqueValue(String value){
+    return '${widget.radioGroupFormField.name}_$value';
+  }
+
+  void _disSelectAll(){
+    widget.radioGroupFormField.values.forEach((element) {
+      element.selected = false;
+    });
   }
 }

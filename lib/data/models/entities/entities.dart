@@ -38,6 +38,7 @@ String transformDateInToString(DateTime date){
   return '${date.year}-${date.month}-${date.day}';
 }
 
+/*
 DateTime transformStringInToTime(String stringTime){
   final List<String> stringTimeParts = stringTime.split(':');
   final int hour = int.parse(stringTimeParts[0]);
@@ -50,15 +51,16 @@ DateTime transformStringInToTime(String stringTime){
 String transformTimeInToString(DateTime time){
   return '${time.hour}:${time.minute}';
 }
+*/
 
-Duration transformStringIntoDuration(String stringDuration){
+TimeOfDay transformStringIntoTime(String stringDuration){
   final List<String> stringDurationParts = stringDuration.split(':');
-  final int hours = int.parse(stringDurationParts[0]);
-  final int minutes = int.parse(stringDurationParts[1]);
-  final Duration duration = Duration(hours: hours, minutes: minutes);
-  return duration;
+  final int hour = int.parse(stringDurationParts[0]);
+  final int minute = int.parse(stringDurationParts[1]);
+  final TimeOfDay time = TimeOfDay(hour: hour, minute: minute);
+  return time;
 }
 
-String transformDurationInToString(Duration duration){
-  return '${duration.inHours}:${duration.inMinutes}';
+String transformTimeInToString(TimeOfDay time){
+  return '${time.hour}:${time.minute}';
 }

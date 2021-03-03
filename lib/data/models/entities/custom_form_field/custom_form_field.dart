@@ -11,9 +11,11 @@ String customFormFieldsToJson(List<CustomFormField> data) => json.encode(List<dy
 class CustomFormField {
     CustomFormField({
         this.type,
-        this.label,
+        String label,
         this.other,
-    });
+    }):
+      this.label = label.replaceAll(RegExp(r'&nbsp;'), ' ')
+    ;
 
     FormFieldType type;
     String label;
@@ -50,7 +52,7 @@ class CustomFormField {
 
     Map<String, dynamic> toJson() => {
         "type": typeValues.reverse[type],
-        "label": label,
+        "label": label.replaceAll(RegExp(r' '), '&nbsp;'),
     };
 }
 

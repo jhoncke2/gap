@@ -33,7 +33,7 @@ Future _testHeaderFormFieldWidgetCreationH1(WidgetTester tester)async{
   final titleFinder = find.text(headerFormFieldH1.label);
   expect(titleFinder, findsOneWidget, reason: 'Debe haber un widget text con el texto introducido');
   expect(headerWidget.textStyle.fontWeight, FontWeight.bold, reason: 'El fontweight del titulo deberia ser bold');
-  expect(headerWidget.textStyle.fontSize, app.sizeUtils.subtitleSize);
+  expect(headerWidget.textStyle.fontSize, app.sizeUtils.subtitleSize * headerWidget.h1FontSizePercentage);
 }
 
 Future _testHeaderFormFieldWidgetCreationH6(WidgetTester tester)async{
@@ -43,5 +43,5 @@ Future _testHeaderFormFieldWidgetCreationH6(WidgetTester tester)async{
   final titleFinder = find.text(headerFormFieldH6.label);
   expect(titleFinder, findsOneWidget, reason: 'Debe haber un widget text con el texto introducido');
   expect(headerWidget.textStyle.fontWeight, FontWeight.w600, reason: 'El fontweight del titulo deberia ser bold');
-  expect(headerWidget.textStyle.fontSize, app.sizeUtils.subtitleSize * 0.7);
+  expect(headerWidget.textStyle.fontSize, app.sizeUtils.subtitleSize * headerWidget.h6FontSizePercentage);
 }
