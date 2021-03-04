@@ -22,7 +22,7 @@ class BottomFirmsOptions extends StatelessWidget {
       builder: (context, state) {
         _defineOnPressedButtonsFunctions();
         return Container(
-          height: _sizeUtils.xasisSobreYasis * 0.3,
+          //height: _sizeUtils.xasisSobreYasis * 0.3,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [_createAddFirmButton(), _createFinishButton()],

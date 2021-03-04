@@ -24,6 +24,8 @@ abstract class DataDistributor{
   final Map<BlocName, ChangeNotifier> singletonesAsMap = BlocProvidersCreator.singletonesAsMap;
   Map<NavigationRoute, dynamic> dataAddedToBlocsByExistingNavs = {};
 
+  Future<void> updateAccessToken()async{}
+
   Future<void> updateProjects()async{}
 
   Future<void> updateChosenProject(Project project)async{
@@ -53,7 +55,7 @@ abstract class DataDistributor{
     formsBloc.add(chooseFormEvent);
     final ChosenFormBloc chosenFormB = blocsAsMap[BlocName.ChosenForm];
     await ChosenFormStorageManager.setChosenForm(form);
-    await _chooseChosenFormStep(form, chosenFormB);
+    await _chooseChosenFormStep(form, chosenFormB, formsBloc);
   }
 
   void _onEndInitFormFillingOut(int formFieldsPages){
@@ -61,35 +63,52 @@ abstract class DataDistributor{
     indexBloc.add(ChangeNPages(nPages: formFieldsPages));
   }
 
-  Future _chooseChosenFormStep(Formulario form, ChosenFormBloc chosenFormB)async{
+  Future _chooseChosenFormStep(Formulario form, ChosenFormBloc chosenFormB, FormulariosBloc formsB)async{
     switch(form.formStep){ 
       case FormStep.WithoutForm:
         break;
       case FormStep.OnForm:
-        chosenFormB.add(InitFormFillingOut(formulario: form, onEndEvent: _onEndInitFormFillingOut));
+        _initOnForm(form, chosenFormB, formsB);
         break;
       case FormStep.OnFirstFirmerInformation:
-        chosenFormB.add(InitFirstFirmerFillingOut());
+        _initOnFirstFirmerInformation(chosenFormB, formsB);
         break;
       case FormStep.OnFirstFirmerFirm:
+        _initOnFirstFirmerFirm(form, chosenFormB, formsB);
         break;
       case FormStep.OnSecondaryFirms:
-        chosenFormB.add(InitFirmsFillingOut());
+        _onSecondaryFirms(form, chosenFormB, formsB);
         break;
     }
   }
 
+  void _initOnForm(Formulario form, ChosenFormBloc chosenFormB, FormulariosBloc formsB){
+    chosenFormB.add(InitFormFillingOut(formulario: form, onEndEvent: _onEndInitFormFillingOut));
+  }
+
+  void _initOnFirstFirmerInformation(ChosenFormBloc chosenFormB, FormulariosBloc formsB){
+    chosenFormB.add(InitFirstFirmerFillingOut());
+  }
+
+  void _initOnFirstFirmerFirm(form, ChosenFormBloc chosenFormB, formsB){
+    chosenFormB.add(InitFirstFirmerFirm());
+  }
+
+  void _onSecondaryFirms(Formulario form, ChosenFormBloc chosenFormB, FormulariosBloc formsB){
+    chosenFormB.add(InitFirmsFillingOut());
+  }
+
+  void _updateChosenFormStage(FormulariosBloc formsB, FormStep fStep){
+    formsB.state.chosenForm.formStep = fStep;
+  }
+
   Future advanceOnFormFieldsPage()async{
-    //TODO: Falta terminar cuando estén los formularios del back
     final FormulariosBloc formsB = blocsAsMap[BlocName.Formularios];
-    final Formulario chosenForm = formsB.state.chosenForm;
     final ChosenFormBloc chosenFormB = blocsAsMap[BlocName.ChosenForm];
-    //final List<CustomFormField> fields = chosenFormB.state.allFields;
-    //chosenForm.campos = customFormFieldsToJson(fields);
-    ChosenFormStorageManager.setChosenForm(chosenForm);
-    final VisitsBloc visitsB = blocsAsMap[BlocName.Visits];
-    await PreloadedFormsStorageManager.setPreloadedForm(chosenForm, visitsB.state.chosenVisit.id);
-    //TODO: await pudateIndex?
+    final Formulario chosenForm = formsB.state.chosenForm;
+    chosenForm.advanceInStep();
+    _chooseChosenFormStep(chosenForm, chosenFormB, formsB);
+    await _updateChosenFormInStorage();
   }
 
   Future updateIndex(IndexState indexState)async{
@@ -101,19 +120,34 @@ abstract class DataDistributor{
     final FormulariosBloc formsB = blocsAsMap[BlocName.Formularios];
     final Formulario chosenForm = formsB.state.chosenForm;
     chosenForm.firmers = chosenFormB.state.firmers;
-    await ChosenFormStorageManager.setChosenForm(chosenForm);
     final VisitsBloc visitsB = blocsAsMap[BlocName.Visits];
+    //_updateFormStepInFirmers(chosenForm);
+    await ChosenFormStorageManager.setChosenForm(chosenForm);
     await PreloadedFormsStorageManager.setPreloadedForm(chosenForm, visitsB.state.chosenVisit.id);
     _addNewFirmer(InitFirmsFillingOut());
   }
 
-  void initFirstFirmerFillingOut(){
+  void _updateFormStepInFirmers(Formulario form){
+    if(form.formStep != FormStep.OnSecondaryFirms)
+      form.advanceInStep();
+  }
+  
+  Future initFirstFirmerFillingOut()async{
     final ChosenFormBloc chosenFormB = blocsAsMap[BlocName.ChosenForm];
     chosenFormB.add(InitFirmsFillingOut());
+    await _updateChosenFormInStorage();
   }
 
   void initFirstFirmerFirm(){
     _addNewFirmer(InitFirstFirmerFirm());
+  }
+
+  Future _updateChosenFormInStorage()async{
+    final FormulariosBloc formsB = blocsAsMap[BlocName.Formularios];
+    final Formulario chosenForm = formsB.state.chosenForm;
+    final VisitsBloc visitsB = blocsAsMap[BlocName.Visits];
+    await ChosenFormStorageManager.setChosenForm(chosenForm);
+    await PreloadedFormsStorageManager.setPreloadedForm(chosenForm, visitsB.state.chosenVisit.id);
   }
 
   void _addNewFirmer(ChosenFormEvent cfEvent){

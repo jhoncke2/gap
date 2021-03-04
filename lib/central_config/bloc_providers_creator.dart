@@ -60,7 +60,7 @@ class BlocProvidersCreator{
     BlocName.Images: imagesBloc,
     BlocName.CommentedImages: commentedImagesBloc,
     BlocName.FirmPaint: firmPaintBloc,
-    BlocName.UserBloc: userBloc,
+    BlocName.User: userBloc,
     
   };
 

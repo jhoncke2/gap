@@ -9,7 +9,7 @@ import 'package:gap/ui/pages/init_page.dart';
 
 void main()async{
   WidgetsFlutterBinding.ensureInitialized();
-  await doInitialConfig();
+  doInitialConfig();
   return runApp(GapApp());
 }
 

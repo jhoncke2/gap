@@ -20,9 +20,7 @@ part 'old_entities/old_custom_form_field.dart';
 part 'personal_information.dart';
 part 'commented_image.dart';
 part 'custom_form_field/custom_form_field.dart';
-part 'formulario_temp.dart';
 part 'visit_temp.dart';
-
 
 //Date format: yyyy-mm-dd
 DateTime transformStringInToDate(String stringDate){
@@ -63,4 +61,18 @@ TimeOfDay transformStringIntoTime(String stringDuration){
 
 String transformTimeInToString(TimeOfDay time){
   return '${time.hour}:${time.minute}';
+}
+
+class EnumValues<T> {
+    Map<String, T> map;
+    Map<T, String> reverseMap;
+
+    EnumValues(this.map);
+
+    Map<T, String> get reverse {
+        if (reverseMap == null) {
+            reverseMap = map.map((k, v) => new MapEntry(v, k));
+        }
+        return reverseMap;
+    }
 }

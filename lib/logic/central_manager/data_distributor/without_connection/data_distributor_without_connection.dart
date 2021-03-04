@@ -2,15 +2,24 @@ import 'package:gap/data/enums/enums.dart';
 import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/logic/bloc/entities/projects/projects_bloc.dart';
+import 'package:gap/logic/bloc/entities/user/user_bloc.dart';
 import 'package:gap/logic/bloc/entities/visits/visits_bloc.dart';
-import 'package:gap/logic/central_manager/data_distributor/source_data_to_bloc/data_distributor.dart';
+import 'package:gap/logic/central_manager/data_distributor/data_distributor.dart';
 import 'package:gap/logic/storage_managers/forms/preloaded_forms_storage_manager.dart';
 import 'package:gap/logic/storage_managers/projects/projects_storage_manager.dart';
+import 'package:gap/logic/storage_managers/user/user_storage_manager.dart';
 import 'package:gap/logic/storage_managers/visits/preloaded_visits_storage_manager.dart';
 import 'package:gap/logic/storage_managers/visits/visits_storage_manager.dart';
 
 class SourceDataToBlocWithoutConnection extends DataDistributor{
   
+  @override
+  Future<void> updateAccessToken()async{
+    final String accessToken = await UserStorageManager.getAuthToken();
+    final UserBloc uBloc = blocsAsMap[BlocName.User];
+    uBloc.add(SetAccessToken(accessToken: accessToken));
+  }
+
   @override
   Future<void> updateProjects()async{
     final ProjectsBloc pBloc = blocsAsMap[BlocName.Projects];

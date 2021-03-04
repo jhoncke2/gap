@@ -9,7 +9,7 @@ enum DataSource{
 }
 
 enum BlocName{
-  UserBloc,
+  User,
   Projects,
   Visits,
   Formularios,

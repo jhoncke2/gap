@@ -88,7 +88,7 @@ class _ChangeFormStepButton extends StatelessWidget {
     }else{
       initNewStepEvent = InitFirstFirmerFirm();
     }
-    _ejecutarEvento(initNewStepEvent);
+    //_ejecutarEvento(initNewStepEvent);
     PagesNavigationManager.advanceOnChosenFormFieldsPage();
   }
 

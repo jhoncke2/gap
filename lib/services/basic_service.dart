@@ -9,6 +9,7 @@ enum RequestType{
   PUT,
   DELETE
 }
+
 abstract class BasicService{
   static final String apiUrl = 'https://gapfergon.com/api/';
   /** 
@@ -122,15 +123,15 @@ abstract class BasicService{
   void evaluateServerResponse(http.Response serverResponse){
     try{
       currentResponseBody = json.decode(serverResponse.body);
-      if(_currentResponseBodyHasNoErrorAsMap())
+      if(_currentResponseBodyHasErrorAsMap())
         throw ServiceStatusErr(status: currentResponseBody['code'], extraInformation: currentResponseBody['error']); 
     }catch(err){
       throw ServiceStatusErr(status: serverResponse.statusCode, message: serverResponse.reasonPhrase, extraInformation: serverResponse.reasonPhrase);
     }
   }
 
-  bool _currentResponseBodyHasNoErrorAsMap(){
-    return currentResponseBody is Map && currentResponseBody['error'] != null;
+  bool _currentResponseBodyHasErrorAsMap(){
+    return currentResponseBody is Map && ![currentResponseBody['error'], currentResponseBody['errors']].contains(null);
   }
 
   /**

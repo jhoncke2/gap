@@ -6,13 +6,11 @@ List<Map<String, dynamic>> formulariosToJson(List<Formulario> data) => List<Map<
 
 class Formulario extends EntityWithStage {
   bool completo;
-  //TODO: Eliminar en su desuso
-  final Date dateOld = Date(DateTime.now());
   final DateTime date;
-  OldCustomFormFields fieldsContainer = OldCustomFormFields([]);
   List<PersonalInformation> firmers;
   FormStep _formStep;
   List<CustomFormField> campos;
+  int formStepIndex;
 
   Formulario({
     int id,
@@ -21,61 +19,27 @@ class Formulario extends EntityWithStage {
     this.campos,
     ProcessStage stage,
     this.date,
-    this.firmers
-  }):super(
+    this.firmers,
+    int formStepIndex
+  }):
+  this.formStepIndex = formStepIndex ?? 1,
+  super(
     id:id,
     name: nombre,
     stage:stage
-  ){
-    _initFormStep();
-  }
+  );
 
   factory Formulario.fromJson(Map<String, dynamic> json) => Formulario(
-        id: json["formulario_pivot_id"],
-        completo: json["completo"],
-        nombre: json["nombre"],
-        //campos: customFormFieldsFromJsonString(json["campos"].toString()),
-        campos: customFormFieldsFromJsonString(json['campos']),
-        //campos: [],
-        date: transformStringInToDate(json['fecha']??'2021-02-28'),
-        firmers: PersonalInformations.fromJson((json['firmers']??[]).cast<Map<String, dynamic>>()).personalInformations
-    );
+    id: json["formulario_pivot_id"],
+    completo: json["completo"],
+    nombre: json["nombre"],
+    //campos: customFormFieldsFromJsonString(json["campos"].toString()),
+    campos: customFormFieldsFromJsonString(json['campos']),
+    formStepIndex: json['form_step_index'] == null? 1 : stepsInOrder.indexOf( formStepValues.map[json['form_step_index']] ),
+    date: transformStringInToDate(json['fecha']??'2021-02-28'),
+    firmers: PersonalInformations.fromJson((json['firmers']??[]).cast<Map<String, dynamic>>()).personalInformations
+  );
 
-  void _initFormStep(){
-    if(allFieldsAreCompleted()){
-      if(!_thereAreFirmers())
-        _formStep = FormStep.OnFirstFirmerInformation;
-      else
-        _formStep = FormStep.OnSecondaryFirms;
-    }else{
-      _formStep = FormStep.OnForm;
-    }
-  }
-
-  bool allFieldsAreCompleted(){
-    if(campos.length == 0)
-      return true;
-    return thoseFormFieldsAreCompleted(campos);
-  }
-
-  bool _thereAreFirmers(){
-    return firmers != null && firmers.length > 0;
-  }
-  
-  String get initialDate => '${date.year}-${date.month}-${date.day}';
-  String get initialTime => '${date.hour}:${date.minute} Am';
-  List<OldCustomFormField> get fields => fieldsContainer.formFields;
-  FormStep get formStep => _formStep;
-
-  //TODO: Borrar en su desuso
-  bool subListOfCamposIsCompleted(int initIndex, int finalIndex){
-    final List<CustomFormField> subList = campos.sublist(initIndex, finalIndex);
-    for(CustomFormField cff in subList)
-      if(!_formFieldIsCompleted(cff))
-        return false;
-    return true;
-  }
-  
   @override
   Map<String, dynamic> toJson(){
     final Map<String, dynamic> json = super.toJson();
@@ -83,11 +47,21 @@ class Formulario extends EntityWithStage {
     json['nombre'] = name;
     json['completo'] = stage == ProcessStage.Realizada? true : false;
     json['date'] = date.toString();
-    json['fields'] = fieldsContainer.toJson();
     json['firmers'] = PersonalInformations.toJson(firmers??[]);
     json['fecha'] = initialDate;
     json['campos'] = customFormFieldsToJson(campos);
+    json['form_step_index'] = formStepValues.reverse[ stepsInOrder[_getIndexForJson()] ];
     return json;
+  }
+
+  int _getIndexForJson(){
+    return (stepsInOrder[formStepIndex] == FormStep.OnFirstFirmerFirm)? formStepIndex-1 : formStepIndex;
+  }
+
+  bool allFieldsAreCompleted(){
+    if(campos.length == 0)
+      return true;
+    return thoseFormFieldsAreCompleted(campos);
   }
 
   static bool thoseFormFieldsAreCompleted(List<CustomFormField> formFields){
@@ -101,28 +75,28 @@ class Formulario extends EntityWithStage {
     return !(cff is VariableFormField && cff.isRequired && !cff.isCompleted);
   }
   
+  String get initialDate => '${date.year}-${date.month}-${date.day}';
+  String get initialTime => '${date.hour}:${date.minute} Am';
+  FormStep get formStep => stepsInOrder[formStepIndex];
+  set formStep(FormStep formStep){
+    formStepIndex = stepsInOrder.indexWhere((element) => element == formStep);
+  }
+
+  void advanceInStep(){
+    formStepIndex = (++formStepIndex % stepsInOrder.length);
+  }
 }
 
+final List<FormStep> stepsInOrder = [
+  FormStep.WithoutForm,
+  FormStep.OnForm,
+  FormStep.OnFirstFirmerInformation,
+  FormStep.OnFirstFirmerFirm,
+  FormStep.OnSecondaryFirms
+];
 
-//TODO: Borrar en su desuso
-class Date{
-  final int year;
-  final int month;
-  final int day;
-  final int hour;
-  final int minute;
-  final String partOfDay; //AM o PM
-  final String _stringDateTime;
-
-  Date(DateTime dateTime):
-    this.year = dateTime.year,
-    this.month = dateTime.month,
-    this.day = dateTime.day,
-    this.hour = dateTime.hour % 12,
-    this.minute = dateTime.minute,
-    this.partOfDay = dateTime.hour > 12 ? 'AM' : 'PM',
-    this._stringDateTime = dateTime.toString()
-    ;
-
-  String toString() => _stringDateTime;
-}
+final formStepValues = EnumValues({
+  'on_form':FormStep.OnForm,
+  'on_first_firmer_information':FormStep.OnFirstFirmerInformation,
+  'on_secondary_firms':FormStep.OnSecondaryFirms
+});

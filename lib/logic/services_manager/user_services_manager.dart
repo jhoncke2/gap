@@ -14,7 +14,7 @@ class UserServicesManager{
     }on ServiceStatusErr catch(err){
       await dialogs.showErrDialog(context, err.message);
     }catch(err){
-      await dialogs.showErrDialog(context, 'Razón desconocida');
+      await dialogs.showErrDialog(context, err.toString());
     }
   }
 
@@ -34,7 +34,7 @@ class UserServicesManager{
 
   static Future _saveAccessToken(String accessToken, BuildContext context)async{
     UserBloc userBloc = BlocProvider.of<UserBloc>(context);
-    userBloc.add(SetAuthToken(authToken: accessToken));
+    userBloc.add(SetAccessToken(accessToken: accessToken));
     await UserStorageManager.setAuthToken(accessToken);
   }
 }

@@ -67,7 +67,7 @@ class _ChosenFormCurrentComponent extends StatelessWidget {
         _state = state;
         _elegirComponentsSegunFormState();
         return Container(
-          height: _sizeUtils.xasisSobreYasis * 0.85,
+          //height: _sizeUtils.xasisSobreYasis * 0.85,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

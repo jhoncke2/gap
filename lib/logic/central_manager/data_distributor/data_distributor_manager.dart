@@ -1,7 +1,7 @@
 import 'package:gap/data/enums/enums.dart';
-import 'package:gap/logic/central_manager/data_distributor/source_data_to_bloc/data_distributor.dart';
-import 'package:gap/logic/central_manager/data_distributor/source_data_to_bloc/with_connection/data_distributor_with_connection.dart';
-import 'package:gap/logic/central_manager/data_distributor/source_data_to_bloc/without_connection/data_distributor_without_connection.dart';
+import 'package:gap/logic/central_manager/data_distributor/data_distributor.dart';
+import 'package:gap/logic/central_manager/data_distributor/with_connection/data_distributor_with_connection.dart';
+import 'package:gap/logic/central_manager/data_distributor/without_connection/data_distributor_without_connection.dart';
 
 class DataDistributorManager{
   static final NetConnectionStateContainer _netConnectionContainer = NetConnectionStateContainer();

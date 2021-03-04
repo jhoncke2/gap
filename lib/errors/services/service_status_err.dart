@@ -23,7 +23,7 @@ class ServiceStatusErr extends CustomError{
 
   ServiceStatusErr({this.status, String message, dynamic extraInformation}) 
   :super(
-    type: ErrorTypes.SERVICE, 
+    type: ErrorType.SERVICE, 
     message: message,
     extraInformation: extraInformation
   ){

@@ -3,45 +3,46 @@ import 'package:gap/central_config/bloc_providers_creator.dart';
 import 'package:gap/data/enums/enums.dart';
 import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/errors/services/service_status_err.dart';
+import 'package:gap/errors/storage/unfound_storage_element_err.dart';
 import 'package:gap/logic/bloc/entities/user/user_bloc.dart';
 import 'package:gap/logic/bloc/nav_routes/routes_manager.dart';
 import 'package:gap/logic/blocs_manager/pages_navigation_manager.dart';
 import 'package:gap/logic/central_manager/data_distributor/data_distributor_manager.dart';
 import 'package:gap/logic/storage_managers/forms/chosen_form_storage_manager.dart';
 import 'package:gap/logic/storage_managers/projects/projects_storage_manager.dart';
-import 'package:gap/logic/storage_managers/user/user_storage_manager.dart';
 import 'package:gap/logic/storage_managers/visits/visits_storage_manager.dart';
 
 class DataInitializer{
   static final RoutesManager _routesManager = RoutesManager();
 
   static Future init(BuildContext context, NetConnectionState netConnState)async{
-    DataDistributorManager.netConnectionState = netConnState;
-    await _routesManager.loadRoute();
     try{
-      await _doAllNavigationByEvaluatingInitialConditions(context, netConnState);
-    }on ServiceStatusErr catch(err){
+      //_navigateToLogin(context, netConnState);
+      _tryInit(context, netConnState);
+    }on ServiceStatusErr catch(_){
       _navigateToLogin(context, netConnState);
+    }on UnfoundStorageElementErr catch(err){
+      if(err.elementType == StorageElementType)
+        _navigateToLogin(context, netConnState);
+      else
+        PagesNavigationManager.navToProjects();
     }catch(err){
       PagesNavigationManager.navToProjects();
     }
   }
 
+  static Future _tryInit(BuildContext context, NetConnectionState netConnState)async{
+    DataDistributorManager.netConnectionState = netConnState;
+    await _routesManager.loadRoute();
+    await _doAllNavigationByEvaluatingInitialConditions(context, netConnState);
+  }
+
   static Future _doAllNavigationByEvaluatingInitialConditions(BuildContext context, NetConnectionState netConnState)async{
-    if(await _hasToInitAtLogin()){
+    if(await _currentNavRouteIsLogin()){
       await _navigateToLogin(context, netConnState);
     }else{
       await _doAllNavigationTree(context);
     }
-  }
-
-  static Future<bool> _hasToInitAtLogin( )async{
-    return (await _authTokenDoesntExistInStorage() || await _currentNavRouteIsLogin());
-  }
-
-  static Future<bool> _authTokenDoesntExistInStorage()async{
-    final String authToken = await UserStorageManager.getAuthToken();
-    return (authToken == null);
   }
 
   static Future<bool> _currentNavRouteIsLogin()async{
@@ -62,6 +63,7 @@ class DataInitializer{
   }
 
   static Future _doAllNavigationTree(BuildContext context)async{
+    await DataDistributorManager.dataDistributor.updateAccessToken();
     final List<NavigationRoute> navRoutes = await _routesManager.routesTree;
     for(NavigationRoute nr in navRoutes){
       await _doNavigation(nr, context);

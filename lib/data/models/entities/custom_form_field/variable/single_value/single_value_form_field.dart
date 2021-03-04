@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:gap/data/models/entities/custom_form_field/variable/variable_form_field.dart';
 
 class SingleValueFormField extends VariableFormField{
-  @protected
   dynamic uniqueValue;
   String placeholder;
   

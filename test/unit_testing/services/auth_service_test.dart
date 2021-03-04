@@ -12,9 +12,15 @@ final Map<String, dynamic> successLoginInfo = {
   'password':'Partes2018'
 };
 
+String successAccessToken;
+
 void main(){
-  _testFailedLogin();
-  _testSuccessLogin();
+  group('se testeará succes/failed login y refresh_authtoken', (){
+    _testFailedLogin();
+    _testSuccessLogin();
+    _testRefreshAccessToken();
+  });
+  
 }
 
 void _testFailedLogin(){
@@ -25,7 +31,7 @@ void _testFailedLogin(){
       print(_);
       return;
     }catch(err){
-      fail('No debería ocurrir algún error que no sea ServiceStatus');
+      fail('No debería ocurrir algún error que no sea ServiceStatus: $err');
     }
   });
 }
@@ -42,7 +48,7 @@ void _testSuccessLogin(){
     }on ServiceStatusErr catch(se){
       fail('No debería ocurrir un ServiceStatusErr: ${se.status}::${se.message}');
     }catch(err){
-      fail('No debería ocurrir algún error que no sea ServiceStatus');
+      fail('No debería ocurrir algún error que no sea ServiceStatus: $err');
     }
   });
 }
@@ -52,4 +58,24 @@ Future _tryTestSuccessLogin()async{
   final Map<String, dynamic> originalData = loginResponse['data']['original'];
   expect(originalData, isNotNull, reason: 'el original data no debe ser null');
   expect(originalData['access_token'], isNotNull, reason: 'El token no debe ser null');
+  successAccessToken = originalData['access_token'];
+}
+
+Future _testRefreshAccessToken()async{
+  test('Se testeará método de refresh auth tokeen', ()async{
+    try{
+      await _tryRefreshAccessToken();
+    }on ServiceStatusErr catch(se){
+      fail('No debería ocurrir un ServiceStatusErr: ${se.status}::${se.message}');
+    }catch(err){
+      fail('No debería ocurrir algún error que no sea ServiceStatus: $err');
+    }
+  });
+}
+
+Future _tryRefreshAccessToken()async{
+  final Map<String, dynamic> response = await authService.refreshAuthToken(successAccessToken);
+  final originalData = response['data']['original'];
+  expect(originalData, isNotNull);
+  expect(originalData['access_token'], isNotNull);
 }

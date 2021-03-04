@@ -1,4 +1,5 @@
-enum ErrorTypes{
+enum ErrorType{
   SERVICE,
-  FILEFORMAT
+  FILEFORMAT,
+  UNFOUND_STORAGE_ELEMENT
 }

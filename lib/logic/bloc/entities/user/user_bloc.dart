@@ -13,8 +13,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   Stream<UserState> mapEventToState(
     UserEvent event,
   ) async* {
-    if(event is SetAuthToken){
-      yield state.copyWith(authTokenIsLoaded: true, authToken: event.authToken);
+    if(event is SetAccessToken){
+      yield state.copyWith(authTokenIsLoaded: true, authToken: event.accessToken);
     }else if(event is ChangeLoginButtopnAvaibleless){
       yield state.copyWith(loginButtonIsAvaible: event.isAvaible);
     }

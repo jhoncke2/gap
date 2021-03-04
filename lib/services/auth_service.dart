@@ -10,6 +10,14 @@ class AuthService extends BasicService{
     await executeGeneralEndOfRequest(requestType: RequestType.POST, headersAndBody: headersAndBody, requestUrl: requestUrl);
     return (currentResponseBody as Map).cast<String, dynamic>();
   }
+
+  Future<Map<String, dynamic>> refreshAuthToken(String oldToken)async{
+    final String requestUrl = _authUrl + 'refresh';
+    final Map<String, String> headers = {'Authorization':'Bearer $oldToken'};
+    final Map<String, Map<String, dynamic>> headersAndBody = createHeadersAndBodyForARequest(headers: headers);
+    await executeGeneralEndOfRequest(requestType: RequestType.POST, headersAndBody: headersAndBody, requestUrl: requestUrl);
+    return (currentResponseBody as Map).cast<String, dynamic>();
+  }
 }
 
 final AuthService authService = AuthService();

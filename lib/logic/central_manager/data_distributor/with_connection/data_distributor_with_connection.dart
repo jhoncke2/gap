@@ -2,8 +2,9 @@ import 'package:gap/data/enums/enums.dart';
 import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/logic/bloc/entities/projects/projects_bloc.dart';
+import 'package:gap/logic/bloc/entities/user/user_bloc.dart';
 import 'package:gap/logic/bloc/entities/visits/visits_bloc.dart';
-import 'package:gap/logic/central_manager/data_distributor/source_data_to_bloc/data_distributor.dart';
+import 'package:gap/logic/central_manager/data_distributor/data_distributor.dart';
 import 'package:gap/logic/services_manager/projects_services_manager.dart';
 import 'package:gap/logic/storage_managers/forms/formularios_storage_manager.dart';
 import 'package:gap/logic/storage_managers/forms/preloaded_forms_storage_manager.dart';
@@ -11,15 +12,23 @@ import 'package:gap/logic/storage_managers/projects/projects_storage_manager.dar
 import 'package:gap/logic/storage_managers/user/user_storage_manager.dart';
 import 'package:gap/logic/storage_managers/visits/preloaded_visits_storage_manager.dart';
 import 'package:gap/logic/storage_managers/visits/visits_storage_manager.dart';
+import 'package:gap/services/auth_service.dart';
 
 class DataDistributorWithConnection extends DataDistributor{
   
+  final _AuthTokenValidator _authTokenValidator = _AuthTokenValidator();
+
+  @override
+  Future updateAccessToken()async{
+    _authTokenValidator.userBloc = blocsAsMap[BlocName.User];
+    await _authTokenValidator.refreshAuthToken();
+  }
+
   @override
   Future<void> updateProjects()async{
     final ProjectsBloc pBloc = blocsAsMap[BlocName.Projects];
     //final UserBloc userBloc = blocsAsMap[BlocName.UserBloc];
     //final String accessToken = userBloc.state.authToken;
-    
     final String accessToken = await UserStorageManager.getAuthToken();
     final List<Project> projects = await ProjectsServicesManager.loadProjects(pBloc, accessToken);
     pBloc.add(SetProjects(projects: projects));
@@ -98,5 +107,26 @@ class DataDistributorWithConnection extends DataDistributor{
 
   Future _removeFormsFromStorage()async{
     await FormulariosStorageManager.removeForms();
+  }
+}
+
+class _AuthTokenValidator{
+
+  UserBloc userBloc;
+
+  Future refreshAuthToken()async{
+    final String authToken = await _obtainAuthTokenFromStorage();
+    await _refreshAuthToken(authToken);
+  }
+ 
+  Future _obtainAuthTokenFromStorage()async{
+    return await UserStorageManager.getAuthToken();
+  }
+
+  Future _refreshAuthToken(String authToken)async{
+    final Map<String, dynamic> authTokenResponse = await authService.refreshAuthToken(authToken);
+    authToken = authTokenResponse['data']['original']['access_token'];
+    await UserStorageManager.setAuthToken(authToken);
+    userBloc.add(SetAccessToken(accessToken: authToken));
   }
 }
