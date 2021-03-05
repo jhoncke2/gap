@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gap/data/models/entities/custom_form_field/variable/single_value/number_form_field.dart';
 import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/variable_form_field/single_value/number_form_field_widget.dart';
-import './mock_app.dart';
+import '../mock_app.dart';
+import './checkbox_test_data.dart' as data;
 
 NumberFormField numberWithDefaultValues = NumberFormField.fromJson({
   'type':'number',

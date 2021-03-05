@@ -121,31 +121,24 @@ abstract class BasicService{
   
   @protected
   void evaluateServerResponse(http.Response serverResponse){
+    _tryCurrentResponseBodyConvertion(serverResponse);
+    _throwExceptionIfResponseBodyHasErrorField();
+  }
+  
+  void _tryCurrentResponseBodyConvertion(http.Response serverResponse){
     try{
       currentResponseBody = json.decode(serverResponse.body);
-      if(_currentResponseBodyHasErrorAsMap())
-        throw ServiceStatusErr(status: currentResponseBody['code'], extraInformation: currentResponseBody['error']); 
     }catch(err){
       throw ServiceStatusErr(status: serverResponse.statusCode, message: serverResponse.reasonPhrase, extraInformation: serverResponse.reasonPhrase);
     }
   }
 
-  bool _currentResponseBodyHasErrorAsMap(){
-    return currentResponseBody is Map && ![currentResponseBody['error'], currentResponseBody['errors']].contains(null);
+  void _throwExceptionIfResponseBodyHasErrorField(){
+    if(_currentResponseBodyHasErrorAsMap())
+        throw ServiceStatusErr(status: currentResponseBody['code'], extraInformation: currentResponseBody['error']);
   }
 
-  /**
-   * generic function for copy and paste. 
-   * Only useful while develope phase
-   */
-  Future<void> _executeRequest(String authorizationToken, Map<String, dynamic> bodyData)async{
-    final String requestUrl = '';
-    final Map<String, dynamic> headersAndBody = {
-      'headers': {
-
-      },
-      'body': bodyData
-    };
-    await executeGeneralEndOfRequest(requestType: RequestType.GET, requestUrl: requestUrl, headersAndBody: headersAndBody);
+  bool _currentResponseBodyHasErrorAsMap(){
+    return currentResponseBody is Map && (currentResponseBody['error'] != null || currentResponseBody['errors'] != null);
   }
 }

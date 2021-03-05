@@ -6,11 +6,11 @@ class UserStorageManager{
   @protected
   static final String _authTokenKey = 'auth_token';
 
-  static Future<void> setAuthToken(String authToken)async{
+  static Future<void> setAccessToken(String authToken)async{
     await StorageConnectorSingleton.storageConnector.setStringResource(_authTokenKey, authToken);
   }
 
-  static Future<String> getAuthToken()async{
+  static Future<String> getAccessToken()async{
     final String authToken = await StorageConnectorSingleton.storageConnector.getStringResource(_authTokenKey);
     //TODO: Implementar lanzamiento de errores desde el storage connector.
     //_throwErrIfUnfound(authToken);

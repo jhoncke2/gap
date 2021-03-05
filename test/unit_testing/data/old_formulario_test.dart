@@ -1,6 +1,5 @@
 import 'package:gap/data/fake_data/fake_data.dart' as fakeData;
 import 'package:gap/data/models/entities/entities.dart';
-import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:test/test.dart';
 
 Formulario testingForm;
@@ -8,7 +7,6 @@ Formulario testingForm;
 void main(){
   _testFalseFieldsAreCompleted();
   _testTrueFieldsAreCompleted();
-  _testFormStep();
 }
 
 void _testFalseFieldsAreCompleted(){
@@ -41,19 +39,4 @@ void _tryTestTrueFieldsAreCompleted(){
   testingForm = Formulario.fromJson(fakeData.formAtFirstFirmerFillingOut);
   // ignore: invalid_use_of_protected_member
   expect(testingForm.allFieldsAreCompleted(), true, reason: 'el método deberia dar true, pues los fields sí están completos');
-}
-
-void _testFormStep(){
-  test('Se testeará el método are completed esperando que dé false', (){
-    _tryTestFormStep();
-  });
-} 
-
-void _tryTestFormStep(){
-  testingForm = Formulario.fromJson(fakeData.formAtFormFieldsFillingOut);
-  expect(testingForm.formStep, FormStep.OnForm, reason: 'El form step del formulario debe ser: on Form');
-  testingForm = Formulario.fromJson(fakeData.formAtFirstFirmerFillingOut);
-  expect(testingForm.formStep, FormStep.OnFirstFirmerInformation, reason: 'El form step del formulario debe ser: on iirst iirmer information');
-  testingForm = Formulario.fromJson(fakeData.formAtSecondaryFirmersFillingOut);
-  expect(testingForm.formStep, FormStep.OnSecondaryFirms, reason: 'El form step del formulario debe ser: on secondary firms');
 }

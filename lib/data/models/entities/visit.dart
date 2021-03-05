@@ -60,7 +60,14 @@ class Visit extends EntityWithStage{
     //TODO: Arreglar cuando me hayan informado qué hacer
     date: json['fecha'] == null? DateTime.now() : transformStringInToDate(json['fecha']),
     sede: Sede.fromJson(json['sede']),
-    formularios: formulariosFromJson((json["formularios"]).cast<Map<String, dynamic>>()),
+    formularios: formulariosFromJson((json["formularios"]??[]).cast<Map<String, dynamic>>()),
+  );
+
+  factory Visit.fromFormUpdatedResponseJson(Map<String, dynamic> json)=>Visit(
+    id: json['id'],
+    completo: json['completo']??true,
+    date: json['fecha'] == null? DateTime.now() : transformStringInToDate(json['fecha']),
+    sede: Sede.fromJson(json['sede']),
   );
 
   @override

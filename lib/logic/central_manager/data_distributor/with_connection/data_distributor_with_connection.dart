@@ -29,7 +29,7 @@ class DataDistributorWithConnection extends DataDistributor{
     final ProjectsBloc pBloc = blocsAsMap[BlocName.Projects];
     //final UserBloc userBloc = blocsAsMap[BlocName.UserBloc];
     //final String accessToken = userBloc.state.authToken;
-    final String accessToken = await UserStorageManager.getAuthToken();
+    final String accessToken = await UserStorageManager.getAccessToken();
     final List<Project> projects = await ProjectsServicesManager.loadProjects(pBloc, accessToken);
     pBloc.add(SetProjects(projects: projects));
   }
@@ -87,6 +87,23 @@ class DataDistributorWithConnection extends DataDistributor{
   }
 
   @override
+  Future endAllFormProcess()async{
+    final String accessToken = await UserStorageManager.getAccessToken();
+    final VisitsBloc visitsB = blocsAsMap[BlocName.Visits];
+    final Visit chosenVisit = visitsB.state.chosenVisit;
+    final FormulariosBloc formsB = blocsAsMap[BlocName.Formularios];
+    final Formulario chosenForm = formsB.state.chosenForm;
+    final Visit visitResponse = await ProjectsServicesManager.updateForm(chosenForm, chosenVisit.id, accessToken);
+    await _removeFormFromPreloadedStorageIfSuccessResponse(visitResponse, chosenForm.id, chosenVisit.id);
+  }
+
+  Future _removeFormFromPreloadedStorageIfSuccessResponse(Visit visitResponse, int formId, int visitId)async{
+    if(visitResponse.id !=  null)
+      await PreloadedFormsStorageManager.removePreloadedForm(formId, visitId);
+  }
+
+
+  @override
   Future resetForms()async{
     final VisitsBloc vBloc = blocsAsMap[BlocName.Visits];
     final Visit chosenVisit = vBloc.state.chosenVisit;
@@ -120,13 +137,13 @@ class _AuthTokenValidator{
   }
  
   Future _obtainAuthTokenFromStorage()async{
-    return await UserStorageManager.getAuthToken();
+    return await UserStorageManager.getAccessToken();
   }
 
   Future _refreshAuthToken(String authToken)async{
     final Map<String, dynamic> authTokenResponse = await authService.refreshAuthToken(authToken);
     authToken = authTokenResponse['data']['original']['access_token'];
-    await UserStorageManager.setAuthToken(authToken);
+    await UserStorageManager.setAccessToken(authToken);
     userBloc.add(SetAccessToken(accessToken: authToken));
   }
 }

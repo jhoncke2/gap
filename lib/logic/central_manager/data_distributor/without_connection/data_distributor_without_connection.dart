@@ -15,7 +15,7 @@ class SourceDataToBlocWithoutConnection extends DataDistributor{
   
   @override
   Future<void> updateAccessToken()async{
-    final String accessToken = await UserStorageManager.getAuthToken();
+    final String accessToken = await UserStorageManager.getAccessToken();
     final UserBloc uBloc = blocsAsMap[BlocName.User];
     uBloc.add(SetAccessToken(accessToken: accessToken));
   }

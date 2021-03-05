@@ -40,7 +40,7 @@ class MultiFormFieldValue {
     factory MultiFormFieldValue.fromJson(Map<String, dynamic> json) => MultiFormFieldValue(
         label: json["label"],
         value: json["value"],
-        selected: json["selected"] == null ? false : json["selected"],
+        selected: json["selected"] ?? false,
     );
 
     Map<String, dynamic> toJson() => {

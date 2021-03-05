@@ -32,7 +32,7 @@ void _onConnectionChanged(NetConnectionState newConnState){
 
 
 void _testAddAuthorizationToken(){
-  UserStorageManager.setAuthToken('new_auth_token');
+  UserStorageManager.setAccessToken('new_auth_token');
 }
 
 Future<void> _testRemovePartOfStorage()async{

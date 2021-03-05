@@ -31,7 +31,7 @@ void _testSetAuthToken(){
 }
 
 Future<void> _tryTestSetAuthToken()async{
-  await UserStorageManager.setAuthToken(fakeAuthToken);
+  await UserStorageManager.setAccessToken(fakeAuthToken);
 }
 
 void _testGetAuthToken(){
@@ -45,7 +45,7 @@ void _testGetAuthToken(){
 }
 
 Future<void> _tryTestGetAuthToken()async{
-  final String authToken = await UserStorageManager.getAuthToken();
+  final String authToken = await UserStorageManager.getAccessToken();
   expect(authToken, isNotNull, reason: 'El auth token en el storageSaver no debe ser null');
   expect(authToken, fakeAuthToken, reason: 'El auth token en el storageSaver debe ser igual al creado en este test');
 }

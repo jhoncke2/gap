@@ -11,12 +11,15 @@ import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/logic/bloc/widgets/commented_images/commented_images_bloc.dart';
 import 'package:gap/logic/bloc/widgets/firm_paint/firm_paint_bloc.dart';
 import 'package:gap/logic/bloc/widgets/index/index_bloc.dart';
+import 'package:gap/logic/services_manager/projects_services_manager.dart';
 import 'package:gap/logic/storage_managers/commented_images/commented_images_storage_manager.dart';
 import 'package:gap/logic/storage_managers/forms/chosen_form_storage_manager.dart';
 import 'package:gap/logic/storage_managers/forms/preloaded_forms_storage_manager.dart';
 import 'package:gap/logic/storage_managers/index/index_storage_manager.dart';
 import 'package:gap/logic/storage_managers/projects/projects_storage_manager.dart';
+import 'package:gap/logic/storage_managers/user/user_storage_manager.dart';
 import 'package:gap/logic/storage_managers/visits/visits_storage_manager.dart';
+import 'package:gap/services/projects_service.dart';
 
 abstract class DataDistributor{
 
@@ -127,10 +130,7 @@ abstract class DataDistributor{
     _addNewFirmer(InitFirmsFillingOut());
   }
 
-  void _updateFormStepInFirmers(Formulario form){
-    if(form.formStep != FormStep.OnSecondaryFirms)
-      form.advanceInStep();
-  }
+  Future endAllFormProcess()async{}
   
   Future initFirstFirmerFillingOut()async{
     final ChosenFormBloc chosenFormB = blocsAsMap[BlocName.ChosenForm];

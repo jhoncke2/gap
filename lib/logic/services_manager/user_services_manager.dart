@@ -35,6 +35,6 @@ class UserServicesManager{
   static Future _saveAccessToken(String accessToken, BuildContext context)async{
     UserBloc userBloc = BlocProvider.of<UserBloc>(context);
     userBloc.add(SetAccessToken(accessToken: accessToken));
-    await UserStorageManager.setAuthToken(accessToken);
+    await UserStorageManager.setAccessToken(accessToken);
   }
 }
