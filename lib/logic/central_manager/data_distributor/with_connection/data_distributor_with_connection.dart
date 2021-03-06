@@ -47,7 +47,6 @@ class DataDistributorWithConnection extends DataDistributor{
     final Project chosenProject = UploadedBlocsData.dataContainer[NavigationRoute.ProjectDetail];
     final List<Visit> visits = chosenProject.visits;
     vBloc.add(SetVisits(visits: visits));
-    //await VisitsServicesManager.loadVisits(vBloc);
   }
 
   @override
@@ -93,13 +92,17 @@ class DataDistributorWithConnection extends DataDistributor{
     final Visit chosenVisit = visitsB.state.chosenVisit;
     final FormulariosBloc formsB = blocsAsMap[BlocName.Formularios];
     final Formulario chosenForm = formsB.state.chosenForm;
-    final Visit visitResponse = await ProjectsServicesManager.updateForm(chosenForm, chosenVisit.id, accessToken);
+    final List<Map<String, dynamic>> visitResponse = await ProjectsServicesManager.updateForm(chosenForm, chosenVisit.id, accessToken);
     await _removeFormFromPreloadedStorageIfSuccessResponse(visitResponse, chosenForm.id, chosenVisit.id);
   }
 
-  Future _removeFormFromPreloadedStorageIfSuccessResponse(Visit visitResponse, int formId, int visitId)async{
-    if(visitResponse.id !=  null)
+  Future _removeFormFromPreloadedStorageIfSuccessResponse(List<Map<String, dynamic>> updatedFormResponse, int formId, int visitId)async{
+    if(_updatedFormResponseIsSuccessful(updatedFormResponse))
       await PreloadedFormsStorageManager.removePreloadedForm(formId, visitId);
+  }
+
+  bool _updatedFormResponseIsSuccessful(List<Map<String, dynamic>> updatedFormResponse){
+    return updatedFormResponse !=  null && updatedFormResponse.length > 0;
   }
 
 

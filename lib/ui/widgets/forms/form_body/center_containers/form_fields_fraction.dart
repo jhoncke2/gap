@@ -32,15 +32,16 @@ class FormInputsFraction extends StatelessWidget {
     List<CustomFormField> formFIeldsByPage = _getFormFIeldsByCurrentPage();
     return SingleChildScrollView(
       child: Container(
-        height: _sizeUtils.xasisSobreYasis * 0.65,
-        width: double.infinity,
         child: ListView.separated(
           //mainAxisAlignment: MainAxisAlignment.spaceAround,
           //crossAxisAlignment: CrossAxisAlignment.center,
           itemCount: formFIeldsByPage.length,
-          separatorBuilder: (_, __)=>SizedBox(height: _sizeUtils.xasisSobreYasis * 0.05),
+          separatorBuilder: (_, __)=>SizedBox(height: _sizeUtils.xasisSobreYasis * 0.1),
           itemBuilder: (_, int i)=>FormFieldWidgetFactory.createFormFieldWidget(formFIeldsByPage[i]),
+          padding: EdgeInsets.only(top: 10, bottom: 50),
         ),
+        height: _sizeUtils.xasisSobreYasis * 0.65,
+        width: double.infinity,
       )
     );
   }
@@ -58,16 +59,5 @@ class FormInputsFraction extends StatelessWidget {
     final ChosenFormBloc cfBloc = BlocProvider.of<ChosenFormBloc>(_context);
     final List<CustomFormField> formFieldsByCurrentPage = cfBloc.state.getFormFieldsByIndex(currentPage);
     return formFieldsByCurrentPage;
-  }
-
-  List<Widget> _createFormFieldItemsByPage(){
-    final int currentPage = _indexState.currentIndexPage;
-    final ChosenFormBloc cfBloc = BlocProvider.of<ChosenFormBloc>(_context);
-    final List<CustomFormField> formFieldsByCurrentPage = cfBloc.state.getFormFieldsByIndex(currentPage);
-    final List<Widget> formFieldWidgets = formFieldsByCurrentPage.map<Widget>(
-      (cff) => FormFieldWidgetFactory.createFormFieldWidget(cff)
-    ).toList();
-    
-    return formFieldWidgets;
   }
 }

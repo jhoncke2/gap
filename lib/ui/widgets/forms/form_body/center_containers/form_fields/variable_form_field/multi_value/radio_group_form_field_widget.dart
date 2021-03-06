@@ -7,7 +7,7 @@ import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/var
 class RadiousGroupFormFieldWidget extends StatefulWidget {
   final RadioGroupFormField radioGroupFormField;
 
-  RadiousGroupFormFieldWidget({Key key, @required this.radioGroupFormField}) : super(key: key);
+  RadiousGroupFormFieldWidget({Key key, @required this.radioGroupFormField}) : super(key: Key(radioGroupFormField.name));
 
   @override
   _RadiousGroupFormFieldWidgetState createState() => _RadiousGroupFormFieldWidgetState();

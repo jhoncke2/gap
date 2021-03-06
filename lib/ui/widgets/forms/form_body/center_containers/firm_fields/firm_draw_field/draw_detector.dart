@@ -21,15 +21,12 @@ class DrawDetector extends StatelessWidget {
       onPanDown: (DragDownDetails details){
         _createWord();
         _addPointToCurrentWord(details.localPosition);
-        print('pan down: ${details.localPosition}');
       },
       onPanStart: (DragStartDetails details) {
         _addPointToCurrentWord(details.localPosition);
-        print('pan start: ${details.localPosition}');
       },
       onPanUpdate: (DragUpdateDetails details) {
         _addPointToCurrentWord(details.localPosition);
-        print('pan update: ${details.localPosition}');
       },
     );
   }

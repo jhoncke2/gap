@@ -1,5 +1,4 @@
-import 'dart:convert';
-
+import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gap/data/models/entities/custom_form_field/variable/multi_value/multi_value_form_field.dart';
 import 'package:gap/data/models/entities/custom_form_field/variable/single_value/single_value_form_field.dart';
@@ -14,13 +13,40 @@ final Map<String, dynamic> loginInfo = {
   'password':'12345678'
 };
 
+final DateTime nowTime = DateTime.now();
+
+final PersonalInformation firmer = PersonalInformation.fromJson({
+  'name':'Parangaricutirimicuaro ${nowTime.year}_${nowTime.month}_${nowTime.day}_${nowTime.hour}_${nowTime.minute}_${nowTime.second}_${nowTime.millisecond}',
+  'identif_document_type':'CC',
+  'identif_document_number':123456789,
+  'firm':'assets/logos/logo_con_fondo.png'
+});
+
+final List<CommentedImage> commentedImages = [
+  CommentedImage.fromJson({
+    'image_path':'assets/logos/logo_con_fondo.png',
+    'commentary':'Commentary 1'
+  }),
+  CommentedImage.fromJson({
+    'image_path':'assets/logos/logo_sin_fondo.png',
+    'commentary':'Commentary 2'
+  }),
+  CommentedImage.fromJson({
+    'image_path':'assets/logos/logo_con_fondo.png',
+    'commentary':'Commentary 2'
+  }),
+];
+
 List<Map<String, dynamic>> projectsResponse;
 String accessToken;
 
 void main(){
   group('login para el auth token, get projects, y updateForm', (){
+    //Tests se comentan para no interferir con el accessToken de la app.
     _testGetProjects();
     _testUpdateForm();
+    _testPostFirmer();
+    _testPostCommentedImages();
   });
 }
 
@@ -41,7 +67,6 @@ Future _tryGetProjects()async{
   accessToken = await _login();
   projectsResponse = await projectsService.getProjects(accessToken);
   expect(projectsResponse, isNotNull);
-
   expect(projectsResponse.length, isNot(0));
   final List<Project> projects = projectsFromJson(projectsResponse);
   expect(projects, isNotNull);
@@ -60,15 +85,14 @@ Future _testUpdateForm()async{
 }
 
 Future _tryUpdateForm()async{
-  final Map<String, dynamic> formWithFormFields = _getFormWithFormFields();
-  final List<Map<String, dynamic>> formCampos = _getFormattedFormCampos(formWithFormFields['form']);
-  final Map<String, dynamic> updatedFormResponse = await projectsService.updateForm(accessToken, formCampos, formWithFormFields['visit_id']);
+  final Map<String, dynamic> formWithFormFieldsAndItsVisitId = _getFormWithFormFieldsAndItsVisitId();
+  final List<Map<String, dynamic>> formCampos = _getFormattedFormCampos(formWithFormFieldsAndItsVisitId['form']);
+  final List<Map<String, dynamic>> updatedFormResponse = await projectsService.updateForm(accessToken, formCampos, formWithFormFieldsAndItsVisitId['visit_id']);
   expect(updatedFormResponse, isNotNull);
-  expect(updatedFormResponse['data'], isNotNull);
-  expect(updatedFormResponse['data']['id'], isNotNull);
+  expect(updatedFormResponse.length, formCampos.length);
 }
 
-Map<String, dynamic> _getFormWithFormFields(){
+Map<String, dynamic> _getFormWithFormFieldsAndItsVisitId(){
   final List<Project> projects = projectsFromJson(projectsResponse);
   for(Project p in projects)
     for(Visit v in p.visits)
@@ -107,3 +131,57 @@ void _defineFormFieldValuesByTypeOfValues(VariableFormField vff, Map<String, dyn
   }
 }
 
+Future _testPostFirmer()async{
+  test('Se testeará el método postFirmer', ()async{
+    await _tryPostFirmer();
+  });
+}
+
+Future _tryPostFirmer()async{
+  final String authToken = await _login();
+  final Map<String, dynamic> formWithFormFields = _getFormWithFormFieldsAndItsVisitId();
+  final Map<String, dynamic> serviceResponse = await projectsService.saveFirmer(authToken, firmer, formWithFormFields['form'].id, formWithFormFields['visit_id']);
+  expect(serviceResponse, isNotNull);
+  expect(serviceResponse['formulario_g_formulario_id'], formWithFormFields['form'].id.toString());
+  expect(serviceResponse['visita_id'], formWithFormFields['visit_id']);
+  expect(serviceResponse['ruta'], isNotNull);
+  final Map<String, String> jsonFirmerResponse = {
+    'tipo_dc':serviceResponse['tipo_dc'],
+    'cc':serviceResponse['cc'],
+    'nombre':serviceResponse['nombre']
+  };
+  expect(jsonFirmerResponse, firmer.toServiceJson());
+}
+
+Future _testPostCommentedImages()async{
+  test('Se testeará el método postCommentedImages', ()async{
+    await _tryPostCommentedImages();
+  });
+}
+
+Future _tryPostCommentedImages()async{
+  final String accessToken = await _login();
+  final Map<String, dynamic> formWithFormFieldsAndItsVisitId = _getFormWithFormFieldsAndItsVisitId();
+  final List<File> imgFiles = [];
+  final List<String> imgCommentaries = [];
+  _separateImgsToComments(imgFiles, imgCommentaries);
+  final List<Map<String, dynamic>> serviceResponse = await projectsService.saveCommentedImages(accessToken, imgFiles, imgCommentaries, formWithFormFieldsAndItsVisitId['visit_id']);
+  expect(serviceResponse, isNotNull);
+  expect(serviceResponse.length, commentedImages.length);
+  for(int i = 0; i < serviceResponse.length; i++)
+    _expectServiceReturnedCommImg(serviceResponse, i, formWithFormFieldsAndItsVisitId['visit_id']);
+}
+
+void _separateImgsToComments(List<File> files, List<String> comments){
+  commentedImages.forEach((commImg) {
+    files.add(commImg.image);
+    comments.add(commImg.commentary);
+  });
+}
+
+void _expectServiceReturnedCommImg(List<Map<String, dynamic>> serviceResponse, int index, int visitId){
+  final Map<String, dynamic> jsonCommImg = serviceResponse[index];
+    expect(jsonCommImg['visita_id'], visitId);
+    expect(jsonCommImg['descripcion'], commentedImages[index].commentary);
+    expect(jsonCommImg['ruta'], isNotNull);
+}

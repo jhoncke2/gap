@@ -46,7 +46,7 @@ class SizeUtils{
   }
 
   double get subtitleSize{
-    return _xasisYasisProm * 0.0325;
+    return _xasisYasisProm * 0.034;
   }
 
   double get normalTextSize{

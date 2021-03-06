@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 
 class _BasicServiceTest extends BasicService{
   void evaluateServerResponseTest(http.BaseResponse serverResponse){
-    evaluateServerResponse(serverResponse);
+    formatServerResponse(serverResponse);
   }
 }
 

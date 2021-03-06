@@ -4,16 +4,22 @@ import 'package:flutter/material.dart';
 import 'package:gap/data/models/entities/custom_form_field/variable/single_value/number_form_field.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/variable_form_field/variable_form_field_container.dart';
+// ignore: must_be_immutable
 class NumberFormFieldWidget extends StatefulWidget{
   
   final NumberFormField number;
-  final TextEditingController _textFieldController;
+  TextEditingController _textFieldController;
 
   NumberFormFieldWidget({Key key, @required this.number}):
-    _textFieldController = TextEditingController(text: number.placeholder??number.value.toString()??''),
     super(key: Key('${number.name}')){
-      _textFieldController.selection = TextSelection.fromPosition(TextPosition(offset: _textFieldController.text.length));
+      _createTextFieldController();
     }
+  
+  void _createTextFieldController(){
+    final String text = (number.placeholder ?? number.value ?? '').toString();
+    _textFieldController = TextEditingController(text: text);
+    _textFieldController.selection = TextSelection.fromPosition(TextPosition(offset: _textFieldController.text.length));
+  }
     
   @override
   _NumberFormFieldWidgetState createState() => _NumberFormFieldWidgetState();
@@ -27,7 +33,6 @@ class _NumberFormFieldWidgetState extends State<NumberFormFieldWidget> {
 
   @override
   void initState() {
-    widget._textFieldController.addListener(_onControllerChange);
     super.initState();
   }
 
@@ -54,10 +59,6 @@ class _NumberFormFieldWidgetState extends State<NumberFormFieldWidget> {
         ],
       ),
     );
-  }
-
-  void _onControllerChange(){
-    //print('controller.text: ${widget._textFieldController.text}');
   }
 
   Widget _createCounterBox(){

@@ -4,7 +4,7 @@ import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/var
 class TextAreaFormFieldWidget extends StatelessWidget{
   final TextArea textArea;
 
-  TextAreaFormFieldWidget({this.textArea});
+  TextAreaFormFieldWidget({this.textArea}):super(key: Key(textArea.name));
 
   @override
   Widget build(BuildContext context){

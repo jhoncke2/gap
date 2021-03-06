@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/form_field_structure.dart';
-import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/general_form_field_without_name.dart';
+import 'package:gap/ui/widgets/forms/form_body/center_containers/firm_fields/form_field_structure.dart';
+import 'package:gap/ui/widgets/forms/form_body/center_containers/firm_fields/general_form_field_without_name.dart';
 
 // ignore: must_be_immutable
 class TextFieldWithoutName extends GeneralFormFieldWithoutName implements FormFieldStructure{

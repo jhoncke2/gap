@@ -11,11 +11,10 @@ class ProjectsServicesManager{
     return projects;
   }
 
-  static Future<Visit> updateForm(Formulario form, int visitId, String accessToken)async{
+  static Future<List<Map<String, dynamic>>> updateForm(Formulario form, int visitId, String accessToken)async{
     final List<Map<String, dynamic>> formattedFormCampos = _getFormattedFormCampos(form);
-    final Map<String, dynamic> response = await projectsService.updateForm(accessToken, formattedFormCampos, visitId);
-    final Visit visit = Visit.fromFormUpdatedResponseJson(response['data']);
-    return visit;
+    final List<Map<String, dynamic>> response = await projectsService.updateForm(accessToken, formattedFormCampos, visitId);
+    return response;
   }
 
   static List<Map<String, dynamic>> _getFormattedFormCampos(Formulario form){

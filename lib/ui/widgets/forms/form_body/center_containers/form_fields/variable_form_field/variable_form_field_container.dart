@@ -33,7 +33,8 @@ class VariableFormFieldContainer extends StatelessWidget {
       title,
       style: TextStyle(
         color: Theme.of(_context).primaryColor,
-        fontSize: _sizeUtils.subtitleSize
+        fontSize: _sizeUtils.subtitleSize,
+        fontWeight: FontWeight.w400
       ),
     );
   }

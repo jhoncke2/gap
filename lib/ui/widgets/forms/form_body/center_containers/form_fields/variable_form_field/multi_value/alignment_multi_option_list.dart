@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:gap/data/models/entities/custom_form_field/variable/multi_value/multi_value_form_field.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 
-class AlignmentedMultiOptionList extends StatefulWidget {
+// ignore: must_be_immutable
+class AlignmentedMultiOptionList extends StatelessWidget {
+  
+
   final bool withVerticalAlignment;
   final List<MultiFormFieldValue> values;
   final Function(MultiFormFieldValue, Function(Function)) onItemCreated;
@@ -14,12 +17,6 @@ class AlignmentedMultiOptionList extends StatefulWidget {
     @required this.onItemCreated
   }): super(key: key);
 
-  @override
-  _AlignmentedMultiOptionListState createState() => _AlignmentedMultiOptionListState();
-}
-
-class _AlignmentedMultiOptionListState extends State<AlignmentedMultiOptionList> {
-  
   final SizeUtils _sizeUtils = SizeUtils();
   Widget _items;
 
@@ -28,12 +25,12 @@ class _AlignmentedMultiOptionListState extends State<AlignmentedMultiOptionList>
     _defineListOfItems();
     return Container(
       width: double.infinity,
-       child: _items,
+      child: _items,
     );
   }
 
   void _defineListOfItems(){
-    if(widget.withVerticalAlignment)
+    if(withVerticalAlignment)
       _defineVerticalItems();
     else
       _defineHorizontalItems();
@@ -42,6 +39,7 @@ class _AlignmentedMultiOptionListState extends State<AlignmentedMultiOptionList>
   void _defineVerticalItems(){
     _items = Column(
       children: _createCheckBoxItems(),
+      crossAxisAlignment: CrossAxisAlignment.center,
     );
   }
 
@@ -52,16 +50,12 @@ class _AlignmentedMultiOptionListState extends State<AlignmentedMultiOptionList>
 
   List<Widget> _createCheckBoxItems(){
     final List<Widget> items = [];
-    widget.values.forEach(
+    values.forEach(
       (value){
-        items.add(widget.onItemCreated(value, _resetState));
+        items.add(onItemCreated(value, null));
       }
     );
     return items;
-  }
-
-  void _resetState(Function actionInSetState){
-    setState(actionInSetState);
   }
 }
 
@@ -77,8 +71,9 @@ class _HorizontalMultiOptionItems extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: Column(
-      children: _createHorizontalListOfItems(),
-    ),
+        children: _createHorizontalListOfItems(),
+        crossAxisAlignment: CrossAxisAlignment.center,
+      ),
     );
   }
 
@@ -95,6 +90,7 @@ class _HorizontalMultiOptionItems extends StatelessWidget {
   Row _createCurrentRowOfCheckboxes(int index){ 
     return Row(
       children: _defineRowWidgetsByIndex(index),
+      mainAxisAlignment: MainAxisAlignment.center,
     );
   }
 

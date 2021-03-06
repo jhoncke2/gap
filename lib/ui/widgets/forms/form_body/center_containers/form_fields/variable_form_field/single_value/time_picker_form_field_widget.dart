@@ -6,7 +6,7 @@ class TimePickerFormFieldWidget extends StatefulWidget {
 
   final TimeField timeFormField;
 
-  TimePickerFormFieldWidget({Key key, @required this.timeFormField}) : super(key: key);
+  TimePickerFormFieldWidget({Key key, @required this.timeFormField}) : super(key: Key(timeFormField.name));
 
   @override
   _TimePickerFormFieldWidgetState createState() => _TimePickerFormFieldWidgetState();
@@ -20,7 +20,7 @@ class _TimePickerFormFieldWidgetState extends State<TimePickerFormFieldWidget> {
     _context = context;
     return VariableFormFieldContainer(
       title: widget.timeFormField.label, 
-      child: _createPickerButton()
+      child: _createPickerButton(),
     );
   }
 

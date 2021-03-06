@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/form_field_structure.dart';
+import 'package:gap/ui/widgets/forms/form_body/center_containers/firm_fields/form_field_structure.dart';
 import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/general_form_field_with_name.dart';
 // ignore: must_be_immutable
 class TextFieldWithName extends GeneralFormFieldWithName implements FormFieldStructure {

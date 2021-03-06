@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -22,9 +24,65 @@ abstract class BasicService{
   http.Response currentResponse;
   String executedServiceFunction;
 //
-  http.MultipartRequest crearMultiPartPostRequest(){
-    return http.MultipartRequest('POST', Uri.parse('$apiUrl/tiendas'));
+  http.MultipartRequest createMultiPartPostRequest(String url){
+    return http.MultipartRequest('POST', Uri.parse(url));
   }
+
+  Future executeMultiPartRequestWithOneFile(String requestUrl, Map<String, String> headers, Map<String, String> fields, Map<String, dynamic> fileInfo)async{
+    final http.MultipartRequest request = await _generateMultiPartRequestWithOneFile(requestUrl, headers, fields, fileInfo);
+    await _sendMultiPartRequest(request);
+  }
+
+  Future<http.MultipartRequest> _generateMultiPartRequestWithOneFile(String requestUrl, Map<String, String> headers, Map<String, String> fields, Map<String, dynamic> fileInfo)async{
+    final http.MultipartRequest request = _generateBasicMultiPartRequest(requestUrl, headers, fields);
+    final File file = fileInfo['file'];
+    request.files.add(http.MultipartFile(
+      fileInfo['field_name'],
+      file.readAsBytes().asStream(),
+      file.lengthSync(),
+      filename: file.path.split('/').last
+    ));
+    return request;
+  }
+
+  http.MultipartRequest _generateBasicMultiPartRequest(String requestUrl, Map<String, String> headers, Map<String, String> fields){
+    var request = http.MultipartRequest(
+      'POST', 
+      Uri.parse(requestUrl)
+    );
+    request.headers.addAll(headers);
+    request.fields.addAll(fields);
+    return request;
+  }
+
+  Future _sendMultiPartRequest(http.MultipartRequest request)async{
+    final streamResponse = await request.send();
+    final response = await http.Response.fromStream(streamResponse);
+    formatServerResponse(response);
+  }
+
+  Future executeMultiPartRequestWithListOfFiles(String requestUrl, Map<String, String> headers, Map<String, String> fields, Map<String, dynamic> filesInfo )async{
+    final http.MultipartRequest request = _generateBasicMultiPartRequest(requestUrl, headers, fields);
+    _addFilesToRequest(filesInfo, request);
+    await _sendMultiPartRequest(request);
+  }
+
+  void _addFilesToRequest(Map<String, dynamic> filesInfo , http.MultipartRequest request){
+    final List<File> files = filesInfo['files'];
+    request.files.addAll(files.map((File file){
+      return _getMultipartFileFromFile(file, filesInfo['files_field']);
+    }));
+  }
+
+  http.MultipartFile _getMultipartFileFromFile(File file, String multiPartFileName){
+    return http.MultipartFile(
+      multiPartFileName,
+      file.readAsBytes().asStream(),
+      file.lengthSync(),
+      filename: file.path.split('/').last
+    );
+  }
+  
 
   Map<String, Map<String, dynamic>> createHeadersAndBodyForARequest({Map<String, String> headers, Map<String, dynamic> body}){
     return {
@@ -72,7 +130,7 @@ abstract class BasicService{
     //for testing:
     _doTestInstantiations('get', serverResponse);
     //
-    evaluateServerResponse(serverResponse);
+    formatServerResponse(serverResponse);
   }
 
   Future<void> executeGeneralEndOfPOSTRequest({@required String requestUrl, @required Map<String, Map<String, dynamic>> headersAndBody})async{
@@ -86,7 +144,7 @@ abstract class BasicService{
     //for testing:
     _doTestInstantiations('post', serverResponse);
     //
-    evaluateServerResponse(serverResponse);
+    formatServerResponse(serverResponse);
   }
   
   Future<void> executeGeneralEndOfPUTRequest({@required String requestUrl, @required Map<String, dynamic> headersAndBody})async{
@@ -99,7 +157,7 @@ abstract class BasicService{
     //for testing:
     _doTestInstantiations('put', serverResponse);
     //
-    evaluateServerResponse(serverResponse);
+    formatServerResponse(serverResponse);
   }
   
   Future<void> executeGeneralEndOfDELETERequest({@required String requestUrl, @required Map<String, dynamic> headersAndBody})async{
@@ -111,7 +169,7 @@ abstract class BasicService{
     //for testing:
     _doTestInstantiations('delete', serverResponse);
     //
-    evaluateServerResponse(serverResponse);
+    formatServerResponse(serverResponse);
   }
 
   void _doTestInstantiations(String tipoDeServicio, http.Response serverResponse){
@@ -120,7 +178,7 @@ abstract class BasicService{
   }
   
   @protected
-  void evaluateServerResponse(http.Response serverResponse){
+  void formatServerResponse(http.Response serverResponse){
     _tryCurrentResponseBodyConvertion(serverResponse);
     _throwExceptionIfResponseBodyHasErrorField();
   }

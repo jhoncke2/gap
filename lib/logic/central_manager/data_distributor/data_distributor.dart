@@ -101,10 +101,6 @@ abstract class DataDistributor{
     chosenFormB.add(InitFirmsFillingOut());
   }
 
-  void _updateChosenFormStage(FormulariosBloc formsB, FormStep fStep){
-    formsB.state.chosenForm.formStep = fStep;
-  }
-
   Future advanceOnFormFieldsPage()async{
     final FormulariosBloc formsB = blocsAsMap[BlocName.Formularios];
     final ChosenFormBloc chosenFormB = blocsAsMap[BlocName.ChosenForm];
@@ -114,8 +110,26 @@ abstract class DataDistributor{
     await _updateChosenFormInStorage();
   }
 
-  Future updateIndex(IndexState indexState)async{
-    await IndexStorageManager.setIndex(indexState);
+  
+
+  Future endAllFormProcess()async{}
+  
+  
+  Future initFirstFirmerFillingOut()async{
+    final FormulariosBloc formsB = blocsAsMap[BlocName.Formularios];
+    final ChosenFormBloc chosenFormB = blocsAsMap[BlocName.ChosenForm];
+    final Formulario chosenForm = formsB.state.chosenForm;
+    chosenForm.advanceInStep();
+    chosenFormB.add(InitFirmsFillingOut());
+    await _updateChosenFormInStorage();
+  }
+
+  void initFirstFirmerFirm(){
+    final FormulariosBloc formsB = blocsAsMap[BlocName.Formularios];
+    final ChosenFormBloc chosenFormB = blocsAsMap[BlocName.ChosenForm];
+    final Formulario chosenForm = formsB.state.chosenForm;
+    chosenForm.advanceInStep();
+    _addNewFirmer(InitFirstFirmerFirm());
   }
 
   Future updateFirmers()async{
@@ -127,19 +141,8 @@ abstract class DataDistributor{
     //_updateFormStepInFirmers(chosenForm);
     await ChosenFormStorageManager.setChosenForm(chosenForm);
     await PreloadedFormsStorageManager.setPreloadedForm(chosenForm, visitsB.state.chosenVisit.id);
-    _addNewFirmer(InitFirmsFillingOut());
-  }
-
-  Future endAllFormProcess()async{}
-  
-  Future initFirstFirmerFillingOut()async{
-    final ChosenFormBloc chosenFormB = blocsAsMap[BlocName.ChosenForm];
-    chosenFormB.add(InitFirmsFillingOut());
-    await _updateChosenFormInStorage();
-  }
-
-  void initFirstFirmerFirm(){
-    _addNewFirmer(InitFirstFirmerFirm());
+    _chooseChosenFormStep(chosenForm, chosenFormB, formsB);
+    //_addNewFirmer(InitFirmsFillingOut());
   }
 
   Future _updateChosenFormInStorage()async{

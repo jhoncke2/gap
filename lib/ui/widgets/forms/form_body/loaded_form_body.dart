@@ -66,15 +66,17 @@ class _ChosenFormCurrentComponent extends StatelessWidget {
       builder: (context, state) {
         _state = state;
         _elegirComponentsSegunFormState();
-        return Container(
-          //height: _sizeUtils.xasisSobreYasis * 0.85,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _centerComponents,
-              SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
-              _bottomComponents
-            ],
+        return Expanded(
+          child: Container(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _centerComponents,
+                //SizedBox(height: _sizeUtils.giantSizedBoxHeight),
+                _bottomComponents
+              ],
+            ),
+            padding: EdgeInsets.only(top: 45),
           ),
         );
       },

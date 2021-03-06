@@ -22,7 +22,7 @@ class PageTitle extends StatelessWidget {
           color: Theme.of(context).primaryColor,
           fontSize: _sizeUtils.titleSize,
           fontWeight: FontWeight.bold,
-          decoration: (this.underlined)?TextDecoration.underline:null
+          decoration: (this.underlined)? TextDecoration.underline: null
         ),
       ),
     );

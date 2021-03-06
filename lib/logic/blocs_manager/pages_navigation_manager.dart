@@ -81,7 +81,7 @@ class PagesNavigationManager{
     //await ChosenFormManagerSingleton.chosenFormManager.addFirmToFirmer();
     //ChosenFormManagerSingleton.chosenFormManager.finishFirms();
     await DataDistributorManager.dataDistributor.updateFirmers();
-    await DataDistributorManager.dataDistributor.endAllFormProcess();
+     await DataDistributorManager.dataDistributor.endAllFormProcess();
     await pop();
   }
 

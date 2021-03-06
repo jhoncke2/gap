@@ -22,7 +22,7 @@ class DataInitializer{
     }on ServiceStatusErr catch(_){
       _navigateToLogin(context, netConnState);
     }on UnfoundStorageElementErr catch(err){
-      if(err.elementType == StorageElementType)
+      if(err.elementType == StorageElementType.AUTH_TOKEN)
         _navigateToLogin(context, netConnState);
       else
         PagesNavigationManager.navToProjects();

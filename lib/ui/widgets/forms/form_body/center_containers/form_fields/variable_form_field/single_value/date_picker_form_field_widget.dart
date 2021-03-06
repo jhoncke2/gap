@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gap/data/models/entities/custom_form_field/variable/single_value/single_value_picker_form_field.dart';
-import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/variable_form_field/variable_form_field_container.dart';
 // ignore: must_be_immutable
 class DatePickerFormFieldWidget extends StatefulWidget {
@@ -8,7 +7,7 @@ class DatePickerFormFieldWidget extends StatefulWidget {
   final DateField dateFormField;
 
 
-  DatePickerFormFieldWidget({Key key, @required this.dateFormField}) : super(key: key);
+  DatePickerFormFieldWidget({Key key, @required this.dateFormField}) : super(key: Key(dateFormField.name));
 
   @override
   _DatePickerFormFieldWidgetState createState() => _DatePickerFormFieldWidgetState();

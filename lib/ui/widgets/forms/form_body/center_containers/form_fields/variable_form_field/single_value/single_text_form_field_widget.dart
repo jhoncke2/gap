@@ -7,7 +7,7 @@ class SingleTextFormFieldWidget extends StatelessWidget {
   final UniqueLineText uniqueLineText;
   TextInputType keyboardType;
   bool obscureText;
-  SingleTextFormFieldWidget({Key key, this.uniqueLineText}) : super(key: key);
+  SingleTextFormFieldWidget({Key key, this.uniqueLineText}) : super(key: Key(uniqueLineText.name));
   
 
   @override

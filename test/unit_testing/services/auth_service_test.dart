@@ -16,9 +16,9 @@ String successAccessToken;
 
 void main(){
   group('se testeará succes/failed login y refresh_authtoken', (){
-    _testFailedLogin();
-    _testSuccessLogin();
-    _testRefreshAccessToken();
+    //_testFailedLogin();
+    //_testSuccessLogin();
+    //_testRefreshAccessToken();
   });
   
 }

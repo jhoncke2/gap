@@ -54,4 +54,10 @@ class  PersonalInformation{
     //TODO: Convertir a data que se pueda desconvertir más tarde
     'firm':firm.toString(),    
   };
+
+  Map<String, String> toServiceJson() => {
+    'tipo_dc':identifDocumentType,
+    'cc':identifDocumentNumber.toString(),
+    'nombre':name
+  };
 }

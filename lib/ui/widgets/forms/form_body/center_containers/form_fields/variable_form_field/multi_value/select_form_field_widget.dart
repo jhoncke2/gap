@@ -5,7 +5,7 @@ import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/variable_form_field/variable_form_field_container.dart';
 class SelectFormFieldWidget extends StatelessWidget {
   final SelectFormField selectFormField;
-  SelectFormFieldWidget({Key key, @required this.selectFormField}) : super(key: key);
+  SelectFormFieldWidget({Key key, @required this.selectFormField}) : super(key: Key(selectFormField.name));
 
   @override
   Widget build(BuildContext context) {
