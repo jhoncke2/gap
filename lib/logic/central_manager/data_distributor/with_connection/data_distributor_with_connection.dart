@@ -6,6 +6,7 @@ import 'package:gap/logic/bloc/entities/user/user_bloc.dart';
 import 'package:gap/logic/bloc/entities/visits/visits_bloc.dart';
 import 'package:gap/logic/central_manager/data_distributor/data_distributor.dart';
 import 'package:gap/logic/services_manager/projects_services_manager.dart';
+import 'package:gap/logic/storage_managers/forms/chosen_form_storage_manager.dart';
 import 'package:gap/logic/storage_managers/forms/formularios_storage_manager.dart';
 import 'package:gap/logic/storage_managers/forms/preloaded_forms_storage_manager.dart';
 import 'package:gap/logic/storage_managers/projects/projects_storage_manager.dart';
@@ -20,18 +21,15 @@ class DataDistributorWithConnection extends DataDistributor{
 
   @override
   Future updateAccessToken()async{
-    _authTokenValidator.userBloc = blocsAsMap[BlocName.User];
+    _authTokenValidator.userBloc = DataDistributor.blocsAsMap[BlocName.User];
     await _authTokenValidator.refreshAuthToken();
   }
 
   @override
   Future<void> updateProjects()async{
-    final ProjectsBloc pBloc = blocsAsMap[BlocName.Projects];
-    //final UserBloc userBloc = blocsAsMap[BlocName.UserBloc];
-    //final String accessToken = userBloc.state.authToken;
     final String accessToken = await UserStorageManager.getAccessToken();
-    final List<Project> projects = await ProjectsServicesManager.loadProjects(pBloc, accessToken);
-    pBloc.add(SetProjects(projects: projects));
+    final List<Project> projects = await ProjectsServicesManager.loadProjects(projectsB, accessToken);
+    projectsB.add(SetProjects(projects: projects));
   }
 
   @override
@@ -43,10 +41,9 @@ class DataDistributorWithConnection extends DataDistributor{
 
    @override
   Future<void> updateVisits()async{
-    final VisitsBloc vBloc = blocsAsMap[BlocName.Visits];
     final Project chosenProject = UploadedBlocsData.dataContainer[NavigationRoute.ProjectDetail];
     final List<Visit> visits = chosenProject.visits;
-    vBloc.add(SetVisits(visits: visits));
+    visitsB.add(SetVisits(visits: visits));
   }
 
   @override
@@ -64,11 +61,9 @@ class DataDistributorWithConnection extends DataDistributor{
   }
 
   Future _loadFormsByChosenVisit(int visitId)async{
-    final FormulariosBloc fBloc = blocsAsMap[BlocName.Formularios];
-    //final List<Formulario> forms = await FormsServicesManager.loadForms(fBloc, visitId);
     final Visit chosenVisit = UploadedBlocsData.dataContainer[NavigationRoute.VisitDetail];
     final List<Formulario> forms = chosenVisit.formularios;
-    fBloc.add(SetForms(forms: forms));
+    formsB.add(SetForms(forms: forms));
     for(Formulario form in forms)
       await _addFormToPreloadedStorage(form, visitId);
   }
@@ -85,15 +80,63 @@ class DataDistributorWithConnection extends DataDistributor{
   Future<void> updateFormularios()async{
   }
 
+  Future endFormFillingOut()async{
+    await super.endFormFillingOut();
+    await _sendFormToService();
+  }
+
+  Future _sendFormToService()async{
+    try{
+      await _trySendFormToService();
+    }catch(err){
+    }
+  }
+
+  Future _trySendFormToService()async{
+    final Formulario chosenForm = formsB.state.chosenForm;
+    final Visit chosenVisit = visitsB.state.chosenVisit;
+    final String accessToken = await UserStorageManager.getAccessToken();
+    await ProjectsServicesManager.updateForm(chosenForm, chosenVisit.id, accessToken);
+    chosenForm.campos = [];
+    await PreloadedFormsStorageManager.setPreloadedForm(chosenForm, chosenVisit.id);
+  }
+
+  bool updateFormsVisitIsOk(){
+    
+  }
+
+  @override
+  Future updateFirmers()async{
+    await super.updateFirmers();
+    await _sendFirmerToService();
+  }
+
+  Future _sendFirmerToService()async{
+    try{
+      await _trySendFirmerToService();
+    }catch(err){
+    }
+  }
+
+  Future _trySendFirmerToService()async{
+    final Formulario chosenForm = formsB.state.chosenForm;
+    final PersonalInformation lastFirmer = chosenForm.firmers.last;
+    final String accessToken = await UserStorageManager.getAccessToken();
+    final Visit chosenVisit = visitsB.state.chosenVisit;
+    await ProjectsServicesManager.saveFirmer(accessToken, lastFirmer, chosenForm.id, chosenVisit.id);
+    chosenForm.firmers.removeLast();
+    await PreloadedFormsStorageManager.setPreloadedForm(chosenForm, chosenVisit.id);
+    await ChosenFormStorageManager.setChosenForm(chosenForm);
+  }
+
   @override
   Future endAllFormProcess()async{
+    await super.endAllFormProcess();
     final String accessToken = await UserStorageManager.getAccessToken();
-    final VisitsBloc visitsB = blocsAsMap[BlocName.Visits];
     final Visit chosenVisit = visitsB.state.chosenVisit;
-    final FormulariosBloc formsB = blocsAsMap[BlocName.Formularios];
     final Formulario chosenForm = formsB.state.chosenForm;
-    final List<Map<String, dynamic>> visitResponse = await ProjectsServicesManager.updateForm(chosenForm, chosenVisit.id, accessToken);
-    await _removeFormFromPreloadedStorageIfSuccessResponse(visitResponse, chosenForm.id, chosenVisit.id);
+    //final List<Map<String, dynamic>> visitResponse = await ProjectsServicesManager.updateForm(chosenForm, chosenVisit.id, accessToken);
+    //await _removeFormFromPreloadedStorageIfSuccessResponse(visitResponse, chosenForm.id, chosenVisit.id);
   }
 
   Future _removeFormFromPreloadedStorageIfSuccessResponse(List<Map<String, dynamic>> updatedFormResponse, int formId, int visitId)async{
@@ -108,8 +151,7 @@ class DataDistributorWithConnection extends DataDistributor{
 
   @override
   Future resetForms()async{
-    final VisitsBloc vBloc = blocsAsMap[BlocName.Visits];
-    final Visit chosenVisit = vBloc.state.chosenVisit;
+    final Visit chosenVisit = visitsB.state.chosenVisit;
     await _removeVisitFromPreloadedVisitsIfCompleted(chosenVisit);
     await _removeFormsFromStorage();
   }
@@ -120,8 +162,7 @@ class DataDistributorWithConnection extends DataDistributor{
   }
 
   Future _removeVisitFromPReloadedVisits(Visit visit)async{
-    final ProjectsBloc pBloc = blocsAsMap[BlocName.Projects];
-    final Project chosenProject = pBloc.state.chosenProjectOld;
+    final Project chosenProject = projectsB.state.chosenProjectOld;
     await PreloadedVisitsStorageManager.removeVisit(visit.id, chosenProject.id);
   }
 
@@ -143,10 +184,10 @@ class _AuthTokenValidator{
     return await UserStorageManager.getAccessToken();
   }
 
-  Future _refreshAuthToken(String authToken)async{
-    final Map<String, dynamic> authTokenResponse = await authService.refreshAuthToken(authToken);
-    authToken = authTokenResponse['data']['original']['access_token'];
-    await UserStorageManager.setAccessToken(authToken);
-    userBloc.add(SetAccessToken(accessToken: authToken));
+  Future _refreshAuthToken(String oldAuthToken)async{
+    final Map<String, dynamic> authTokenResponse = await authService.refreshAuthToken(oldAuthToken);
+    String newAuthToken = authTokenResponse['data']['original']['access_token'];
+    await UserStorageManager.setAccessToken(newAuthToken);
+    userBloc.add(SetAccessToken(accessToken: newAuthToken));
   }
 }

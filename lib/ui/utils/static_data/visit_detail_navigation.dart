@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:gap/logic/blocs_manager/pages_navigation_manager.dart';
+import 'package:gap/logic/central_manager/pages_navigation_manager.dart';
 import 'package:gap/ui/pages/formularios_page.dart';
 final List<Map<String, dynamic>> navigationItemsParts = [
   {

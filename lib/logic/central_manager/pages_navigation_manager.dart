@@ -60,11 +60,12 @@ class PagesNavigationManager{
   }
 
   static Future<void> advanceOnChosenFormFieldsPage()async{
-    await DataDistributorManager.dataDistributor.advanceOnFormFieldsPage();
+    await DataDistributorManager.dataDistributor.endFormFillingOut();
   }
 
   static Future initFirstFirmerFillingOut(ChosenFormEvent firstFirmerStep)async{
     //await DataDistributorManager.dataDistributor.
+    await DataDistributorManager.dataDistributor.endFormFillingOut();
     await DataDistributorManager.dataDistributor.initFirstFirmerFillingOut();
   }
 

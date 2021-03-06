@@ -21,5 +21,5 @@ class DataDistributorManager{
 }
 
 class NetConnectionStateContainer{
-  NetConnectionState state;
+  NetConnectionState state = NetConnectionState.Disonnected;
 }

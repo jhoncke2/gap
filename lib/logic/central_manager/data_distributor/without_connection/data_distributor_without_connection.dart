@@ -16,26 +16,26 @@ class SourceDataToBlocWithoutConnection extends DataDistributor{
   @override
   Future<void> updateAccessToken()async{
     final String accessToken = await UserStorageManager.getAccessToken();
-    final UserBloc uBloc = blocsAsMap[BlocName.User];
+    final UserBloc uBloc = DataDistributor.blocsAsMap[BlocName.User];
     uBloc.add(SetAccessToken(accessToken: accessToken));
   }
 
   @override
   Future<void> updateProjects()async{
-    final ProjectsBloc pBloc = blocsAsMap[BlocName.Projects];
+    //final ProjectsBloc projectsB = blocsAsMap[BlocName.Projects];
     final List<Project> projectsWithPreloadedVisits = await ProjectsStorageManager.getProjectsWithPreloadedVisits();
     final SetProjects spEvent = SetProjects(projects: projectsWithPreloadedVisits);
-    pBloc.add(spEvent);
+    projectsB.add(spEvent);
     ProjectsStorageManager.setProjects(projectsWithPreloadedVisits);
   }
 
   @override
   Future<void> updateVisits()async{
-    final VisitsBloc vBloc = blocsAsMap[BlocName.Visits];
+    //final VisitsBloc visitsB = blocsAsMap[BlocName.Visits];
     final Project chosenProject = UploadedBlocsData.dataContainer[NavigationRoute.ProjectDetail];
     final List<Visit> preloadedVisits = await PreloadedVisitsStorageManager.getVisitsByProjectId(chosenProject.id);
     final SetVisits svEvent = SetVisits(visits: preloadedVisits);
-    vBloc.add(svEvent);
+    visitsB.add(svEvent);
   }
 
   @override
@@ -46,10 +46,10 @@ class SourceDataToBlocWithoutConnection extends DataDistributor{
   }
 
   Future _updateFormularios(Visit chosenVisit)async{
-    final FormulariosBloc fBloc = blocsAsMap[BlocName.Formularios];
+    //final FormulariosBloc formsB = blocsAsMap[BlocName.Formularios];
     final List<Formulario> formsGroupedByPreloadedVisit = await PreloadedFormsStorageManager.getPreloadedFormsByVisitId(chosenVisit.id);
     final SetForms sfEvent = SetForms(forms: formsGroupedByPreloadedVisit);
-    fBloc.add(sfEvent);
+    formsB.add(sfEvent);
   }
 
   Future _addVisitToStorage(Visit visit)async{
@@ -58,10 +58,10 @@ class SourceDataToBlocWithoutConnection extends DataDistributor{
 
   @override
   Future<void> updateFormularios()async{
-    final FormulariosBloc fBloc = blocsAsMap[BlocName.Formularios];
+    //final FormulariosBloc formsB = blocsAsMap[BlocName.Formularios];
     final Visit chosenVisit = UploadedBlocsData.dataContainer[NavigationRoute.VisitDetail];
     final List<Formulario> formsGroupedByPreloadedVisit = await PreloadedFormsStorageManager.getPreloadedFormsByVisitId(chosenVisit.id);
     final SetForms sfEvent = SetForms(forms: formsGroupedByPreloadedVisit);
-    fBloc.add(sfEvent);
+    formsB.add(sfEvent);
   }
 }

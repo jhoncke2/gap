@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/logic/bloc/entities/user/user_bloc.dart';
-import 'package:gap/logic/blocs_manager/pages_navigation_manager.dart';
+import 'package:gap/logic/central_manager/pages_navigation_manager.dart';
 import 'package:gap/logic/services_manager/user_services_manager.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/utils/static_data/buttons_keys.dart';

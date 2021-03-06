@@ -41,6 +41,10 @@ List<Map<String, dynamic>> projectsResponse;
 String accessToken;
 
 void main(){
+  _testGroup();
+}
+
+void _testGroup(){
   group('login para el auth token, get projects, y updateForm', (){
     //Tests se comentan para no interferir con el accessToken de la app.
     _testGetProjects();
