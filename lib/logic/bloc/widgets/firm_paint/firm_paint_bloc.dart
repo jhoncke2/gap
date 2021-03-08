@@ -58,6 +58,5 @@ class FirmPaintBloc extends Bloc<FirmPaintEvent, FirmPaintState> {
 
   void _resetAllOffFirmPaint(ResetFirmPaint event){
     _currentStateToYield = FirmPaintState();
-  } 
-
+  }
 }

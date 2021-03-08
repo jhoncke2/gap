@@ -41,10 +41,22 @@ class PreloadedVisitsStorageManager{
   static Future<void> setVisit(Visit visit, int projectId)async{
     await _updateCurrentVisitsHolderFromStorage();
     final List<Visit> preloadedVisitsByProjectId = await _getVisitsByProjectId(projectId);
-    preloadedVisitsByProjectId.add(visit);
+    _addVisitToVisits(visit, preloadedVisitsByProjectId);
     final List<Map<String, dynamic>> preloadedVisitsByProjectIdAsJson =  visitsToStorageJson(preloadedVisitsByProjectId); //   Visits(visits: preloadedVisitsByProjectId).toJson();
     currentPreloadedVisitsHolder.currentData[projectId.toString()] = preloadedVisitsByProjectIdAsJson;
     await _updateStorageFromCurrentVisitsHolder();
+  }
+
+  static void _addVisitToVisits(Visit visit, List<Visit> visits){
+    final int visitIndex = visits.indexWhere((element) => element.id == visit.id);
+    _addVisitToVisitsByItsIndex(visit, visits, visitIndex);
+  }
+
+  static void _addVisitToVisitsByItsIndex(Visit visit, List<Visit> visits, int index){
+    if(index > -1)
+      visits[index] = visit;
+    else
+      visits.add(visit);
   }
 
   static Future<List<Visit>> getVisitsByProjectId(int projectId)async{

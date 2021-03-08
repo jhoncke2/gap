@@ -50,8 +50,12 @@ class FormulariosBloc extends Bloc<FormulariosEvent, FormulariosState> {
 
   void _chooseForm(ChooseForm event){
     final Formulario chosenOne = event.chosenOne;
+    final List<Formulario> forms = state.forms;
+    int chosenIndex = forms.indexWhere((element) => element.id == chosenOne.id);
+    forms[chosenIndex] = chosenOne;
     _currentYieldedState = state.copyWith(
-      chosenForm: chosenOne
+      chosenForm: chosenOne,
+      forms: forms
     );
   }
 }

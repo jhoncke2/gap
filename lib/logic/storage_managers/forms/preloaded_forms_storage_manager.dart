@@ -49,9 +49,7 @@ class PreloadedFormsStorageManager{
   }
 
   static void _upgradeCurrentFormInForms(Formulario form, List<Formulario> forms){
-    final int indexOfFormInList = forms.indexWhere(
-      (Formulario f)=>f.id == form.id
-    );
+    final int indexOfFormInList = forms.indexWhere( (Formulario f)=>f.id == form.id );
     _addFormsDecidedByTheIndexOfFormInList(form, indexOfFormInList, forms);
   }
 

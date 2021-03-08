@@ -55,7 +55,6 @@ class LoadedFormBody extends StatelessWidget{
 
 // ignore: must_be_immutable
 class _ChosenFormCurrentComponent extends StatelessWidget {
-  final SizeUtils _sizeUtils = SizeUtils();
   ChosenFormState _state;
   Widget _centerComponents;
   Widget _bottomComponents;

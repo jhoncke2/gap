@@ -8,7 +8,6 @@ class TextAreaFormFieldWidget extends StatelessWidget{
 
   @override
   Widget build(BuildContext context){
-
     return VariableFormFieldContainer(
       title: textArea.label, 
       child: _createTextBox()
@@ -17,7 +16,7 @@ class TextAreaFormFieldWidget extends StatelessWidget{
 
   Widget _createTextBox(){
     return TextFormField(
-      initialValue: textArea.placeholder??'',
+      initialValue: textArea.placeholder??textArea.value??'',
       maxLines: textArea.rows,
       minLines: 1,
       maxLength: textArea.maxLength,

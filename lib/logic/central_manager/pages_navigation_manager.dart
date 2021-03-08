@@ -1,11 +1,8 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/data/enums/enums.dart';
 import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/logic/bloc/nav_routes/routes_manager.dart';
 import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
-import 'package:gap/logic/bloc/widgets/commented_images/commented_images_bloc.dart';
-import 'package:gap/logic/bloc/widgets/index/index_bloc.dart';
 import 'package:gap/logic/central_manager/data_distributor/data_distributor_manager.dart';
 
 class PagesNavigationManager{
@@ -55,6 +52,16 @@ class PagesNavigationManager{
   }
 
   static Future<void> navToFormDetail(Formulario formulario)async{
+    if(_formularioSePuedeAbrir(formulario)){
+      await _updateForm(formulario);
+    } 
+  }
+
+  static bool _formularioSePuedeAbrir(Formulario formulario){
+    return formulario.formStep != FormStep.Finished && formulario.campos.length > 0;
+  }
+
+  static Future _updateForm(Formulario formulario)async{
     await DataDistributorManager.dataDistributor.updateChosenForm(formulario);
     await _goToNextPage(NavigationRoute.FormularioDetailForms);
   }
@@ -81,8 +88,8 @@ class PagesNavigationManager{
   static Future<void> endFormFirmers()async{    
     //await ChosenFormManagerSingleton.chosenFormManager.addFirmToFirmer();
     //ChosenFormManagerSingleton.chosenFormManager.finishFirms();
-    await DataDistributorManager.dataDistributor.updateFirmers();
-     await DataDistributorManager.dataDistributor.endAllFormProcess();
+    await DataDistributorManager.dataDistributor.endAllFormProcess();
+    //await DataDistributorManager.dataDistributor.updateFirmers();
     await pop();
   }
 
@@ -101,11 +108,7 @@ class PagesNavigationManager{
   }
 
   static Future<void> endAdjuntarImages(BuildContext context)async{
-    //TODO: Service de enviar imágenes (si hay internet o guardar en el storage)
-    final CommentedImagesBloc commImgsBloc = BlocProvider.of<CommentedImagesBloc>(context);
-    commImgsBloc.add(ResetCommentedImages());
-    final IndexBloc indexBloc = BlocProvider.of<IndexBloc>(context);
-    indexBloc.add(ResetAllOfIndex());
+    await DataDistributorManager.dataDistributor.endCommentedImagesProcess();
     await pop();
   }
 

@@ -28,8 +28,6 @@ class ProjectsBloc extends Bloc<ProjectsEvent, ProjectsState> {
       _setProjects(event);
     }else if(event is ChooseProject){
       _chooseProject(event);
-    }else if(event is ChooseProjectOld){
-      chooseProjectOld(event);
     }else if(event is RemoveChosenProject){
       removeChosenProject();
     }else if(event is ResetProjects){
@@ -59,12 +57,6 @@ class ProjectsBloc extends Bloc<ProjectsEvent, ProjectsState> {
   void _chooseProject(ChooseProject event){
     final Project chosenOne = event.chosenOne;
     _currentYieldedState = state.copyWith(chosenProject: chosenOne);
-  }
-
-  @protected
-  void chooseProjectOld(ChooseProjectOld event){
-    final Project chosenOne = event.chosenOne;
-    _currentYieldedState = state.copyWith(chosenProjectOld: chosenOne);
   }
 
   void removeChosenProject(){

@@ -92,7 +92,8 @@ final List<FormStep> stepsInOrder = [
   FormStep.OnForm,
   FormStep.OnFirstFirmerInformation,
   FormStep.OnFirstFirmerFirm,
-  FormStep.OnSecondaryFirms
+  FormStep.OnSecondaryFirms,
+  FormStep.Finished
 ];
 
 final formStepValues = EnumValues({

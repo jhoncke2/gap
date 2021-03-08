@@ -43,8 +43,6 @@ class FormulariosPage extends StatelessWidget {
   }
 }
 
-
-
 // ignore: must_be_immutable
 class _FormulariosComponents extends StatelessWidget {
   final SizeUtils _sizeUtils = SizeUtils();

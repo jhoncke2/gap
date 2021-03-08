@@ -8,6 +8,7 @@ import 'package:gap/logic/bloc/entities/user/user_bloc.dart';
 import 'package:gap/logic/bloc/nav_routes/routes_manager.dart';
 import 'package:gap/logic/central_manager/pages_navigation_manager.dart';
 import 'package:gap/logic/central_manager/data_distributor/data_distributor_manager.dart';
+import 'package:gap/logic/central_manager/preloaded_storage_to_services.dart';
 import 'package:gap/logic/storage_managers/forms/chosen_form_storage_manager.dart';
 import 'package:gap/logic/storage_managers/projects/projects_storage_manager.dart';
 import 'package:gap/logic/storage_managers/visits/visits_storage_manager.dart';
@@ -33,8 +34,14 @@ class DataInitializer{
 
   static Future _tryInit(BuildContext context, NetConnectionState netConnState)async{
     DataDistributorManager.netConnectionState = netConnState;
+    //_sendPreloadedDataIfThereIsConnection(netConnState);
     await _routesManager.loadRoute();
     await _doAllNavigationByEvaluatingInitialConditions(context, netConnState);
+  }
+
+  static Future _sendPreloadedDataIfThereIsConnection(NetConnectionState netConnState)async{
+    if(netConnState == NetConnectionState.Connected)
+      await PreloadedStorageToServices.sendPreloadedStorageDataToServices();
   }
 
   static Future _doAllNavigationByEvaluatingInitialConditions(BuildContext context, NetConnectionState netConnState)async{

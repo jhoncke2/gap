@@ -11,6 +11,7 @@ class FormInputsFraction extends StatelessWidget {
   final SizeUtils _sizeUtils = SizeUtils();
   BuildContext _context;
   IndexState _indexState;
+  final ScrollController _formFieldsScrollController = ScrollController();
   FormInputsFraction({Key key}) : super(key: key);
 
   @override
@@ -20,6 +21,7 @@ class FormInputsFraction extends StatelessWidget {
     return BlocBuilder<IndexBloc, IndexState>(
       builder: (_, IndexState state){
         _indexState = state;
+        _doPostFrameBack();
         if(state.nPages > 0)
           return _createFormFieldsWithIndex();
         else
@@ -28,11 +30,20 @@ class FormInputsFraction extends StatelessWidget {
     );
   }
 
+  void _doPostFrameBack(){
+    WidgetsBinding.instance
+        .addPostFrameCallback((_){
+          //_formFieldsScrollController.jumpTo(0.0);
+          _formFieldsScrollController.animateTo(0.0, duration: Duration(milliseconds: 100), curve: Curves.bounceIn);
+        });
+  }
+
   Widget _createFormFieldsWithIndex(){
     List<CustomFormField> formFIeldsByPage = _getFormFIeldsByCurrentPage();
     return SingleChildScrollView(
       child: Container(
         child: ListView.separated(
+          controller: _formFieldsScrollController,
           //mainAxisAlignment: MainAxisAlignment.spaceAround,
           //crossAxisAlignment: CrossAxisAlignment.center,
           itemCount: formFIeldsByPage.length,

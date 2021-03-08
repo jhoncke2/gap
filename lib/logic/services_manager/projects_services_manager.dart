@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:gap/data/models/entities/custom_form_field/variable/multi_value/multi_value_form_field.dart';
 import 'package:gap/data/models/entities/custom_form_field/variable/single_value/single_value_form_field.dart';
 import 'package:gap/data/models/entities/custom_form_field/variable/variable_form_field.dart';
@@ -6,6 +8,7 @@ import 'package:gap/errors/services/service_status_err.dart';
 import 'package:gap/logic/bloc/entities/projects/projects_bloc.dart';
 import 'package:gap/services/projects_service.dart';
 class ProjectsServicesManager{
+
   static Future<List<Project>> loadProjects(ProjectsBloc bloc, String accessToken)async{
     final List<Map<String, dynamic>> projectsResponse = await projectsService.getProjects(accessToken);
     final List<Project> projects = projectsFromJson(projectsResponse);
@@ -68,5 +71,37 @@ class ProjectsServicesManager{
 
   static bool _saveFirmerResponseIsOk(Map<String, dynamic> response){
     return ![response['ruta'], response['tipo_dc'], response['cc'], response['nombre']].contains(null);
+  }
+
+  static Future saveCommentedImages(String accessToken, List<CommentedImage> commentedImages, int visitId)async{
+    final List<File> imgFiles = [];
+    final List<String> imgCommentaries = [];
+    _separateImgsAndComments(commentedImages, imgFiles, imgCommentaries);
+    final List<Map<String, dynamic>> serviceResponse = await projectsService.saveCommentedImages(accessToken, imgFiles, imgCommentaries, visitId);
+    _throwErrIfSaveCommImgsFailed(serviceResponse, commentedImages, visitId);
+  }
+
+  static void _separateImgsAndComments(List<CommentedImage> commentedImages, List<File> files, List<String> comments){
+    commentedImages.forEach((commImg) {
+      files.add(commImg.image);
+      comments.add(commImg.commentary);
+    });
+  }
+
+  static void _throwErrIfSaveCommImgsFailed(List<Map<String, dynamic>> serviceResponse, List<CommentedImage> commImgs, visitId){
+    if(serviceResponse.length!=commImgs.length)
+      throw ServiceStatusErr(message: 'Servicio de guardar imágemnes comentadas incompleto.');
+    _evaluateIfAllReturnedCommImgsAreOk(serviceResponse, commImgs, visitId);
+  }
+
+  static void _evaluateIfAllReturnedCommImgsAreOk(List<Map<String, dynamic>> serviceResponse, List<CommentedImage> commImgs, int visitId){
+    serviceResponse.forEach((element) {
+      if(!_serviceReturnedCommImgIsOk(element, visitId))
+        throw ServiceStatusErr(message: 'Servicio de guardar imágenes comentadas fallido.');
+    });
+  }
+
+  static bool _serviceReturnedCommImgIsOk(Map<String, dynamic> jsonCommImg, int visitId){
+    return jsonCommImg['visita_id'] == visitId && jsonCommImg['descripcion'] != null && jsonCommImg['ruta'] != null;
   }
 }

@@ -5,7 +5,8 @@ enum FormStep{
   OnForm,
   OnFirstFirmerInformation,
   OnFirstFirmerFirm,
-  OnSecondaryFirms
+  OnSecondaryFirms,
+  Finished
 }
 
 @immutable
@@ -33,7 +34,7 @@ class ChosenFormState{
   );
 
   List<CustomFormField> getFormFieldsByIndex(int index){
-    return _formFieldsPerPage[index];
+    return _formFieldsPerPage.length > index? _formFieldsPerPage[index]:[];
   }
 
   List<CustomFormField> get allFields{

@@ -13,8 +13,6 @@ import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/logic/bloc/widgets/commented_images/commented_images_bloc.dart';
 import 'package:gap/logic/bloc/widgets/firm_paint/firm_paint_bloc.dart';
 import 'package:gap/logic/bloc/widgets/index/index_bloc.dart';
-import 'package:gap/logic/blocs_manager/chosen_form_manager.dart';
-import 'package:gap/logic/blocs_manager/chosen_form_manager.dart';
 import 'package:gap/logic/helpers/painter_to_image_converter.dart';
 import 'package:gap/logic/storage_managers/commented_images/commented_images_storage_manager.dart';
 import 'package:gap/logic/storage_managers/forms/chosen_form_storage_manager.dart';
@@ -34,6 +32,8 @@ abstract class DataDistributor{
   final FormulariosBloc formsB = blocsAsMap[BlocName.Formularios];
   final ChosenFormBloc chosenFormB = blocsAsMap[BlocName.ChosenForm];
   final FirmPaintBloc firmPaintB = blocsAsMap[BlocName.FirmPaint];
+  final IndexBloc indexB = blocsAsMap[BlocName.Index];
+  final CommentedImagesBloc commImgsB = blocsAsMap[BlocName.CommentedImages];
 
 
   Future<void> updateAccessToken()async{}
@@ -41,15 +41,18 @@ abstract class DataDistributor{
   Future<void> updateProjects()async{}
 
   Future<void> updateChosenProject(Project project)async{
-    final ProjectsBloc pBloc = blocsAsMap[BlocName.Projects];
-    final ChooseProjectOld cpEvent = ChooseProjectOld(chosenOne: project);
-    pBloc.add(cpEvent);
+    final ChooseProject cpEvent = ChooseProject(chosenOne: project);
+    projectsB.add(cpEvent);
     UploadedBlocsData.dataContainer[NavigationRoute.ProjectDetail] = project;
+    await ProjectsStorageManager.setChosenProject(project);
   }
 
   Future<void> updateVisits()async{}
   
-  Future<void> updateChosenVisit(Visit visit)async{}
+  Future<void> updateChosenVisit(Visit visit)async{
+    await addChosenVisitToBloc(visit);
+    await VisitsStorageManager.setChosenVisit(visit);
+  }
 
   @protected
   Future addChosenVisitToBloc(Visit visit)async{
@@ -62,7 +65,7 @@ abstract class DataDistributor{
   
   Future<void> updateChosenForm(Formulario form)async{
     final ChooseForm chooseFormEvent = ChooseForm(chosenOne: form);
-    blocsAsMap[BlocName.Formularios].add(chooseFormEvent);
+    formsB.add(chooseFormEvent);
     await ChosenFormStorageManager.setChosenForm(form);
     await _chooseChosenFormStep(form);
   }
@@ -82,6 +85,8 @@ abstract class DataDistributor{
         break;
       case FormStep.OnSecondaryFirms:
         _onSecondaryFirms(form);
+        break;
+      case FormStep.Finished:
         break;
     }
   }
@@ -108,12 +113,10 @@ abstract class DataDistributor{
   }
 
   Future endFormFillingOut()async{
-    final Visit chosenVisit = visitsB.state.chosenVisit;
     final Formulario chosenForm = formsB.state.chosenForm;
     chosenForm.advanceInStep();
     _chooseChosenFormStep(chosenForm);
-    await PreloadedFormsStorageManager.setPreloadedForm(chosenForm, chosenVisit.id);
-    //await _updateChosenFormInStorage();
+    await _updateChosenFormInStorage();
   }
 
   Future _updateChosenFormInStorage()async{
@@ -133,6 +136,7 @@ abstract class DataDistributor{
     final Formulario chosenForm = formsB.state.chosenForm;
     chosenForm.advanceInStep();
     _addNewFirmer(InitFirstFirmerFirm());
+    await _updateChosenFormInStorage();
   }
 
   Future updateFirmers()async{
@@ -158,7 +162,10 @@ abstract class DataDistributor{
   }
 
   Future endAllFormProcess()async{
+    final Formulario chosenForm = formsB.state.chosenForm;
+    chosenForm.formStep = FormStep.Finished;
     await updateFirmers();
+    chosenFormB.add(ResetChosenForm());
   }
 
   Future updateCommentedImages()async{
@@ -202,6 +209,11 @@ abstract class DataDistributor{
   void _resetFotosPorAgregar(ImagesBloc imgsBloc){ 
     final ResetImages resetAllEvent = ResetImages();
     imgsBloc.add(resetAllEvent);
+  }
+
+  Future endCommentedImagesProcess()async{
+    commImgsB.add(ResetCommentedImages());
+    indexB.add(ResetAllOfIndex());
   }
 
   Future<void> addStorageDataToIndexBloc()async{

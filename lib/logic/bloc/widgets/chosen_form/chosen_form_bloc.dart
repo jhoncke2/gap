@@ -9,6 +9,7 @@ part 'chosen_form_event.dart';
 part 'chosen_form_state.dart';
 
 class ChosenFormBloc extends Bloc<ChosenFormEvent, ChosenFormState> {
+  
   final FormFieldsByPageGenerator _formFieldsByPageGenerator = FormFieldsByPageGenerator();
 
   ChosenFormState _currentStateToYield;

@@ -85,11 +85,11 @@ class VisitsBloc extends Bloc<VisitsEvent, VisitsState> {
   @protected
   void chooseVisit(ChooseVisit event){
     final Visit chosenOne = event.chosenOne;
-    _currentYieldedState = state.copyWith(chosenVisit: chosenOne);
-    
+    final List<Visit> visits = state.visits;
+    int chosenIndex = visits.indexWhere((element) => element.id == chosenOne.id);
+    visits[chosenIndex] = chosenOne;
+    _currentYieldedState = state.copyWith(chosenVisit: chosenOne, visits: visits);
   }
-
-  
 
   @protected
   void resetAllOfVisits(){

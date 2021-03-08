@@ -4,6 +4,7 @@ import 'package:gap/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/logic/bloc/entities/projects/projects_bloc.dart';
 import 'package:gap/logic/bloc/entities/user/user_bloc.dart';
 import 'package:gap/logic/bloc/entities/visits/visits_bloc.dart';
+import 'package:gap/logic/bloc/widgets/commented_images/commented_images_bloc.dart';
 import 'package:gap/logic/central_manager/data_distributor/data_distributor.dart';
 import 'package:gap/logic/services_manager/projects_services_manager.dart';
 import 'package:gap/logic/storage_managers/forms/chosen_form_storage_manager.dart';
@@ -35,8 +36,7 @@ class DataDistributorWithConnection extends DataDistributor{
   @override
   Future<void> updateChosenProject(Project project)async{
     super.updateChosenProject(project);
-    ProjectsStorageManager.setChosenProject(project);
-    UploadedBlocsData.dataContainer[NavigationRoute.ProjectDetail] = project;
+    
   }
 
    @override
@@ -48,10 +48,12 @@ class DataDistributorWithConnection extends DataDistributor{
 
   @override
   Future<void> updateChosenVisit(Visit visit)async{
-    await super.addChosenVisitToBloc(visit);
+    await super.updateChosenVisit(visit);
     _addPreloadedDataRelatedToChosenProject(visit);
     await _loadFormsByChosenVisit(visit.id);
-    await _addVisitToStorage(visit);
+    
+    //await super.addChosenVisitToBloc(visit);
+    //await _addVisitToStorage(visit);
   }
 
   Future _addPreloadedDataRelatedToChosenProject(Visit visit)async{
@@ -99,10 +101,6 @@ class DataDistributorWithConnection extends DataDistributor{
     await ProjectsServicesManager.updateForm(chosenForm, chosenVisit.id, accessToken);
     chosenForm.campos = [];
     await PreloadedFormsStorageManager.setPreloadedForm(chosenForm, chosenVisit.id);
-  }
-
-  bool updateFormsVisitIsOk(){
-    
   }
 
   @override
@@ -169,7 +167,25 @@ class DataDistributorWithConnection extends DataDistributor{
   Future _removeFormsFromStorage()async{
     await FormulariosStorageManager.removeForms();
   }
+
+  Future endCommentedImagesProcess()async{
+    try{
+      await _tryEndCommentedImagesProcess();
+    }catch(err){
+    }
+  }
+
+  Future _tryEndCommentedImagesProcess()async{
+    final String accessToken = await UserStorageManager.getAccessToken();
+    final CommentedImagesBloc commImgsB = DataDistributor.blocsAsMap[BlocName.CommentedImages];
+    final List<CommentedImage> commImgs = commImgsB.state.allCommentedImages;
+    final Visit chosenVisit = visitsB.state.chosenVisit;
+    await ProjectsServicesManager.saveCommentedImages(accessToken, commImgs, chosenVisit.id);
+    await super.endCommentedImagesProcess();
+  }
 }
+
+
 
 class _AuthTokenValidator{
 

@@ -17,13 +17,6 @@ class SetProjects extends ProjectsEvent{
   });
 }
 
-class ChooseProjectOld extends ProjectsEvent{
-  final Project chosenOne;
-  ChooseProjectOld({
-    @required this.chosenOne,
-  });
-}
-
 class ChooseProject extends ProjectsEvent{
   final Project chosenOne;
   ChooseProject({

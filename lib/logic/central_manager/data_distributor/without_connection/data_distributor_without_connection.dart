@@ -40,9 +40,11 @@ class SourceDataToBlocWithoutConnection extends DataDistributor{
 
   @override
   Future updateChosenVisit(Visit visit)async{
-    await addChosenVisitToBloc(visit);
+    await super.updateChosenVisit(visit);
     await _updateFormularios(visit);
-    await _addVisitToStorage(visit);
+    
+    //await addChosenVisitToBloc(visit);
+    //await _addVisitToStorage(visit);
   }
 
   Future _updateFormularios(Visit chosenVisit)async{

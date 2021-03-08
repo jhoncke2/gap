@@ -125,7 +125,7 @@ class ChosenFormManager{
   bool _currentFirmerHasEnoughPointsInHisDraw(){
     final FirmPaintState fpState = firmPaintBloc.state;
     final int nTotalPoints = fpState.nTotalPoints;
-    return nTotalPoints > 75;
+    return nTotalPoints > 5;
   }
 
   bool _firmerHasPersInfoValues(PersonalInformation firmer){

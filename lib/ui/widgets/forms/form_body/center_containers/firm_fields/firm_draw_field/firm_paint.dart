@@ -1,8 +1,12 @@
+import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/logic/bloc/widgets/firm_paint/firm_paint_bloc.dart';
+// ignore: must_be_immutable
 class FirmPaint extends StatelessWidget{
+  FirmPaintState _firmPaintState;
+  FirmPainter _firmPainter;
   final Size size;
   FirmPaint({
     @required this.size
@@ -13,46 +17,49 @@ class FirmPaint extends StatelessWidget{
       width: size.width,
       height: size.height, 
       child: BlocBuilder<FirmPaintBloc, FirmPaintState>(
-        builder: (context, state) {
+        builder: (context, state){
+          _initInitialConfig(context, state);
           return CustomPaint(
-            painter: FirmPainter(firmPaintState: state, context: context),
+            painter: _firmPainter,
             willChange: true,
           );
         },
       ),
     );
   }
+
+  _initInitialConfig(BuildContext context, FirmPaintState state){
+    _firmPaintState = state;
+    final List<List<Offset>> pointsByWord = state.pointsByWord;
+    _firmPainter = FirmPainter(context: context, pointsByWord: pointsByWord);
+    if(_firmPaintState.firmPainter == null){
+      final FirmPaintBloc fpBloc = BlocProvider.of<FirmPaintBloc>(context);
+      final AddFirmPainter afpEvent = AddFirmPainter(painter: _firmPainter);
+      fpBloc.add(afpEvent);
+    }
+  }
 }
 
 class FirmPainter extends CustomPainter{
   final BuildContext context;
-  final FirmPaintState firmPaintState;
+  final List<List<Offset>> pointsByWord;
   Canvas _canvas;
   Size _size;
   Paint _paint;
   FirmPainter({
     @required this.context,
-    @required this.firmPaintState
+    @required this.pointsByWord
   });
 
   @override
   void paint(Canvas canvas, Size size) {
-    _managePainterInBloc();
     _initInitialConfig(canvas, size);
-    for (List<Offset> currentWord in firmPaintState.pointsByWord) {
+    for (List<Offset> currentWord in pointsByWord) {
       if(currentWord.length == 1){
         _paintPoint(currentWord[0]);
       }else{
         _paintWord(currentWord);
       }
-    }
-  }
-
-  void _managePainterInBloc(){
-    if(firmPaintState.firmPainter == null){
-      final FirmPaintBloc fpBloc = BlocProvider.of<FirmPaintBloc>(this.context);
-      final AddFirmPainter afpEvent = AddFirmPainter(painter: this);
-      fpBloc.add(afpEvent);
     }
   }
 
@@ -96,5 +103,6 @@ class FirmPainter extends CustomPainter{
   bool shouldRepaint(FirmPainter oldDelegate) => true;
 
   @override
-  bool shouldRebuildSemantics(FirmPainter oldDelegate) => false;
+  bool shouldRebuildSemantics(FirmPainter oldDelegate) => true;
+  
 }

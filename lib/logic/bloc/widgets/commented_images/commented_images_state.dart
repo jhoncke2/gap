@@ -27,4 +27,12 @@ class CommentedImagesState {
   List<CommentedImage>  getCommImgsByIndex(int index){
     return _commentedImagesPerPage[index];
   }
+
+  List<CommentedImage> get allCommentedImages{
+    final List<CommentedImage> commImgs = [];
+    _commentedImagesPerPage.forEach((currentCommImgs) {
+      commImgs.addAll(currentCommImgs);
+    });
+    return commImgs;
+  }
 }

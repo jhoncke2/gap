@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
+import 'package:gap/logic/bloc/widgets/index/index_bloc.dart';
 import 'package:gap/logic/blocs_manager/chosen_form_manager.dart';
 import 'package:gap/logic/central_manager/pages_navigation_manager.dart';
 import 'package:gap/ui/utils/size_utils.dart';
@@ -58,13 +59,20 @@ class _ChangeFormStepButton extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context){
     _initInitialConfiguration(context);
     _generateOnPressedFunction();
-    return GeneralButton(
-      backgroundColor: Theme.of(_context).secondaryHeaderColor,
-      text: 'Siguiente',
-      onPressed: _onPressed,
+    return BlocBuilder<IndexBloc, IndexState>(
+      builder: (_, state) {
+        if(state.currentIndexPage == state.nPages-1){
+          return GeneralButton(
+            backgroundColor: Theme.of(_context).secondaryHeaderColor,
+            text: 'Siguiente',
+            onPressed: _onPressed,
+          );
+        }else
+          return Container();
+      },
     );
   }
 
@@ -82,18 +90,6 @@ class _ChangeFormStepButton extends StatelessWidget {
   }
 
   void _irASiguienteWidget(){
-    ChosenFormEvent initNewStepEvent;
-    if(chosenFormState.formStep == FormStep.OnForm){
-      initNewStepEvent = InitFirstFirmerFillingOut();
-    }else{
-      initNewStepEvent = InitFirstFirmerFirm();
-    }
-    //_ejecutarEvento(initNewStepEvent);
     PagesNavigationManager.advanceOnChosenFormFieldsPage();
-  }
-
-  void _ejecutarEvento(ChosenFormEvent event){
-    final ChosenFormBloc cfBloc = BlocProvider.of<ChosenFormBloc>(_context);
-    cfBloc.add(event);
   }
 }
