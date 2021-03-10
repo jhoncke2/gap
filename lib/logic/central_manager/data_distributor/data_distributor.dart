@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:gap/central_config/bloc_providers_creator.dart';
 import 'package:gap/data/enums/enums.dart';
 import 'package:gap/data/models/entities/entities.dart';
+import 'package:gap/errors/services/service_status_err.dart';
+import 'package:gap/errors/storage/unfound_storage_element_err.dart';
 import 'package:gap/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/logic/bloc/entities/images/images_bloc.dart';
 import 'package:gap/logic/bloc/entities/projects/projects_bloc.dart';
@@ -13,13 +15,16 @@ import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/logic/bloc/widgets/commented_images/commented_images_bloc.dart';
 import 'package:gap/logic/bloc/widgets/firm_paint/firm_paint_bloc.dart';
 import 'package:gap/logic/bloc/widgets/index/index_bloc.dart';
+import 'package:gap/logic/central_manager/pages_navigation_manager.dart';
 import 'package:gap/logic/helpers/painter_to_image_converter.dart';
 import 'package:gap/logic/storage_managers/commented_images/commented_images_storage_manager.dart';
 import 'package:gap/logic/storage_managers/forms/chosen_form_storage_manager.dart';
 import 'package:gap/logic/storage_managers/forms/preloaded_forms_storage_manager.dart';
 import 'package:gap/logic/storage_managers/index/index_storage_manager.dart';
 import 'package:gap/logic/storage_managers/projects/projects_storage_manager.dart';
+import 'package:gap/logic/storage_managers/user/user_storage_manager.dart';
 import 'package:gap/logic/storage_managers/visits/visits_storage_manager.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 abstract class DataDistributor{
 
@@ -35,23 +40,28 @@ abstract class DataDistributor{
   final IndexBloc indexB = blocsAsMap[BlocName.Index];
   final CommentedImagesBloc commImgsB = blocsAsMap[BlocName.CommentedImages];
 
-
-  Future<void> updateAccessToken()async{}
+  Future<void> updateAccessToken(String accessToken)async{}
 
   Future<void> updateProjects()async{}
 
   Future<void> updateChosenProject(Project project)async{
-    final ChooseProject cpEvent = ChooseProject(chosenOne: project);
+    final List<Project> projects = projectsB.state.projects;
+    final List<Project> equalsUpdatedProjects = projects.where((element) => element.id == project.id).toList();
+    final Project realProject = equalsUpdatedProjects.length > 0? equalsUpdatedProjects[0] : project;
+    final ChooseProject cpEvent = ChooseProject(chosenOne: realProject);
     projectsB.add(cpEvent);
     UploadedBlocsData.dataContainer[NavigationRoute.ProjectDetail] = project;
-    await ProjectsStorageManager.setChosenProject(project);
+    await ProjectsStorageManager.setChosenProject(realProject);
   }
 
   Future<void> updateVisits()async{}
   
   Future<void> updateChosenVisit(Visit visit)async{
-    await addChosenVisitToBloc(visit);
-    await VisitsStorageManager.setChosenVisit(visit);
+    final List<Visit> visits = visitsB.state.visits;
+    final List<Visit> updatedEqualsVisits = visits.where((element) => element.id == visit.id).toList();
+    final Visit realVisit = updatedEqualsVisits.length > 0? updatedEqualsVisits[0] : visit;
+    await addChosenVisitToBloc(realVisit);
+    await VisitsStorageManager.setChosenVisit(realVisit);
   }
 
   @protected
@@ -64,10 +74,16 @@ abstract class DataDistributor{
   Future<void> updateFormularios()async{}
   
   Future<void> updateChosenForm(Formulario form)async{
-    final ChooseForm chooseFormEvent = ChooseForm(chosenOne: form);
-    formsB.add(chooseFormEvent);
-    await ChosenFormStorageManager.setChosenForm(form);
-    await _chooseChosenFormStep(form);
+    final List<Formulario> forms = formsB.state.forms;
+    final List<Formulario> updatedEqualsForms = forms.where((element) => element.id == form.id).toList();
+    final Formulario realForm = (updatedEqualsForms.length > 0)? updatedEqualsForms[0] : form;
+    
+    if(!form.completo){
+      final ChooseForm chooseFormEvent = ChooseForm(chosenOne: realForm);
+      formsB.add(chooseFormEvent);
+      await ChosenFormStorageManager.setChosenForm(realForm);
+      await _chooseChosenFormStep(realForm);
+    }
   }
 
   Future _chooseChosenFormStep(Formulario form)async{
@@ -98,6 +114,7 @@ abstract class DataDistributor{
   void _onEndInitFormFillingOut(int formFieldsPages){
     final IndexBloc indexBloc = blocsAsMap[BlocName.Index];
     indexBloc.add(ChangeNPages(nPages: formFieldsPages));
+    indexBloc.add(ChangeSePuedeAvanzar(sePuede: true));
   }
 
   void _initOnFirstFirmerInformation(){
@@ -166,6 +183,8 @@ abstract class DataDistributor{
     chosenForm.formStep = FormStep.Finished;
     await updateFirmers();
     chosenFormB.add(ResetChosenForm());
+    indexB.add(ResetAllOfIndex());
+    
   }
 
   Future updateCommentedImages()async{
@@ -214,6 +233,8 @@ abstract class DataDistributor{
   Future endCommentedImagesProcess()async{
     commImgsB.add(ResetCommentedImages());
     indexB.add(ResetAllOfIndex());
+    await updateProjects();
+    await updateVisits();
   }
 
   Future<void> addStorageDataToIndexBloc()async{
@@ -229,6 +250,7 @@ abstract class DataDistributor{
 
   Future resetChosenProject()async{
     await ProjectsStorageManager.removeChosenProject();
+    await updateProjects();
   }
 
   Future resetVisits()async{
@@ -242,7 +264,10 @@ abstract class DataDistributor{
     await VisitsStorageManager.removeChosenVisit();
   }
 
-  Future resetForms()async{}
+  Future resetForms()async{
+    await updateProjects();
+    await updateVisits();
+  }
 
   Future resetChosenForm()async{}
 
@@ -253,3 +278,75 @@ abstract class DataDistributor{
 class UploadedBlocsData{
   static final Map<NavigationRoute, dynamic> dataContainer = {};
 }
+
+
+/*
+EnumValues<DataDistrFunctionName, Function> _dataDistributorFunctionsValues;
+  Function _lastExecutedFunction;
+
+  DataDistributor(){
+    _initializeDataDistributorFunctionsValues();
+  }
+
+  final List functionsWithValue = [
+    DataDistrFunctionName.UPDATE_ACCESS_TOKEN, 
+    DataDistrFunctionName.UPDATE_CHOSEN_PROJECT,
+    DataDistrFunctionName.UPDATE_CHOSEN_VISIT, 
+    DataDistrFunctionName.UPDATE_CHOSEN_FORM
+  ];
+
+  _initializeDataDistributorFunctionsValues(){
+    _dataDistributorFunctionsValues =  EnumValues<DataDistrFunctionName, Function>({
+      DataDistrFunctionName.UPDATE_ACCESS_TOKEN: updateAccessToken,
+      DataDistrFunctionName.UPDATE_PROJECT: updateAccessToken,
+      DataDistrFunctionName.UPDATE_CHOSEN_PROJECT: updateAccessToken,
+      DataDistrFunctionName.UPDATE_VISITS: updateAccessToken,
+      DataDistrFunctionName.UPDATE_CHOSEN_VISIT: updateAccessToken,
+      DataDistrFunctionName.UPDATE_FORMULARIOS: updateAccessToken,
+      DataDistrFunctionName.UPDATE_CHOSEN_FORM: updateAccessToken,
+      DataDistrFunctionName.END_FORM_FILLING_OUT: updateAccessToken,
+      DataDistrFunctionName.INIT_FIRST_FIRMER_FILLING_OUT: updateAccessToken,
+      DataDistrFunctionName.INIT_FIRST_FIRMER_FIRM: updateAccessToken,
+      DataDistrFunctionName.UPDATE_FIRMERS: updateAccessToken,
+      DataDistrFunctionName.END_ALL_FORM_PROCESS: updateAccessToken,
+      DataDistrFunctionName.UPDATE_COMMENTED_IMAGES: updateAccessToken,
+      DataDistrFunctionName.END_COMMENTED_IMAGES_PROCESS: updateAccessToken,
+      DataDistrFunctionName.ADD_STORAGE_DATA_TO_INDEX_BLOC: updateAccessToken,
+      DataDistrFunctionName.RESET_CHOSEN_PROJECT: updateAccessToken,
+      DataDistrFunctionName.RESET_VISITS: updateAccessToken,
+      DataDistrFunctionName.RESET_CHOSEN_VISIT: updateAccessToken,
+      DataDistrFunctionName.RESET_FORMS: updateAccessToken,
+      DataDistrFunctionName.RESET_CHOSEN_FORM: updateAccessToken,
+      DataDistrFunctionName.RESET_COMMENTED_IMAGES: updateAccessToken,
+    });
+  }
+
+  Future executeFunction(DataDistrFunctionName functionName, [dynamic value])async{
+    try{
+      _tryExecuteFunctionByName(functionName);
+    }on ServiceStatusErr catch(err){
+      if(err.extraInformation == 'refresh_token')
+        await PagesNavigationManager.navToLogin();
+      else{
+        final String accessToken = await UserStorageManager.getAccessToken();
+        await executeFunction(DataDistrFunctionName.UPDATE_ACCESS_TOKEN, accessToken);
+      }
+    }on UnfoundStorageElementErr catch(err){
+      if(err.elementType == StorageElementType.AUTH_TOKEN)
+        await PagesNavigationManager.navToLogin();
+      else
+        await PagesNavigationManager.navToProjects();
+    }catch(err){
+      await PagesNavigationManager.navToProjects();
+    }
+  }
+
+  Future _tryExecuteFunctionByName(DataDistrFunctionName functionName, [dynamic value])async{
+    _lastExecutedFunction = _dataDistributorFunctionsValues.map[functionName];
+    if(functionsWithValue.contains(functionName))
+      await _lastExecutedFunction(value);
+    else
+      await _lastExecutedFunction();
+  }
+
+*/

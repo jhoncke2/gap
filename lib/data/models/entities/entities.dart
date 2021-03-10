@@ -10,6 +10,7 @@ import 'package:gap/data/models/entities/custom_form_field/variable/single_value
 import 'package:gap/data/models/entities/custom_form_field/variable/single_value/raw_text_form_field.dart';
 import 'package:gap/data/models/entities/custom_form_field/variable/variable_form_field.dart';
 import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
+import 'package:geolocator/geolocator.dart';
 
 part 'entity.dart';
 part 'project.dart';
@@ -63,13 +64,13 @@ String transformTimeInToString(TimeOfDay time){
   return '${time.hour}:${time.minute}';
 }
 
-class EnumValues<T> {
-    Map<String, T> map;
-    Map<T, String> reverseMap;
+class EnumValues<V,T> {
+    Map<V, T> map;
+    Map<T, V> reverseMap;
 
     EnumValues(this.map);
 
-    Map<T, String> get reverse {
+    Map<T, V> get reverse {
         if (reverseMap == null) {
             reverseMap = map.map((k, v) => new MapEntry(v, k));
         }

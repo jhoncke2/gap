@@ -13,7 +13,7 @@ class PainterToImageConverter{
   static Future<File> createFileFromFirmPainter(FirmPainter painter, int firmIndex)async{
     final ByteData byteData = await _convertPainterToByteData(painter);
     final ByteBuffer dataBuffer = byteData.buffer;
-    final String tempPath = await TempDir.getImgPath('/firm$firmIndex.png');
+    final String tempPath = await TempDir.getImgPath('/firm$firmIndex');
     return File(tempPath).writeAsBytes(
       dataBuffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes)
     );

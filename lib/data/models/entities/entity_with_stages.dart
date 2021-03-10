@@ -1,7 +1,7 @@
 part of 'entities.dart';
 
 abstract class EntityWithStage extends Entity{
-  final ProcessStage stage;
+  ProcessStage stage;
   final String name;
   EntityWithStage({
     @required this.stage,
@@ -12,7 +12,7 @@ abstract class EntityWithStage extends Entity{
   Map<String, dynamic> toJson() => {
     'id':this.id,
     'name':this.name,
-    'stage': defineStage()
+    'stage': stage.value
   };
 
   String defineStage(){

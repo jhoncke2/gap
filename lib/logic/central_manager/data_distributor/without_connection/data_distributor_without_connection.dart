@@ -7,15 +7,13 @@ import 'package:gap/logic/bloc/entities/visits/visits_bloc.dart';
 import 'package:gap/logic/central_manager/data_distributor/data_distributor.dart';
 import 'package:gap/logic/storage_managers/forms/preloaded_forms_storage_manager.dart';
 import 'package:gap/logic/storage_managers/projects/projects_storage_manager.dart';
-import 'package:gap/logic/storage_managers/user/user_storage_manager.dart';
 import 'package:gap/logic/storage_managers/visits/preloaded_visits_storage_manager.dart';
 import 'package:gap/logic/storage_managers/visits/visits_storage_manager.dart';
 
 class SourceDataToBlocWithoutConnection extends DataDistributor{
   
   @override
-  Future<void> updateAccessToken()async{
-    final String accessToken = await UserStorageManager.getAccessToken();
+  Future<void> updateAccessToken(String accessToken)async{
     final UserBloc uBloc = DataDistributor.blocsAsMap[BlocName.User];
     uBloc.add(SetAccessToken(accessToken: accessToken));
   }
@@ -52,10 +50,6 @@ class SourceDataToBlocWithoutConnection extends DataDistributor{
     final List<Formulario> formsGroupedByPreloadedVisit = await PreloadedFormsStorageManager.getPreloadedFormsByVisitId(chosenVisit.id);
     final SetForms sfEvent = SetForms(forms: formsGroupedByPreloadedVisit);
     formsB.add(sfEvent);
-  }
-
-  Future _addVisitToStorage(Visit visit)async{
-    await VisitsStorageManager.setChosenVisit(visit);
   }
 
   @override

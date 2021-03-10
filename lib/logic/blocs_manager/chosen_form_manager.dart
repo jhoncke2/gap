@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gap/data/models/entities/custom_form_field/variable/variable_form_field.dart';
 import 'package:gap/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/logic/bloc/widgets/firm_paint/firm_paint_bloc.dart';
@@ -100,7 +99,8 @@ class ChosenFormManager{
   }
 
   bool _sePuedeAvanzarDesdeOnFormFillingOut(){
-    return formsState.chosenForm.allFieldsAreCompleted();
+    //return formsState.chosenForm.allFieldsAreCompleted();
+    return true;
   }
 
   bool _sePuedeAvanzarDesdeFirstFirmerInfo(){

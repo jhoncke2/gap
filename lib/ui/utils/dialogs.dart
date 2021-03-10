@@ -6,6 +6,7 @@ final SizeUtils _sizeUtils = SizeUtils();
 
 Future<void> showAdjuntarFotosDialog(BuildContext context)async{
   await showDialog(
+    useRootNavigator: false,
     context: context,
     barrierColor: Colors.black.withOpacity(0.0175),
     child: Dialog(
@@ -20,13 +21,15 @@ Future showErrDialog(BuildContext context, String errorMsg)async{
     context: context,
     child: Dialog(
       child: Container(
-        height: _sizeUtils.xasisSobreYasis * 0.275,
+        height: _sizeUtils.xasisSobreYasis * 0.225,
+        padding: EdgeInsets.all(15),
         child: Center(
           child: Text(
-            'Ocurrió un error: $errorMsg',
+            '$errorMsg',
+            textAlign: TextAlign.center,
             style: TextStyle(
               color: Colors.black87,
-              fontSize: 16
+              fontSize: 19
             ),
           ),
         ),

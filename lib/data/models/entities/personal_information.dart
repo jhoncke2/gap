@@ -42,8 +42,12 @@ class  PersonalInformation{
   }
 
   void _convertFirmToFile(String firmAsString){
-    //TODO: Implementar algoritmo
-    firm = File('assets/logos/logo_con_fondo.png');
+    try{
+      firm = File(firmAsString);
+      print(firm.path);
+    }catch(err){
+      firm = File('assets/logos/logo_con_fondo.png');
+    }
   }
 
   Map<String, dynamic> toJson() => {
@@ -52,7 +56,7 @@ class  PersonalInformation{
     'identif_document_type':identifDocumentType,
     'identif_document_number':identifDocumentNumber,
     //TODO: Convertir a data que se pueda desconvertir más tarde
-    'firm':firm.toString(),    
+    'firm':firm.path    
   };
 
   Map<String, String> toServiceJson() => {

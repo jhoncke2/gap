@@ -1,3 +1,4 @@
+import 'package:gap/errors/services/service_status_err.dart';
 import 'package:gap/services/basic_service.dart';
 
 class AuthService extends BasicService{
@@ -12,6 +13,14 @@ class AuthService extends BasicService{
   }
 
   Future<Map<String, dynamic>> refreshAuthToken(String oldToken)async{
+    try{
+      return await _tryRefreshAccessToken(oldToken);
+    }on ServiceStatusErr catch(err){
+      throw ServiceStatusErr(message: err.message, status: err.status, extraInformation: 'refresh_token');
+    }
+  }
+
+  Future<Map<String, dynamic>> _tryRefreshAccessToken(String oldToken)async{
     final String requestUrl = _authUrl + 'refresh';
     final Map<String, String> headers = {'Authorization':'Bearer $oldToken'};
     final Map<String, Map<String, dynamic>> headersAndBody = createHeadersAndBodyForARequest(headers: headers);

@@ -6,6 +6,7 @@ import 'package:gap/logic/bloc/entities/user/user_bloc.dart';
 import 'package:gap/logic/bloc/entities/visits/visits_bloc.dart';
 import 'package:gap/logic/bloc/widgets/commented_images/commented_images_bloc.dart';
 import 'package:gap/logic/central_manager/data_distributor/data_distributor.dart';
+import 'package:gap/logic/central_manager/pages_navigation_manager.dart';
 import 'package:gap/logic/services_manager/projects_services_manager.dart';
 import 'package:gap/logic/storage_managers/forms/chosen_form_storage_manager.dart';
 import 'package:gap/logic/storage_managers/forms/formularios_storage_manager.dart';
@@ -21,9 +22,9 @@ class DataDistributorWithConnection extends DataDistributor{
   final _AuthTokenValidator _authTokenValidator = _AuthTokenValidator();
 
   @override
-  Future updateAccessToken()async{
+  Future updateAccessToken(String accessToken)async{
     _authTokenValidator.userBloc = DataDistributor.blocsAsMap[BlocName.User];
-    await _authTokenValidator.refreshAuthToken();
+    await _authTokenValidator.refreshAuthToken(accessToken);
   }
 
   @override
@@ -160,7 +161,7 @@ class DataDistributorWithConnection extends DataDistributor{
   }
 
   Future _removeVisitFromPReloadedVisits(Visit visit)async{
-    final Project chosenProject = projectsB.state.chosenProjectOld;
+    final Project chosenProject = projectsB.state.chosenProject;
     await PreloadedVisitsStorageManager.removeVisit(visit.id, chosenProject.id);
   }
 
@@ -185,25 +186,16 @@ class DataDistributorWithConnection extends DataDistributor{
   }
 }
 
-
-
 class _AuthTokenValidator{
-
   UserBloc userBloc;
-
-  Future refreshAuthToken()async{
-    final String authToken = await _obtainAuthTokenFromStorage();
-    await _refreshAuthToken(authToken);
-  }
- 
-  Future _obtainAuthTokenFromStorage()async{
-    return await UserStorageManager.getAccessToken();
-  }
-
-  Future _refreshAuthToken(String oldAuthToken)async{
-    final Map<String, dynamic> authTokenResponse = await authService.refreshAuthToken(oldAuthToken);
-    String newAuthToken = authTokenResponse['data']['original']['access_token'];
-    await UserStorageManager.setAccessToken(newAuthToken);
-    userBloc.add(SetAccessToken(accessToken: newAuthToken));
+  Future refreshAuthToken(String oldAuthToken)async{
+    try{
+      final Map<String, dynamic> authTokenResponse = await authService.refreshAuthToken(oldAuthToken);
+      String newAuthToken = authTokenResponse['data']['original']['access_token'];
+      await UserStorageManager.setAccessToken(newAuthToken);
+      userBloc.add(SetAccessToken(accessToken: newAuthToken));
+    }catch(err){
+      await PagesNavigationManager.navToLogin();
+    }
   }
 }

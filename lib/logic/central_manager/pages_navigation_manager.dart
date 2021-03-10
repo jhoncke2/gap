@@ -1,9 +1,14 @@
+import 'package:gap/native_connectors/gps.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:gap/data/enums/enums.dart';
 import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/logic/bloc/nav_routes/routes_manager.dart';
 import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/logic/central_manager/data_distributor/data_distributor_manager.dart';
+import 'package:gap/native_connectors/permissions.dart';
+import 'package:gap/ui/utils/dialogs.dart' as dialogs;
 
 class PagesNavigationManager{
 
@@ -51,9 +56,9 @@ class PagesNavigationManager{
     await _goToNextPage(NavigationRoute.Formularios);
   }
 
-  static Future<void> navToFormDetail(Formulario formulario)async{
+  static Future<void> navToFormDetail(Formulario formulario, BuildContext context)async{
     if(_formularioSePuedeAbrir(formulario)){
-      await _updateForm(formulario);
+      await _chooseMethodByGpsPermission(context, (){_updateForm(formulario);}, _goToAppSetings, 'Por favor, habilite el uso de gps para esta aplicación');
     } 
   }
 
@@ -61,7 +66,33 @@ class PagesNavigationManager{
     return formulario.formStep != FormStep.Finished && formulario.campos.length > 0;
   }
 
+  static Future _chooseMethodByGpsPermission(BuildContext context, Function methodIfGps, Function methodIfNotGps, String errMessage)async{
+    //final PermissionStatus gpsStatus = await NativeServicesPermissions.gpsStatus;
+    final  gpsStatus = await GPS.gpsPermission;
+    switch(gpsStatus){
+      case LocationPermission.denied:
+        await methodIfNotGps(context, errMessage);
+        break;
+      case LocationPermission.deniedForever:
+        await methodIfNotGps(context, errMessage);
+        break;
+      case LocationPermission.whileInUse:
+        await methodIfGps();
+        break;
+      case LocationPermission.always:
+        await methodIfGps();
+        break;
+    }
+  }
+
+  static Future _goToAppSetings(BuildContext context, String message)async{
+    await dialogs.showErrDialog(context, message);
+    await GPS.openAppSettings();
+  }
+
   static Future _updateForm(Formulario formulario)async{
+    final Position currentPosition = await GPS.gpsPosition;
+    formulario.initialPosition = currentPosition;
     await DataDistributorManager.dataDistributor.updateChosenForm(formulario);
     await _goToNextPage(NavigationRoute.FormularioDetailForms);
   }
@@ -70,14 +101,13 @@ class PagesNavigationManager{
     await DataDistributorManager.dataDistributor.endFormFillingOut();
   }
 
-  static Future initFirstFirmerFillingOut(ChosenFormEvent firstFirmerStep)async{
+  static Future initFirstFirmerFillingOut()async{
     //await DataDistributorManager.dataDistributor.
     await DataDistributorManager.dataDistributor.endFormFillingOut();
     await DataDistributorManager.dataDistributor.initFirstFirmerFillingOut();
   }
 
   static Future initFirstFirmerFirm(ChosenFormEvent firstFirmerStep)async{
-    //await DataDistributorManager.dataDistributor.
     await DataDistributorManager.dataDistributor.initFirstFirmerFirm();
   }
 
@@ -86,10 +116,7 @@ class PagesNavigationManager{
   }
 
   static Future<void> endFormFirmers()async{    
-    //await ChosenFormManagerSingleton.chosenFormManager.addFirmToFirmer();
-    //ChosenFormManagerSingleton.chosenFormManager.finishFirms();
     await DataDistributorManager.dataDistributor.endAllFormProcess();
-    //await DataDistributorManager.dataDistributor.updateFirmers();
     await pop();
   }
 
@@ -104,7 +131,6 @@ class PagesNavigationManager{
 
   static Future<void> updateImgsToCommentedImgs()async{
     DataDistributorManager.dataDistributor.addCurrentPhotosToCommentedImages();
-    await pop();
   }
 
   static Future<void> endAdjuntarImages(BuildContext context)async{
@@ -152,4 +178,8 @@ class PagesNavigationManager{
     else if(route == NavigationRoute.Formularios)
       await _backToForms();
   }
+}
+
+class _GPSValidator{
+
 }

@@ -1,3 +1,4 @@
+import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:gap/central_config/bloc_providers_creator.dart';
 import 'package:gap/data/enums/enums.dart';
@@ -11,12 +12,16 @@ import 'package:gap/logic/central_manager/data_distributor/data_distributor_mana
 import 'package:gap/logic/central_manager/preloaded_storage_to_services.dart';
 import 'package:gap/logic/storage_managers/forms/chosen_form_storage_manager.dart';
 import 'package:gap/logic/storage_managers/projects/projects_storage_manager.dart';
+import 'package:gap/logic/storage_managers/user/user_storage_manager.dart';
 import 'package:gap/logic/storage_managers/visits/visits_storage_manager.dart';
+import 'package:gap/native_connectors/permissions.dart';
+
+import 'package:gap/ui/utils/dialogs.dart' as dialogs;
 
 class DataInitializer{
   static final RoutesManager _routesManager = RoutesManager();
 
-  static Future init(BuildContext context, NetConnectionState netConnState)async{
+  Future init(BuildContext context, NetConnectionState netConnState)async{
     try{
       //_navigateToLogin(context, netConnState);
       _tryInit(context, netConnState);
@@ -32,19 +37,50 @@ class DataInitializer{
     }
   }
 
-  static Future _tryInit(BuildContext context, NetConnectionState netConnState)async{
+  Future _tryInit(BuildContext context, NetConnectionState netConnState)async{
+    final PermissionStatus storagePermissionStatus = await NativeServicesPermissions.storageServiceStatus;
+    await _doFunctionByStoragePermissionStatus(storagePermissionStatus, context, netConnState);
+  }
+
+  Future _doFunctionByStoragePermissionStatus(PermissionStatus permissionStatus, BuildContext context, NetConnectionState netConnState)async{
+    if([PermissionStatus.undetermined, PermissionStatus.denied, PermissionStatus.restricted, PermissionStatus.limited, PermissionStatus.permanentlyDenied].contains(permissionStatus))
+      await _repeatStoragePermissionValidation(permissionStatus, context, netConnState);
+    else
+      await _init(context, netConnState);
+  }
+
+  Future _repeatStoragePermissionValidation(PermissionStatus permissionStatus, BuildContext context, NetConnectionState netConnState)async{
+    await dialogs.showErrDialog(context, 'Activa el permiso de almacenamiento para esta aplicación en configuración del dispositivo');
+    final bool settingsAreOpened = await NativeServicesPermissions.openSettings();
+    await _doFunctionByStoragePermissionStatus(permissionStatus, context, netConnState);
+  }
+
+  Future _init(BuildContext context, NetConnectionState netConnState)async{
     DataDistributorManager.netConnectionState = netConnState;
-    //_sendPreloadedDataIfThereIsConnection(netConnState);
+    await _sendPreloadedDataIfThereIsConnection(netConnState);
+    final String accessToken = await UserStorageManager.getAccessToken();
+    await _doInitializationByAccessToken(accessToken, context, netConnState);
+  }
+
+  Future _doInitializationByAccessToken(String accessToken, BuildContext context, NetConnectionState netConnState)async{
+    if(accessToken == null)
+      await _navigateToLogin(context, netConnState);
+    else
+      await _doInitialization(accessToken, context, netConnState);
+  }
+
+  Future _doInitialization(String accessToken, BuildContext context, NetConnectionState netConnState)async{
+    await DataDistributorManager.dataDistributor.updateAccessToken(accessToken);
     await _routesManager.loadRoute();
     await _doAllNavigationByEvaluatingInitialConditions(context, netConnState);
   }
 
-  static Future _sendPreloadedDataIfThereIsConnection(NetConnectionState netConnState)async{
+  Future _sendPreloadedDataIfThereIsConnection(NetConnectionState netConnState)async{
     if(netConnState == NetConnectionState.Connected)
       await PreloadedStorageToServices.sendPreloadedStorageDataToServices();
   }
 
-  static Future _doAllNavigationByEvaluatingInitialConditions(BuildContext context, NetConnectionState netConnState)async{
+  Future _doAllNavigationByEvaluatingInitialConditions(BuildContext context, NetConnectionState netConnState)async{
     if(await _currentNavRouteIsLogin()){
       await _navigateToLogin(context, netConnState);
     }else{
@@ -52,25 +88,22 @@ class DataInitializer{
     }
   }
 
-  static Future<bool> _currentNavRouteIsLogin()async{
+  Future<bool> _currentNavRouteIsLogin()async{
     final NavigationRoute currentNavRoute = _routesManager.currentRoute;
     return (currentNavRoute == NavigationRoute.Login);
   }
 
-  static Future _navigateToLogin(BuildContext context, NetConnectionState netConnState)async{
+  Future _navigateToLogin(BuildContext context, NetConnectionState netConnState)async{
     _defineLogginButtonAvaibleless(netConnState);
     await PagesNavigationManager.navToLogin();
-    //await _routesManager.replaceAllRoutesForNew(NavigationRoute.Login);
-    //Navigator.of(context).pushReplacementNamed(NavigationRoute.Login.value);
   }
 
-  static void _defineLogginButtonAvaibleless(NetConnectionState netConnState)async{
+  void _defineLogginButtonAvaibleless(NetConnectionState netConnState)async{
     final bool loginButtonAvaibleless = (netConnState == NetConnectionState.Connected)? true : false;
   BlocProvidersCreator.userBloc.add(ChangeLoginButtopnAvaibleless(isAvaible: loginButtonAvaibleless));
   }
 
-  static Future _doAllNavigationTree(BuildContext context)async{
-    await DataDistributorManager.dataDistributor.updateAccessToken();
+  Future _doAllNavigationTree(BuildContext context)async{
     final List<NavigationRoute> navRoutes = await _routesManager.routesTree;
     for(NavigationRoute nr in navRoutes){
       await _doNavigation(nr, context);
@@ -78,7 +111,7 @@ class DataInitializer{
     await _routesManager.setRouteAfterPopping(navRoutes[navRoutes.length - 1], 1);
   }
 
-  static Future _doNavigation(NavigationRoute navRoute, BuildContext context)async{
+  Future _doNavigation(NavigationRoute navRoute, BuildContext context)async{
     switch(navRoute){
       case NavigationRoute.Projects:
         await _doNavigationToProjects();
@@ -111,7 +144,6 @@ class DataInitializer{
   static Future _doNavigationToProjectDetail()async{
     final Project chosenOne = await ProjectsStorageManager.getChosenProject();
     await DataDistributorManager.dataDistributor.updateChosenProject(chosenOne);
-    //await PagesNavigationManager.navToProjectDetail(chosenOne, context);
   }
 
   static Future _doNavigationToVisits()async{
@@ -121,21 +153,21 @@ class DataInitializer{
   static Future _doNavigationToVisitDetail()async{
     final Visit chosenOne = await VisitsStorageManager.getChosenVisit();
     await DataDistributorManager.dataDistributor.updateChosenVisit(chosenOne);
-    //await PagesNavigationManager.navToVisitDetail(chosenOne, context);
   }
 
   static Future _doNavigationToForms()async{
     await DataDistributorManager.dataDistributor.updateFormularios();
-    //await PagesNavigationManager.navToForms(context);
   }
 
   static Future _doNavigationToFormDetail()async{
     final Formulario chosenOne = await ChosenFormStorageManager.getChosenForm();
     await DataDistributorManager.dataDistributor.updateChosenForm(chosenOne);
-    //await PagesNavigationManager.navToFormDetail(chosenOne, context);
   }
+
 
   static Future _doNavigationToAdjuntarFotos()async{
     await DataDistributorManager.dataDistributor.updateCommentedImages();
   }
 }
+
+DataInitializer dataInitializer = DataInitializer();

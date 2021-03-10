@@ -22,12 +22,12 @@ class ProjectsServicesManager{
   }
 
   static void _throwErrIsUpdateFormIsntOk(List<Map<String, dynamic>> response, Formulario form){
-    if(_updateFormResponseIsOk(response, form))
+    if(!_updateFormResponseIsOk(response, form))
       throw ServiceStatusErr(message: 'El servicio de enviar el formulario no se efectuó correctamente');
   }
 
   static bool _updateFormResponseIsOk(List<Map<String, dynamic>> response, Formulario form){
-    return response.length == form.campos.length;
+    return response.length > 0;
   }
 
   static List<Map<String, dynamic>> _getFormattedFormCampos(Formulario form){

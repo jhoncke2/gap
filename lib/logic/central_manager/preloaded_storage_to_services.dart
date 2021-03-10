@@ -30,14 +30,14 @@ class _ProjectEvaluater{
     _visitEvaluater = _VisitEvaluater();
     final List<Visit> preloadedVisits = await PreloadedVisitsStorageManager.getVisitsByProjectId(projectId);
     for(Visit v in preloadedVisits){
-      await _evaluateVisit(v.id, projectId, accessToken);
+      await _evaluateVisit(v, projectId, accessToken);
     }
     await _endPreloadedProjectIfFinished(projectId);
     _resetVisitEvaluater();
   }
 
-  Future<void> _evaluateVisit(int visitId, int projectId, String accessToken)async{
-    await _visitEvaluater.evaluatePreloadedVisit(visitId, projectId, accessToken);
+  Future<void> _evaluateVisit(Visit visit, int projectId, String accessToken)async{
+    await _visitEvaluater.evaluatePreloadedVisit(visit, projectId, accessToken);
     projectIsFinished = _visitEvaluater.visitIsFinished? projectIsFinished : false;
   }
 
@@ -61,12 +61,15 @@ class _VisitEvaluater{
   final _FormEvaluater _formEvaluater = _FormEvaluater();
   bool visitIsFinished = true;
 
-  Future<void> evaluatePreloadedVisit(int visitId, int projectId, String accessToken)async{
-    final List<Formulario> preloadedForms = await PreloadedFormsStorageManager.getPreloadedFormsByVisitId(visitId);
-    for(Formulario f in preloadedForms){
-      await _evaluateForm(f, visitId, accessToken);
+  Future<void> evaluatePreloadedVisit(Visit visit, int projectId, String accessToken)async{
+    
+    if(visit.completo){
+      final List<Formulario> preloadedForms = await PreloadedFormsStorageManager.getPreloadedFormsByVisitId(visit.id);
+      for(Formulario f in preloadedForms){
+        await _evaluateForm(f, visit.id, accessToken);
+      }
+      await _endPreloadedVisitIfFinished(visit.id, projectId);
     }
-    await _endPreloadedVisitIfFinished(visitId, projectId);
   }
 
   Future<void> _evaluateForm(Formulario f, int visitId, String accessToken)async{
@@ -86,7 +89,6 @@ class _VisitEvaluater{
   }
 }
 
-
 class _FormEvaluater{
   String _accessToken;
   bool formIsFinished;
@@ -101,14 +103,18 @@ class _FormEvaluater{
   }
 
   Future<void> _evaluateFinishedPreloadedForm(Formulario form, int visitId)async{
-    await _endPreloadedForm(form, visitId);
-    formIsFinished = true;
+    try{
+      await _endPreloadedForm(form, visitId);
+      formIsFinished = true;
+    }catch(err){
+      formIsFinished = false;
+    }
   }
 
   Future<void> _endPreloadedForm(Formulario form, int visitId)async{
     await _sendFormIfTieneCampos(form, visitId);
     await _sendFirmersIfTieneFirmers(form, visitId);
-    PreloadedFormsStorageManager.removePreloadedForm(form.id, visitId);
+    await PreloadedFormsStorageManager.removePreloadedForm(form.id, visitId);
   }
 
   Future _sendFormIfTieneCampos(Formulario form, int visitId)async{

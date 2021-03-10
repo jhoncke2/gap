@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:gap/logic/central_manager/pages_navigation_manager.dart';
 import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -184,11 +185,8 @@ abstract class BasicService{
   }
   
   void _tryCurrentResponseBodyConvertion(http.Response serverResponse){
-    try{
-      currentResponseBody = json.decode(serverResponse.body);
-    }catch(err){
-      throw ServiceStatusErr(status: serverResponse.statusCode, message: serverResponse.reasonPhrase, extraInformation: serverResponse.reasonPhrase);
-    }
+    currentResponseBody = json.decode(serverResponse.body);
+
   }
 
   void _throwExceptionIfResponseBodyHasErrorField(){

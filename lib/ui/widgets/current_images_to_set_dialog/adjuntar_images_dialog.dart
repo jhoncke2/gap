@@ -128,6 +128,7 @@ class AdjuntarFotosDialog extends StatelessWidget {
     //_resetFotosPorAgregar();
     //Navigator.of(_context).pop();
     PagesNavigationManager.updateImgsToCommentedImgs();
+    Navigator.of(_context).pop();
   }
 
 

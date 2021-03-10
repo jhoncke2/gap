@@ -7,6 +7,8 @@ import 'package:gap/logic/bloc/entities/user/user_bloc.dart';
 import 'package:gap/logic/blocs_manager/chosen_form_manager.dart';
 import 'package:gap/logic/blocs_manager/commented_images_index_manager.dart';
 import 'package:gap/logic/bloc/nav_routes/routes_manager.dart';
+import 'package:gap/logic/central_manager/data_initializer.dart';
+import 'package:gap/native_connectors/net_connection_detector.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 
 // ignore: must_be_immutable
@@ -16,6 +18,7 @@ class InitPage extends StatelessWidget{
   static StreamController<BuildContext> _contextStreamController = StreamController();
   static Stream<BuildContext> get contextStream => _contextStreamController.stream;
   bool _alreadyInit = false;
+  BuildContext _context;
 
   @override
   Widget build(BuildContext context){
@@ -30,6 +33,7 @@ class InitPage extends StatelessWidget{
   }
 
   void _doInitialConfig(BuildContext context){
+    _context = context;
     _initSizeUtils(context);
     _initBlocsManagers(context);
     _callBackAfterBuildIfAlreadyInit(context);
@@ -55,9 +59,24 @@ class InitPage extends StatelessWidget{
   }
 
   void _callBackAfterBuild(BuildContext context){
-    WidgetsBinding.instance.addPostFrameCallback((_){
-      _contextStreamController.sink.add(context);
+    WidgetsBinding.instance.addPostFrameCallback((_)async{
+      await _setOnConnectionChange();
+      await _initDataInitialization();
     });
+  }
+
+  Future _setOnConnectionChange()async{
+    await NetConnectionDetector.initCurrentNavConnectionState();
+    NetConnectionDetector.onConnectionChange = _onConnectionChanged;
+  }
+
+  Future _onConnectionChanged(NetConnectionState newConnState)async{
+    await dataInitializer.init(_context, newConnState);
+  }
+
+  Future _initDataInitialization()async{
+    final NetConnectionState netConnectionState = await NetConnectionDetector.netConnectionState;
+    await dataInitializer.init(_context, netConnectionState);
   }
 }
 
