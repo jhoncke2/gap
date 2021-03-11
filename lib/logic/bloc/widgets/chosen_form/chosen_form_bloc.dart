@@ -2,6 +2,9 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:gap/data/models/entities/custom_form_field/static/static_form_field.dart';
+import 'package:gap/data/models/entities/custom_form_field/variable/multi_value/multi_value_form_field.dart';
+import 'package:gap/data/models/entities/custom_form_field/variable/single_value/single_value_form_field.dart';
+import 'package:gap/data/models/entities/custom_form_field/variable/variable_form_field.dart';
 import 'package:gap/data/models/entities/entities.dart';
 import 'package:meta/meta.dart';
 
@@ -29,6 +32,8 @@ class ChosenFormBloc extends Bloc<ChosenFormEvent, ChosenFormState> {
       _initFirmsFillingOut(event);
     }else if(event is UpdateFirmerPersonalInformation){
       _updateFirmerPersonalInformation(event);
+    }else if(event is UpdateFormField){
+      _updateFormField(event);
     }else if(event is ResetChosenForm){
       _resetChosenForm();
     }
@@ -80,6 +85,41 @@ class ChosenFormBloc extends Bloc<ChosenFormEvent, ChosenFormState> {
     _currentStateToYield = state.copyWith(
       firmers: firmers
     );
+  }
+
+  void _updateFormField(UpdateFormField event){
+    _currentStateToYield = state.copyWith();
+    final List<CustomFormField> formFieldsByPage = state.getFormFieldsByIndex(event.pageOfFormField);
+    final bool formFieldsByPageAreFilled = _formFieldsAreFilled(formFieldsByPage);
+    event.onEndFunction(formFieldsByPageAreFilled);
+  }
+
+  bool _formFieldsAreFilled(List<CustomFormField> formFields){
+    for(CustomFormField ff in formFields){
+      if(_isVariableAndRequired(ff)){
+        if(!_isMultiValueAndHasAnySelected(ff))
+          return false;
+        if(!_isSingleValueAndHasValue(ff))
+          return false;
+      }
+    }
+    return true;
+  }
+
+  bool _isVariableAndRequired(CustomFormField ff){
+    return (ff is VariableFormField && ff.isRequired);
+  }
+
+  bool _isMultiValueAndHasAnySelected(VariableFormField ff){
+    return (ff is MultiValueFormField && !_multiValueHasAnySelected(ff));
+  }
+
+  bool _multiValueHasAnySelected(MultiValueFormField f){
+    return f.values.where((element) => element.selected).length > 0;
+  }
+
+  bool _isSingleValueAndHasValue(VariableFormField ff){
+    return (ff is SingleValueFormField && ff.uniqueValue == null);
   }
 
   void _resetChosenForm(){

@@ -25,7 +25,12 @@ class IndexBloc extends Bloc<IndexEvent, IndexState> {
       _resetAllOfIndex();
     }
     yield _currentStateToYield;
-    
+    _doPostFunctionEvent(event);
+  }
+  
+  void _doPostFunctionEvent(IndexEvent event){
+    if(event is ChangeNPages && event.onEnd != null)
+      event.onEnd(0);
   }
 
   void _changeSePuedeAvanzar(ChangeSePuedeAvanzar event){

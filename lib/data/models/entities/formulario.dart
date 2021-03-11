@@ -18,7 +18,6 @@ class Formulario extends EntityWithStage {
     bool completo,
     String nombre,
     this.campos,
-    ProcessStage stage,
     this.date,
     this.firmers,
     int formStepIndex,
@@ -37,7 +36,6 @@ class Formulario extends EntityWithStage {
     id: json["formulario_pivot_id"],
     completo: json["completo"],
     nombre: json["nombre"],
-    //campos: customFormFieldsFromJsonString(json["campos"].toString()),
     campos: customFormFieldsFromJsonString(json['campos']),
     formStepIndex: json['form_step_index'] == null? 1 : stepsInOrder.indexOf( formStepValues.map[json['form_step_index']] ),
     date: transformStringInToDate(json['fecha']??'2021-02-28'),
@@ -87,6 +85,7 @@ class Formulario extends EntityWithStage {
     for(CustomFormField cff in formFields)
       if(!_formFieldIsCompleted(cff))
         return false;
+    return true;
   }
 
   static bool _formFieldIsCompleted(CustomFormField cff){

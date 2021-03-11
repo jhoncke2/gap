@@ -18,16 +18,7 @@ class ProjectsServicesManager{
   static Future updateForm(Formulario form, int visitId, String accessToken)async{
     final List<Map<String, dynamic>> formattedFormCampos = _getFormattedFormCampos(form);
     final List<Map<String, dynamic>> response = await projectsService.updateForm(accessToken, formattedFormCampos, visitId);
-    _throwErrIsUpdateFormIsntOk(response, form);
-  }
-
-  static void _throwErrIsUpdateFormIsntOk(List<Map<String, dynamic>> response, Formulario form){
-    if(!_updateFormResponseIsOk(response, form))
-      throw ServiceStatusErr(message: 'El servicio de enviar el formulario no se efectuó correctamente');
-  }
-
-  static bool _updateFormResponseIsOk(List<Map<String, dynamic>> response, Formulario form){
-    return response.length > 0;
+    _throwErrIsUpdateFormIsntOk(response, formattedFormCampos);
   }
 
   static List<Map<String, dynamic>> _getFormattedFormCampos(Formulario form){
@@ -49,6 +40,15 @@ class ProjectsServicesManager{
       'formulario_g_formulario_id':formId,
       'name':vff.name
     };
+  }
+
+  static void _throwErrIsUpdateFormIsntOk(List<Map<String, dynamic>> response, List<Map<String, dynamic>> formattedFormCampos){
+    if(!_updateFormResponseIsOk(response, formattedFormCampos))
+      throw ServiceStatusErr(message: 'El servicio de enviar el formulario no se efectuó correctamente');
+  }
+
+  static bool _updateFormResponseIsOk(List<Map<String, dynamic>> response, List<Map<String, dynamic>> formattedFormCampos){
+    return response.length == formattedFormCampos.length;
   }
 
   static void _defineFormFieldValuesByTypeOfValues(VariableFormField vff, Map<String, dynamic> jsonVff){

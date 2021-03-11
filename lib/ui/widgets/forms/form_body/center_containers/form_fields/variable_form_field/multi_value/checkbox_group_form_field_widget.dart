@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/data/models/entities/custom_form_field/variable/multi_value/multi_value_form_field.dart';
 import 'package:gap/data/models/entities/custom_form_field/variable/multi_value/with_alignment.dart';
+import 'package:gap/logic/central_manager/pages_navigation_manager.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/variable_form_field/multi_value/alignment_multi_option_list.dart';
 import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/variable_form_field/variable_form_field_container.dart';
@@ -45,6 +46,7 @@ class _CheckboxGroupFormFieldWidgetState extends State<CheckboxGroupFormFieldWid
         onChanged: (bool isSelected){
           setState((){
             _onItemSelected(value, isSelected);
+            PagesNavigationManager.updateFormFieldsPage();
           });
         }
       ),

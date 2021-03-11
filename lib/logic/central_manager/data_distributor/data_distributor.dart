@@ -1,12 +1,9 @@
 import 'dart:io';
-
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/central_config/bloc_providers_creator.dart';
 import 'package:gap/data/enums/enums.dart';
 import 'package:gap/data/models/entities/entities.dart';
-import 'package:gap/errors/services/service_status_err.dart';
-import 'package:gap/errors/storage/unfound_storage_element_err.dart';
 import 'package:gap/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/logic/bloc/entities/images/images_bloc.dart';
 import 'package:gap/logic/bloc/entities/projects/projects_bloc.dart';
@@ -15,16 +12,15 @@ import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/logic/bloc/widgets/commented_images/commented_images_bloc.dart';
 import 'package:gap/logic/bloc/widgets/firm_paint/firm_paint_bloc.dart';
 import 'package:gap/logic/bloc/widgets/index/index_bloc.dart';
-import 'package:gap/logic/central_manager/pages_navigation_manager.dart';
 import 'package:gap/logic/helpers/painter_to_image_converter.dart';
 import 'package:gap/logic/storage_managers/commented_images/commented_images_storage_manager.dart';
 import 'package:gap/logic/storage_managers/forms/chosen_form_storage_manager.dart';
 import 'package:gap/logic/storage_managers/forms/preloaded_forms_storage_manager.dart';
 import 'package:gap/logic/storage_managers/index/index_storage_manager.dart';
 import 'package:gap/logic/storage_managers/projects/projects_storage_manager.dart';
-import 'package:gap/logic/storage_managers/user/user_storage_manager.dart';
 import 'package:gap/logic/storage_managers/visits/visits_storage_manager.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:gap/native_connectors/gps.dart';
+import 'package:geolocator/geolocator.dart';
 
 abstract class DataDistributor{
 
@@ -77,16 +73,19 @@ abstract class DataDistributor{
     final List<Formulario> forms = formsB.state.forms;
     final List<Formulario> updatedEqualsForms = forms.where((element) => element.id == form.id).toList();
     final Formulario realForm = (updatedEqualsForms.length > 0)? updatedEqualsForms[0] : form;
+    await _addInitialPosition(realForm);
+    formsB.add(ChooseForm(chosenOne: realForm));
+    await ChosenFormStorageManager.setChosenForm(realForm);
+    await _chooseBlocMethodByChosenFormStep(realForm);
     
-    if(!form.completo){
-      final ChooseForm chooseFormEvent = ChooseForm(chosenOne: realForm);
-      formsB.add(chooseFormEvent);
-      await ChosenFormStorageManager.setChosenForm(realForm);
-      await _chooseChosenFormStep(realForm);
-    }
   }
 
-  Future _chooseChosenFormStep(Formulario form)async{
+  Future _addInitialPosition(Formulario form)async{
+    final Position currentPosition = await GPS.gpsPosition;
+    form.initialPosition = currentPosition;
+  }
+
+  Future _chooseBlocMethodByChosenFormStep(Formulario form)async{
     switch(form.formStep){ 
       case FormStep.WithoutForm:
         break;
@@ -109,16 +108,26 @@ abstract class DataDistributor{
 
   void _initOnForm(Formulario form){
     chosenFormB.add(InitFormFillingOut(formulario: form, onEndEvent: _onEndInitFormFillingOut));
+
   }
 
   void _onEndInitFormFillingOut(int formFieldsPages){
     final IndexBloc indexBloc = blocsAsMap[BlocName.Index];
-    indexBloc.add(ChangeNPages(nPages: formFieldsPages));
-    indexBloc.add(ChangeSePuedeAvanzar(sePuede: true));
+    indexBloc.add(ChangeNPages(nPages: formFieldsPages, onEnd: _updateFormFieldsPage));
+  }
+
+  void _updateFormFieldsPage(int currentPage){
+    chosenFormB.add(UpdateFormField(pageOfFormField: 0, onEndFunction: _onUpdateFormFields));
+  }
+
+  Future _onUpdateFormFields(bool pageOfFormFieldsIsFilled)async{
+    if(pageOfFormFieldsIsFilled)
+      _changeIndexActivation(pageOfFormFieldsIsFilled);
   }
 
   void _initOnFirstFirmerInformation(){
     chosenFormB.add(InitFirstFirmerFillingOut());
+    indexB.add(ResetAllOfIndex());
   }
 
   void _initOnFirstFirmerFirm(form){
@@ -129,11 +138,27 @@ abstract class DataDistributor{
     chosenFormB.add(InitFirmsFillingOut());
   }
 
+  Future updateFormFieldsPage()async{
+    final int indexPage = indexB.state.currentIndexPage;
+    //chosenFormB.add(UpdateFormField(pageOfFormField: indexPage, onEndFunction: _onUpdateFormFields));
+    _updateFormFieldsPage(indexPage);
+  }
+
+  void _changeIndexActivation(bool isActive)async{
+    indexB.add(ChangeSePuedeAvanzar(sePuede: isActive));
+  }
+
   Future endFormFillingOut()async{
     final Formulario chosenForm = formsB.state.chosenForm;
+    await _addFinalPosition(chosenForm);
     chosenForm.advanceInStep();
-    _chooseChosenFormStep(chosenForm);
+    _initOnFirstFirmerInformation();
     await _updateChosenFormInStorage();
+  }
+
+  Future _addFinalPosition(Formulario form)async{
+    final Position currentPosition = await GPS.gpsPosition;
+    form.finalPosition = currentPosition;
   }
 
   Future _updateChosenFormInStorage()async{

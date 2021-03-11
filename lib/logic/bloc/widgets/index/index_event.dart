@@ -12,8 +12,10 @@ class ChangeSePuedeAvanzar extends IndexEvent{
 
 class ChangeNPages extends IndexEvent{
   final int nPages;
+  final void Function(int) onEnd;
   ChangeNPages({
-    @required this.nPages
+    @required this.nPages,
+    this.onEnd
   });
 }
 

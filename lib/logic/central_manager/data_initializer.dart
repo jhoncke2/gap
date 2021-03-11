@@ -15,7 +15,6 @@ import 'package:gap/logic/storage_managers/projects/projects_storage_manager.dar
 import 'package:gap/logic/storage_managers/user/user_storage_manager.dart';
 import 'package:gap/logic/storage_managers/visits/visits_storage_manager.dart';
 import 'package:gap/native_connectors/permissions.dart';
-
 import 'package:gap/ui/utils/dialogs.dart' as dialogs;
 
 class DataInitializer{

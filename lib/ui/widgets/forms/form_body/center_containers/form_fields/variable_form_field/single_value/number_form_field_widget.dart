@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:gap/data/models/entities/custom_form_field/variable/single_value/number_form_field.dart';
+import 'package:gap/logic/central_manager/pages_navigation_manager.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/variable_form_field/variable_form_field_container.dart';
 // ignore: must_be_immutable
@@ -88,6 +89,7 @@ class _NumberFormFieldWidgetState extends State<NumberFormFieldWidget> {
     currentValue = int.parse(stringNewValue);
     final int newValue = _getValueBasedOnItIsBetweenLimits(currentValue);
     widget.number.value = newValue;
+    PagesNavigationManager.updateFormFieldsPage();
   }
 
   bool _newNumberIsBetweenLimits(int newNumber){
@@ -171,7 +173,7 @@ class _NumberFormFieldWidgetState extends State<NumberFormFieldWidget> {
     int newValue = _getValueBasedOnItIsBetweenLimits(currentValue);
     widget.number.value = newValue;
     widget._textFieldController.text = newValue.toString();
-
+    PagesNavigationManager.updateFormFieldsPage();
   }
 
   int _obtainInitialNumberForCounterButtons(Function operateNumberValue){

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/general_form_field.dart';
 
 // ignore: must_be_immutable
+
 class GeneralFormFieldWithName extends GeneralFormField{
   final String fieldName;
   GeneralFormFieldWithName({

@@ -25,4 +25,10 @@ class UpdateFirmerPersonalInformation extends ChosenFormEvent{
   });
 }
 
+class UpdateFormField extends ChosenFormEvent{
+  final Future Function(bool) onEndFunction;
+  final int pageOfFormField;
+  UpdateFormField({@required this.onEndFunction, @required this.pageOfFormField});
+}
+
 class ResetChosenForm extends ChosenFormEvent{}

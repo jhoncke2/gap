@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/data/models/entities/custom_form_field/variable/single_value/single_value_picker_form_field.dart';
+import 'package:gap/logic/central_manager/pages_navigation_manager.dart';
 import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/variable_form_field/variable_form_field_container.dart';
 class TimePickerFormFieldWidget extends StatefulWidget {
 
@@ -64,6 +65,7 @@ class _TimePickerFormFieldWidgetState extends State<TimePickerFormFieldWidget> {
   void _onDurationChanged(TimeOfDay newValue){
     setState((){
       widget.timeFormField.value = newValue;
+      PagesNavigationManager.updateFormFieldsPage();
     });
   }
 }

@@ -113,25 +113,25 @@ class _FormEvaluater{
 
   Future<void> _endPreloadedForm(Formulario form, int visitId)async{
     await _sendFormIfTieneCampos(form, visitId);
-    await _sendFirmersIfTieneFirmers(form, visitId);
+    await _sendFirmersIfHasFirmers(form, visitId);
     await PreloadedFormsStorageManager.removePreloadedForm(form.id, visitId);
   }
 
   Future _sendFormIfTieneCampos(Formulario form, int visitId)async{
-    if(_formTieneCampos(form))
+    if(_formHasFields(form))
       await ProjectsServicesManager.updateForm(form, visitId, _accessToken);
   }
 
-  Future _sendFirmersIfTieneFirmers(Formulario form, int visitId)async{
-    if(_formTieneFirmers(form))
+  Future _sendFirmersIfHasFirmers(Formulario form, int visitId)async{
+    if(_formHasFirmers(form))
       await _sendFirmers(form, visitId);
   }
 
-  bool _formTieneCampos(Formulario form){
+  bool _formHasFields(Formulario form){
     return form.campos!=null && form.campos.length > 0;
   }
 
-  bool _formTieneFirmers(Formulario form){
+  bool _formHasFirmers(Formulario form){
     return form.firmers.length > 0;
   }
 

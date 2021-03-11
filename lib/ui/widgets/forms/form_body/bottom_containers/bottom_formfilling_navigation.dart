@@ -55,7 +55,7 @@ class _ChangeFormStepButton extends StatelessWidget {
   Function _onPressed;
 
   _ChangeFormStepButton({
-    @required this.chosenFormState
+    @required this.chosenFormState,
   });
 
   @override
@@ -90,6 +90,9 @@ class _ChangeFormStepButton extends StatelessWidget {
   }
 
   void _irASiguienteWidget(){
-    PagesNavigationManager.advanceOnChosenFormFieldsPage();
+    if(chosenFormState.formStep == FormStep.OnForm)
+      PagesNavigationManager.initFirstFirmerFillingOut();
+    else
+      PagesNavigationManager.initFirstFirmerFirm();
   }
 }

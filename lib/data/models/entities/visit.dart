@@ -56,8 +56,7 @@ class Visit extends EntityWithStage{
 
   factory Visit.fromJson(Map<String, dynamic> json)=>Visit(
     id: json['id'],
-    completo: json['completo'],
-    //TODO: Arreglar cuando me hayan informado qué hacer
+    completo: json['completo']??false,
     date: json['fecha'] == null? DateTime.now() : transformStringInToDate(json['fecha']),
     sede: Sede.fromJson(json['sede']),
     formularios: formulariosFromJson((json["formularios"]??[]).cast<Map<String, dynamic>>()),
@@ -74,7 +73,7 @@ class Visit extends EntityWithStage{
   Map<String, dynamic> toJson(){
     final Map<String, dynamic> json = super.toJson();
     json['sede'] = sede.toJson();
-    json['completo'] = (stage.value == 'realizada')? true : false;
+    json['completo'] = completo;
     json['fecha'] = transformDateInToString(date);
     json['formularios'] = formulariosToJson(formularios);
     return json;

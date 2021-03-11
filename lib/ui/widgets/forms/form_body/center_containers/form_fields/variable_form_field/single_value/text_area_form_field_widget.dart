@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/data/models/entities/custom_form_field/variable/single_value/raw_text_form_field.dart';
+import 'package:gap/logic/central_manager/pages_navigation_manager.dart';
 import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/variable_form_field/variable_form_field_container.dart';
 class TextAreaFormFieldWidget extends StatelessWidget{
   final TextArea textArea;
@@ -32,5 +33,6 @@ class TextAreaFormFieldWidget extends StatelessWidget{
 
   void _onChanged(String newValue){
     textArea.uniqueValue = newValue;
+    PagesNavigationManager.updateFormFieldsPage();
   }
 }
