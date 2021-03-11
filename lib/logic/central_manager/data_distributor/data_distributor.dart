@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/central_config/bloc_providers_creator.dart';
 import 'package:gap/data/enums/enums.dart';
 import 'package:gap/data/models/entities/entities.dart';
+import 'package:gap/errors/services/service_status_err.dart';
 import 'package:gap/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/logic/bloc/entities/images/images_bloc.dart';
 import 'package:gap/logic/bloc/entities/projects/projects_bloc.dart';
@@ -37,6 +38,11 @@ abstract class DataDistributor{
   final CommentedImagesBloc commImgsB = blocsAsMap[BlocName.CommentedImages];
 
   Future<void> updateAccessToken(String accessToken)async{}
+
+  Future testingGeneralUpdateProjects()async{
+    await updateProjects();
+
+  }
 
   Future<void> updateProjects()async{}
 
@@ -306,7 +312,7 @@ class UploadedBlocsData{
 
 
 /*
-EnumValues<DataDistrFunctionName, Function> _dataDistributorFunctionsValues;
+  EnumValues<DataDistrFunctionName, Function> _dataDistributorFunctionsValues;
   Function _lastExecutedFunction;
 
   DataDistributor(){

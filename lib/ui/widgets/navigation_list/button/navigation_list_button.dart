@@ -30,7 +30,7 @@ class NavigationListButton extends StatelessWidget {
   }
 
   @protected
-  Widget createButton(){
+  Widget createButton([Widget tile]){
     return MaterialButton(
       padding: EdgeInsets.symmetric(horizontal: 0.0),
       child: Container(
@@ -39,7 +39,7 @@ class NavigationListButton extends StatelessWidget {
           vertical: _sizeUtils.xasisSobreYasis * 0.0225
         ),
         alignment: Alignment.centerLeft, 
-        child: createButtonChild(),
+        child: createButtonChild(tile),
         decoration: _createButtonDecoration(),
       ),
       onPressed: onTap,
@@ -47,8 +47,9 @@ class NavigationListButton extends StatelessWidget {
   }
 
   @protected
-  Widget createButtonChild(){
-    return createButtonName();
+  Widget createButtonChild([Widget buttonName]){
+    
+    return (buttonName!=null)? buttonName : createButtonName();
   }
 
   @protected

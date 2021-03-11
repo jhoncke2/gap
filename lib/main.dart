@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:gap/native_connectors/permissions.dart';
+import 'package:gap/native_connectors/storage_connector.dart';
+import 'package:gap/native_connectors/net_connection_detector.dart';
 import 'package:gap/data/enums/enums.dart';
 import 'package:gap/logic/bloc/nav_routes/custom_navigator.dart';
 import 'package:gap/logic/central_manager/data_initializer.dart';
-import 'package:gap/native_connectors/permissions.dart';
-import 'package:gap/native_connectors/storage_connector.dart';
 import 'package:gap/logic/storage_managers/user/user_storage_manager.dart';
 import 'package:gap/ui/gap_app.dart';
 import 'package:gap/ui/utils/dialogs.dart' as dialogs;
 
-import 'native_connectors/net_connection_detector.dart';
-
 GapApp app;
 void main()async{
-  WidgetsFlutterBinding.ensureInitialized();
-  app = GapApp();
+  
   await doInitialConfig();
   return runApp(app);
 }
@@ -21,6 +19,8 @@ void main()async{
 @protected
 Future<void> doInitialConfig()async{
   //await _testRemovePartOfStorage();
+  WidgetsFlutterBinding.ensureInitialized();
+  app = GapApp();
   WidgetsBinding.instance.addObserver(app.state);
   app.state.didChangeDependenciesMethod = _onStartingApp;
   app.state.didChangeAppLifecycleStateMethod = _onResumeApp;

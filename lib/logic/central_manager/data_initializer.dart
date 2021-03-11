@@ -19,24 +19,16 @@ import 'package:gap/ui/utils/dialogs.dart' as dialogs;
 
 class DataInitializer{
   static final RoutesManager _routesManager = RoutesManager();
+  final DataDistributorManager _dataDistributorManager = DataDistributorManager();
+  final DataDisributorErrorHandlerManager _dataDistributorErrorHandlingManager = DataDisributorErrorHandlerManager();
+  bool _continueInitialization;
 
   Future init(BuildContext context, NetConnectionState netConnState)async{
-    try{
-      //_navigateToLogin(context, netConnState);
-      _tryInit(context, netConnState);
-    }on ServiceStatusErr catch(_){
-      _navigateToLogin(context, netConnState);
-    }on UnfoundStorageElementErr catch(err){
-      if(err.elementType == StorageElementType.AUTH_TOKEN)
-        _navigateToLogin(context, netConnState);
-      else
-        PagesNavigationManager.navToProjects();
-    }catch(err){
-      PagesNavigationManager.navToProjects();
-    }
+    _tryInit(context, netConnState);
   }
 
   Future _tryInit(BuildContext context, NetConnectionState netConnState)async{
+    _continueInitialization = true;
     final PermissionStatus storagePermissionStatus = await NativeServicesPermissions.storageServiceStatus;
     await _doFunctionByStoragePermissionStatus(storagePermissionStatus, context, netConnState);
   }
@@ -50,12 +42,12 @@ class DataInitializer{
 
   Future _repeatStoragePermissionValidation(PermissionStatus permissionStatus, BuildContext context, NetConnectionState netConnState)async{
     await dialogs.showErrDialog(context, 'Activa el permiso de almacenamiento para esta aplicación en configuración del dispositivo');
-    final bool settingsAreOpened = await NativeServicesPermissions.openSettings();
+    await NativeServicesPermissions.openSettings();
     await _doFunctionByStoragePermissionStatus(permissionStatus, context, netConnState);
   }
 
   Future _init(BuildContext context, NetConnectionState netConnState)async{
-    DataDistributorManager.netConnectionState = netConnState;
+    _dataDistributorErrorHandlingManager.netConnectionState = netConnState;
     await _sendPreloadedDataIfThereIsConnection(netConnState);
     final String accessToken = await UserStorageManager.getAccessToken();
     await _doInitializationByAccessToken(accessToken, context, netConnState);
@@ -69,7 +61,7 @@ class DataInitializer{
   }
 
   Future _doInitialization(String accessToken, BuildContext context, NetConnectionState netConnState)async{
-    await DataDistributorManager.dataDistributor.updateAccessToken(accessToken);
+    await _dataDistributorManager.dataDistributor.updateAccessToken(accessToken);
     await _routesManager.loadRoute();
     await _doAllNavigationByEvaluatingInitialConditions(context, netConnState);
   }
@@ -105,9 +97,16 @@ class DataInitializer{
   Future _doAllNavigationTree(BuildContext context)async{
     final List<NavigationRoute> navRoutes = await _routesManager.routesTree;
     for(NavigationRoute nr in navRoutes){
-      await _doNavigation(nr, context);
+      await _doNavigationIfContinueInitialization(nr, context);
     }
-    await _routesManager.setRouteAfterPopping(navRoutes[navRoutes.length - 1], 1);
+    if(_continueInitialization)
+      await _routesManager.setRouteAfterPopping(navRoutes[navRoutes.length - 1], 1);
+  }
+
+  Future _doNavigationIfContinueInitialization(NavigationRoute nr, BuildContext context)async{
+    _evaluateifThereWasAnyErr();
+    if(_continueInitialization)
+        await _doNavigation(nr, context);
   }
 
   Future _doNavigation(NavigationRoute navRoute, BuildContext context)async{
@@ -136,36 +135,42 @@ class DataInitializer{
     }
   }
 
-  static Future _doNavigationToProjects()async{ 
-    await DataDistributorManager.dataDistributor.updateProjects();
+  Future _doNavigationToProjects()async{ 
+    //await _dataDistributorManager.dataDistributor.updateProjects();
+   // await _dataDistributorManager.executeFunction(DataDistrFunctionName.UPDATE_PROJECTS);
+   await _dataDistributorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_PROJECTS);
   }
 
-  static Future _doNavigationToProjectDetail()async{
+  Future _doNavigationToProjectDetail()async{
     final Project chosenOne = await ProjectsStorageManager.getChosenProject();
-    await DataDistributorManager.dataDistributor.updateChosenProject(chosenOne);
+    await _dataDistributorManager.dataDistributor.updateChosenProject(chosenOne);
   }
 
-  static Future _doNavigationToVisits()async{
-    await DataDistributorManager.dataDistributor.updateVisits();
+  Future _doNavigationToVisits()async{
+    await _dataDistributorManager.dataDistributor.updateVisits();
   }
 
-  static Future _doNavigationToVisitDetail()async{
+  Future _doNavigationToVisitDetail()async{
     final Visit chosenOne = await VisitsStorageManager.getChosenVisit();
-    await DataDistributorManager.dataDistributor.updateChosenVisit(chosenOne);
+    await _dataDistributorManager.dataDistributor.updateChosenVisit(chosenOne);
   }
 
-  static Future _doNavigationToForms()async{
-    await DataDistributorManager.dataDistributor.updateFormularios();
+  Future _doNavigationToForms()async{
+    await _dataDistributorManager.dataDistributor.updateFormularios();
   }
 
-  static Future _doNavigationToFormDetail()async{
+  Future _doNavigationToFormDetail()async{
     final Formulario chosenOne = await ChosenFormStorageManager.getChosenForm();
-    await DataDistributorManager.dataDistributor.updateChosenForm(chosenOne);
+    await _dataDistributorManager.dataDistributor.updateChosenForm(chosenOne);
   }
 
 
-  static Future _doNavigationToAdjuntarFotos()async{
-    await DataDistributorManager.dataDistributor.updateCommentedImages();
+  Future _doNavigationToAdjuntarFotos()async{
+    await _dataDistributorManager.dataDistributor.updateCommentedImages();
+  }
+
+  void _evaluateifThereWasAnyErr(){
+    _continueInitialization = ! _dataDistributorErrorHandlingManager.happendError;
   }
 }
 

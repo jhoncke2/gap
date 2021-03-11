@@ -185,7 +185,11 @@ abstract class BasicService{
   }
   
   void _tryCurrentResponseBodyConvertion(http.Response serverResponse){
-    currentResponseBody = json.decode(serverResponse.body);
+    try{
+      currentResponseBody = json.decode(serverResponse.body);
+    }catch(err){
+      throw ServiceStatusErr(status: serverResponse.statusCode, message: serverResponse.reasonPhrase);
+    }
 
   }
 

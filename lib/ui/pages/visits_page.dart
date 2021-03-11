@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gap/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/logic/bloc/entities/visits/visits_bloc.dart';
 import 'package:gap/data/enums/enums.dart';
 import 'package:gap/data/models/entities/entities.dart';
@@ -18,7 +17,6 @@ class VisitsPage extends StatefulWidget {
 }
 
 class _VisitsPageState extends State<VisitsPage> {
-  BuildContext _context;
   SizeUtils _sizeUtils;
 
   @override
@@ -34,7 +32,6 @@ class _VisitsPageState extends State<VisitsPage> {
   }
 
   void _initInitialConfiguration(BuildContext appContext){
-    _context = appContext;
     _sizeUtils = SizeUtils();
     _sizeUtils.initUtil(MediaQuery.of(appContext).size);
   }
@@ -65,7 +62,6 @@ class _VisitsPageState extends State<VisitsPage> {
     );
   }
 }
-
 
 // ignore: must_be_immutable
 class _VisitsComponents extends StatelessWidget {
@@ -141,7 +137,7 @@ class _VisitsComponents extends StatelessWidget {
 
   void _changeShowedVisitsState(ProcessStage newSelectedStage){
     final VisitsBloc visitsBloc = BlocProvider.of<VisitsBloc>(_context);
-    final ChangeSelectedStepInNav changeShVisitsStepEVent =ChangeSelectedStepInNav(newSelectedMenuStage: newSelectedStage);
+    final ChangeSelectedStepInNav changeShVisitsStepEVent = ChangeSelectedStepInNav(newSelectedMenuStage: newSelectedStage);
     visitsBloc.add(changeShVisitsStepEVent);
     final ResetDateFilter resetDateFilterEvent= ResetDateFilter();
     visitsBloc.add(resetDateFilterEvent);
@@ -149,7 +145,39 @@ class _VisitsComponents extends StatelessWidget {
 
   Widget _createNavigationList(VisitsState state){
     final List<Visit> visits = state.currentShowedVisits;
-    return NavigationListWithStageButtons(itemsFunction: _onTapFunction, entitiesWithStages: visits);
+    return NavigationListWithStageButtons(itemsFunction: _onTapFunction, entitiesWithStages: visits, itemTileFunction: _createShowedItemTile);
+  }
+
+  Widget _createShowedItemTile(EntityWithStage visit){
+    final String visitName = visit.name;
+    final String visitDate = _getShowedItemStringDate(visit);
+    return Container(
+      width: double.infinity,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            visitName,
+            style: TextStyle(
+              color: Theme.of(_context).primaryColor,
+              fontSize: _sizeUtils.subtitleSize
+            ),
+          ),
+          Text(
+            visitDate,
+            style: TextStyle(
+              color: Theme.of(_context).primaryColor,
+              fontSize: _sizeUtils.normalTextSize
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  String _getShowedItemStringDate(EntityWithStage visit){
+    final DateTime visitDate = (visit as Visit).date;
+    return '${visitDate.day}-${visitDate.month}-${visitDate.year}';
   }
 
   void _onTapFunction(EntityWithStage entity){

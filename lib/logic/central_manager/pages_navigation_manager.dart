@@ -12,6 +12,7 @@ import 'package:gap/ui/utils/dialogs.dart' as dialogs;
 class PagesNavigationManager{
 
   static final gpsActivationRequestMessage = 'Por favor active el servicio ubicación para esta app en configuración del dispositivo para continuar';
+  static final DataDistributorManager _dataDistributorManager = DataDistributorManager();
 
   static Future<void> pop()async{
     if(await routesManager.hasPreviousRoute){
@@ -31,11 +32,11 @@ class PagesNavigationManager{
   }
 
   static Future<void> _updateProjectsData()async{
-    await DataDistributorManager.dataDistributor.updateProjects();
+    await _dataDistributorManager.dataDistributor.updateProjects();
   }
 
   static Future<void> navToProjectDetail(Project project)async{
-    await DataDistributorManager.dataDistributor.updateChosenProject(project);
+    await _dataDistributorManager.dataDistributor.updateChosenProject(project);
     await _goToNextPage(NavigationRoute.ProjectDetail);
   }
 
@@ -45,11 +46,11 @@ class PagesNavigationManager{
   }
 
   static Future<void> _updateVisitsData()async{
-    await DataDistributorManager.dataDistributor.updateVisits();
+    await _dataDistributorManager.dataDistributor.updateVisits();
   }
 
   static Future<void> navToVisitDetail(Visit visit)async{
-    await DataDistributorManager.dataDistributor.updateChosenVisit(visit);
+    await _dataDistributorManager.dataDistributor.updateChosenVisit(visit);
     await _goToNextPage(NavigationRoute.VisitDetail);
   }
 
@@ -87,7 +88,7 @@ class PagesNavigationManager{
   }
 
   static Future _updateForm(Formulario formulario)async{
-    await DataDistributorManager.dataDistributor.updateChosenForm(formulario);
+    await _dataDistributorManager.dataDistributor.updateChosenForm(formulario);
     await _goToNextPage(NavigationRoute.FormularioDetailForms);
   }
 
@@ -97,7 +98,7 @@ class PagesNavigationManager{
   }
 
   static Future updateFormFieldsPage()async{
-    await DataDistributorManager.dataDistributor.updateFormFieldsPage();
+    await _dataDistributorManager.dataDistributor.updateFormFieldsPage();
   }
 
   static Future initFirstFirmerFillingOut()async{
@@ -105,24 +106,24 @@ class PagesNavigationManager{
   }
 
   static Future _endFormFillingOut()async{
-    await DataDistributorManager.dataDistributor.endFormFillingOut();
+    await _dataDistributorManager.dataDistributor.endFormFillingOut();
   }
 
   static Future initFirstFirmerFirm()async{
-    await DataDistributorManager.dataDistributor.initFirstFirmerFirm();
+    await _dataDistributorManager.dataDistributor.initFirstFirmerFirm();
   }
 
   static Future<void> addFirmer()async{
-    await DataDistributorManager.dataDistributor.updateFirmers();
+    await _dataDistributorManager.dataDistributor.updateFirmers();
   }
 
   static Future<void> endFormFirmers()async{    
-    await DataDistributorManager.dataDistributor.endAllFormProcess();
+    await _dataDistributorManager.dataDistributor.endAllFormProcess();
     await pop();
   }
 
   static Future<void> navToAdjuntarImages()async{
-    await DataDistributorManager.dataDistributor.updateCommentedImages();
+    await _dataDistributorManager.dataDistributor.updateCommentedImages();
     await _goToNextPage(NavigationRoute.AdjuntarFotosVisita);
   }
 
@@ -131,32 +132,32 @@ class PagesNavigationManager{
   }
 
   static Future<void> updateImgsToCommentedImgs()async{
-    DataDistributorManager.dataDistributor.addCurrentPhotosToCommentedImages();
+    _dataDistributorManager.dataDistributor.addCurrentPhotosToCommentedImages();
   }
 
   static Future<void> endAdjuntarImages(BuildContext context)async{
-    await DataDistributorManager.dataDistributor.endCommentedImagesProcess();
+    await _dataDistributorManager.dataDistributor.endCommentedImagesProcess();
     await pop();
   }
 
   static Future<void> _backToProjects()async{
-    await DataDistributorManager.dataDistributor.resetChosenProject();
+    await _dataDistributorManager.dataDistributor.resetChosenProject();
   }
 
   static Future<void> _backToProjectDetail()async{
-    await DataDistributorManager.dataDistributor.resetVisits();
+    await _dataDistributorManager.dataDistributor.resetVisits();
   }
 
   static Future<void> _backToVisits()async{
-    await DataDistributorManager.dataDistributor.resetChosenVisit();
+    await _dataDistributorManager.dataDistributor.resetChosenVisit();
   }
 
   static Future<void> _backToVisitDetail()async{
-    await DataDistributorManager.dataDistributor.resetForms();
+    await _dataDistributorManager.dataDistributor.resetForms();
   }
 
   static Future<void> _backToForms()async{
-    await DataDistributorManager.dataDistributor.resetChosenForm();
+    await _dataDistributorManager.dataDistributor.resetChosenForm();
   }
 
   static Future<void> _goToNextPage(NavigationRoute route)async{

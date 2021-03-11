@@ -8,9 +8,14 @@ class NavigationListWithStageButtons extends NavigationList {
   final SizeUtils _sizeUtils = SizeUtils();
   final List<EntityWithStage> entitiesWithStages;
   final Function(EntityWithStage entity) itemsFunction;
+  final Widget Function(EntityWithStage entity) itemTileFunction;
+  final String Function(EntityWithStage entity) getItemButtonText;
+  
   NavigationListWithStageButtons({
     @required this.entitiesWithStages,
-    @required this.itemsFunction
+    @required this.itemsFunction,
+    this.itemTileFunction,
+    this.getItemButtonText
   }) : super(
     itemsNames:[],
     itemsFunctions:[],
@@ -19,10 +24,13 @@ class NavigationListWithStageButtons extends NavigationList {
   @override
   List<Widget> createButtonItems(){
     final List<Widget> items = entitiesWithStages.map<Widget>((EntityWithStage entity){
+      final String buttonText = (getItemButtonText==null)? entity.name : getItemButtonText(entity);
+      Widget tile = (itemTileFunction==null)? null : itemTileFunction(entity);
       return ButtonWithStageColor(
-        name: entity.name,
+        name: buttonText,
         textColor: Theme.of(context).primaryColor,
         stage: entity.stage,
+        tile: tile,
         onTap: (){itemsFunction(entity);}, 
         
       );

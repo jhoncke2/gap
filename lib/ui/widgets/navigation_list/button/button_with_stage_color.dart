@@ -6,11 +6,13 @@ import 'package:gap/ui/widgets/navigation_list/button/navigation_list_button.dar
 class ButtonWithStageColor extends NavigationListButton{
   final SizeUtils _sizeUtils = SizeUtils();
   final ProcessStage stage;
+  final Widget tile;
   ButtonWithStageColor({
     @required String name,
     @required Color textColor,
     @required Function onTap,
-    @required this.stage
+    @required this.stage,
+    this.tile
   }):super(
     hasBottomBorder: true,
     name: name,
@@ -50,7 +52,7 @@ class ButtonWithStageColor extends NavigationListButton{
 
   Widget _createRightItem(){
     return Expanded(
-      child: createButton()  
+      child: createButton(tile)  
     );
   }
 }

@@ -20,7 +20,7 @@ class ButtonWithIcon extends NavigationListButton{
   );
 
   @override
-  Widget createButtonChild(){
+  Widget createButtonChild([Widget buttonName]){
     return Row(
       children: [
         _createNavItemIcon(),

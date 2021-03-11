@@ -1,5 +1,6 @@
 import 'package:gap/data/enums/enums.dart';
 import 'package:gap/data/models/entities/entities.dart';
+import 'package:gap/errors/services/service_status_err.dart';
 import 'package:gap/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/logic/bloc/entities/projects/projects_bloc.dart';
 import 'package:gap/logic/bloc/entities/user/user_bloc.dart';
@@ -14,12 +15,12 @@ import 'package:gap/logic/storage_managers/forms/preloaded_forms_storage_manager
 import 'package:gap/logic/storage_managers/projects/projects_storage_manager.dart';
 import 'package:gap/logic/storage_managers/user/user_storage_manager.dart';
 import 'package:gap/logic/storage_managers/visits/preloaded_visits_storage_manager.dart';
-import 'package:gap/logic/storage_managers/visits/visits_storage_manager.dart';
 import 'package:gap/services/auth_service.dart';
 
 class DataDistributorWithConnection extends DataDistributor{
   
   final _AuthTokenValidator _authTokenValidator = _AuthTokenValidator();
+  final ProjectsServicesManager _projectsServicesManager = ProjectsServicesManager();
 
   @override
   Future updateAccessToken(String accessToken)async{
@@ -30,7 +31,7 @@ class DataDistributorWithConnection extends DataDistributor{
   @override
   Future<void> updateProjects()async{
     final String accessToken = await UserStorageManager.getAccessToken();
-    final List<Project> projects = await ProjectsServicesManager.loadProjects(projectsB, accessToken);
+    final List<Project> projects = await _projectsServicesManager.loadProjects(projectsB, accessToken);
     projectsB.add(SetProjects(projects: projects));
   }
 
@@ -73,10 +74,6 @@ class DataDistributorWithConnection extends DataDistributor{
 
   Future _addFormToPreloadedStorage(Formulario form, int visitId)async{
     await PreloadedFormsStorageManager.setPreloadedForm(form, visitId);
-  }
-
-  Future _addVisitToStorage(Visit visit)async{
-    await VisitsStorageManager.setChosenVisit(visit);
   }
 
   @override
