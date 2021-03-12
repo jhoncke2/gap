@@ -8,9 +8,7 @@ import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/commented_images/commented_image_card.dart';
 import 'package:gap/ui/widgets/unloaded_elements/unloaded_nav_items.dart';
 
-
-
-class CommentedImagesPag extends StatelessWidget{
+class CommentedImagesPage extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {   

@@ -1,11 +1,16 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:gap/data/models/entities/custom_form_field/variable/single_value/raw_text_form_field.dart';
 import 'package:gap/logic/central_manager/pages_navigation_manager.dart';
+import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/variable_form_field/single_value/text_form_field/text_form_field_widget.dart';
 import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/variable_form_field/variable_form_field_container.dart';
-class TextAreaFormFieldWidget extends StatelessWidget{
+class TextAreaFormFieldWidget extends TextFormFieldWidget{
   final TextArea textArea;
 
-  TextAreaFormFieldWidget({this.textArea}):super(key: Key(textArea.name));
+  TextAreaFormFieldWidget({this.textArea, int indexInPage, StreamController<int> onChangedController}):
+    super(key: Key(textArea.name), indexInPage: indexInPage, onTappedController: onChangedController)
+    ;
 
   @override
   Widget build(BuildContext context){
@@ -28,6 +33,7 @@ class TextAreaFormFieldWidget extends StatelessWidget{
         )
       ),
       onChanged: _onChanged,
+      onTap: super.onTap,
     );
   }
 

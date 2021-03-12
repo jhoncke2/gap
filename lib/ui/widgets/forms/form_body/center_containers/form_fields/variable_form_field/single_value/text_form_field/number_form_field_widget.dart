@@ -1,18 +1,21 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:gap/data/models/entities/custom_form_field/variable/single_value/number_form_field.dart';
 import 'package:gap/logic/central_manager/pages_navigation_manager.dart';
 import 'package:gap/ui/utils/size_utils.dart';
+import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/variable_form_field/single_value/text_form_field/text_form_field_widget.dart';
 import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/variable_form_field/variable_form_field_container.dart';
+
 // ignore: must_be_immutable
-class NumberFormFieldWidget extends StatefulWidget{
-  
+class NumberFormFieldWidget extends TextFormFieldWidget {
+
   final NumberFormField number;
   TextEditingController _textFieldController;
 
-  NumberFormFieldWidget({Key key, @required this.number}):
-    super(key: Key('${number.name}')){
+  NumberFormFieldWidget({Key key, @required this.number, int indexInPage, StreamController<int> onTappedController}):
+    super(key: Key('${number.name}'), indexInPage: indexInPage, onTappedController: onTappedController){
       _createTextFieldController();
     }
   
@@ -21,27 +24,16 @@ class NumberFormFieldWidget extends StatefulWidget{
     _textFieldController = TextEditingController(text: text);
     _textFieldController.selection = TextSelection.fromPosition(TextPosition(offset: _textFieldController.text.length));
   }
-    
-  @override
-  _NumberFormFieldWidgetState createState() => _NumberFormFieldWidgetState();
-}
-
-class _NumberFormFieldWidgetState extends State<NumberFormFieldWidget> {
 
   final SizeUtils _sizeUtils = SizeUtils();
   BuildContext _context;
   int currentValue;
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context){
     _context = context;
     return VariableFormFieldContainer(
-      title: widget.number.label,
+      title: number.label,
       child: _createCounter(),
     );
   }
@@ -67,10 +59,11 @@ class _NumberFormFieldWidgetState extends State<NumberFormFieldWidget> {
     return Container(
       width: _sizeUtils.xasisSobreYasis * 0.3,
       child: TextFormField(
-        key: Key('${widget.number.name}_textfield'),
-        controller: widget._textFieldController,
+        key: Key('${number.name}_textfield'),
+        controller: _textFieldController,
         keyboardType: TextInputType.number,
-        onChanged: _onChanged,
+        onChanged: onChanged,
+        onTap: super.onTap,
         decoration: _createInputDecoration(),
         textAlign: TextAlign.center,
       ),
@@ -85,11 +78,13 @@ class _NumberFormFieldWidgetState extends State<NumberFormFieldWidget> {
     );
   }
 
-  void _onChanged(String stringNewValue){
+  void onChanged(String stringNewValue){
     currentValue = int.parse(stringNewValue);
     final int newValue = _getValueBasedOnItIsBetweenLimits(currentValue);
-    widget.number.value = newValue;
+    number.value = newValue;
+    _textFieldController.text = newValue.toString();
     PagesNavigationManager.updateFormFieldsPage();
+    
   }
 
   bool _newNumberIsBetweenLimits(int newNumber){
@@ -106,14 +101,14 @@ class _NumberFormFieldWidgetState extends State<NumberFormFieldWidget> {
   }
 
   int _getNearestExtremePointToNewValue(int val){
-    int min = widget.number.min;
-    int max = widget.number.max;
+    int min = number.min;
+    int max = number.max;
     if(max == null)
       return min;
     else if(min == null)
       return max;
-    final double distanceBetweenXAndMin = math.sqrt(math.pow(val-widget.number.min, 2));
-    final double distanceBetweenXAndMax = math.sqrt(math.pow(val-widget.number.max, 2));
+    final double distanceBetweenXAndMin = math.sqrt(math.pow(val-number.min, 2));
+    final double distanceBetweenXAndMax = math.sqrt(math.pow(val-number.max, 2));
     if(distanceBetweenXAndMin < distanceBetweenXAndMax)
       return min;
     else
@@ -121,20 +116,20 @@ class _NumberFormFieldWidgetState extends State<NumberFormFieldWidget> {
   }
 
   bool _newNumberIsMinorToMin(int newNumber){
-    return (widget.number.min != null && newNumber < widget.number.min);
+    return (number.min != null && newNumber < number.min);
   }
 
   bool _newNumberIsMayorToMax(int newNumber){
-    return (widget.number.max != null && newNumber > widget.number.max);
+    return (number.max != null && newNumber > number.max);
   }
 
   Widget _createCounterButtons(){
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _createCounterButton(Icons.add, _plus, Key('${widget.number.name}_plus')),
+        _createCounterButton(Icons.add, _plus, Key('${number.name}_plus')),
         SizedBox(height: 5),
-        _createCounterButton(Icons.remove, _subtract, Key('${widget.number.name}_subtract'))
+        _createCounterButton(Icons.remove, _subtract, Key('${number.name}_subtract'))
       ],
     );
   }
@@ -161,23 +156,23 @@ class _NumberFormFieldWidgetState extends State<NumberFormFieldWidget> {
   }
 
   int _plus(){
-    return widget.number.value + widget.number.step;
+    return number.value + number.step;
   }
 
   int _subtract(){
-    return widget.number.value - widget.number.step;
+    return number.value - number.step;
   }
 
   void _onChangeByButtons(Function operateNumberValue){
     currentValue = _obtainInitialNumberForCounterButtons(operateNumberValue);
     int newValue = _getValueBasedOnItIsBetweenLimits(currentValue);
-    widget.number.value = newValue;
-    widget._textFieldController.text = newValue.toString();
+    number.value = newValue;
+    _textFieldController.text = newValue.toString();
     PagesNavigationManager.updateFormFieldsPage();
   }
 
   int _obtainInitialNumberForCounterButtons(Function operateNumberValue){
-    int newNumber = widget.number.value == null? 0 : operateNumberValue();
+    int newNumber = number.value == null? 0 : operateNumberValue();
     return newNumber;
   }
 }

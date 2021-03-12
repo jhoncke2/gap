@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/logic/bloc/nav_routes/custom_navigator.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/current_images_to_set_dialog/adjuntar_images_dialog.dart';
 final SizeUtils _sizeUtils = SizeUtils();
@@ -19,23 +20,7 @@ Future<void> showAdjuntarFotosDialog(BuildContext context)async{
 Future showErrDialog(BuildContext context, String errorMsg)async{
   await showDialog(
     context: context,
-    child: Dialog(
-      child: Container(
-        height: _sizeUtils.xasisSobreYasis * 0.225,
-        padding: EdgeInsets.all(15),
-        child: Center(
-          child: Text(
-            '$errorMsg',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.black87,
-              fontSize: 19
-            ),
-          ),
-        ),
-      ),
-      shape: _createGeneralDialogBorder(context)
-    )
+    child: _GeneralDialog(errorMsg)
   );
 }
 
@@ -49,4 +34,46 @@ RoundedRectangleBorder _createGeneralDialogBorder(BuildContext context){
   );
 }
 
+Future showTemporalDialog(String message)async{
+  showBlockedDialog(CustomNavigator.navigatorKey.currentContext, message);
+  await Future.delayed(Duration(milliseconds: 1500), (){
+    CustomNavigator.navigatorKey.currentState.pop();
+  });
+}
+
+Future showBlockedDialog(BuildContext context, String message)async{
+  await showDialog(
+    barrierDismissible: false,
+    context: context,
+    child: _GeneralDialog(message)
+  );
+}
+
+
+class _GeneralDialog extends StatelessWidget{
+  final String message;
+
+  _GeneralDialog(this.message);
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      child: Container(
+        height: _sizeUtils.xasisSobreYasis * 0.225,
+        padding: EdgeInsets.all(15),
+        child: Center(
+          child: Text(
+            '$message',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.black87,
+              fontSize: 19
+            ),
+          ),
+        ),
+      ),
+      shape: _createGeneralDialogBorder(context)
+    );
+  }
+}
 // ignore: must_be_immutable

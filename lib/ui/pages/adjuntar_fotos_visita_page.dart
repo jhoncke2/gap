@@ -53,7 +53,7 @@ class AdjuntarFotosVisitaPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               _createTopComponents(state),
-              CommentedImagesPag(),
+              CommentedImagesPage(),
               IndexPagination(),
               _createEndButton()
             ],

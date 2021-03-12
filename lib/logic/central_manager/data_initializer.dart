@@ -1,10 +1,10 @@
+import 'package:gap/logic/bloc/nav_routes/custom_navigator.dart';
+import 'package:gap/logic/central_manager/data_distributor/data_distributor_error_handler_manager.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:gap/central_config/bloc_providers_creator.dart';
 import 'package:gap/data/enums/enums.dart';
 import 'package:gap/data/models/entities/entities.dart';
-import 'package:gap/errors/services/service_status_err.dart';
-import 'package:gap/errors/storage/unfound_storage_element_err.dart';
 import 'package:gap/logic/bloc/entities/user/user_bloc.dart';
 import 'package:gap/logic/bloc/nav_routes/routes_manager.dart';
 import 'package:gap/logic/central_manager/pages_navigation_manager.dart';
@@ -61,7 +61,12 @@ class DataInitializer{
   }
 
   Future _doInitialization(String accessToken, BuildContext context, NetConnectionState netConnState)async{
-    await _dataDistributorManager.dataDistributor.updateAccessToken(accessToken);
+    await _dataDistributorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_ACCESS_TOKEN, accessToken);
+    if(!_dataDistributorErrorHandlingManager.happendError)
+      await _continueInitializationAfterUpdateToken(context, netConnState);
+  }
+
+  Future _continueInitializationAfterUpdateToken(BuildContext context, NetConnectionState netConnState)async{
     await _routesManager.loadRoute();
     await _doAllNavigationByEvaluatingInitialConditions(context, netConnState);
   }
@@ -101,6 +106,7 @@ class DataInitializer{
     }
     if(_continueInitialization)
       await _routesManager.setRouteAfterPopping(navRoutes[navRoutes.length - 1], 1);
+    
   }
 
   Future _doNavigationIfContinueInitialization(NavigationRoute nr, BuildContext context)async{
@@ -143,30 +149,36 @@ class DataInitializer{
 
   Future _doNavigationToProjectDetail()async{
     final Project chosenOne = await ProjectsStorageManager.getChosenProject();
-    await _dataDistributorManager.dataDistributor.updateChosenProject(chosenOne);
+    //await _dataDistributorManager.dataDistributor.updateChosenProject(chosenOne);
+    await _dataDistributorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_CHOSEN_PROJECT, chosenOne);
   }
 
   Future _doNavigationToVisits()async{
     await _dataDistributorManager.dataDistributor.updateVisits();
+    await _dataDistributorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_VISITS);
   }
 
   Future _doNavigationToVisitDetail()async{
     final Visit chosenOne = await VisitsStorageManager.getChosenVisit();
-    await _dataDistributorManager.dataDistributor.updateChosenVisit(chosenOne);
+    //await _dataDistributorManager.dataDistributor.updateChosenVisit(chosenOne);
+    await _dataDistributorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_CHOSEN_VISIT, chosenOne);
   }
 
   Future _doNavigationToForms()async{
-    await _dataDistributorManager.dataDistributor.updateFormularios();
+    //await _dataDistributorManager.dataDistributor.updateFormularios();
+    await _dataDistributorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_FORMULARIOS);
   }
 
   Future _doNavigationToFormDetail()async{
     final Formulario chosenOne = await ChosenFormStorageManager.getChosenForm();
-    await _dataDistributorManager.dataDistributor.updateChosenForm(chosenOne);
+    //await _dataDistributorManager.dataDistributor.updateChosenForm(chosenOne);
+    await _dataDistributorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_CHOSEN_FORM, chosenOne);
   }
 
 
   Future _doNavigationToAdjuntarFotos()async{
-    await _dataDistributorManager.dataDistributor.updateCommentedImages();
+    //await _dataDistributorManager.dataDistributor.updateCommentedImages();
+    await _dataDistributorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_COMMENTED_IMAGES);
   }
 
   void _evaluateifThereWasAnyErr(){

@@ -8,18 +8,18 @@ import 'package:gap/logic/central_manager/data_initializer.dart';
 import 'package:gap/logic/storage_managers/user/user_storage_manager.dart';
 import 'package:gap/ui/gap_app.dart';
 import 'package:gap/ui/utils/dialogs.dart' as dialogs;
+import 'package:gap/logic/bloc/nav_routes/routes_manager.dart';
 
 GapApp app;
 void main()async{
-  
   await doInitialConfig();
   return runApp(app);
 }
 
 @protected
 Future<void> doInitialConfig()async{
-  //await _testRemovePartOfStorage();
   WidgetsFlutterBinding.ensureInitialized();
+  //await _testRemovePartOfStorage();
   app = GapApp();
   WidgetsBinding.instance.addObserver(app.state);
   app.state.didChangeDependenciesMethod = _onStartingApp;
@@ -35,8 +35,11 @@ Future _onStartingApp()async{
 
 void _onResumeApp(AppLifecycleState state)async{
   if(state == AppLifecycleState.resumed){
-    if(await NativeServicesPermissions.storageIsGranted)
-      await _initDataInitialization(null);
+    if(await NativeServicesPermissions.storageIsGranted){
+      final List<NavigationRoute> routesTree = await routesManager.routesTree;
+      if(routesTree.last != NavigationRoute.AdjuntarFotosVisita)
+        await _initDataInitialization(null);
+    }
     else
       await _requestStorageActivation();
   }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/static_form_fields/header_form_field_widget.dart';
@@ -6,24 +8,24 @@ import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/var
 import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/variable_form_field/multi_value/radio_group_form_field_widget.dart';
 import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/variable_form_field/multi_value/select_form_field_widget.dart';
 import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/variable_form_field/single_value/date_picker_form_field_widget.dart';
-import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/variable_form_field/single_value/number_form_field_widget.dart';
-import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/variable_form_field/single_value/single_text_form_field_widget.dart';
-import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/variable_form_field/single_value/text_area_form_field_widget.dart';
+import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/variable_form_field/single_value/text_form_field/number_form_field_widget.dart';
+import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/variable_form_field/single_value/text_form_field/single_text_form_field_widget.dart';
+import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/variable_form_field/single_value/text_form_field/text_area_form_field_widget.dart';
 import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/variable_form_field/single_value/time_picker_form_field_widget.dart';
 
 class FormFieldWidgetFactory{
-  static Widget createFormFieldWidget(CustomFormField cff){
+  static Widget createFormFieldWidget(CustomFormField cff, int fieldPageIndex, StreamController<int> onFieldChangedController){
     switch(cff.type){
       case FormFieldType.HEADER:
         return HeaderFormFieldWidget(headerFormField: cff);
       case FormFieldType.PARAGRAPH:
         return ParagraphFormFieldWidget(paragraphFormField: cff);
       case FormFieldType.SINGLE_TEXT:
-        return SingleTextFormFieldWidget(uniqueLineText: cff);
+        return SingleTextFormFieldWidget(uniqueLineText: cff, indexInPage: fieldPageIndex, onChangedController: onFieldChangedController);
       case FormFieldType.TEXT_AREA:
-        return TextAreaFormFieldWidget(textArea: cff);
+        return TextAreaFormFieldWidget(textArea: cff, indexInPage: fieldPageIndex, onChangedController: onFieldChangedController);
       case FormFieldType.NUMBER:
-        return NumberFormFieldWidget(number: cff);
+        return NumberFormFieldWidget(number: cff, indexInPage: fieldPageIndex, onTappedController: onFieldChangedController);
       case FormFieldType.DATE:
         return DatePickerFormFieldWidget(dateFormField: cff);
       case FormFieldType.TIME:

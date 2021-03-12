@@ -1,14 +1,20 @@
+
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:gap/data/models/entities/custom_form_field/variable/single_value/raw_text_form_field.dart';
 import 'package:gap/logic/central_manager/pages_navigation_manager.dart';
 import 'package:gap/ui/widgets/forms/form_body/center_containers/firm_fields/text_field/text_field_with_name.dart';
+import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/variable_form_field/single_value/text_form_field/text_form_field_widget.dart';
 // ignore: must_be_immutable
-class SingleTextFormFieldWidget extends StatelessWidget {
+class SingleTextFormFieldWidget extends TextFormFieldWidget {
 
   final UniqueLineText uniqueLineText;
   TextInputType keyboardType;
   bool obscureText;
-  SingleTextFormFieldWidget({Key key, this.uniqueLineText}) : super(key: Key(uniqueLineText.name));
+  SingleTextFormFieldWidget({Key key, this.uniqueLineText, int indexInPage, StreamController<int> onChangedController}): 
+    super(key: Key(uniqueLineText.name), indexInPage: indexInPage, onTappedController: onChangedController)
+    ;
   
 
   @override
@@ -26,7 +32,8 @@ class SingleTextFormFieldWidget extends StatelessWidget {
       helperText: uniqueLineText.description,
       keyboardType: keyboardType,
       obscureText: obscureText,
-      onFieldChanged: _onChanged,
+      onFieldChanged: onChanged,
+      onTap: super.onTap,
     );
   }
 
@@ -68,7 +75,8 @@ class SingleTextFormFieldWidget extends StatelessWidget {
     keyboardType = TextInputType.phone;
   }
 
-  void _onChanged(String newValue){
+  void onChanged(String newValue){
+    
     uniqueLineText.uniqueValue = newValue;
     PagesNavigationManager.updateFormFieldsPage();
   }

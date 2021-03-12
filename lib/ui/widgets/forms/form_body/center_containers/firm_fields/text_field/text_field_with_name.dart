@@ -8,6 +8,7 @@ class TextFieldWithName extends GeneralFormFieldWithName implements FormFieldStr
   final bool obscureText;
   final String initialValue;
   final String helperText;
+  final Function onTap;
 
   TextFieldWithName({
     Key key,
@@ -16,7 +17,8 @@ class TextFieldWithName extends GeneralFormFieldWithName implements FormFieldStr
     this.keyboardType = TextInputType.text,
     this.obscureText = false,
     this.initialValue,
-    this.helperText
+    this.helperText,
+    this.onTap
   }) : super(
     key: key,
     fieldName: fieldName,
@@ -43,6 +45,7 @@ class TextFieldWithName extends GeneralFormFieldWithName implements FormFieldStr
         enabledBorder: _createInputBorder()
       ),
       onChanged: this.onFieldChanged,
+      onTap: onTap??(){},
     );
   }
 

@@ -1,86 +1,8 @@
 import 'package:gap/data/enums/enums.dart';
 import 'package:gap/data/models/entities/entities.dart';
-import 'package:gap/errors/services/service_status_err.dart';
-import 'package:gap/errors/storage/unfound_storage_element_err.dart';
 import 'package:gap/logic/central_manager/data_distributor/data_distributor.dart';
 import 'package:gap/logic/central_manager/data_distributor/with_connection/data_distributor_with_connection.dart';
 import 'package:gap/logic/central_manager/data_distributor/without_connection/data_distributor_without_connection.dart';
-import 'package:gap/logic/central_manager/pages_navigation_manager.dart';
-import 'package:gap/logic/storage_managers/user/user_storage_manager.dart';
-
-class DataDisributorErrorHandlerManager{
-  final DataDistributorManager dataDistributorManager = DataDistributorManager();
-  bool happendError;
-  Type lastErrorType;
-
-  Future executeFunction(DataDistrFunctionName functionName, [dynamic value])async{
-    try{
-      await dataDistributorManager.executeFunction(functionName, value);
-    }on ServiceStatusErr catch(err){
-      await _manageServiceStatusErr(err);
-    }on UnfoundStorageElementErr catch(err){
-      await _manageUnfoundStorageElementErr(err);
-    }catch(err){
-      await _manageGeneralErr(err);
-    }
-  }
-
-  Future _manageServiceStatusErr(ServiceStatusErr err)async{
-    _updateErrorInfo(err);
-    if(err.extraInformation == 'refresh_token')
-      await _navToLogin();
-    else{
-      if(lastErrorType != err.runtimeType){
-        final String accessToken = await UserStorageManager.getAccessToken();
-        await executeFunction(DataDistrFunctionName.UPDATE_ACCESS_TOKEN, accessToken);
-      }else
-        await _navToLogin();
-    }
-  }
-
-  void _updateErrorInfo(dynamic err){
-    happendError = true;
-    lastErrorType = err.runtimeType;
-  }
-
-  void _resetErrorInfo(){
-    happendError = false;
-    lastErrorType = null;
-  }
-
-  Future _navToLogin()async{
-    await PagesNavigationManager.navToLogin();
-  }
-
-  Future _manageUnfoundStorageElementErr(UnfoundStorageElementErr err)async{
-    _updateErrorInfo(err);
-    if(err.elementType == StorageElementType.AUTH_TOKEN)
-      await _navToLogin();
-    else{
-      if(lastErrorType != err.runtimeType)
-        await _navToProjects();
-      else
-        await _navToLogin();
-    }
-  }
-
-  Future _navToProjects()async{
-    await PagesNavigationManager.navToProjects();
-  }
-
-  Future _manageGeneralErr(err)async{
-    _updateErrorInfo(err);
-    await _navToProjects();
-  }
-
-  set netConnectionState(NetConnectionState newState){
-    dataDistributorManager.netConnectionState = newState;
-    _resetErrorInfo();
-  }
-}
-
-
-
 
 class DataDistributorManager{
   static final NetConnectionStateContainer _netConnectionContainer = NetConnectionStateContainer();
@@ -100,32 +22,6 @@ class DataDistributorManager{
   ];
 
   Future executeFunction(DataDistrFunctionName functionName, [dynamic value])async{
-    try{
-      await _tryExecuteFunction(functionName, value);
-    }on ServiceStatusErr catch(err){
-      happendError = true;
-      
-      if(err.extraInformation == 'refresh_token')
-        await PagesNavigationManager.navToLogin();
-      else{
-        //final String accessToken = await UserStorageManager.getAccessToken();
-        //await executeFunction(DataDistrFunctionName.UPDATE_ACCESS_TOKEN, accessToken);
-        await PagesNavigationManager.navToLogin();
-      }
-      
-    }on UnfoundStorageElementErr catch(err){
-      happendError = true;
-      if(err.elementType == StorageElementType.AUTH_TOKEN)
-        await PagesNavigationManager.navToLogin();
-      else
-        await PagesNavigationManager.navToProjects();
-    }catch(err){
-      happendError = true;
-      await PagesNavigationManager.navToProjects();
-    }
-  }
-
-  Future _tryExecuteFunction(DataDistrFunctionName functionName, [dynamic value])async{
     happendError = false;
     _lastExecutedFunction = _dataDistributorFunctionsValues.map[functionName];
     await _executeFunctionByHavingValue(functionName, value);
@@ -136,17 +32,6 @@ class DataDistributorManager{
       await _lastExecutedFunction(value);
     else
       await _lastExecutedFunction();
-  }
-
-  //TODO: Quitar función cuando se termine de probar
-  Future updateProjects()async{
-    try{
-      await dataDistributor.updateProjects();
-    }on ServiceStatusErr catch(err){
-      print(err);
-    }catch(err){
-      print(err);
-    }
   }
 
   set netConnectionState(NetConnectionState newState){
