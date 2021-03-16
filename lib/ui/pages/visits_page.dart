@@ -49,7 +49,7 @@ class _VisitsPageState extends State<VisitsPage> {
 
   Widget _createVisitStateComponents(){
     return Container(
-      height: _sizeUtils.xasisSobreYasis * 0.75,
+      height: _sizeUtils.xasisSobreYasis * 0.9,
       child: BlocBuilder<VisitsBloc, VisitsState>(
         builder: (_, VisitsState state){
           if(state.visitsAreLoaded){
@@ -182,24 +182,5 @@ class _VisitsComponents extends StatelessWidget {
 
   void _onTapFunction(EntityWithStage entity){
     PagesNavigationManager.navToVisitDetail(entity);
-    //_choseVisit(entity);
-    //_loadForms();
   }
-  
-  /*
-  void _choseVisit(EntityWithStage entity){
-    final Visit visit = entity as Visit;
-    final VisitsBloc visitsBloc = BlocProvider.of<VisitsBloc>(_context);
-    final ChooseVisit chooseVisitEvent = ChooseVisit(chosenOne: visit);
-    visitsBloc.add(chooseVisitEvent);
-  }
-
-  void _loadForms(){
-    final FormulariosBloc formsBloc = BlocProvider.of<FormulariosBloc>(_context);
-    final SetForms setFormsEvent = SetForms(forms: fakeData.formularios);
-    formsBloc.add(setFormsEvent);
-  }
-  */
-
-
 }

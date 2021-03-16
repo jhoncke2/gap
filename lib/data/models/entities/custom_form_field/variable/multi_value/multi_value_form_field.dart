@@ -4,6 +4,7 @@ class MultiValueFormField extends VariableFormField{
   List<MultiFormFieldValue> values;
   //TODO: Averiguar qué significa
   bool multiple;
+  
   MultiValueFormField.fromJson(Map<String, dynamic> json): 
     values = json["values"] == null ? null : _valuesFromJson(json['values'].cast<Map<String, dynamic>>()),
     multiple = json['multiple'],

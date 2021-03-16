@@ -1,18 +1,26 @@
 part of 'entities.dart';
 
-List<Visit> visitsFromJson(dynamic visits){
-  if(visits is List)
-    return [];
-  else{
-    final Map<String, dynamic> mapVisits = Map.from(visits);
-    final List<Visit> visitsAsList = [];
-    mapVisits.forEach((key, value) {
-      visitsAsList.add(Visit.fromJson(value));
-    });
-    return visitsAsList;
+List<Visit> visitsFromJson(dynamic jsonVisits){
+  List<Visit> visitsList;
+  if(jsonVisits is List){
+    visitsList = jsonVisits.map((jsonV) => Visit.fromJson(jsonV)).toList();
   }
+  else if(jsonVisits is Map){
+    final Map<String, dynamic> mapVisits = Map.from(jsonVisits);
+    visitsList = [];
+    mapVisits.forEach((key, value) {
+      visitsList.add(Visit.fromJson(value));
+    });
+  }else
+    visitsList = [];
+  return visitsList;
 }
 
+/*
+  Antes venían del back en formato Map, ahora las cambiaron a List.
+  Tengo que actualizar este formato de visits a List, y revisar que no interfiera con otras cuestiones
+  de la app.
+*/
 Map<String, dynamic> visitsToJson(List<Visit> visits){
   final Map<String, dynamic> json = {};
   for(int i = 0; i < visits.length; i++)

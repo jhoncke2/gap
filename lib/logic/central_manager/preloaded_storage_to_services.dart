@@ -4,6 +4,7 @@ import 'package:gap/logic/storage_managers/forms/preloaded_forms_storage_manager
 import 'package:gap/logic/storage_managers/projects/projects_storage_manager.dart';
 import 'package:gap/logic/storage_managers/user/user_storage_manager.dart';
 import 'package:gap/logic/storage_managers/visits/preloaded_visits_storage_manager.dart';
+import 'package:gap/ui/utils/dialogs.dart' as dialogs;
 
 class PreloadedStorageToServices{
   static final _ProjectEvaluater _projectEvaluater = _ProjectEvaluater();
@@ -14,11 +15,17 @@ class PreloadedStorageToServices{
     for(Project p in preloadedProjects){
       await _projectEvaluater.evaluatePreloadedProject(p.id, accessToken);
     }
+    _showEndDialogIfThereWasProjects(preloadedProjects);
     _resetProjectEvaluater();
   }
 
   static void _resetProjectEvaluater(){
     _projectEvaluater.projectIsFinished = true;
+  }
+
+  static Future _showEndDialogIfThereWasProjects(List<Project> projects)async{
+    if(projects.length > 0)
+      await dialogs.showTemporalDialog('Se ha enviado la data precargada');
   }
 }
 
@@ -63,13 +70,12 @@ class _VisitEvaluater{
 
   Future<void> evaluatePreloadedVisit(Visit visit, int projectId, String accessToken)async{
     
-    if(visit.completo){
-      final List<Formulario> preloadedForms = await PreloadedFormsStorageManager.getPreloadedFormsByVisitId(visit.id);
-      for(Formulario f in preloadedForms){
-        await _evaluateForm(f, visit.id, accessToken);
-      }
-      await _endPreloadedVisitIfFinished(visit.id, projectId);
+    final List<Formulario> preloadedForms = await PreloadedFormsStorageManager.getPreloadedFormsByVisitId(visit.id);
+    for(Formulario f in preloadedForms){
+      await _evaluateForm(f, visit.id, accessToken);
     }
+    await _endPreloadedVisitIfFinished(visit.id, projectId);
+
   }
 
   Future<void> _evaluateForm(Formulario f, int visitId, String accessToken)async{
@@ -112,14 +118,21 @@ class _FormEvaluater{
   }
 
   Future<void> _endPreloadedForm(Formulario form, int visitId)async{
-    await _sendFormIfTieneCampos(form, visitId);
+    await _sendFormIfHasFields(form, visitId);
     await _sendFirmersIfHasFirmers(form, visitId);
     await PreloadedFormsStorageManager.removePreloadedForm(form.id, visitId);
+    //Test
+    final List<Formulario> preloadedForms = await PreloadedFormsStorageManager.getPreloadedFormsByVisitId(visitId);
+    print(preloadedForms);
   }
 
-  Future _sendFormIfTieneCampos(Formulario form, int visitId)async{
-    if(_formHasFields(form))
+  Future _sendFormIfHasFields(Formulario form, int visitId)async{
+    if(_formHasFields(form)){
       await ProjectsServicesManager.updateForm(form, visitId, _accessToken);
+      form.campos = [];
+      await PreloadedFormsStorageManager.setPreloadedForm(form, visitId);
+    }
+      
   }
 
   Future _sendFirmersIfHasFirmers(Formulario form, int visitId)async{

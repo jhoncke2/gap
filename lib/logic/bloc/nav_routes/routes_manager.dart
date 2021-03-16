@@ -8,7 +8,7 @@ class RoutesManager{
   Future loadRoute()async{
     final List<NavigationRoute> navRoutes = await NavigationRoutesStorageManager.getNavigationRoutes();
     if(navRoutes.length > 0)
-      _currentRoute = navRoutes[navRoutes.length - 1];
+      _currentRoute = navRoutes.last;
   }
 
   Future replaceAllRoutesForNew(NavigationRoute initialRoute)async{
@@ -32,16 +32,10 @@ class RoutesManager{
     await loadRoute();
   }
 
-  Future _doNPoppingsToNavigator(int n)async{
-    for(int i = 0; i <  n; i++){
-      await CustomNavigator.pop();
-    }
-  }
-
   Future pop()async{
     await NavigationRoutesStorageManager.removeNRoutes(1);
-    await CustomNavigator.navigateReplacingTo(_currentRoute);
     await loadRoute();
+    await CustomNavigator.navigateReplacingTo(_currentRoute);
   }
 
   NavigationRoute get currentRoute => _currentRoute;

@@ -1,14 +1,14 @@
 import 'dart:async';
-
+import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/logic/bloc/widgets/index/index_bloc.dart';
 import 'package:gap/logic/blocs_manager/chosen_form_manager.dart';
-import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/form_field_widget_factory.dart';
-import 'package:keyboard_visibility/keyboard_visibility.dart';
+import 'package:gap/ui/utils/size_utils.dart';
+
 // ignore: must_be_immutable
 class FormInputsFraction extends StatefulWidget {
 

@@ -13,6 +13,11 @@ class CheckboxGroupFormFieldWidget extends StatefulWidget {
 
   @override
   _CheckboxGroupFormFieldWidgetState createState() => _CheckboxGroupFormFieldWidgetState();
+
+  @protected
+  void updateFormFieldsPage(){
+    PagesNavigationManager.updateFormFieldsPage();
+  }
 }
 
 class _CheckboxGroupFormFieldWidgetState extends State<CheckboxGroupFormFieldWidget> {
@@ -46,7 +51,7 @@ class _CheckboxGroupFormFieldWidgetState extends State<CheckboxGroupFormFieldWid
         onChanged: (bool isSelected){
           setState((){
             _onItemSelected(value, isSelected);
-            PagesNavigationManager.updateFormFieldsPage();
+            widget.updateFormFieldsPage();
           });
         }
       ),

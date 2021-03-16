@@ -13,6 +13,6 @@ class TextFormFieldWidget extends StatelessWidget{
   }
 
   void onTap(){
-    onTappedController.sink.add(indexInPage);
+    //onTappedController.sink.add(indexInPage);
   }
 }

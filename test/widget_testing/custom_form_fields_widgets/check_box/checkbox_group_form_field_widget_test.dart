@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gap/data/models/entities/custom_form_field/variable/multi_value/with_alignment.dart';
@@ -6,6 +5,7 @@ import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/variable_form_field/multi_value/checkbox_group_form_field_widget.dart';
 import '../mock_app.dart';
 import './checkbox_test_data.dart';
+import 'mock_check_box.dart';
 
 WidgetTester _currentTester;
 
@@ -23,7 +23,7 @@ void main(){
 
 Future _testCheckBoxWithoutInitialData(WidgetTester tester)async{
   _currentTester = tester;
-  CheckboxGroupFormFieldWidget numberWidget = CheckboxGroupFormFieldWidget(checkBoxGroup: unselectedCheckBox);
+  CheckboxGroupFormFieldWidget numberWidget = MockCheckBoxGroupFormFieldWidget(checkBoxGroup: unselectedCheckBox);
   final MockApp app = MockApp(numberWidget);
   await _currentTester.pumpWidget(app);
   _expectWidgetName(unselectedCheckBox);
@@ -42,20 +42,17 @@ Future _expectUnselectedWidgetFunctionality(WidgetTester tester)async{
   int expectedNCheckBoxListTiles = unselectedCheckBox.values.length;
   List<CheckboxListTile> cbListTiles = getCheckBoxListTileWidgets(cbListTilesFinder);
   expect(cbListTiles.length, expectedNCheckBoxListTiles);
-  _expectTappingSequence(cbListTilesFinder, expectedNCheckBoxListTiles, tester, unselectedCheckBox, cbListTiles);
+  _expectTappingSequence(cbListTilesFinder, expectedNCheckBoxListTiles, tester, unselectedCheckBox);
 }
 
-Future _expectTappingSequence(Finder cbListTilesFinder, int nItems, WidgetTester tester, CheckBoxGroup formField, List<CheckboxListTile> cbListTiles)async{
+Future _expectTappingSequence(Finder cbListTilesFinder, int nItems, WidgetTester tester, CheckBoxGroup formField)async{
   bool expectedCheckValue = true;
-  for(int i = 0; i < 2; i++){
-    for(int j = 0; j < nItems; j++){
-      print(formField.values[j].selected);
-      await tester.tap(cbListTilesFinder.at(j));
-      expect(formField.values[j].selected, expectedCheckValue);
-    }
-    expectedCheckValue = !expectedCheckValue;
+  for(int j = 0; j < nItems; j++){
+    print(formField.values[j].selected);
+    await tester.tap(cbListTilesFinder.at(j));
+    print(formField.values);
+    expect(formField.values[j].selected, expectedCheckValue);
   }
-
 
 }
 

@@ -1,6 +1,5 @@
 import 'package:gap/data/enums/enums.dart';
 import 'package:gap/data/models/entities/entities.dart';
-import 'package:gap/errors/services/service_status_err.dart';
 import 'package:gap/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/logic/bloc/entities/projects/projects_bloc.dart';
 import 'package:gap/logic/bloc/entities/user/user_bloc.dart';
@@ -38,7 +37,6 @@ class DataDistributorWithConnection extends DataDistributor{
   @override
   Future<void> updateChosenProject(Project project)async{
     super.updateChosenProject(project);
-    
   }
 
    @override
@@ -53,9 +51,6 @@ class DataDistributorWithConnection extends DataDistributor{
     await super.updateChosenVisit(visit);
     _addPreloadedDataRelatedToChosenProject(visit);
     await _loadFormsByChosenVisit(visit.id);
-    
-    //await super.addChosenVisitToBloc(visit);
-    //await _addVisitToStorage(visit);
   }
 
   Future _addPreloadedDataRelatedToChosenProject(Visit visit)async{
@@ -86,19 +81,16 @@ class DataDistributorWithConnection extends DataDistributor{
   }
 
   Future _sendFormToService()async{
-    try{
-      await _trySendFormToService();
-    }catch(err){
-    }
-  }
-
-  Future _trySendFormToService()async{
     final Formulario chosenForm = formsB.state.chosenForm;
     final Visit chosenVisit = visitsB.state.chosenVisit;
     final String accessToken = await UserStorageManager.getAccessToken();
     await ProjectsServicesManager.updateForm(chosenForm, chosenVisit.id, accessToken);
     chosenForm.campos = [];
     await PreloadedFormsStorageManager.setPreloadedForm(chosenForm, chosenVisit.id);
+  }
+
+  Future _trySendFormToService()async{
+    
   }
 
   @override
@@ -108,13 +100,6 @@ class DataDistributorWithConnection extends DataDistributor{
   }
 
   Future _sendFirmerToService()async{
-    try{
-      await _trySendFirmerToService();
-    }catch(err){
-    }
-  }
-
-  Future _trySendFirmerToService()async{
     final Formulario chosenForm = formsB.state.chosenForm;
     final PersonalInformation lastFirmer = chosenForm.firmers.last;
     final String accessToken = await UserStorageManager.getAccessToken();
@@ -125,14 +110,39 @@ class DataDistributorWithConnection extends DataDistributor{
     await ChosenFormStorageManager.setChosenForm(chosenForm);
   }
 
+  Future _trySendFirmerToService()async{
+    
+  }
+
   @override
   Future endAllFormProcess()async{
     await super.endAllFormProcess();
-    final String accessToken = await UserStorageManager.getAccessToken();
+    await _updatePreloadedDataAfterFormProcessEnd();
+  }
+
+  Future _updatePreloadedDataAfterFormProcessEnd()async{
     final Visit chosenVisit = visitsB.state.chosenVisit;
     final Formulario chosenForm = formsB.state.chosenForm;
-    //final List<Map<String, dynamic>> visitResponse = await ProjectsServicesManager.updateForm(chosenForm, chosenVisit.id, accessToken);
-    //await _removeFormFromPreloadedStorageIfSuccessResponse(visitResponse, chosenForm.id, chosenVisit.id);
+    await _removeChosenFormFromPreloadedStorage(chosenVisit.id, chosenForm.id);
+    final Project chosenProject = projectsB.state.chosenProject;
+    await _removePreloadedVisitIfThereIsNoMoreForms(chosenVisit.id, chosenProject.id);
+    await _removePreloadedPRojectIfThereIsNoMoreVisits(chosenProject.id);
+  }
+
+  Future _removeChosenFormFromPreloadedStorage(int chosenVisitId, int chosenFormId)async{
+    await PreloadedFormsStorageManager.removePreloadedForm(chosenVisitId, chosenFormId);
+  }
+
+  Future _removePreloadedVisitIfThereIsNoMoreForms(int chosenVisitId, int chosenProjectId)async{
+    final List<Formulario> preloadedForms = await PreloadedFormsStorageManager.getPreloadedFormsByVisitId(chosenVisitId);
+    if(preloadedForms.length == 0)
+      await PreloadedVisitsStorageManager.removeVisit(chosenVisitId, chosenProjectId);
+  }
+
+  Future _removePreloadedPRojectIfThereIsNoMoreVisits(int chosenProjectId)async{
+    final List<Visit> preloadedVisits = await PreloadedVisitsStorageManager.getVisitsByProjectId(chosenProjectId);
+    if(preloadedVisits.length == 0)
+      await ProjectsStorageManager.removeProjectWithPreloadedVisits(chosenProjectId);
   }
 
   Future _removeFormFromPreloadedStorageIfSuccessResponse(List<Map<String, dynamic>> updatedFormResponse, int formId, int visitId)async{

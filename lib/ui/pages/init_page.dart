@@ -16,7 +16,14 @@ class InitPage extends StatelessWidget{
   Widget build(BuildContext context){
     _doInitialConfig(context);
     return Scaffold(
-      body: Container(),
+      body: Container(
+        child: Center(
+          child: CircularProgressIndicator(
+            backgroundColor: Colors.cyan[600],
+            strokeWidth: 7.5,
+          ),
+        ),
+      ),
     );
   }
 

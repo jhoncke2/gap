@@ -8,7 +8,6 @@ import 'package:gap/logic/central_manager/data_distributor/data_distributor.dart
 import 'package:gap/logic/storage_managers/forms/preloaded_forms_storage_manager.dart';
 import 'package:gap/logic/storage_managers/projects/projects_storage_manager.dart';
 import 'package:gap/logic/storage_managers/visits/preloaded_visits_storage_manager.dart';
-import 'package:gap/logic/storage_managers/visits/visits_storage_manager.dart';
 
 class SourceDataToBlocWithoutConnection extends DataDistributor{
   
@@ -29,7 +28,6 @@ class SourceDataToBlocWithoutConnection extends DataDistributor{
 
   @override
   Future<void> updateVisits()async{
-    //final VisitsBloc visitsB = blocsAsMap[BlocName.Visits];
     final Project chosenProject = UploadedBlocsData.dataContainer[NavigationRoute.ProjectDetail];
     final List<Visit> preloadedVisits = await PreloadedVisitsStorageManager.getVisitsByProjectId(chosenProject.id);
     final SetVisits svEvent = SetVisits(visits: preloadedVisits);
@@ -40,9 +38,6 @@ class SourceDataToBlocWithoutConnection extends DataDistributor{
   Future updateChosenVisit(Visit visit)async{
     await super.updateChosenVisit(visit);
     await _updateFormularios(visit);
-    
-    //await addChosenVisitToBloc(visit);
-    //await _addVisitToStorage(visit);
   }
 
   Future _updateFormularios(Visit chosenVisit)async{

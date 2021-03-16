@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:gap/central_config/bloc_providers_creator.dart';
 import 'package:gap/data/enums/enums.dart';
 import 'package:gap/data/models/entities/entities.dart';
-import 'package:gap/errors/services/service_status_err.dart';
 import 'package:gap/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/logic/bloc/entities/images/images_bloc.dart';
 import 'package:gap/logic/bloc/entities/projects/projects_bloc.dart';
@@ -39,11 +38,6 @@ abstract class DataDistributor{
 
   Future<void> updateAccessToken(String accessToken)async{}
 
-  Future testingGeneralUpdateProjects()async{
-    await updateProjects();
-
-  }
-
   Future<void> updateProjects()async{}
 
   Future<void> updateChosenProject(Project project)async{
@@ -59,11 +53,15 @@ abstract class DataDistributor{
   Future<void> updateVisits()async{}
   
   Future<void> updateChosenVisit(Visit visit)async{
-    final List<Visit> visits = visitsB.state.visits;
-    final List<Visit> updatedEqualsVisits = visits.where((element) => element.id == visit.id).toList();
-    final Visit realVisit = updatedEqualsVisits.length > 0? updatedEqualsVisits[0] : visit;
+    final Visit realVisit = _getUpdatedChosenVisit(visit);
     await addChosenVisitToBloc(realVisit);
     await VisitsStorageManager.setChosenVisit(realVisit);
+  }
+
+  Visit _getUpdatedChosenVisit(Visit newChosenVisit){
+    final List<Visit> visits = visitsB.state.visits;
+    final List<Visit> updatedEqualsVisits = visits.where((element) => element.id == newChosenVisit.id).toList();
+    return updatedEqualsVisits.length > 0? updatedEqualsVisits[0] : newChosenVisit;
   }
 
   @protected
@@ -309,75 +307,3 @@ abstract class DataDistributor{
 class UploadedBlocsData{
   static final Map<NavigationRoute, dynamic> dataContainer = {};
 }
-
-
-/*
-  EnumValues<DataDistrFunctionName, Function> _dataDistributorFunctionsValues;
-  Function _lastExecutedFunction;
-
-  DataDistributor(){
-    _initializeDataDistributorFunctionsValues();
-  }
-
-  final List functionsWithValue = [
-    DataDistrFunctionName.UPDATE_ACCESS_TOKEN, 
-    DataDistrFunctionName.UPDATE_CHOSEN_PROJECT,
-    DataDistrFunctionName.UPDATE_CHOSEN_VISIT, 
-    DataDistrFunctionName.UPDATE_CHOSEN_FORM
-  ];
-
-  _initializeDataDistributorFunctionsValues(){
-    _dataDistributorFunctionsValues =  EnumValues<DataDistrFunctionName, Function>({
-      DataDistrFunctionName.UPDATE_ACCESS_TOKEN: updateAccessToken,
-      DataDistrFunctionName.UPDATE_PROJECT: updateAccessToken,
-      DataDistrFunctionName.UPDATE_CHOSEN_PROJECT: updateAccessToken,
-      DataDistrFunctionName.UPDATE_VISITS: updateAccessToken,
-      DataDistrFunctionName.UPDATE_CHOSEN_VISIT: updateAccessToken,
-      DataDistrFunctionName.UPDATE_FORMULARIOS: updateAccessToken,
-      DataDistrFunctionName.UPDATE_CHOSEN_FORM: updateAccessToken,
-      DataDistrFunctionName.END_FORM_FILLING_OUT: updateAccessToken,
-      DataDistrFunctionName.INIT_FIRST_FIRMER_FILLING_OUT: updateAccessToken,
-      DataDistrFunctionName.INIT_FIRST_FIRMER_FIRM: updateAccessToken,
-      DataDistrFunctionName.UPDATE_FIRMERS: updateAccessToken,
-      DataDistrFunctionName.END_ALL_FORM_PROCESS: updateAccessToken,
-      DataDistrFunctionName.UPDATE_COMMENTED_IMAGES: updateAccessToken,
-      DataDistrFunctionName.END_COMMENTED_IMAGES_PROCESS: updateAccessToken,
-      DataDistrFunctionName.ADD_STORAGE_DATA_TO_INDEX_BLOC: updateAccessToken,
-      DataDistrFunctionName.RESET_CHOSEN_PROJECT: updateAccessToken,
-      DataDistrFunctionName.RESET_VISITS: updateAccessToken,
-      DataDistrFunctionName.RESET_CHOSEN_VISIT: updateAccessToken,
-      DataDistrFunctionName.RESET_FORMS: updateAccessToken,
-      DataDistrFunctionName.RESET_CHOSEN_FORM: updateAccessToken,
-      DataDistrFunctionName.RESET_COMMENTED_IMAGES: updateAccessToken,
-    });
-  }
-
-  Future executeFunction(DataDistrFunctionName functionName, [dynamic value])async{
-    try{
-      _tryExecuteFunctionByName(functionName);
-    }on ServiceStatusErr catch(err){
-      if(err.extraInformation == 'refresh_token')
-        await PagesNavigationManager.navToLogin();
-      else{
-        final String accessToken = await UserStorageManager.getAccessToken();
-        await executeFunction(DataDistrFunctionName.UPDATE_ACCESS_TOKEN, accessToken);
-      }
-    }on UnfoundStorageElementErr catch(err){
-      if(err.elementType == StorageElementType.AUTH_TOKEN)
-        await PagesNavigationManager.navToLogin();
-      else
-        await PagesNavigationManager.navToProjects();
-    }catch(err){
-      await PagesNavigationManager.navToProjects();
-    }
-  }
-
-  Future _tryExecuteFunctionByName(DataDistrFunctionName functionName, [dynamic value])async{
-    _lastExecutedFunction = _dataDistributorFunctionsValues.map[functionName];
-    if(functionsWithValue.contains(functionName))
-      await _lastExecutedFunction(value);
-    else
-      await _lastExecutedFunction();
-  }
-
-*/

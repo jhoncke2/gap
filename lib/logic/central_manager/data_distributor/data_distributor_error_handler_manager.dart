@@ -1,13 +1,12 @@
 import 'package:gap/data/enums/enums.dart';
 import 'package:gap/errors/services/service_status_err.dart';
 import 'package:gap/errors/storage/unfound_storage_element_err.dart';
-import 'package:gap/logic/bloc/nav_routes/custom_navigator.dart';
 import 'package:gap/logic/central_manager/data_distributor/data_distributor_manager.dart';
 import 'package:gap/logic/central_manager/pages_navigation_manager.dart';
 import 'package:gap/logic/storage_managers/user/user_storage_manager.dart';
 import 'package:gap/ui/utils/dialogs.dart' as dialogs;
 
-class DataDisributorErrorHandlerManager{
+class DataDisributorErrorHandlingManager{
   final String authenticationErrMessage = 'Ocurrió un problema con la autenticación.';
   final String generalServiceErrMessage = 'Ocurrió un problema con los datos del servidor.';
   final String storageErrMessage = 'Ocurrió un problema con el almacenamiento.';
@@ -82,7 +81,10 @@ class DataDisributorErrorHandlerManager{
 
   Future _manageGeneralErr(err)async{
     _updateErrorInfo(err);
-    await _navToProjects();
+    if(lastErrorType != err.runtimeType)
+      await _navToProjects();
+    else
+      await _navToLogin();
   }
 
   set netConnectionState(NetConnectionState newState){
@@ -95,3 +97,5 @@ class DataDisributorErrorHandlerManager{
     lastErrorType = null;
   }
 }
+
+final DataDisributorErrorHandlingManager dataDisributorErrorHandlingManager = DataDisributorErrorHandlingManager();

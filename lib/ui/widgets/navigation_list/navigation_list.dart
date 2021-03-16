@@ -25,7 +25,6 @@ class NavigationList extends StatelessWidget {
     final List<Widget> navItems = createButtonItems();
     return Expanded(
       child: Container(
-        height: _sizeUtils.xasisSobreYasis * 0.7,
         child: ListView(
           padding: EdgeInsets.symmetric(horizontal: _sizeUtils.xasisSobreYasis * horizontalPadding),
           children: navItems,
