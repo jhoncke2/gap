@@ -55,12 +55,12 @@ class PreloadedFormsStorageManager{
 
   static void _addFormsDecidedByTheIndexOfFormInList(Formulario form, int indexOfFormInList, List<Formulario> forms){
     if(indexOfFormInList != -1)
-      _addFormInIndex(form, indexOfFormInList, forms);
+      _addFormAtIndex(form, indexOfFormInList, forms);
     else
       _addFormAtLast(form, forms);
   }
 
-  static void _addFormInIndex(Formulario form, int index, List<Formulario> forms){
+  static void _addFormAtIndex(Formulario form, int index, List<Formulario> forms){
     forms[index] = form;
   }
 
@@ -81,7 +81,6 @@ class PreloadedFormsStorageManager{
   }
 
   static Future<void> _updateCurrentPreloadedFormsHolderFromStorage()async{
-    //currentPreloadedVisitsHolder.currentData =  (await StorageConnectorSingleton.storageConnector.getMapResource(preloadedVisitsKey)).cast<String, List<Map<String, dynamic>>>();
     final Map<dynamic, dynamic> tempMap = (await StorageConnectorSingleton.storageConnector.getMapResource(_preloadedFormsKey));
     currentPreloadedFormsHolder.initFromJson(tempMap);
   }

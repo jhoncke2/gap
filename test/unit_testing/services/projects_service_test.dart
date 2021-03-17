@@ -7,6 +7,7 @@ import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/errors/services/service_status_err.dart';
 import 'package:gap/services/auth_service.dart';
 import 'package:gap/services/projects_service.dart';
+import 'package:geolocator/geolocator.dart';
 
 final Map<String, dynamic> loginInfo = {
   'email':'oskrjag@gmail.com',
@@ -50,17 +51,18 @@ void _testGroup(){
     _testGetProjects();
     _testUpdateForm();
     _testPostFirmer();
-    _testPostCommentedImages();
+    //_testPostCommentedImages();
+    _testPostFormInitialData();
+    _testPostFormFinalData();
   });
 }
 
 Future _testGetProjects()async{
-  test('Se testeará méodo de login fallido', ()async{
+  test('Se testeará méodo de get projects', ()async{
     try{
       await _tryGetProjects();
-    }on ServiceStatusErr catch(_){
-      print(_);
-      return;
+    }on ServiceStatusErr catch(err){
+      fail('${err.message}::${err.extraInformation??"no extra information"}');
     }catch(err){
       throw err;
     }
@@ -68,6 +70,10 @@ Future _testGetProjects()async{
 }
 
 Future _tryGetProjects()async{
+
+  final String nowTime = DateTime.now().toIso8601String();
+  print(nowTime);
+
   accessToken = await _login();
   projectsResponse = await projectsService.getProjects(accessToken);
   expect(projectsResponse, isNotNull);
@@ -84,7 +90,13 @@ Future<String> _login()async{
 
 Future _testUpdateForm()async{
   test('Se testeará el método updateForm', ()async{
-    await _tryUpdateForm();
+    try{
+      await _tryUpdateForm();
+    }on ServiceStatusErr catch(err){
+      fail('${err.message}::${err.extraInformation??"no extra information"}');
+    }catch(err){
+      fail('Ocurrió un error: $err');
+    }
   });
 }
 
@@ -122,7 +134,7 @@ void _addVariableFormFieldToList(VariableFormField vff, List<Map<String, dynamic
 
 Map<String, dynamic> _getServiceJsonByVariableFormField(VariableFormField vff, int formId){
   return {
-    'formulario_g_formulario_id':formId,
+    'formulario_visita_id':formId,
     'name':vff.name
   };
 }
@@ -137,7 +149,13 @@ void _defineFormFieldValuesByTypeOfValues(VariableFormField vff, Map<String, dyn
 
 Future _testPostFirmer()async{
   test('Se testeará el método postFirmer', ()async{
-    await _tryPostFirmer();
+    try{
+      await _tryPostFirmer();
+    }on ServiceStatusErr catch(err){
+      fail('${err.message}::${err.extraInformation??"no extra information"}');
+    }catch(err){
+      fail('Ocurrió un error: $err');
+    }
   });
 }
 
@@ -146,7 +164,7 @@ Future _tryPostFirmer()async{
   final Map<String, dynamic> formWithFormFields = _getFormWithFormFieldsAndItsVisitId();
   final Map<String, dynamic> serviceResponse = await projectsService.saveFirmer(authToken, firmer, formWithFormFields['form'].id, formWithFormFields['visit_id']);
   expect(serviceResponse, isNotNull);
-  expect(serviceResponse['formulario_g_formulario_id'], formWithFormFields['form'].id.toString());
+  expect(serviceResponse['formulario_visita_id'], formWithFormFields['form'].id.toString());
   expect(serviceResponse['visita_id'], formWithFormFields['visit_id']);
   expect(serviceResponse['ruta'], isNotNull);
   final Map<String, String> jsonFirmerResponse = {
@@ -188,4 +206,62 @@ void _expectServiceReturnedCommImg(List<Map<String, dynamic>> serviceResponse, i
     expect(jsonCommImg['visita_id'], visitId);
     expect(jsonCommImg['descripcion'], commentedImages[index].commentary);
     expect(jsonCommImg['ruta'], isNotNull);
+}
+
+void _testPostFormInitialData(){
+  test('se testeará el método postFormInitialData', ()async{
+    try{
+      await _tryTestPostFormInitialData();
+    }on ServiceStatusErr catch(err){
+      fail('Ocurrió un service error: ${err.message}:${err.extraInformation??"No extra information"}');
+    }catch(err){
+      fail(err);      
+    }
+  });
+}
+
+Future _tryTestPostFormInitialData()async{
+  final Map<String, dynamic> formData = _getFormWithFormFieldsAndItsVisitId();
+  final Formulario form = formData['form'];
+  form.initialPosition = Position(latitude: 5.25, longitude: 13.2);
+  final Map<String, dynamic> body = {
+    "latitud_inicio":form.initialPosition.latitude.toString(),
+    "longitud_inicio":form.initialPosition.longitude.toString()
+  };
+  final Map<String, dynamic> serviceResponse = await projectsService.postFormInitialData(accessToken, body, form.id);
+  expect(serviceResponse, isNotNull);
+  expect(serviceResponse['id'], form.id);
+  expect(serviceResponse['visita_id'], formData['visit_id']);
+  expect(serviceResponse['latitud_inicio'], form.initialPosition.latitude.toString());
+  expect(serviceResponse['longitud_inicio'], form.initialPosition.longitude.toString());
+  print(serviceResponse);
+}
+
+void _testPostFormFinalData(){
+  test('se testeará el método postFormFinalData', ()async{
+    try{
+      await _tryTestPostFormFinalData();
+    }on ServiceStatusErr catch(err){
+      fail('Ocurrió un service error: ${err.message}:${err.extraInformation??"No extra information"}');
+    }catch(err){
+      fail(err);      
+    }
+  });
+}
+
+Future _tryTestPostFormFinalData()async{
+  final Map<String, dynamic> formData = _getFormWithFormFieldsAndItsVisitId();
+  final Formulario form = formData['form'];
+  form.initialPosition = Position(latitude: 5.25, longitude: 13.2);
+  final Map<String, dynamic> body = {
+    "latitud_final":form.initialPosition.latitude.toString(),
+    "longitud_final":form.initialPosition.longitude.toString()
+  };
+  final Map<String, dynamic> serviceResponse = await projectsService.postFormFinalData(accessToken, body, form.id);
+  expect(serviceResponse, isNotNull);
+  expect(serviceResponse['id'], form.id);
+  expect(serviceResponse['visita_id'], formData['visit_id']);
+  expect(serviceResponse['latitud_final'], form.initialPosition.latitude.toString());
+  expect(serviceResponse['longitud_final'], form.initialPosition.longitude.toString());
+  print(serviceResponse);
 }

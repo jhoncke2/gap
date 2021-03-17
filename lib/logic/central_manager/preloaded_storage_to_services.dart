@@ -15,8 +15,9 @@ class PreloadedStorageToServices{
     for(Project p in preloadedProjects){
       await _projectEvaluater.evaluatePreloadedProject(p.id, accessToken);
     }
-    _showEndDialogIfThereWasProjects(preloadedProjects);
+    await _showEndDialogIfThereWasProjects(preloadedProjects);
     _resetProjectEvaluater();
+    
   }
 
   static void _resetProjectEvaluater(){
@@ -74,7 +75,7 @@ class _VisitEvaluater{
     for(Formulario f in preloadedForms){
       await _evaluateForm(f, visit.id, accessToken);
     }
-    await _endPreloadedVisitIfFinished(visit.id, projectId);
+    await _endPreloadedVisitIfFinished(visit, projectId);
 
   }
 
@@ -83,9 +84,9 @@ class _VisitEvaluater{
     visitIsFinished = _formEvaluater.formIsFinished? visitIsFinished : false;
   }
 
-  Future<void> _endPreloadedVisitIfFinished(int visitId, int projectId)async{
-    if(visitIsFinished){
-      await _endPreloadedVisit(visitId, projectId);
+  Future<void> _endPreloadedVisitIfFinished(Visit visit, int projectId)async{
+    if(visitIsFinished || visit.completo){
+      await _endPreloadedVisit(visit.id, projectId);
     }
   }
 

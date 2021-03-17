@@ -1,24 +1,21 @@
 import 'package:gap/logic/central_manager/data_distributor/data_distributor_error_handler_manager.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:gap/central_config/bloc_providers_creator.dart';
 import 'package:gap/data/enums/enums.dart';
 import 'package:gap/data/models/entities/entities.dart';
+import 'package:gap/central_config/bloc_providers_creator.dart';
+import 'package:gap/native_connectors/permissions.dart';
 import 'package:gap/logic/bloc/entities/user/user_bloc.dart';
 import 'package:gap/logic/bloc/nav_routes/routes_manager.dart';
 import 'package:gap/logic/central_manager/pages_navigation_manager.dart';
-import 'package:gap/logic/central_manager/data_distributor/data_distributor_manager.dart';
-import 'package:gap/logic/central_manager/preloaded_storage_to_services.dart';
 import 'package:gap/logic/storage_managers/forms/chosen_form_storage_manager.dart';
 import 'package:gap/logic/storage_managers/projects/projects_storage_manager.dart';
 import 'package:gap/logic/storage_managers/user/user_storage_manager.dart';
 import 'package:gap/logic/storage_managers/visits/visits_storage_manager.dart';
-import 'package:gap/native_connectors/permissions.dart';
 import 'package:gap/ui/utils/dialogs.dart' as dialogs;
 
 class DataInitializer{
   static final RoutesManager _routesManager = RoutesManager();
-  final DataDistributorManager _dataDistributorManager = DataDistributorManager();
   bool _continueInitialization;
 
   Future init(BuildContext context, NetConnectionState netConnState)async{
@@ -42,7 +39,6 @@ class DataInitializer{
 
   Future _init(BuildContext context, NetConnectionState netConnState)async{
     dataDisributorErrorHandlingManager.netConnectionState = netConnState;
-    await _sendPreloadedDataIfThereIsConnection(netConnState);
     final String accessToken = await UserStorageManager.getAccessToken();
     await _doInitializationByAccessToken(accessToken, context, netConnState);
   }
@@ -51,23 +47,21 @@ class DataInitializer{
     if(accessToken == null)
       await _navigateToLogin(context, netConnState);
     else
-      await _doInitialization(accessToken, context, netConnState);
+      await _doInitialization(context, netConnState);
   }
 
-  Future _doInitialization(String accessToken, BuildContext context, NetConnectionState netConnState)async{
-    await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_ACCESS_TOKEN, accessToken);
-    if(!dataDisributorErrorHandlingManager.happendError)
+  Future _doInitialization(BuildContext context, NetConnectionState netConnState)async{
+    await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.DO_INITIAL_CONFIG);
+    if(dataDisributorErrorHandlingManager.happendError)
+      await _routesManager.replaceAllRoutesForNew(dataDisributorErrorHandlingManager.navigationTodoByError??NavigationRoute.Login);
+    else
       await _continueInitializationAfterUpdateToken(context, netConnState);
+    
   }
 
   Future _continueInitializationAfterUpdateToken(BuildContext context, NetConnectionState netConnState)async{
     await _routesManager.loadRoute();
     await _doAllNavigationByEvaluatingInitialConditions(context, netConnState);
-  }
-
-  Future _sendPreloadedDataIfThereIsConnection(NetConnectionState netConnState)async{
-    if(netConnState == NetConnectionState.Connected)
-      await PreloadedStorageToServices.sendPreloadedStorageDataToServices();
   }
 
   Future _doAllNavigationByEvaluatingInitialConditions(BuildContext context, NetConnectionState netConnState)async{
@@ -99,8 +93,9 @@ class DataInitializer{
       await _doNavigationIfContinueInitialization(nr, context);
     }
     if(_continueInitialization)
-      await _routesManager.setRouteAfterPopping(navRoutes[navRoutes.length - 1], 1);
-    
+      await _routesManager.replaceAllRoutesForNew(navRoutes[navRoutes.length - 1]);
+    else
+      await _routesManager.replaceAllRoutesForNew(dataDisributorErrorHandlingManager.navigationTodoByError??NavigationRoute.Login);
   }
 
   Future _doNavigationIfContinueInitialization(NavigationRoute nr, BuildContext context)async{
@@ -136,42 +131,34 @@ class DataInitializer{
   }
 
   Future _doNavigationToProjects()async{ 
-    //await _dataDistributorManager.dataDistributor.updateProjects();
-   // await _dataDistributorManager.executeFunction(DataDistrFunctionName.UPDATE_PROJECTS);
    await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_PROJECTS);
   }
 
   Future _doNavigationToProjectDetail()async{
     final Project chosenOne = await ProjectsStorageManager.getChosenProject();
-    //await _dataDistributorManager.dataDistributor.updateChosenProject(chosenOne);
     await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_CHOSEN_PROJECT, chosenOne);
   }
 
   Future _doNavigationToVisits()async{
-    await _dataDistributorManager.dataDistributor.updateVisits();
     await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_VISITS);
   }
 
   Future _doNavigationToVisitDetail()async{
     final Visit chosenOne = await VisitsStorageManager.getChosenVisit();
-    //await _dataDistributorManager.dataDistributor.updateChosenVisit(chosenOne);
     await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_CHOSEN_VISIT, chosenOne);
   }
 
   Future _doNavigationToForms()async{
-    //await _dataDistributorManager.dataDistributor.updateFormularios();
     await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_FORMULARIOS);
   }
 
   Future _doNavigationToFormDetail()async{
     final Formulario chosenOne = await ChosenFormStorageManager.getChosenForm();
-    //await _dataDistributorManager.dataDistributor.updateChosenForm(chosenOne);
     await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_CHOSEN_FORM, chosenOne);
   }
 
 
   Future _doNavigationToAdjuntarFotos()async{
-    //await _dataDistributorManager.dataDistributor.updateCommentedImages();
     await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_COMMENTED_IMAGES);
   }
 

@@ -37,7 +37,7 @@ class ProjectsServicesManager{
 
   static Map<String, dynamic> _getServiceJsonByVariableFormField(VariableFormField vff, int formId){
     return {
-      'formulario_g_formulario_id':formId,
+      'formulario_visita_id':formId,
       'name':vff.name
     };
   }

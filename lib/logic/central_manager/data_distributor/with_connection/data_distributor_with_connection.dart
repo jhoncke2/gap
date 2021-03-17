@@ -6,7 +6,7 @@ import 'package:gap/logic/bloc/entities/user/user_bloc.dart';
 import 'package:gap/logic/bloc/entities/visits/visits_bloc.dart';
 import 'package:gap/logic/bloc/widgets/commented_images/commented_images_bloc.dart';
 import 'package:gap/logic/central_manager/data_distributor/data_distributor.dart';
-import 'package:gap/logic/central_manager/pages_navigation_manager.dart';
+import 'package:gap/logic/central_manager/preloaded_storage_to_services.dart';
 import 'package:gap/logic/services_manager/projects_services_manager.dart';
 import 'package:gap/logic/storage_managers/forms/chosen_form_storage_manager.dart';
 import 'package:gap/logic/storage_managers/forms/formularios_storage_manager.dart';
@@ -22,6 +22,13 @@ class DataDistributorWithConnection extends DataDistributor{
   final ProjectsServicesManager _projectsServicesManager = ProjectsServicesManager();
 
   @override
+  Future doInitialConfig()async{
+    final accessToken = await UserStorageManager.getAccessToken();
+    await updateAccessToken(accessToken);
+    await PreloadedStorageToServices.sendPreloadedStorageDataToServices();
+  }
+
+  @override
   Future updateAccessToken(String accessToken)async{
     _authTokenValidator.userBloc = DataDistributor.blocsAsMap[BlocName.User];
     await _authTokenValidator.refreshAuthToken(accessToken);
@@ -31,15 +38,11 @@ class DataDistributorWithConnection extends DataDistributor{
   Future<void> updateProjects()async{
     final String accessToken = await UserStorageManager.getAccessToken();
     final List<Project> projects = await _projectsServicesManager.loadProjects(projectsB, accessToken);
-    projectsB.add(SetProjects(projects: projects));
+    projectsB.add(SetProjects(projects: projects));  
+    UploadedBlocsData.dataContainer[NavigationRoute.Projects] = projects;
   }
 
   @override
-  Future<void> updateChosenProject(Project project)async{
-    super.updateChosenProject(project);
-  }
-
-   @override
   Future<void> updateVisits()async{
     final Project chosenProject = UploadedBlocsData.dataContainer[NavigationRoute.ProjectDetail];
     final List<Visit> visits = chosenProject.visits;
@@ -89,10 +92,6 @@ class DataDistributorWithConnection extends DataDistributor{
     await PreloadedFormsStorageManager.setPreloadedForm(chosenForm, chosenVisit.id);
   }
 
-  Future _trySendFormToService()async{
-    
-  }
-
   @override
   Future updateFirmers()async{
     await super.updateFirmers();
@@ -110,10 +109,6 @@ class DataDistributorWithConnection extends DataDistributor{
     await ChosenFormStorageManager.setChosenForm(chosenForm);
   }
 
-  Future _trySendFirmerToService()async{
-    
-  }
-
   @override
   Future endAllFormProcess()async{
     await super.endAllFormProcess();
@@ -126,7 +121,7 @@ class DataDistributorWithConnection extends DataDistributor{
     await _removeChosenFormFromPreloadedStorage(chosenVisit.id, chosenForm.id);
     final Project chosenProject = projectsB.state.chosenProject;
     await _removePreloadedVisitIfThereIsNoMoreForms(chosenVisit.id, chosenProject.id);
-    await _removePreloadedPRojectIfThereIsNoMoreVisits(chosenProject.id);
+    await _removePreloadedProjectIfThereIsNoMoreVisits(chosenProject.id);
   }
 
   Future _removeChosenFormFromPreloadedStorage(int chosenVisitId, int chosenFormId)async{
@@ -139,21 +134,11 @@ class DataDistributorWithConnection extends DataDistributor{
       await PreloadedVisitsStorageManager.removeVisit(chosenVisitId, chosenProjectId);
   }
 
-  Future _removePreloadedPRojectIfThereIsNoMoreVisits(int chosenProjectId)async{
+  Future _removePreloadedProjectIfThereIsNoMoreVisits(int chosenProjectId)async{
     final List<Visit> preloadedVisits = await PreloadedVisitsStorageManager.getVisitsByProjectId(chosenProjectId);
     if(preloadedVisits.length == 0)
       await ProjectsStorageManager.removeProjectWithPreloadedVisits(chosenProjectId);
   }
-
-  Future _removeFormFromPreloadedStorageIfSuccessResponse(List<Map<String, dynamic>> updatedFormResponse, int formId, int visitId)async{
-    if(_updatedFormResponseIsSuccessful(updatedFormResponse))
-      await PreloadedFormsStorageManager.removePreloadedForm(formId, visitId);
-  }
-
-  bool _updatedFormResponseIsSuccessful(List<Map<String, dynamic>> updatedFormResponse){
-    return updatedFormResponse !=  null && updatedFormResponse.length > 0;
-  }
-
 
   @override
   Future resetForms()async{
@@ -196,13 +181,9 @@ class DataDistributorWithConnection extends DataDistributor{
 class _AuthTokenValidator{
   UserBloc userBloc;
   Future refreshAuthToken(String oldAuthToken)async{
-    try{
-      final Map<String, dynamic> authTokenResponse = await authService.refreshAuthToken(oldAuthToken);
-      String newAuthToken = authTokenResponse['data']['original']['access_token'];
-      await UserStorageManager.setAccessToken(newAuthToken);
-      userBloc.add(SetAccessToken(accessToken: newAuthToken));
-    }catch(err){
-      await PagesNavigationManager.navToLogin();
-    }
+    final Map<String, dynamic> authTokenResponse = await authService.refreshAuthToken(oldAuthToken);
+    String newAuthToken = authTokenResponse['data']['original']['access_token'];
+    await UserStorageManager.setAccessToken(newAuthToken);
+    userBloc.add(SetAccessToken(accessToken: newAuthToken));
   }
 }

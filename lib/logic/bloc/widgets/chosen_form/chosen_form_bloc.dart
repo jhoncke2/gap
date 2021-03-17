@@ -95,33 +95,23 @@ class ChosenFormBloc extends Bloc<ChosenFormEvent, ChosenFormState> {
   }
 
   bool _formFieldsAreFilled(List<CustomFormField> formFields){
+    bool allAreCompleted = true;
     for(CustomFormField ff in formFields){
-      if(_isVariableAndRequired(ff)){
-        if(!_isMultiValueAndHasAnySelected(ff))
+      if(_isVariableAndRequired(ff))
+        if(!_variableRequiredFormFieldIsCompleted(ff))
           return false;
-        if(!_isSingleValueAndHasValue(ff))
-          return false;
-      }
     }
-    return true;
+    return allAreCompleted;
   }
 
   bool _isVariableAndRequired(CustomFormField ff){
-    return (ff is VariableFormField && ff.isRequired);
+    return ff is VariableFormField && ff.isRequired;
   }
 
-  bool _isMultiValueAndHasAnySelected(VariableFormField ff){
-    return (ff is MultiValueFormField && !_multiValueHasAnySelected(ff));
+  bool _variableRequiredFormFieldIsCompleted(VariableFormField vff){
+    return vff.isCompleted;
   }
-
-  bool _multiValueHasAnySelected(MultiValueFormField f){
-    return f.values.where((element) => element.selected).length > 0;
-  }
-
-  bool _isSingleValueAndHasValue(VariableFormField ff){
-    return (ff is SingleValueFormField && ff.uniqueValue == null);
-  }
-
+  
   void _resetChosenForm(){
     _currentStateToYield = ChosenFormState();
     //ChosenFormStorageManager.removeChosenForm();

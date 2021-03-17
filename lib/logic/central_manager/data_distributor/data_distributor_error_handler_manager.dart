@@ -14,6 +14,7 @@ class DataDisributorErrorHandlingManager{
   final DataDistributorManager dataDistributorManager = DataDistributorManager();
   bool happendError;
   Type lastErrorType;
+  NavigationRoute navigationTodoByError;
 
   Future executeFunction(DataDistrFunctionName functionName, [dynamic value])async{
     try{
@@ -31,7 +32,7 @@ class DataDisributorErrorHandlingManager{
     _updateErrorInfo(err);
     if(err.extraInformation == 'refresh_token'){
       await _showDialog(authenticationErrMessage);
-      await _navToLogin();
+      navigationTodoByError = NavigationRoute.Login;
     }
     else{
       if(lastErrorType != err.runtimeType){
@@ -39,7 +40,7 @@ class DataDisributorErrorHandlingManager{
         await executeFunction(DataDistrFunctionName.UPDATE_ACCESS_TOKEN, accessToken);
       }else{
         await _showDialog(generalServiceErrMessage);
-        await _navToLogin();
+        navigationTodoByError = NavigationRoute.Login;
       }
     }
   }
@@ -61,16 +62,16 @@ class DataDisributorErrorHandlingManager{
     _updateErrorInfo(err);
     if(err.elementType == StorageElementType.AUTH_TOKEN){
       await _showDialog(authenticationErrMessage);
-      await _navToLogin();
+      navigationTodoByError = NavigationRoute.Login;
     }
     else{
       if(lastErrorType != err.runtimeType){
         await _showDialog(storageErrMessage);
-        await _navToProjects();
+        navigationTodoByError = NavigationRoute.Projects;
       }  
       else{
         await _showDialog(storageErrMessage);
-        await _navToLogin();
+        navigationTodoByError = NavigationRoute.Login;
       }
     }
   }

@@ -12,7 +12,7 @@ class DataDistributorManager{
   int errorRepetitions;
 
   EnumValues<DataDistrFunctionName, Function> _dataDistributorFunctionsValues;
-  Function _lastExecutedFunction;
+  Function _currentExecutedFunction;
 
   final List functionsWithValue = [
     DataDistrFunctionName.UPDATE_ACCESS_TOKEN, 
@@ -23,15 +23,15 @@ class DataDistributorManager{
 
   Future executeFunction(DataDistrFunctionName functionName, [dynamic value])async{
     happendError = false;
-    _lastExecutedFunction = _dataDistributorFunctionsValues.map[functionName];
+    _currentExecutedFunction = _dataDistributorFunctionsValues.map[functionName];
     await _executeFunctionByHavingValue(functionName, value);
   }
 
   Future _executeFunctionByHavingValue(DataDistrFunctionName functionName, [dynamic value])async{
     if(functionsWithValue.contains(functionName))
-      await _lastExecutedFunction(value);
+      await _currentExecutedFunction(value);
     else
-      await _lastExecutedFunction();
+      await _currentExecutedFunction();
   }
 
   set netConnectionState(NetConnectionState newState){
@@ -41,6 +41,7 @@ class DataDistributorManager{
 
   _initializeDataDistributorFunctionsValues(){
     _dataDistributorFunctionsValues =  EnumValues<DataDistrFunctionName, Function>({
+      DataDistrFunctionName.DO_INITIAL_CONFIG:  dataDistributor.doInitialConfig,
       DataDistrFunctionName.UPDATE_ACCESS_TOKEN: dataDistributor.updateAccessToken,
       DataDistrFunctionName.UPDATE_PROJECTS: dataDistributor.updateProjects,
       DataDistrFunctionName.UPDATE_CHOSEN_PROJECT: dataDistributor.updateChosenProject,

@@ -31,7 +31,7 @@ class ProjectsService extends BasicService{
     final String requestUrl = _panelUrl + 'visita-firmas/$visitId';
     final Map<String, String> headers = {'Authorization':'Bearer $accessToken', 'Content-Type':'application/x-www-form-urlencoded'};
     final Map<String, String> fields = firmer.toServiceJson();
-    fields['formulario_g_formulario_id'] = formId.toString();
+    fields['formulario_visita_id'] = formId.toString();
     final Map<String, dynamic> fileInfo = {
       'field_name':'photo',
       'file':firmer.firm
@@ -47,6 +47,22 @@ class ProjectsService extends BasicService{
     final Map<String, dynamic> filesInfo = {'files_field':'photos[]', 'files':imgFiles};
     await executeMultiPartRequestWithListOfFiles(requestUrl, headers, fields, filesInfo);
     return (currentResponseBody as List).cast<Map<String, dynamic>>();
+  }
+
+  Future<Map<String, dynamic>> postFormInitialData(String accessToken, Map<String, dynamic> bodyData, int formId)async{
+    final String requestUrl = _panelUrl + 'formulario/inicia/$formId';
+    final Map<String, String> headers = {'Authorization':'Bearer $accessToken'};
+    final Map<String, Map<String, dynamic>> headersAndBody = createHeadersAndBodyForARequest(headers: headers, body: bodyData);
+    await executeGeneralEndOfRequest(requestType: RequestType.POST, requestUrl: requestUrl, headersAndBody: headersAndBody);
+    return (currentResponseBody as Map).cast<String, dynamic>();
+  }
+
+  Future<Map<String, dynamic>> postFormFinalData(String accessToken, Map<String, dynamic> bodyData, int formId)async{
+    final String requestUrl = _panelUrl + 'formulario/final/$formId';
+    final Map<String, String> headers = {'Authorization':'Bearer $accessToken'};
+    final Map<String, Map<String, dynamic>> headersAndBody = createHeadersAndBodyForARequest(headers: headers, body: bodyData);
+    await executeGeneralEndOfRequest(requestType: RequestType.POST, requestUrl: requestUrl, headersAndBody: headersAndBody);
+    return (currentResponseBody as Map).cast<String, dynamic>();
   }
 }
 

@@ -28,7 +28,8 @@ class PagesNavigationManager{
   
   static Future<void> navToProjects()async{
     await _updateProjectsData();
-    await _goToInitialPage(NavigationRoute.Projects);
+    await _goToPageByHavingOrNotError(NavigationRoute.Projects, true);
+    //await _goToInitialPage(NavigationRoute.Projects);
   }
 
   static Future<void> _updateProjectsData()async{
@@ -37,17 +38,17 @@ class PagesNavigationManager{
 
   static Future<void> navToProjectDetail(Project project)async{
     await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_CHOSEN_PROJECT, project);
-    await _goToNextPage(NavigationRoute.ProjectDetail);
+    await _goToPageByHavingOrNotError(NavigationRoute.ProjectDetail, false);
   }
 
   static Future<void> navToVisits()async{
     await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_VISITS);
-    await _goToNextPage(NavigationRoute.Visits);
+    await _goToPageByHavingOrNotError(NavigationRoute.Visits, false);
   }
 
   static Future<void> navToVisitDetail(Visit visit)async{
     await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_CHOSEN_VISIT, visit);
-    await _goToNextPage(NavigationRoute.VisitDetail);
+    await _goToPageByHavingOrNotError(NavigationRoute.VisitDetail, false);
   }
 
   static Future<void> navToForms()async{
@@ -66,7 +67,7 @@ class PagesNavigationManager{
 
   static Future _updateForm(Formulario formulario)async{
     await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_CHOSEN_FORM, formulario);
-    await _goToNextPage(NavigationRoute.FormularioDetailForms);
+    await _goToPageByHavingOrNotError(NavigationRoute.FormularioDetailForms, false);
   }
 
   static Future _goToAppSetings(BuildContext context, String message)async{
@@ -101,7 +102,7 @@ class PagesNavigationManager{
 
   static Future<void> navToAdjuntarImages()async{
     await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_COMMENTED_IMAGES);
-    await _goToNextPage(NavigationRoute.AdjuntarFotosVisita);
+    await _goToPageByHavingOrNotError(NavigationRoute.AdjuntarFotosVisita, false);
   }
 
   static Future<void> advanceOnAdjuntarImages()async{
@@ -135,6 +136,20 @@ class PagesNavigationManager{
 
   static Future<void> _backToForms()async{
     await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.RESET_CHOSEN_FORM);
+  }
+
+  static Future _goToPageByHavingOrNotError(NavigationRoute destinationRoute, bool replacingAllRoutes)async{
+    if(dataDisributorErrorHandlingManager.happendError)
+      await _goToInitialPage(dataDisributorErrorHandlingManager.navigationTodoByError);
+    else
+      await _goToPage(destinationRoute, replacingAllRoutes);
+  }
+
+  static Future _goToPage(NavigationRoute route, bool replacingAllRoutes)async{
+    if(replacingAllRoutes)
+      await _goToInitialPage(route);
+    else
+      await _goToNextPage(route);
   }
 
   static Future<void> _goToNextPage(NavigationRoute route)async{

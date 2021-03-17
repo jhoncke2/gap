@@ -36,17 +36,21 @@ abstract class DataDistributor{
   final IndexBloc indexB = blocsAsMap[BlocName.Index];
   final CommentedImagesBloc commImgsB = blocsAsMap[BlocName.CommentedImages];
 
+  Future doInitialConfig()async{
+
+  }
+
   Future<void> updateAccessToken(String accessToken)async{}
 
   Future<void> updateProjects()async{}
 
   Future<void> updateChosenProject(Project project)async{
-    final List<Project> projects = projectsB.state.projects;
+    final List<Project> projects = UploadedBlocsData.dataContainer[NavigationRoute.Projects] ?? projectsB.state.projects;
     final List<Project> equalsUpdatedProjects = projects.where((element) => element.id == project.id).toList();
     final Project realProject = equalsUpdatedProjects.length > 0? equalsUpdatedProjects[0] : project;
     final ChooseProject cpEvent = ChooseProject(chosenOne: realProject);
     projectsB.add(cpEvent);
-    UploadedBlocsData.dataContainer[NavigationRoute.ProjectDetail] = project;
+    UploadedBlocsData.dataContainer[NavigationRoute.ProjectDetail] = realProject;
     await ProjectsStorageManager.setChosenProject(realProject);
   }
 
@@ -81,7 +85,6 @@ abstract class DataDistributor{
     formsB.add(ChooseForm(chosenOne: realForm));
     await ChosenFormStorageManager.setChosenForm(realForm);
     await _chooseBlocMethodByChosenFormStep(realForm);
-    
   }
 
   Future _addInitialPosition(Formulario form)async{
@@ -212,8 +215,7 @@ abstract class DataDistributor{
     chosenForm.formStep = FormStep.Finished;
     await updateFirmers();
     chosenFormB.add(ResetChosenForm());
-    indexB.add(ResetAllOfIndex());
-    
+    indexB.add(ResetAllOfIndex());  
   }
 
   Future updateCommentedImages()async{

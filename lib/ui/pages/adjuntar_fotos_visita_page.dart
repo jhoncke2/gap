@@ -49,7 +49,7 @@ class AdjuntarFotosVisitaPage extends StatelessWidget {
       child: BlocBuilder<VisitsBloc, VisitsState>(
         builder: (context, state) {
           return Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               _createTopComponents(state),
