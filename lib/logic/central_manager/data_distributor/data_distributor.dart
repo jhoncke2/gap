@@ -57,13 +57,14 @@ abstract class DataDistributor{
   Future<void> updateVisits()async{}
   
   Future<void> updateChosenVisit(Visit visit)async{
-    final Visit realVisit = _getUpdatedChosenVisit(visit);
-    await addChosenVisitToBloc(realVisit);
-    await VisitsStorageManager.setChosenVisit(realVisit);
+    await addChosenVisitToBloc(visit);
+    await VisitsStorageManager.setChosenVisit(visit);
+    UploadedBlocsData.dataContainer[NavigationRoute.VisitDetail] = visit;
   }
 
-  Visit _getUpdatedChosenVisit(Visit newChosenVisit){
-    final List<Visit> visits = visitsB.state.visits;
+  @protected
+  Visit getUpdatedChosenVisit(Visit newChosenVisit){
+    final List<Visit> visits = UploadedBlocsData.dataContainer[NavigationRoute.Visits];
     final List<Visit> updatedEqualsVisits = visits.where((element) => element.id == newChosenVisit.id).toList();
     return updatedEqualsVisits.length > 0? updatedEqualsVisits[0] : newChosenVisit;
   }
@@ -78,16 +79,20 @@ abstract class DataDistributor{
   Future<void> updateFormularios()async{}
   
   Future<void> updateChosenForm(Formulario form)async{
-    final List<Formulario> forms = formsB.state.forms;
-    final List<Formulario> updatedEqualsForms = forms.where((element) => element.id == form.id).toList();
-    final Formulario realForm = (updatedEqualsForms.length > 0)? updatedEqualsForms[0] : form;
-    await _addInitialPosition(realForm);
-    formsB.add(ChooseForm(chosenOne: realForm));
-    await ChosenFormStorageManager.setChosenForm(realForm);
-    await _chooseBlocMethodByChosenFormStep(realForm);
+    formsB.add(ChooseForm(chosenOne: form));
+    await ChosenFormStorageManager.setChosenForm(form);
+    await _chooseBlocMethodByChosenFormStep(form);
   }
 
-  Future _addInitialPosition(Formulario form)async{
+  @protected
+  Future<Formulario> getUpdatedChosenForm(Formulario form)async{
+    final List<Formulario> forms = formsB.state.forms;
+    final List<Formulario> updatedEqualsForms = forms.where((element) => element.id == form.id).toList();
+    return (updatedEqualsForms.length > 0)? updatedEqualsForms[0] : form;
+  }
+
+  @protected
+  Future addInitialPosition(Formulario form)async{
     final Position currentPosition = await GPS.gpsPosition;
     form.initialPosition = currentPosition;
   }
@@ -115,7 +120,6 @@ abstract class DataDistributor{
 
   void _initOnForm(Formulario form){
     chosenFormB.add(InitFormFillingOut(formulario: form, onEndEvent: _onEndInitFormFillingOut));
-
   }
 
   void _onEndInitFormFillingOut(int formFieldsPages){
@@ -147,7 +151,6 @@ abstract class DataDistributor{
 
   Future updateFormFieldsPage()async{
     final int indexPage = indexB.state.currentIndexPage;
-    //chosenFormB.add(UpdateFormField(pageOfFormField: indexPage, onEndFunction: _onUpdateFormFields));
     _updateFormFieldsPage(indexPage);
   }
 
@@ -163,6 +166,7 @@ abstract class DataDistributor{
     await _updateChosenFormInStorage();
   }
 
+  @protected
   Future _addFinalPosition(Formulario form)async{
     final Position currentPosition = await GPS.gpsPosition;
     form.finalPosition = currentPosition;
@@ -197,7 +201,9 @@ abstract class DataDistributor{
     _advanceInStepIfIsInFirstFirmerFirm(chosenForm);
     await ChosenFormStorageManager.setChosenForm(chosenForm);
     await PreloadedFormsStorageManager.setPreloadedForm(chosenForm, visitsB.state.chosenVisit.id);
+    chosenFormB.add(UpdateFirmerPersonalInformation(firmer: chosenForm.firmers.last));
     _addNewFirmer(InitFirmsFillingOut());
+    
   }
 
   void _addNewFirmer(ChosenFormEvent cfEvent){
@@ -280,11 +286,13 @@ abstract class DataDistributor{
   }
 
   Future resetChosenProject()async{
+    projectsB.add(ResetProjects());
     await ProjectsStorageManager.removeChosenProject();
     await updateProjects();
   }
 
   Future resetVisits()async{
+    visitsB.add(ResetVisits());
     await VisitsStorageManager.removeVisits();
   }
 
@@ -296,8 +304,13 @@ abstract class DataDistributor{
   }
 
   Future resetForms()async{
-    await updateProjects();
+    formsB.add(ResetForms());
+    await updateProjects(); 
+    final Project chosenProject = UploadedBlocsData.dataContainer[NavigationRoute.ProjectDetail];
+    await updateChosenProject(chosenProject);
     await updateVisits();
+    final Visit chosenVisit = UploadedBlocsData.dataContainer[NavigationRoute.VisitDetail];
+    await updateChosenVisit(chosenVisit);
   }
 
   Future resetChosenForm()async{}

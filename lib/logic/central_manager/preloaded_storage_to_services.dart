@@ -6,26 +6,28 @@ import 'package:gap/logic/storage_managers/user/user_storage_manager.dart';
 import 'package:gap/logic/storage_managers/visits/preloaded_visits_storage_manager.dart';
 import 'package:gap/ui/utils/dialogs.dart' as dialogs;
 
+bool anyDataWasSended;
+
 class PreloadedStorageToServices{
   static final _ProjectEvaluater _projectEvaluater = _ProjectEvaluater();
   
   static Future<void> sendPreloadedStorageDataToServices()async{
+    anyDataWasSended = false;
     final List<Project> preloadedProjects = await ProjectsStorageManager.getProjectsWithPreloadedVisits();
     final String accessToken = await UserStorageManager.getAccessToken();
     for(Project p in preloadedProjects){
       await _projectEvaluater.evaluatePreloadedProject(p.id, accessToken);
     }
-    await _showEndDialogIfThereWasProjects(preloadedProjects);
+    await _showEndDialogIfAnyDataWasSended();
     _resetProjectEvaluater();
-    
   }
 
   static void _resetProjectEvaluater(){
     _projectEvaluater.projectIsFinished = true;
   }
 
-  static Future _showEndDialogIfThereWasProjects(List<Project> projects)async{
-    if(projects.length > 0)
+  static Future _showEndDialogIfAnyDataWasSended()async{
+    if(anyDataWasSended)
       await dialogs.showTemporalDialog('Se ha enviado la data precargada');
   }
 }
@@ -130,10 +132,10 @@ class _FormEvaluater{
   Future _sendFormIfHasFields(Formulario form, int visitId)async{
     if(_formHasFields(form)){
       await ProjectsServicesManager.updateForm(form, visitId, _accessToken);
+      anyDataWasSended = true;
       form.campos = [];
       await PreloadedFormsStorageManager.setPreloadedForm(form, visitId);
     }
-      
   }
 
   Future _sendFirmersIfHasFirmers(Formulario form, int visitId)async{
@@ -152,6 +154,7 @@ class _FormEvaluater{
   Future _sendFirmers(Formulario form, int visitId)async{
     for(PersonalInformation firmer in form.firmers){
       await ProjectsServicesManager.saveFirmer(_accessToken, firmer, form.id, visitId);
+      anyDataWasSended = true;
     }
   }
 }

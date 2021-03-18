@@ -51,7 +51,7 @@ void _testGroup(){
     _testGetProjects();
     _testUpdateForm();
     _testPostFirmer();
-    //_testPostCommentedImages();
+    _testPostCommentedImages();
     _testPostFormInitialData();
     _testPostFormFinalData();
   });

@@ -18,7 +18,7 @@ class DataDisributorErrorHandlingManager{
 
   Future executeFunction(DataDistrFunctionName functionName, [dynamic value])async{
     try{
-      await dataDistributorManager.executeFunction(functionName, value);
+      await _tryExecuteFunction(functionName, value);
     }on ServiceStatusErr catch(err){
       await _manageServiceStatusErr(err);
     }on UnfoundStorageElementErr catch(err){
@@ -26,6 +26,11 @@ class DataDisributorErrorHandlingManager{
     }catch(err){
       await _manageGeneralErr(err);
     }
+  }
+
+  Future _tryExecuteFunction(DataDistrFunctionName functionName, [dynamic value])async{
+    happendError = false;
+    await dataDistributorManager.executeFunction(functionName, value);
   }
 
   Future _manageServiceStatusErr(ServiceStatusErr err)async{

@@ -55,9 +55,20 @@ class _VisitsPageState extends State<VisitsPage> {
           if(state.visitsAreLoaded){
             return _VisitsComponents(state: state);
           }else{
-            return UnloadedNavItems();
+            return _createLoadingIndicator();
           }
         },
+      ),
+    );
+  }
+
+  Widget _createLoadingIndicator(){
+    return Container(
+      child: Center(
+        child: CircularProgressIndicator(
+          backgroundColor: Colors.cyan[600],
+          strokeWidth: 7.5,
+        ),
       ),
     );
   }

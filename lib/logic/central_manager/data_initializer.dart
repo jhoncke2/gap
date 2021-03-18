@@ -90,75 +90,75 @@ class DataInitializer{
   Future _doAllNavigationTree(BuildContext context)async{
     final List<NavigationRoute> navRoutes = await _routesManager.routesTree;
     for(NavigationRoute nr in navRoutes){
-      await _doNavigationIfContinueInitialization(nr, context);
+      await _doUpdatingIfContinueInitialization(nr, context);
     }
     if(_continueInitialization)
-      await _routesManager.replaceAllRoutesForNew(navRoutes[navRoutes.length - 1]);
+      await _routesManager.updateLastRoute();
     else
       await _routesManager.replaceAllRoutesForNew(dataDisributorErrorHandlingManager.navigationTodoByError??NavigationRoute.Login);
   }
 
-  Future _doNavigationIfContinueInitialization(NavigationRoute nr, BuildContext context)async{
+  Future _doUpdatingIfContinueInitialization(NavigationRoute nr, BuildContext context)async{
     _evaluateifThereWasAnyErr();
     if(_continueInitialization)
-        await _doNavigation(nr, context);
+        await _doUpdating(nr, context);
   }
 
-  Future _doNavigation(NavigationRoute navRoute, BuildContext context)async{
+  Future _doUpdating(NavigationRoute navRoute, BuildContext context)async{
     switch(navRoute){
       case NavigationRoute.Projects:
-        await _doNavigationToProjects();
+        await _doProjectsUpdating();
         break;
       case NavigationRoute.ProjectDetail:
-        await _doNavigationToProjectDetail();
+        await _doProjectDetailUpdating();
         break;
       case NavigationRoute.Visits:
-        await _doNavigationToVisits();
+        await _doVisitsUpdating();
         break;
       case NavigationRoute.VisitDetail:
-        await _doNavigationToVisitDetail();
+        await _doVisitDetailUpdating();
         break;
       case NavigationRoute.Formularios:
-        await _doNavigationToForms();
+        await _doFormsUpdating();
         break;    
       case NavigationRoute.FormularioDetailForms:
-        await _doNavigationToFormDetail();
+        await _doFormDetailUpdating();
         break;
       case NavigationRoute.AdjuntarFotosVisita:
-        await _doNavigationToAdjuntarFotos();
+        await _doAdjuntarFotosUpdating();
         break;
     }
   }
 
-  Future _doNavigationToProjects()async{ 
+  Future _doProjectsUpdating()async{ 
    await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_PROJECTS);
   }
 
-  Future _doNavigationToProjectDetail()async{
+  Future _doProjectDetailUpdating()async{
     final Project chosenOne = await ProjectsStorageManager.getChosenProject();
     await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_CHOSEN_PROJECT, chosenOne);
   }
 
-  Future _doNavigationToVisits()async{
+  Future _doVisitsUpdating()async{
     await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_VISITS);
   }
 
-  Future _doNavigationToVisitDetail()async{
+  Future _doVisitDetailUpdating()async{
     final Visit chosenOne = await VisitsStorageManager.getChosenVisit();
     await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_CHOSEN_VISIT, chosenOne);
   }
 
-  Future _doNavigationToForms()async{
+  Future _doFormsUpdating()async{
     await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_FORMULARIOS);
   }
 
-  Future _doNavigationToFormDetail()async{
+  Future _doFormDetailUpdating()async{
     final Formulario chosenOne = await ChosenFormStorageManager.getChosenForm();
     await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_CHOSEN_FORM, chosenOne);
   }
 
 
-  Future _doNavigationToAdjuntarFotos()async{
+  Future _doAdjuntarFotosUpdating()async{
     await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_COMMENTED_IMAGES);
   }
 

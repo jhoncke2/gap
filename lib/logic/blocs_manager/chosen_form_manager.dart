@@ -142,13 +142,11 @@ class ChosenFormManager{
   void addNewFirm(){
     chosenFormBloc.add(InitFirmsFillingOut());
     firmPaintBloc.add(ResetFirmPaint());
-    //TODO: ¿Servicio de crear firma en el back se implementa acá?
   }
 
   void finishFirms(){
     chosenFormBloc.add(ResetChosenForm());
     firmPaintBloc.add(ResetFirmPaint());
-    //TODO: ¿Servicio de crear firma en el back se implementa acá?
   }
 
   Future<void> addFirmToFirmer()async{
@@ -160,7 +158,6 @@ class ChosenFormManager{
     currentFirmer.firm = firmFile;
     final UpdateFirmerPersonalInformation ufpiEvent = UpdateFirmerPersonalInformation(firmer: currentFirmer);
     chosenFormBloc.add(ufpiEvent);
-    //TODO: ¿Se llamará al service a add firm to form en lugar de solo guardarla en el bloc?
   }
 
   void _updateStates(){

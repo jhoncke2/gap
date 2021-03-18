@@ -18,10 +18,10 @@ class FormulariosBloc extends Bloc<FormulariosEvent, FormulariosState> {
   ) async* {
     if(event is SetForms){
       _setForms(event);
-    }else if(event is ResetForms){
-      _resetForms();
     }else if(event is ChooseForm){
       _chooseForm(event);
+    }else if(event is ResetForms){
+      _resetForms();
     }
     yield _currentYieldedState;
   }
@@ -40,7 +40,8 @@ class FormulariosBloc extends Bloc<FormulariosEvent, FormulariosState> {
       formsAreLoaded: true, 
       forms: forms, 
       pendientesForms: pendientesForms,
-      realizadosForms: realizadosForms
+      realizadosForms: realizadosForms,
+      backing: false
     );
   }
 

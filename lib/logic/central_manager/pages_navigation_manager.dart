@@ -29,7 +29,6 @@ class PagesNavigationManager{
   static Future<void> navToProjects()async{
     await _updateProjectsData();
     await _goToPageByHavingOrNotError(NavigationRoute.Projects, true);
-    //await _goToInitialPage(NavigationRoute.Projects);
   }
 
   static Future<void> _updateProjectsData()async{
@@ -140,7 +139,7 @@ class PagesNavigationManager{
 
   static Future _goToPageByHavingOrNotError(NavigationRoute destinationRoute, bool replacingAllRoutes)async{
     if(dataDisributorErrorHandlingManager.happendError)
-      await _goToInitialPage(dataDisributorErrorHandlingManager.navigationTodoByError);
+      await _goToInitialPage(dataDisributorErrorHandlingManager.navigationTodoByError??NavigationRoute.Login);
     else
       await _goToPage(destinationRoute, replacingAllRoutes);
   }

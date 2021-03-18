@@ -24,6 +24,8 @@ class ChosenFormBloc extends Bloc<ChosenFormEvent, ChosenFormState> {
   ) async* {
     if(event is InitFormFillingOut){
       _initFormFillingOut(event);
+    }else if(event is UpdateFormField){
+      _updateFormField(event);
     }else if(event is InitFirstFirmerFillingOut){
       _initFirstFirmerFillingOut(event);
     }else if(event is InitFirstFirmerFirm){
@@ -32,8 +34,6 @@ class ChosenFormBloc extends Bloc<ChosenFormEvent, ChosenFormState> {
       _initFirmsFillingOut(event);
     }else if(event is UpdateFirmerPersonalInformation){
       _updateFirmerPersonalInformation(event);
-    }else if(event is UpdateFormField){
-      _updateFormField(event);
     }else if(event is ResetChosenForm){
       _resetChosenForm();
     }

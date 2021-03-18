@@ -6,7 +6,6 @@ import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/forms/form_body/center_containers/firm_fields/firm_draw_field/firm_field.dart';
 import 'package:gap/ui/widgets/forms/form_body/center_containers/firm_fields/firm_select/firm_select_without_name.dart';
 import 'package:gap/ui/utils/static_data/types_of_identif_document.dart' as typesOfIdentfDocuments;
-
 import 'firm_fields/text_field/text_field_without_name.dart';
 
 // ignore: must_be_immutable
@@ -81,7 +80,7 @@ class SecondaryFirmerFirm extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           _createNameText(),
-          TextFieldWithoutName(onFieldChanged: _onNameChange, width: _sizeUtils.xasisSobreYasis * 0.4, controller: _nameController)
+          TextFieldWithoutName(onFieldChanged: _onNameChange, width: _sizeUtils.xasisSobreYasis * 0.4, controller: _nameController, key: Key('firmer_${_chosenFormState.firmers.length}_name'))
         ],
       ),
     );
@@ -98,8 +97,8 @@ class SecondaryFirmerFirm extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          FirmSelectWitouthName(items: typesOfIdentfDocuments.typesOfIdentfDocument, onFieldChanged: _onIdDocumentTypeChanged, width: _sizeUtils.xasisSobreYasis * 0.14, initialValue: _firmer.identifDocumentType),
-          TextFieldWithoutName(onFieldChanged: _onIdDocumentNumberChanged, width: _sizeUtils.xasisSobreYasis * 0.4, controller: _identifDocNumberController)
+          FirmSelectWitouthName(items: typesOfIdentfDocuments.typesOfIdentfDocument, onFieldChanged: _onIdDocumentTypeChanged, width: _sizeUtils.xasisSobreYasis * 0.14, initialValue: _firmer.identifDocumentType, key: Key('firmer_${_chosenFormState.firmers.length}_doctype')),
+          TextFieldWithoutName(onFieldChanged: _onIdDocumentNumberChanged, width: _sizeUtils.xasisSobreYasis * 0.4, controller: _identifDocNumberController, keyboardType: TextInputType.number, key: Key('firmer_${_chosenFormState.firmers.length}_docnumber'))
         ],
       ),
     );
@@ -111,7 +110,9 @@ class SecondaryFirmerFirm extends StatelessWidget {
   }
 
   void _onIdDocumentNumberChanged(String newValue){
-    //TODO: Limpiar textfield si todos los caracteres no son números
+    newValue = newValue.replaceAll(RegExp(r'.'), '');
+    newValue = newValue.replaceAll(RegExp(r','), '');
+    newValue = newValue.replaceAll(RegExp(r'-'), '');
     _firmer.identifDocumentNumber = int.parse(newValue);
     _updateFirmerPersInformation();
   }

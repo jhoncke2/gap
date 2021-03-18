@@ -5,12 +5,14 @@ import 'package:gap/ui/widgets/forms/form_body/center_containers/firm_fields/gen
 // ignore: must_be_immutable
 class TextFieldWithoutName extends GeneralFormFieldWithoutName implements FormFieldStructure{
   final String initialValue;
+  final TextInputType keyboardType;
   TextFieldWithoutName({
     Key key,
     @required Function onFieldChanged,
     @required ValueNotifier controller,
     double width,
-    this.initialValue = ''
+    this.initialValue = '',
+    this.keyboardType
   }): super(
     key: key, 
     onFieldChanged: onFieldChanged,
@@ -28,6 +30,7 @@ class TextFieldWithoutName extends GeneralFormFieldWithoutName implements FormFi
   @override
   void createFieldBox(){
     this.fieldBox = TextFormField(
+      keyboardType: keyboardType ?? TextInputType.text,
       controller: this.controller,
       decoration: InputDecoration( 
         isDense: true,

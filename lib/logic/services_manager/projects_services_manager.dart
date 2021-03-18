@@ -6,6 +6,7 @@ import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/errors/services/service_status_err.dart';
 import 'package:gap/logic/bloc/entities/projects/projects_bloc.dart';
 import 'package:gap/services/projects_service.dart';
+import 'package:geolocator/geolocator.dart';
 
 class ProjectsServicesManager{
 
@@ -103,5 +104,41 @@ class ProjectsServicesManager{
 
   static bool _serviceReturnedCommImgIsOk(Map<String, dynamic> jsonCommImg, int visitId){
     return jsonCommImg['visita_id'] == visitId && jsonCommImg['descripcion'] != null && jsonCommImg['ruta'] != null;
+  }
+
+  static Future updateFormInitialization(String accessToken, Position position, int formId)async{
+    final Map<String, dynamic> body = {
+      'latitud_inicio': position.latitude,
+      'longitud_inicio': position.longitude
+    };
+    final Map<String, dynamic> serviceResponse = await projectsService.postFormInitialData(accessToken, body, formId);
+    _throwServiceErrIfUpdateFormInitResponseIsntOk(serviceResponse);
+  }
+
+  static void _throwServiceErrIfUpdateFormInitResponseIsntOk(Map<String, dynamic> response){
+    if(!_updateFormInitializationResponseIsOk(response))
+      throw ServiceStatusErr(message: 'Ocurrió un problema al enviar la ubicación');
+  }
+
+  static bool _updateFormInitializationResponseIsOk(Map<String, dynamic> response){
+      return response['latitud_inicio'] != null && response['longitud_inicio'] != null;
+  }
+
+  static Future updateFormFillingOutFinalization(String accessToken, Position position, int formId)async{
+    final Map<String, dynamic> body = {
+      'latitud_final': position.latitude,
+      'longitud_final': position.longitude
+    };
+    final Map<String, dynamic> serviceResponse = await projectsService.postFormFinalData(accessToken, body, formId);
+    _throwServiceErrIfUpdateFormFinalResponseIsntOk(serviceResponse);
+  }
+
+  static void _throwServiceErrIfUpdateFormFinalResponseIsntOk(Map<String, dynamic> response){
+    if(!_updateFormFinalializationResponseIsOk(response))
+      throw ServiceStatusErr(message: 'Ocurrió un problema al enviar la ubicación');
+  }
+
+  static bool _updateFormFinalializationResponseIsOk(Map<String, dynamic> response){
+      return response['latitud_final'] != null && response['longitud_final'] != null;
   }
 }

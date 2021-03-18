@@ -47,13 +47,20 @@ class DataDistributorWithConnection extends DataDistributor{
     final Project chosenProject = UploadedBlocsData.dataContainer[NavigationRoute.ProjectDetail];
     final List<Visit> visits = chosenProject.visits;
     visitsB.add(SetVisits(visits: visits));
+    UploadedBlocsData.dataContainer[NavigationRoute.Visits] = visits;
   }
 
   @override
   Future<void> updateChosenVisit(Visit visit)async{
-    await super.updateChosenVisit(visit);
-    _addPreloadedDataRelatedToChosenProject(visit);
-    await _loadFormsByChosenVisit(visit.id);
+    final Visit realVisit = getUpdatedChosenVisit(visit);
+    await super.updateChosenVisit(realVisit);
+    await _addPreloadedDataRelatedToChosenProjectIfVisitIsntCompleted(realVisit);
+    await _loadFormsByChosenVisit(realVisit);
+  }
+
+  Future _addPreloadedDataRelatedToChosenProjectIfVisitIsntCompleted(Visit visit)async{
+    if(!visit.completo)
+      await _addPreloadedDataRelatedToChosenProject(visit);
   }
 
   Future _addPreloadedDataRelatedToChosenProject(Visit visit)async{
@@ -62,16 +69,35 @@ class DataDistributorWithConnection extends DataDistributor{
     await PreloadedVisitsStorageManager.setVisit(visit, chosenProject.id);
   }
 
-  Future _loadFormsByChosenVisit(int visitId)async{
+  Future _loadFormsByChosenVisit(Visit visit)async{
     final Visit chosenVisit = UploadedBlocsData.dataContainer[NavigationRoute.VisitDetail];
     final List<Formulario> forms = chosenVisit.formularios;
     formsB.add(SetForms(forms: forms));
-    for(Formulario form in forms)
-      await _addFormToPreloadedStorage(form, visitId);
+    await _addFormsToPreloadedStorageIfVisitIsntCompleted(forms, visit);
   }
 
-  Future _addFormToPreloadedStorage(Formulario form, int visitId)async{
-    await PreloadedFormsStorageManager.setPreloadedForm(form, visitId);
+  Future _addFormsToPreloadedStorageIfVisitIsntCompleted(List<Formulario> forms, Visit visit)async{
+    if(!visit.completo)
+      await _addFormsToPreloadedStorage(forms, visit.id);
+  }
+
+  Future _addFormsToPreloadedStorage(List<Formulario> forms, int visitId)async{
+    for(Formulario form in forms)
+        await _addFormToPreloadedStorageIfIsntCompleted(form, visitId);
+  }
+
+  Future _addFormToPreloadedStorageIfIsntCompleted(Formulario form, int visitId)async{
+    if(!form.completo)
+      await PreloadedFormsStorageManager.setPreloadedForm(form, visitId);
+  }
+
+  @override
+  Future updateChosenForm(Formulario form)async{
+    Formulario realForm = await getUpdatedChosenForm(form);
+    await addInitialPosition(realForm);
+    final String accessToken = await UserStorageManager.getAccessToken();
+    await ProjectsServicesManager.updateFormInitialization(accessToken, realForm.initialPosition, realForm.id);
+    await super.updateChosenForm(realForm);
   }
 
   @override
@@ -80,16 +106,22 @@ class DataDistributorWithConnection extends DataDistributor{
 
   Future endFormFillingOut()async{
     await super.endFormFillingOut();
-    await _sendFormToService();
+    final Formulario chosenForm = formsB.state.chosenForm;
+    await _sendFormToService(chosenForm);
+    await _sendFormFinalPosition(chosenForm);
   }
 
-  Future _sendFormToService()async{
-    final Formulario chosenForm = formsB.state.chosenForm;
+  Future _sendFormToService(Formulario form)async{
     final Visit chosenVisit = visitsB.state.chosenVisit;
     final String accessToken = await UserStorageManager.getAccessToken();
-    await ProjectsServicesManager.updateForm(chosenForm, chosenVisit.id, accessToken);
-    chosenForm.campos = [];
-    await PreloadedFormsStorageManager.setPreloadedForm(chosenForm, chosenVisit.id);
+    await ProjectsServicesManager.updateForm(form, chosenVisit.id, accessToken);
+    form.campos = [];
+    await PreloadedFormsStorageManager.setPreloadedForm(form, chosenVisit.id);
+  }
+
+  Future _sendFormFinalPosition(Formulario form)async{
+    final String accessToken = await UserStorageManager.getAccessToken();
+    await ProjectsServicesManager.updateFormFillingOutFinalization(accessToken, form.finalPosition, form.id);
   }
 
   @override
@@ -142,6 +174,7 @@ class DataDistributorWithConnection extends DataDistributor{
 
   @override
   Future resetForms()async{
+    await super.resetForms();
     final Visit chosenVisit = visitsB.state.chosenVisit;
     await _removeVisitFromPreloadedVisitsIfCompleted(chosenVisit);
     await _removeFormsFromStorage();

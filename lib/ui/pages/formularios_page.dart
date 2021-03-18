@@ -7,7 +7,6 @@ import 'package:gap/logic/central_manager/pages_navigation_manager.dart';
 import 'package:gap/ui/widgets/header/header.dart';
 import 'package:gap/ui/widgets/navigation_list/navigation_list_with_stage_color_buttons.dart';
 import 'package:gap/ui/widgets/page_title.dart';
-import 'package:gap/ui/widgets/unloaded_elements/unloaded_nav_items.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 // ignore: must_be_immutable
 class FormulariosPage extends StatelessWidget {
@@ -17,30 +16,54 @@ class FormulariosPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height:_sizeUtils.normalSizedBoxHeigh),
-            Header(),
-            SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
-            _createFormulariosComponent()
-          ],
+        child: BlocBuilder<FormulariosBloc, FormulariosState>(
+          builder: (_, state) {
+            if(state.formsAreLoaded && !state.backing){
+              return _createContent(state);
+            }else{
+              return _createLoadingWidget();
+            }
+          },
         ),
       ),
     );
   }
 
-  Widget _createFormulariosComponent(){
-    return BlocBuilder<FormulariosBloc, FormulariosState>(
-      builder: (_, state) {
-        if(state.formsAreLoaded){
-          return _FormulariosComponents(visitForms: state.forms);
-        }else{
-          return UnloadedNavItems();
-        }
+  Widget _createContent(FormulariosState state){
+    return FutureBuilder(
+      future: Future.delayed(Duration(milliseconds: 500)),
+      builder: (_, snapshot){
+        if(snapshot.connectionState == ConnectionState.waiting)
+          return Container();
+        else
+          return _createLoadedContent(state);
       },
     );
   }
+
+  Widget _createLoadedContent(FormulariosState state){
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(height:_sizeUtils.normalSizedBoxHeigh),
+        Header(),
+        SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
+        _FormulariosComponents(visitForms: state.forms)
+      ],
+    );
+  }
+
+  Widget _createLoadingWidget() {
+    return Container(
+      child: Center(
+        child: CircularProgressIndicator(
+          backgroundColor: Colors.cyan[600],
+          strokeWidth: 7.5,
+        ),
+      ),
+    );
+  }
+
 }
 
 // ignore: must_be_immutable

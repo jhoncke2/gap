@@ -23,7 +23,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  #para centralización de información con bloc
+  #para centralización de información con blocs
   bloc: ^6.1.0
   #para manejos de widgets para bloc
   flutter_bloc: ^6.1.0

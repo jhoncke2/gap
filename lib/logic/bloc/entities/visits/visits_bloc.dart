@@ -47,7 +47,8 @@ class VisitsBloc extends Bloc<VisitsEvent, VisitsState> {
       visitsAreLoaded: true, 
       visits: visits, 
       pendientesVisits: pendientesVisits,
-      realizadasVisits: realizadasVisits
+      realizadasVisits: realizadasVisits,
+      backing: false
     );
   }
 
@@ -92,11 +93,6 @@ class VisitsBloc extends Bloc<VisitsEvent, VisitsState> {
   }
 
   @protected
-  void resetAllOfVisits(){
-    _currentYieldedState = state.reset();
-  }
-
-  @protected
   void resetDateFilter(){
     _currentYieldedState = VisitsState(
       visitsAreLoaded: state.visitsAreLoaded,
@@ -106,5 +102,10 @@ class VisitsBloc extends Bloc<VisitsEvent, VisitsState> {
       realizadasVisits: state.realizadasVisits,
       chosenVisit: state.chosenVisit
     );
+  }
+
+  @protected
+  void resetAllOfVisits(){
+    _currentYieldedState = state.reset();
   }
 }

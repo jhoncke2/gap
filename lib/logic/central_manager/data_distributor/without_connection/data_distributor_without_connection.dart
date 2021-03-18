@@ -29,7 +29,8 @@ class SourceDataToBlocWithoutConnection extends DataDistributor{
     final List<Project> projectsWithPreloadedVisits = await ProjectsStorageManager.getProjectsWithPreloadedVisits();
     final SetProjects spEvent = SetProjects(projects: projectsWithPreloadedVisits);
     projectsB.add(spEvent);
-    ProjectsStorageManager.setProjects(projectsWithPreloadedVisits);
+    await ProjectsStorageManager.setProjects(projectsWithPreloadedVisits);
+    UploadedBlocsData.dataContainer[NavigationRoute.Projects] = projectsWithPreloadedVisits;
   }
 
   @override
@@ -38,16 +39,18 @@ class SourceDataToBlocWithoutConnection extends DataDistributor{
     final List<Visit> preloadedVisits = await PreloadedVisitsStorageManager.getVisitsByProjectId(chosenProject.id);
     final SetVisits svEvent = SetVisits(visits: preloadedVisits);
     visitsB.add(svEvent);
+    UploadedBlocsData.dataContainer[NavigationRoute.Visits] = preloadedVisits;
   }
 
   @override
   Future updateChosenVisit(Visit visit)async{
-    await super.updateChosenVisit(visit);
-    await _updateFormularios(visit);
+    final Visit realVisit = getUpdatedChosenVisit(visit);
+    await super.updateChosenVisit(realVisit);
+    await _updateFormularios(realVisit);
+    UploadedBlocsData.dataContainer[NavigationRoute.Visits] = realVisit;
   }
 
   Future _updateFormularios(Visit chosenVisit)async{
-    //final FormulariosBloc formsB = blocsAsMap[BlocName.Formularios];
     final List<Formulario> formsGroupedByPreloadedVisit = await PreloadedFormsStorageManager.getPreloadedFormsByVisitId(chosenVisit.id);
     final SetForms sfEvent = SetForms(forms: formsGroupedByPreloadedVisit);
     formsB.add(sfEvent);
@@ -60,5 +63,13 @@ class SourceDataToBlocWithoutConnection extends DataDistributor{
     final List<Formulario> formsGroupedByPreloadedVisit = await PreloadedFormsStorageManager.getPreloadedFormsByVisitId(chosenVisit.id);
     final SetForms sfEvent = SetForms(forms: formsGroupedByPreloadedVisit);
     formsB.add(sfEvent);
+    UploadedBlocsData.dataContainer[NavigationRoute.Formularios] = formsGroupedByPreloadedVisit;
+  }
+
+  @override
+  Future updateChosenForm(Formulario form)async{
+    Formulario realForm = await getUpdatedChosenForm(form);
+    await addInitialPosition(realForm);
+    super.updateChosenForm(realForm);
   }
 }

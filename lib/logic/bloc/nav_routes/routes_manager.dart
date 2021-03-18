@@ -11,6 +11,11 @@ class RoutesManager{
       _currentRoute = navRoutes.last;
   }
 
+  Future updateLastRoute()async{
+    final List<NavigationRoute> routesTree = await NavigationRoutesStorageManager.getNavigationRoutes();
+    await CustomNavigator.navigateReplacingTo(routesTree.last);
+  }
+
   Future replaceAllRoutesForNew(NavigationRoute initialRoute)async{
     await NavigationRoutesStorageManager.resetRoutes();
     await NavigationRoutesStorageManager.setNavigationRoute(initialRoute);
