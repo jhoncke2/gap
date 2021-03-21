@@ -19,17 +19,23 @@ class CommentedImagesBloc extends Bloc<CommentedImagesEvent, CommentedImagesStat
   Stream<CommentedImagesState> mapEventToState(
     CommentedImagesEvent event,
   ) async* {
-    if(event is AddImages){
-      _addCommentedImages(event);
+    if(event is InitImagesCommenting){
+      _initImagesCommenting();
+    }else if(event is AddImages){
+      _addCommentedImagesFromFiles(event);
     }else if(event is CommentImage){
       _commentImage(event);
+    }else if(event is InitSentCommImgsWatching){
+      _initSentCommImgsWatching(event);
     }else if(event is ResetCommentedImages){
       _resetAll();
-    }else if(event is SetCommentedImages){
-      _setCommentedImages(event);
     }
     yield _currentStateToYield;
     _evaluateEventOnEnd(event);
+  }
+
+  void _initImagesCommenting(){
+    _currentStateToYield = state.copyWith(isLoading: false, dataType: CmmImgDataType.UNSENT);
   }
 
   void _evaluateEventOnEnd(CommentedImagesEvent event){
@@ -37,10 +43,8 @@ class CommentedImagesBloc extends Bloc<CommentedImagesEvent, CommentedImagesStat
       event.onEnd();
   }
 
-  void _addCommentedImages(AddImages event){
-    _commentedImagesGenerator.commentedImagesPerPage = state._commentedImagesPerPage;
-    _commentedImagesGenerator.currentEvent = event;
-    _currentStateToYield = _commentedImagesGenerator.generateCommentedImages();
+  void _addCommentedImagesFromFiles(AddImages event){
+    _currentStateToYield = _commentedImagesGenerator.addCommentedImagesToCurrentCommentedImages(event.images, state._commentedImagesPerPage);
   }
 
   void _commentImage(CommentImage event){
@@ -53,13 +57,13 @@ class CommentedImagesBloc extends Bloc<CommentedImagesEvent, CommentedImagesStat
     _currentStateToYield = state.copyWith();
   }
 
-  void _resetAll(){
-    _currentStateToYield = CommentedImagesState();
+  void _initSentCommImgsWatching(InitSentCommImgsWatching event){
+    final List<CommentedImage> sentCommImgs = event.sentCommentedImages;
+    _currentStateToYield = _commentedImagesGenerator.generateSentCommentedImagesByPage(sentCommImgs);
   }
 
-  void _setCommentedImages(SetCommentedImages event){
-    final List<CommentedImage> commentedImages = event.commentedImages;
-    _currentStateToYield = state.copyWith();
+  void _resetAll(){
+    _currentStateToYield = CommentedImagesState();
   }
  
 }
@@ -67,57 +71,45 @@ class CommentedImagesBloc extends Bloc<CommentedImagesEvent, CommentedImagesStat
 
 
 class _CommentedImagesGenerator{
-  List<List<CommentedImage>> commentedImagesPerPage;
-  AddImages currentEvent;
+  List<List<CommentedImage>> currentCommImgs;
+  List<File> newImages;
   int _currentNPages;
   List<CommentedImage> _newCommentedImages;
   CommentedImagesState _currentState;
 
-  CommentedImagesState generateCommentedImages(){
-    _initEventValues();
-    commentedImagesPerPage = _generateCommImgsPerPage();
-    _generateState();
+  CommentedImagesState addCommentedImagesToCurrentCommentedImages(List<File> newImages, List<List<CommentedImage>> currentCommImgs){
+    _initUnsentInitialConfig(newImages, currentCommImgs);
+    _defineConfigOfNewState(CmmImgDataType.UNSENT);
     return _currentState;
   }
 
-  //TODO: Probar que funcione
-  CommentedImagesState generateCommentedImagesFromExisting(List<CommentedImage> commImgs){
-    commentedImagesPerPage = [];
-    _newCommentedImages = commImgs;
-    commentedImagesPerPage = _generateCommImgsPerPage();
-    _defineNPages(commImgs.length);
-    _generateState();
-    return _currentState;
+  void _defineConfigOfNewState(CmmImgDataType dataType){
+    this.currentCommImgs = _generateCommImgsPerPage();
+    _generateState(dataType);
   }
 
-  void _generateState(){
-    _currentState =  CommentedImagesState(
-      nPaginasDeCommImages: _currentNPages,
-      commImgsPerPage: _nCommImgsPerPage,
-      commentedImagesPerPage: commentedImagesPerPage
-    );
-  }
-
-  void _initEventValues(){
+  void _initUnsentInitialConfig(List<File> newImages, List<List<CommentedImage>> currentCommImgs){
+    this.newImages = newImages;
+    this.currentCommImgs = currentCommImgs;
     _newCommentedImages = _transformToCommentedImages();
     _defineNPages(_newCommentedImages.length);
+  }
+
+  List<CommentedImage> _transformToCommentedImages(){
+    final List<CommentedImage> commImages = [];
+    currentCommImgs.forEach((List<CommentedImage> commImgsForOnePage) {
+      commImages.addAll(commImgsForOnePage);
+    });
+    final List<CommentedImage> newCommImages = this.newImages.map<CommentedImage>(
+      (File image) =>  UnSentCommentedImage(image: image, commentary: '')
+    ).toList();
+    commImages.addAll(newCommImages);
+    return commImages;
   }
 
   void _defineNPages(int totalListLength){
     final double unExactlyNPages = _newCommentedImages.length /_nCommImgsPerPage;
     _currentNPages = unExactlyNPages.ceil();
-  }
-
-  List<CommentedImage> _transformToCommentedImages(){
-    final List<CommentedImage> commImages = [];
-    commentedImagesPerPage.forEach((List<CommentedImage> commImgsForOnePage) {
-      commImages.addAll(commImgsForOnePage);
-    });
-    final List<CommentedImage> newCommImages = currentEvent.images.map<CommentedImage>(
-      (File image) => CommentedImage(image: image, commentary: '')
-    ).toList();
-    commImages.addAll(newCommImages);
-    return commImages;
   }
 
   List<List<CommentedImage>> _generateCommImgsPerPage(){
@@ -147,5 +139,28 @@ class _CommentedImagesGenerator{
     else
       sobrante = 0;
     return sobrante;
+  }
+
+  void _generateState(CmmImgDataType dataType){
+    print(currentCommImgs);
+    _currentState =  CommentedImagesState(
+      nPaginasDeCommImages: _currentNPages,
+      commImgsPerPage: _nCommImgsPerPage,
+      commentedImagesPerPage: currentCommImgs,
+      isLoading: false,
+      dataType: dataType
+    );
+  }
+
+  CommentedImagesState generateSentCommentedImagesByPage(List<CommentedImage> commentedImages){
+    _initSentInitialConfig(commentedImages);
+    _defineConfigOfNewState(CmmImgDataType.SENT);
+    return _currentState;
+  }
+
+  void _initSentInitialConfig(List<CommentedImage> commentedImages){
+    this.currentCommImgs = [];
+    _newCommentedImages = commentedImages;
+    _defineNPages(_newCommentedImages.length);
   }
 }

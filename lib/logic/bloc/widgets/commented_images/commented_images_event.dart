@@ -10,6 +10,10 @@ abstract class CommentedImagesEvent {
   });
 }
 
+class InitImagesCommenting extends CommentedImagesEvent{
+  
+}
+
 class AddImages extends CommentedImagesEvent{
   final List<File> images;
   AddImages({
@@ -21,8 +25,10 @@ class AddImages extends CommentedImagesEvent{
 }
 
 class SetCommentedImages extends CommentedImagesEvent{
-  final List<CommentedImage> commentedImages;
+  final CmmImgDataType dataType;
+  final List<UnSentCommentedImage> commentedImages;
   SetCommentedImages({
+    @required this.dataType,
     @required this.commentedImages
   });
 }
@@ -34,12 +40,23 @@ class CommentImage extends CommentedImagesEvent{
   CommentImage({
     @required this.page,
     @required this.positionInPage,
-    @required this.commentary 
-  });
+    @required this.commentary,
+    @required Function onEnd
+  }):super(
+    hasOnEndFunction: true,
+    onEnd: onEnd
+  );
 }
 
-class ChangeEnviandoCommentedImagesAlBack extends CommentedImagesEvent{
-
+class InitSentCommImgsWatching extends CommentedImagesEvent{
+  final List<CommentedImage> sentCommentedImages;
+  InitSentCommImgsWatching({
+    @required this.sentCommentedImages,
+    @required Function onEnd
+  }):super(
+    hasOnEndFunction: true,
+    onEnd: onEnd
+  );
 }
 
 class ResetCommentedImages extends CommentedImagesEvent{}

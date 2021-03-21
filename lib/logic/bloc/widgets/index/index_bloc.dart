@@ -40,12 +40,19 @@ class IndexBloc extends Bloc<IndexEvent, IndexState> {
   }
 
   void _changeIndex(ChangeIndexPage event){
-    final int newIndex = event.newIndexPage;
+    final int newIndex = _defineNewIndex( event.newIndexPage );
     _currentStateToYield = state.copyWith(
       currentIndex: newIndex,
     );
     _revisarActivacionesNavegacion();
     IndexStorageManager.setIndex(_currentStateToYield);
+  }
+
+  int _defineNewIndex(int eventIndex){
+    final int nPages = state.nPages;
+    if(eventIndex<0 || eventIndex >= nPages)
+      return state.currentIndexPage;
+    return eventIndex;
   }
 
   void _cnahgeNPages(ChangeNPages event){

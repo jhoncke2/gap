@@ -76,7 +76,7 @@ class CommentedImagesIndexManager{
   void _doDefinitionOfActivation(){
     final int currentIndex = indexBloc.state.currentIndexPage;
     final CommentedImagesState commImgsState = commImgsBloc.state;
-    final List<CommentedImage> commImgsByIndex = commImgsState.getCommImgsByIndex(currentIndex);
+    final List<CommentedImage> commImgsByIndex = commImgsState.getCommImgsByIndex(currentIndex).cast<CommentedImage>();
     bool sePuedeAvanzar = _definirSiSePuedeAvanzar(commImgsByIndex);
     if(indexBloc.state.sePuedeAvanzar != sePuedeAvanzar){
       _changeSePuedeAvanzar(sePuedeAvanzar);

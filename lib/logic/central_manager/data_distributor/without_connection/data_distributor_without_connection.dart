@@ -72,4 +72,12 @@ class SourceDataToBlocWithoutConnection extends DataDistributor{
     await addInitialPosition(realForm);
     super.updateChosenForm(realForm);
   }
+
+  @override
+  Future endAllFormProcess()async{
+    await super.endAllFormProcess();
+    final Formulario chosenForm = formsB.state.chosenForm;
+    final Visit chosenVisit = visitsB.state.chosenVisit;
+    await PreloadedFormsStorageManager.setPreloadedForm(chosenForm, chosenVisit.id);
+  }
 }

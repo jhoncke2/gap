@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:gap/data/models/entities/entities.dart';
+import 'package:gap/errors/services/service_status_err.dart';
 import 'package:gap/services/basic_service.dart';
 
 class ProjectsService extends BasicService{
@@ -10,17 +11,16 @@ class ProjectsService extends BasicService{
 
   Future<List<Map<String, dynamic>>> getProjects(String accessToken)async{
     final String requestUrl = _panelUrl + 'proyectos/visitas';
-    final Map<String, String> headers = {
-      'Authorization':'Bearer $accessToken'
-    };
+    final Map<String, String> headers = _createAccessTokenHeaders(accessToken);
     final Map<String, Map<String, dynamic>> headersAndBody = createHeadersAndBodyForARequest(headers: headers);
     await executeGeneralEndOfRequest(requestType: RequestType.GET, headersAndBody: headersAndBody, requestUrl: requestUrl);
     return (currentResponseBody as List).cast<Map<String, dynamic>>();
+    //throw ServiceStatusErr(message: 'Proyectos malitos');
   }
 
   Future<List<Map<String, dynamic>>> updateForm(String accessToken, List<Map<String, dynamic>> campos, int visitId)async{
     final String requestUrl = _panelUrl + 'visita-respuestas/$visitId';
-    final Map<String, String> headers = {'Authorization':'Bearer $accessToken'};
+    final Map<String, String> headers = _createAccessTokenHeaders(accessToken);
     final Map<String, dynamic> body = {'respuestas':campos};
     final Map<String, Map<String, dynamic>> headersAndBody = createHeadersAndBodyForARequest(headers: headers, body: body);
     await executeGeneralEndOfRequest(requestType: RequestType.POST, headersAndBody: headersAndBody, requestUrl: requestUrl);
@@ -51,7 +51,7 @@ class ProjectsService extends BasicService{
 
   Future<Map<String, dynamic>> postFormInitialData(String accessToken, Map<String, dynamic> bodyData, int formId)async{
     final String requestUrl = _panelUrl + 'formulario/inicia/$formId';
-    final Map<String, String> headers = {'Authorization':'Bearer $accessToken'};
+    final Map<String, String> headers = _createAccessTokenHeaders(accessToken);
     final Map<String, Map<String, dynamic>> headersAndBody = createHeadersAndBodyForARequest(headers: headers, body: bodyData);
     await executeGeneralEndOfRequest(requestType: RequestType.POST, requestUrl: requestUrl, headersAndBody: headersAndBody);
     return (currentResponseBody as Map).cast<String, dynamic>();
@@ -59,10 +59,22 @@ class ProjectsService extends BasicService{
 
   Future<Map<String, dynamic>> postFormFinalData(String accessToken, Map<String, dynamic> bodyData, int formId)async{
     final String requestUrl = _panelUrl + 'formulario/final/$formId';
-    final Map<String, String> headers = {'Authorization':'Bearer $accessToken'};
+    final Map<String, String> headers = _createAccessTokenHeaders(accessToken);
     final Map<String, Map<String, dynamic>> headersAndBody = createHeadersAndBodyForARequest(headers: headers, body: bodyData);
     await executeGeneralEndOfRequest(requestType: RequestType.POST, requestUrl: requestUrl, headersAndBody: headersAndBody);
     return (currentResponseBody as Map).cast<String, dynamic>();
+  }
+
+  Future<List<Map<String, dynamic>>> getCommentedImages(String accessToken, int visitId)async{
+    final String requestUrl = _panelUrl + 'visita-fotos/$visitId';
+    final Map<String, String> headers = _createAccessTokenHeaders(accessToken);
+    final Map<String, Map<String, dynamic>> headersAndBody = createHeadersAndBodyForARequest(headers: headers);
+    await executeGeneralEndOfRequest(requestType: RequestType.GET, requestUrl: requestUrl, headersAndBody: headersAndBody);
+    return (currentResponseBody as List).cast<Map<String, dynamic>>();
+  }
+
+  Map<String, String> _createAccessTokenHeaders(String token){
+    return {'Authorization': 'Bearer $token'};
   }
 }
 

@@ -130,7 +130,7 @@ class _LoadedIndexPagination extends StatelessWidget {
   List<Widget> _createItemsInThreeLastPosition(){
     final List<Widget> items = [];
     items.add(_createIndexNumberButton(0));
-    items.add(_createSingleText('...'));
+    items.add(_createSingleText('...', false));
     List<Widget> threeNumberItems = _createNAnyButtons(_nPages - 3, 3);
     items.addAll(threeNumberItems);
     return items;
@@ -140,7 +140,7 @@ class _LoadedIndexPagination extends StatelessWidget {
     final List<Widget> items = [];
     List<Widget> threeNumberItems = _createNAnyButtons(_currentIndex, 3);
     items.addAll(threeNumberItems);
-    items.add(_createSingleText('...'));
+    items.add(_createSingleText('...', false));
     items.add(_createIndexNumberButton(_nPages - 1));
     return items;
   }
@@ -161,7 +161,7 @@ class _LoadedIndexPagination extends StatelessWidget {
         padding: EdgeInsets.zero,
         decoration: _createButtonDecoration(),
         //buttonIndex + 1, porque se debe mostrar de 1(y no de 0) en adelante.
-        child: _createSingleText( (buttonIndex + 1).toString()),
+        child: _createSingleText( (buttonIndex + 1).toString(), _definirSiNumberButtonIsActive(buttonIndex)),
       ),
       onTap: onTap,
     );
@@ -188,13 +188,14 @@ class _LoadedIndexPagination extends StatelessWidget {
   Widget _createIndexTextButton(String buttonName){
     final Map<String, dynamic> onTapConfiguration = _definirTextButtonOnTapConfiguration(buttonName);
     Function onTap = _definirOnTextButtonTapFunction(onTapConfiguration['esta_activo'], onTapConfiguration['btn_index_navigation']);
-    return GestureDetector(
+    return FlatButton(
+      padding: EdgeInsets.zero,
       child: Container(
         padding: EdgeInsets.zero,
         decoration: _createButtonDecoration(),
-        child: _createSingleText(buttonName.toString()),
+        child: _createSingleText(buttonName.toString(), onTapConfiguration['esta_activo']),
       ),
-      onTap: onTap,
+      onPressed: onTap,
     );
   }
 
@@ -237,11 +238,12 @@ class _LoadedIndexPagination extends StatelessWidget {
     );
   }
 
-  Widget _createSingleText(String text){
+  Widget _createSingleText(String text, bool isActive){
+    Color color = (isActive)? Theme.of(_context).primaryColor.withOpacity(0.85) : Theme.of(_context).secondaryHeaderColor.withOpacity(0.85);
     return Text(
       text,
       style: TextStyle(
-        fontSize: _sizeUtils.subtitleSize,
+        fontSize: _sizeUtils.subtitleSize *0.8,
         color: Theme.of(_context).primaryColor.withOpacity(0.85)
       ),
     );

@@ -71,11 +71,23 @@ class ChosenFormBloc extends Bloc<ChosenFormEvent, ChosenFormState> {
   void _initFirmsFillingOut(InitFirmsFillingOut event){
     final PersonalInformation newFirmer = PersonalInformation();
     final List<PersonalInformation> firmers = state.firmers??[];
-    firmers.add(newFirmer);
+    if(firmers.isEmpty)
+      firmers.add(newFirmer);
+    else
+      _resetCurrentFirmer(firmers.last);
+    
+    //firmers.add(newFirmer);
     _currentStateToYield = state.copyWith(
       formStep: FormStep.OnSecondaryFirms,
       firmers: firmers
     );
+  }
+
+  void _resetCurrentFirmer(PersonalInformation firmer){
+    firmer.firm = null;
+    firmer.identifDocumentNumber = null;
+    firmer.name = null;
+    firmer.identifDocumentType = null;
   }
 
   void _updateFirmerPersonalInformation(UpdateFirmerPersonalInformation event){

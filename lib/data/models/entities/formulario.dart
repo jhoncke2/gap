@@ -37,12 +37,18 @@ class Formulario extends EntityWithStage {
     completo: json["completo"],
     nombre: json["nombre"],
     campos: customFormFieldsFromJsonString(json['campos']),
-    formStepIndex: json['form_step_index'] == null? 1 : stepsInOrder.indexOf( formStepValues.map[json['form_step_index']] ),
-    date: transformStringInToDate(json['fecha']??'2021-02-28'),
+    formStepIndex: (json['completo'])? stepsInOrder.length-1 : json['form_step_index'] == null? 1 : stepsInOrder.indexOf( formStepValues.map[json['form_step_index']] ),
+    date: DateTime.now(),
     firmers: PersonalInformations.fromJson((json['firmers']??[]).cast<Map<String, dynamic>>()).personalInformations,
     initialPosition: json['initial_position'] == null? null : _positionFromJson(json['initial_position']),
     finalPosition: json['final_position'] == null? null: _positionFromJson(json['final_position'])
   );
+
+  static String _getStringDateFromString(String date){
+    final DateTime nowDate = DateTime.now();
+    String realDate = '${nowDate.year}-${nowDate.month}-${nowDate.day} ${nowDate.hour}:${nowDate.minute}';
+    return realDate;
+  }
 
   @override
   Map<String, dynamic> toJson(){
@@ -94,7 +100,7 @@ class Formulario extends EntityWithStage {
   
   bool get completo => _completo;
   String get initialDate => '${date.year}-${date.month}-${date.day}';
-  String get initialTime => '${date.hour}:${date.minute} Am';
+  String get initialTime => '${date.hour}:${date.minute}';
   FormStep get formStep => stepsInOrder[formStepIndex];
   set formStep(FormStep formStep){
     formStepIndex = stepsInOrder.indexWhere((element) => element == formStep);

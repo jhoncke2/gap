@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gap/data/models/entities/custom_form_field/variable/multi_value/with_alignment.dart';
 import 'package:gap/data/models/entities/entities.dart';
-import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/variable_form_field/multi_value/checkbox_group_form_field_widget.dart';
+import 'package:gap/ui/pages/formulario_detail/forms/form_body/center_containers/form_fields/variable_form_field/multi_value/checkbox_group_form_field_widget.dart';
 import '../mock_app.dart';
 import './checkbox_test_data.dart';
 import 'mock_check_box.dart';

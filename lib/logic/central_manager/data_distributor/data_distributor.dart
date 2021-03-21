@@ -86,9 +86,7 @@ abstract class DataDistributor{
 
   @protected
   Future<Formulario> getUpdatedChosenForm(Formulario form)async{
-    final List<Formulario> forms = formsB.state.forms;
-    final List<Formulario> updatedEqualsForms = forms.where((element) => element.id == form.id).toList();
-    return (updatedEqualsForms.length > 0)? updatedEqualsForms[0] : form;
+    return form;
   }
 
   @protected
@@ -194,7 +192,7 @@ abstract class DataDistributor{
 
   Future updateFirmers()async{
     final Formulario chosenForm = formsB.state.chosenForm;
-    chosenForm.firmers = chosenFormB.state.firmers;
+    chosenForm.firmers.add( chosenFormB.state.firmers.last.clone() );
     final File currentFirmFile = await PainterToImageConverter.createFileFromFirmPainter(firmPaintB.state.firmPainter, chosenForm.firmers.length-1);
     chosenForm.firmers.last.firm = currentFirmFile;
     //_updateFormStepInFirmers(chosenForm);
@@ -203,7 +201,6 @@ abstract class DataDistributor{
     await PreloadedFormsStorageManager.setPreloadedForm(chosenForm, visitsB.state.chosenVisit.id);
     chosenFormB.add(UpdateFirmerPersonalInformation(firmer: chosenForm.firmers.last));
     _addNewFirmer(InitFirmsFillingOut());
-    
   }
 
   void _addNewFirmer(ChosenFormEvent cfEvent){
@@ -220,24 +217,25 @@ abstract class DataDistributor{
     final Formulario chosenForm = formsB.state.chosenForm;
     chosenForm.formStep = FormStep.Finished;
     await updateFirmers();
-    chosenFormB.add(ResetChosenForm());
+     chosenFormB.add(ResetChosenForm());
     indexB.add(ResetAllOfIndex());  
   }
 
   Future updateCommentedImages()async{
-    final List<CommentedImage> commentedImages = await CommentedImagesStorageManager.getCommentedImages();
+    commImgsB.add(InitImagesCommenting());
+    final List<UnSentCommentedImage> commentedImages = await CommentedImagesStorageManager.getCommentedImages();
     _addCommentedImagesToBlocIfExistsInStorage(commentedImages);
   }
 
-  void _addCommentedImagesToBlocIfExistsInStorage(List<CommentedImage> commentedImages)async{
+  void _addCommentedImagesToBlocIfExistsInStorage(List<UnSentCommentedImage> commentedImages)async{
     if(commentedImages.length > 0){
       _addCommentedImagesToBloc(commentedImages);
     } 
   }
 
-  void _addCommentedImagesToBloc(List<CommentedImage> commentedImages)async{
+  void _addCommentedImagesToBloc(List<UnSentCommentedImage> commentedImages)async{
     final CommentedImagesBloc ciBloc = blocsAsMap[BlocName.CommentedImages];
-    final SetCommentedImages sciEvent = SetCommentedImages(commentedImages: commentedImages);
+    final SetCommentedImages sciEvent = SetCommentedImages(dataType: CmmImgDataType.UNSENT, commentedImages: commentedImages);
     ciBloc.add(sciEvent);
   }
 
@@ -249,26 +247,25 @@ abstract class DataDistributor{
     _resetFotosPorAgregar(imgsBloc);
   }
 
-
   void _addCurrentPhotosToCommentedImages(CommentedImagesBloc commImagesBloc, IndexBloc indexBloc, ImagesBloc imgsBloc){
-    final AddImages addImagesEvent = AddImages(images: imgsBloc.state.currentPhotosToSet, onEnd: (){ _changeNPagesToIndex(commImagesBloc, indexBloc); });
+    final AddImages addImagesEvent = AddImages(images: imgsBloc.state.currentPhotosToSet, onEnd: changeNPagesToIndex);
     commImagesBloc.add(addImagesEvent);
   }
 
-  void _changeNPagesToIndex(CommentedImagesBloc commImagesBloc, IndexBloc indexBloc){
-    final CommentedImagesState commImgsState = commImagesBloc.state;
+  @protected
+  void changeNPagesToIndex(){
+    final CommentedImagesState commImgsState = commImgsB.state;
     final int newIndexNPages = commImgsState.nPaginasDeCommImages;
     final ChangeNPages changesNPagesEvent = ChangeNPages(nPages: newIndexNPages);
-    indexBloc.add(changesNPagesEvent);
+    indexB.add(changesNPagesEvent);
   }
 
-  void _resetFotosPorAgregar(ImagesBloc imgsBloc){ 
+  void _resetFotosPorAgregar(ImagesBloc imgsBloc){
     final ResetImages resetAllEvent = ResetImages();
     imgsBloc.add(resetAllEvent);
   }
 
   Future endCommentedImagesProcess()async{
-    commImgsB.add(ResetCommentedImages());
     indexB.add(ResetAllOfIndex());
     await updateProjects();
     await updateVisits();

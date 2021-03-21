@@ -6,7 +6,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:gap/data/enums/enums.dart';
 import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/logic/bloc/nav_routes/routes_manager.dart';
-import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/ui/utils/dialogs.dart' as dialogs;
 
 class PagesNavigationManager{
@@ -17,7 +16,8 @@ class PagesNavigationManager{
     if(await routesManager.hasPreviousRoute){
       await routesManager.loadRoute();
       final NavigationRoute previousRoute = await routesManager.lastNavRoute;
-      await _chooseMethodByDestinationRoute(previousRoute);
+      await _chooseMethodByCurrentBackingRoute(routesManager.currentRoute);
+      await _chooseMethodByDestinationRoute(previousRoute);   
       await routesManager.pop();
     }   
   }
@@ -61,7 +61,8 @@ class PagesNavigationManager{
   }
 
   static bool _formularioSePuedeAbrir(Formulario formulario){
-    return formulario.formStep != FormStep.Finished && formulario.campos.length > 0;
+    //return formulario.formStep != FormStep.Finished && formulario.campos.length > 0;
+    return !formulario.completo && formulario.campos.isNotEmpty; 
   }
 
   static Future _updateForm(Formulario formulario)async{
@@ -138,8 +139,10 @@ class PagesNavigationManager{
   }
 
   static Future _goToPageByHavingOrNotError(NavigationRoute destinationRoute, bool replacingAllRoutes)async{
-    if(dataDisributorErrorHandlingManager.happendError)
-      await _goToInitialPage(dataDisributorErrorHandlingManager.navigationTodoByError??NavigationRoute.Login);
+    if(dataDisributorErrorHandlingManager.happendError){
+      if(dataDisributorErrorHandlingManager.navigationTodoByError != null) 
+        await _goToInitialPage(dataDisributorErrorHandlingManager.navigationTodoByError??NavigationRoute.Login);
+    }
     else
       await _goToPage(destinationRoute, replacingAllRoutes);
   }
@@ -170,6 +173,12 @@ class PagesNavigationManager{
       await _backToVisitDetail();
     else if(route == NavigationRoute.Formularios)
       await _backToForms();
+  }
+
+  static Future _chooseMethodByCurrentBackingRoute(NavigationRoute route)async{
+    if(route == NavigationRoute.AdjuntarFotosVisita){
+      await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.END_COMMENTED_IMAGES_PROCESS);
+    }
   }
 }
 

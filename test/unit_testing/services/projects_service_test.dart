@@ -23,23 +23,24 @@ final PersonalInformation firmer = PersonalInformation.fromJson({
   'firm':'assets/logos/logo_con_fondo.png'
 });
 
-final List<CommentedImage> commentedImages = [
-  CommentedImage.fromJson({
-    'image_path':'assets/logos/logo_con_fondo.png',
-    'commentary':'Commentary 1'
-  }),
-  CommentedImage.fromJson({
-    'image_path':'assets/logos/logo_sin_fondo.png',
-    'commentary':'Commentary 2'
-  }),
-  CommentedImage.fromJson({
-    'image_path':'assets/logos/logo_con_fondo.png',
-    'commentary':'Commentary 2'
-  }),
+final List<UnSentCommentedImage> commentedImages = [
+  UnSentCommentedImage(
+    image: File('assets/logos/logo_con_fondo.png'),
+    commentary:'Commentary 1'
+  ),
+  UnSentCommentedImage(
+    image: File('assets/logos/logo_sin_fondo.png'),
+    commentary:'Commentary 2'
+  ),
+  UnSentCommentedImage(
+    image: File('assets/logos/logo_con_fondo.png'),
+    commentary:'Commentary 2'
+  ),
 ];
 
 List<Map<String, dynamic>> projectsResponse;
 String accessToken;
+int visitWithCommentedImagesId;
 
 void main(){
   _testGroup();
@@ -54,6 +55,7 @@ void _testGroup(){
     _testPostCommentedImages();
     _testPostFormInitialData();
     _testPostFormFinalData();
+    _testGetCommentedImages();
   });
 }
 
@@ -70,10 +72,6 @@ Future _testGetProjects()async{
 }
 
 Future _tryGetProjects()async{
-
-  final String nowTime = DateTime.now().toIso8601String();
-  print(nowTime);
-
   accessToken = await _login();
   projectsResponse = await projectsService.getProjects(accessToken);
   expect(projectsResponse, isNotNull);
@@ -187,7 +185,8 @@ Future _tryPostCommentedImages()async{
   final List<File> imgFiles = [];
   final List<String> imgCommentaries = [];
   _separateImgsToComments(imgFiles, imgCommentaries);
-  final List<Map<String, dynamic>> serviceResponse = await projectsService.saveCommentedImages(accessToken, imgFiles, imgCommentaries, formWithFormFieldsAndItsVisitId['visit_id']);
+  visitWithCommentedImagesId = formWithFormFieldsAndItsVisitId['visit_id'];
+  final List<Map<String, dynamic>> serviceResponse = await projectsService.saveCommentedImages(accessToken, imgFiles, imgCommentaries, visitWithCommentedImagesId);
   expect(serviceResponse, isNotNull);
   expect(serviceResponse.length, commentedImages.length);
   for(int i = 0; i < serviceResponse.length; i++)
@@ -258,10 +257,28 @@ Future _tryTestPostFormFinalData()async{
     "longitud_final":form.initialPosition.longitude.toString()
   };
   final Map<String, dynamic> serviceResponse = await projectsService.postFormFinalData(accessToken, body, form.id);
+
   expect(serviceResponse, isNotNull);
   expect(serviceResponse['id'], form.id);
   expect(serviceResponse['visita_id'], formData['visit_id']);
   expect(serviceResponse['latitud_final'], form.initialPosition.latitude.toString());
   expect(serviceResponse['longitud_final'], form.initialPosition.longitude.toString());
-  print(serviceResponse);
+}
+
+void _testGetCommentedImages(){ 
+  test('se testeará el método postFormFinalData', ()async{
+    try{
+      await _tryTestGetCommentedImages();
+    }on ServiceStatusErr catch(err){
+      fail('Ocurrió un service error: ${err.message}:${err.extraInformation??"No extra information"}');
+    }catch(err){
+      fail(err);
+    }
+  });
+}
+
+Future _tryTestGetCommentedImages()async{
+  final List<Map<String, dynamic>> response = await projectsService.getCommentedImages(accessToken, visitWithCommentedImagesId);
+  expect(response, isNotNull);
+  expect(response.length > 0, true);
 }

@@ -5,7 +5,6 @@ import 'package:gap/logic/bloc/widgets/commented_images/commented_images_bloc.da
 import 'package:gap/logic/bloc/widgets/index/index_bloc.dart';
 import 'package:gap/logic/blocs_manager/commented_images_index_manager.dart';
 import 'package:gap/logic/central_manager/pages_navigation_manager.dart';
-import 'package:gap/ui/pages/visit_detail_page.dart';
 import 'package:gap/ui/widgets/buttons/general_button.dart';
 import 'package:gap/ui/widgets/commented_images/commented_images_section.dart';
 import 'package:gap/ui/widgets/header/header.dart';
@@ -26,17 +25,46 @@ class AdjuntarFotosVisitaPage extends StatelessWidget {
     _context = context;
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
-              Header(),
-              SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
-              _createBottomItems()
-            ],
-          ),
+        child: GestureDetector(
+          child: SingleChildScrollView(
+            child: BlocBuilder<CommentedImagesBloc, CommentedImagesState>(
+              builder: (context, state) {
+                if(state.isLoading)
+                  return _createLoadingWidget();
+                else
+                  return _createContentItems();
+              },
+            ),
+          ), 
+          onTap: (){
+            FocusScope.of(_context).requestFocus(new FocusNode());
+          }
         ),
       ),
+    );
+  }
+
+  Widget _createLoadingWidget(){
+    Size size = MediaQuery.of(_context).size;
+    return Container(
+      height: size.height * 0.9,
+      child: Center(
+        child: CircularProgressIndicator(
+          backgroundColor: Colors.cyan[600],
+          strokeWidth: 7.5,
+        ),
+      ),
+    );
+  }
+
+  Widget _createContentItems(){
+    return Column(
+      children: [
+        SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
+        Header(),
+        SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
+        _createBottomItems()
+      ],
     );
   }
 
@@ -53,7 +81,7 @@ class AdjuntarFotosVisitaPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               _createTopComponents(state),
-              CommentedImagesPage(),
+              CommentedImagesPageOfIndex(),
               IndexPagination(),
               _createEndButton()
             ],
@@ -69,7 +97,7 @@ class AdjuntarFotosVisitaPage extends StatelessWidget {
         children: [
           PageTitle(title: 'Adjuntar fotos', underlined: false),
           SizedBox(height: _sizeUtils.littleSizedBoxHeigh),
-          _createAdjuntarFotosButton(),
+          _createAdjuntarFotosButtonByCommImgsState(),
           SizedBox(height: _sizeUtils.littleSizedBoxHeigh),
           _createTextoSecundario(state.chosenVisit.name),
         ],
@@ -77,6 +105,16 @@ class AdjuntarFotosVisitaPage extends StatelessWidget {
     );
   }
 
+  Widget _createAdjuntarFotosButtonByCommImgsState(){
+    final CommentedImagesState commImgsState = BlocProvider.of<CommentedImagesBloc>(_context).state;
+    if(commImgsState.dataType == CmmImgDataType.UNSENT)
+      return _createAdjuntarFotosButton();
+    else
+      return Container(
+        height: _sizeUtils.xasisSobreYasis * 0.05,
+      );
+  }
+  
   Widget _createAdjuntarFotosButton(){
     return GeneralButton(
       text: 'Adjuntar fotos a visita', 
@@ -152,11 +190,7 @@ class _EndButton extends StatelessWidget {
   }
 
   void _endImgsEdition(){
-    //_resetCommImgsBloc();
-    //_resetIndexBloc();
     PagesNavigationManager.endAdjuntarImages(_context);
-    //TODO: llamar a servicio de enviar commentedImages al back
-    //Navigator.of(_context).pushReplacementNamed(VisitDetailPage.route);
   }
 
   void _resetCommImgsBloc(){

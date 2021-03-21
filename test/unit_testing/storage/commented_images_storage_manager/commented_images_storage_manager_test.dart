@@ -47,7 +47,7 @@ void _testGetCommentedImages(){
 }
 
 Future<void> _tryTestGetCommentedImages()async{
-  final List<CommentedImage> commentedImages = await CommentedImagesStorageManager.getCommentedImages();
+  final List<UnSentCommentedImage> commentedImages = await CommentedImagesStorageManager.getCommentedImages();
   _verifyStorageGetReturnedElements(commentedImages);
 }
 
@@ -59,7 +59,7 @@ void _verifyStorageGetReturnedElements(List<dynamic> storageReturnedElements){
   }
 }
 
-void _compararParDeCommentedImages(CommentedImage i1, CommentedImage i2){
+void _compararParDeCommentedImages(UnSentCommentedImage i1, UnSentCommentedImage i2){
   expect(i1.commentary, i2.commentary, reason: 'El commentary del current CommentedImage del storageManager debe ser el mismo que el de los fakeCommentedImages');
   expect(i1.image.toString(), i2.image.toString(), reason: 'El image del current CommentedImage del storageManager debe ser el mismo que el de los fakeCommentedImages');
   expect(i1.positionInPage, i2.positionInPage, reason: 'El positionInPage del current CommentedImage del storageManager debe ser el mismo que el de los fakeCommentedImages');

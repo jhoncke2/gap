@@ -1,5 +1,6 @@
 import 'package:gap/data/enums/enums.dart';
 import 'package:gap/data/models/entities/entities.dart';
+import 'package:gap/errors/storage/unfound_storage_element_err.dart';
 import 'package:gap/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/logic/bloc/entities/projects/projects_bloc.dart';
 import 'package:gap/logic/bloc/entities/user/user_bloc.dart';
@@ -24,6 +25,8 @@ class DataDistributorWithConnection extends DataDistributor{
   @override
   Future doInitialConfig()async{
     final accessToken = await UserStorageManager.getAccessToken();
+    if(accessToken == null)
+      throw UnfoundStorageElementErr(elementType: StorageElementType.AUTH_TOKEN);
     await updateAccessToken(accessToken);
     await PreloadedStorageToServices.sendPreloadedStorageDataToServices();
   }
@@ -132,11 +135,12 @@ class DataDistributorWithConnection extends DataDistributor{
 
   Future _sendFirmerToService()async{
     final Formulario chosenForm = formsB.state.chosenForm;
-    final PersonalInformation lastFirmer = chosenForm.firmers.last;
+    final PersonalInformation lastFirmer = chosenForm.firmers.last.clone();
     final String accessToken = await UserStorageManager.getAccessToken();
     final Visit chosenVisit = visitsB.state.chosenVisit;
     await ProjectsServicesManager.saveFirmer(accessToken, lastFirmer, chosenForm.id, chosenVisit.id);
-    chosenForm.firmers.removeLast();
+    chosenForm.firmers.removeAt(0);
+    print(chosenFormB.state.firmers);
     await PreloadedFormsStorageManager.setPreloadedForm(chosenForm, chosenVisit.id);
     await ChosenFormStorageManager.setChosenForm(chosenForm);
   }
@@ -173,6 +177,19 @@ class DataDistributorWithConnection extends DataDistributor{
   }
 
   @override
+  Future updateCommentedImages()async{
+    final String accessToken = await UserStorageManager.getAccessToken();
+    final Visit chosenVisit = UploadedBlocsData.dataContainer[NavigationRoute.VisitDetail];
+    final List<CommentedImage> cmmImages = await ProjectsServicesManager.getCommentedImages(accessToken, chosenVisit.id);
+    if(cmmImages.isEmpty){
+      commImgsB.add(InitImagesCommenting());
+    }else{
+      commImgsB.add(InitSentCommImgsWatching(sentCommentedImages: cmmImages, onEnd: changeNPagesToIndex));
+    }
+
+  }
+
+  @override
   Future resetForms()async{
     await super.resetForms();
     final Visit chosenVisit = visitsB.state.chosenVisit;
@@ -194,20 +211,21 @@ class DataDistributorWithConnection extends DataDistributor{
     await FormulariosStorageManager.removeForms();
   }
 
-  Future endCommentedImagesProcess()async{
-    try{
-      await _tryEndCommentedImagesProcess();
-    }catch(err){
-    }
+  Future endCommentedImagesProcess()async{  
+    if(commImgsB.state.dataType == CmmImgDataType.UNSENT)
+      await _postUnsetCommentedImages();
+    else
+      commImgsB.add(ResetCommentedImages());
+    await super.endCommentedImagesProcess();
   }
 
-  Future _tryEndCommentedImagesProcess()async{
+  Future _postUnsetCommentedImages()async{
     final String accessToken = await UserStorageManager.getAccessToken();
-    final CommentedImagesBloc commImgsB = DataDistributor.blocsAsMap[BlocName.CommentedImages];
-    final List<CommentedImage> commImgs = commImgsB.state.allCommentedImages;
+    final List<CommentedImage> commImgs = commImgsB.state.allCommentedImages.toList();
     final Visit chosenVisit = visitsB.state.chosenVisit;
-    await ProjectsServicesManager.saveCommentedImages(accessToken, commImgs, chosenVisit.id);
-    await super.endCommentedImagesProcess();
+    commImgsB.add(ResetCommentedImages());
+    if(commImgs.length > 0)
+      await ProjectsServicesManager.saveCommentedImages(accessToken, commImgs.cast<UnSentCommentedImage>(), chosenVisit.id);
   }
 }
 

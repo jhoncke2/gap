@@ -64,4 +64,12 @@ class  PersonalInformation{
     'cc':identifDocumentNumber.toString(),
     'nombre':name
   };
+
+  PersonalInformation clone()=>PersonalInformation(
+    id: this.id,
+    name: this.name,
+    identifDocumentType: this.identifDocumentType,
+    identifDocumentNumber: this.identifDocumentNumber,
+    firm: this.firm
+  );
 }

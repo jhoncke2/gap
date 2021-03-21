@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/ui/pages/adjuntar_fotos_visita_page.dart';
-import 'package:gap/ui/pages/formulario_detail_page.dart';
+import 'package:gap/ui/pages/formulario_detail/formulario_detail_page.dart';
 import 'package:gap/ui/pages/formularios_page.dart';
 import 'package:gap/ui/pages/init_page.dart';
 import 'package:gap/ui/pages/login_page.dart';

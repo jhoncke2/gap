@@ -2,7 +2,6 @@ import 'package:gap/data/enums/enums.dart';
 import 'package:gap/errors/services/service_status_err.dart';
 import 'package:gap/errors/storage/unfound_storage_element_err.dart';
 import 'package:gap/logic/central_manager/data_distributor/data_distributor_manager.dart';
-import 'package:gap/logic/central_manager/pages_navigation_manager.dart';
 import 'package:gap/logic/storage_managers/user/user_storage_manager.dart';
 import 'package:gap/ui/utils/dialogs.dart' as dialogs;
 
@@ -20,7 +19,7 @@ class DataDisributorErrorHandlingManager{
     try{
       await _tryExecuteFunction(functionName, value);
     }on ServiceStatusErr catch(err){
-      await _manageServiceStatusErr(err);
+      await _manageServiceStatusErr(err, functionName, value);
     }on UnfoundStorageElementErr catch(err){
       await _manageUnfoundStorageElementErr(err);
     }catch(err){
@@ -33,21 +32,38 @@ class DataDisributorErrorHandlingManager{
     await dataDistributorManager.executeFunction(functionName, value);
   }
 
-  Future _manageServiceStatusErr(ServiceStatusErr err)async{
-    _updateErrorInfo(err);
+  Future _manageServiceStatusErr(ServiceStatusErr err, DataDistrFunctionName functionName, dynamic value)async{
     if(err.extraInformation == 'refresh_token'){
-      await _showDialog(authenticationErrMessage);
-      navigationTodoByError = NavigationRoute.Login;
+      await _manageRefreshTokenErr(err);
     }
     else{
       if(lastErrorType != err.runtimeType){
-        final String accessToken = await UserStorageManager.getAccessToken();
-        await executeFunction(DataDistrFunctionName.UPDATE_ACCESS_TOKEN, accessToken);
+        await _manageFirstServiceStatusErr(err, functionName, value);
       }else{
-        await _showDialog(generalServiceErrMessage);
-        navigationTodoByError = NavigationRoute.Login;
+        await _manageRepeatedServiceStatusErr(err);
       }
     }
+  }
+
+  Future _manageRefreshTokenErr(ServiceStatusErr err)async{
+    _updateErrorInfo(err);
+    await _showDialog(authenticationErrMessage);
+    navigationTodoByError = NavigationRoute.Login;
+  }
+
+  Future _manageFirstServiceStatusErr(ServiceStatusErr err, DataDistrFunctionName functionName, dynamic value)async{
+    _updateErrorInfo(err);
+    final String accessToken = await UserStorageManager.getAccessToken();
+    await executeFunction(DataDistrFunctionName.UPDATE_ACCESS_TOKEN, accessToken);
+    if(!happendError){
+      await executeFunction(functionName, value);
+    }
+  }
+
+  Future _manageRepeatedServiceStatusErr(ServiceStatusErr err)async{
+    _updateErrorInfo(err);
+    await _showDialog(generalServiceErrMessage);
+    navigationTodoByError = NavigationRoute.Login;
   }
 
   Future _showDialog(String message)async{
@@ -59,14 +75,10 @@ class DataDisributorErrorHandlingManager{
     lastErrorType = err.runtimeType;
   }
 
-  Future _navToLogin()async{
-    await PagesNavigationManager.navToLogin();
-  }
-
   Future _manageUnfoundStorageElementErr(UnfoundStorageElementErr err)async{
     _updateErrorInfo(err);
     if(err.elementType == StorageElementType.AUTH_TOKEN){
-      await _showDialog(authenticationErrMessage);
+      //await _showDialog(authenticationErrMessage);
       navigationTodoByError = NavigationRoute.Login;
     }
     else{
@@ -81,16 +93,13 @@ class DataDisributorErrorHandlingManager{
     }
   }
 
-  Future _navToProjects()async{
-    await PagesNavigationManager.navToProjects();
-  }
-
   Future _manageGeneralErr(err)async{
-    _updateErrorInfo(err);
+    //TODO: Implementar verdaderos Navigatoin Route
     if(lastErrorType != err.runtimeType)
-      await _navToProjects();
+      navigationTodoByError = null;
     else
-      await _navToLogin();
+      navigationTodoByError = null;
+    _updateErrorInfo(err);
   }
 
   set netConnectionState(NetConnectionState newState){

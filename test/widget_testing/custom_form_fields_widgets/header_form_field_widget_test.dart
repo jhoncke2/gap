@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gap/data/models/entities/custom_form_field/static/static_form_field.dart';
-import 'package:gap/ui/widgets/forms/form_body/center_containers/form_fields/static_form_fields/header_form_field_widget.dart';
+import 'package:gap/ui/pages/formulario_detail/forms/form_body/center_containers/form_fields/static_form_fields/header_form_field_widget.dart';
 import './mock_app.dart';
 
 

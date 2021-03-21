@@ -93,7 +93,6 @@ class _VisitEvaluater{
   }
 
   Future<void> _endPreloadedVisit(int visitId, int projectId)async{
-    //TODO: postCommentedImagesToBack(v); ??
     PreloadedVisitsStorageManager.removeVisit(visitId, projectId);
   }
 }

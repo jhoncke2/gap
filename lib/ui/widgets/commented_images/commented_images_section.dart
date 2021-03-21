@@ -8,13 +8,13 @@ import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/commented_images/commented_image_card.dart';
 import 'package:gap/ui/widgets/unloaded_elements/unloaded_nav_items.dart';
 
-class CommentedImagesPage extends StatelessWidget{
+class CommentedImagesPageOfIndex extends StatelessWidget{
 
   @override
-  Widget build(BuildContext context) {   
+  Widget build(BuildContext context) {
+    _verificarActivacionIndex();
     return BlocBuilder<IndexBloc, IndexState>(
       builder: (context, indexState) {
-        _verificarActivacionIndex();
         return BlocBuilder<CommentedImagesBloc, CommentedImagesState>(
           builder: (_, commImgsWidgtsState) {
             if(commImgsWidgtsState.nPaginasDeCommImages == 0){
@@ -54,7 +54,6 @@ class _LoadedCommentedImagesPag extends StatelessWidget {
   }
 
   List<Widget> _createCommentedImages(){
-    
     final int currentIndex = indexState.currentIndexPage;
     final List<CommentedImage> commImages = commImgsWidgetsState.getCommImgsByIndex(currentIndex);
     final List<Widget> commentedImagesCards = [];
@@ -65,14 +64,6 @@ class _LoadedCommentedImagesPag extends StatelessWidget {
       final CommentedImageCard commImgCard = CommentedImageCard(commentedImage: commImg, focusNode: focusNode, key: cardKey);
       commentedImagesCards.add(commImgCard);
     }
-    /*
-    final List<Widget> commentedImagesCards = commImages.map<CommentedImageCard>(
-      (CommentedImage commImg){
-        //_cardsInputsFocuses
-        return CommentedImageCard(commentedImage: commImg, key: new Key());
-      }
-    ).toList();
-    */
     return commentedImagesCards;
   }
 }

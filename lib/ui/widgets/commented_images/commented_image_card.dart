@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/logic/bloc/widgets/commented_images/commented_images_bloc.dart';
 import 'package:gap/logic/bloc/widgets/index/index_bloc.dart';
 import 'package:gap/data/models/entities/entities.dart';
+import 'package:gap/logic/blocs_manager/commented_images_index_manager.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 // ignore: must_be_immutable
 class CommentedImageCard extends StatelessWidget {
@@ -48,8 +51,24 @@ class CommentedImageCard extends StatelessWidget {
   }
 
   Widget _createImage(){
+    if(commentedImage is UnSentCommentedImage)
+      return _createFileImage(commentedImage);
+    else
+      return _createNetworkImage(commentedImage as SentCommentedImage);
+  }
+
+  Widget _createFileImage(UnSentCommentedImage commImg){
     return Image.file(
-      commentedImage.image,
+      commImg.image,
+      height: _sizeUtils.xasisSobreYasis * 0.14,
+      width: _sizeUtils.xasisSobreYasis * 0.14,
+      fit: BoxFit.cover,
+    );
+  }
+
+  Widget _createNetworkImage(SentCommentedImage commImg){
+    return Image.network(
+      commImg.url,
       height: _sizeUtils.xasisSobreYasis * 0.14,
       width: _sizeUtils.xasisSobreYasis * 0.14,
       fit: BoxFit.cover,
@@ -60,14 +79,12 @@ class CommentedImageCard extends StatelessWidget {
     return Container(
       width: _sizeUtils.xasisSobreYasis * 0.415,
       child: TextFormField(
+        enabled: commentedImage is UnSentCommentedImage,
         controller: _commentaryController,
-        //focusNode: focusNode,
-        //key: this.key,
         maxLines: 4,
         decoration: _createCommentaryDecoration(),
         onChanged: _onInputChanged,
         textAlign: TextAlign.start,
-        onEditingComplete: _onEditingComplete,
         keyboardType: TextInputType.multiline,
       ),
     );
@@ -78,18 +95,15 @@ class CommentedImageCard extends StatelessWidget {
     final CommentImage commImgEvent = CommentImage(
       commentary: newValue, 
       page: _currentIndex,
-      positionInPage: commentedImage.positionInPage, 
+      positionInPage: commentedImage.positionInPage,
+      onEnd: _onEndUpdatingCommentedImages
     );
     _commImgsBloc.add(commImgEvent);
     
   }
 
-  void _onInputSubmitted(String value){
-    print('on submitted');
-  }
-
-  void _onEditingComplete(){
-    print('on editing complete');
+  void _onEndUpdatingCommentedImages(){
+    CommentedImagesIndexManagerSingleton.commImgIndexManager.definirActivacionAvanzarSegunCommentedImages();
   }
 
   InputDecoration _createCommentaryDecoration(){

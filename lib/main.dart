@@ -27,7 +27,7 @@ Future<void> doInitialConfig()async{
 }
 
 Future _onStartingApp()async{
-  if(await NativeServicesPermissions.storageIsGranted)
+  if(await NativeServicesPermissions.storageIsGranted || true)
     await _initApp(null);
   else
     await _requestStorageActivation();
@@ -35,13 +35,13 @@ Future _onStartingApp()async{
 
 void _onResumeApp(AppLifecycleState state)async{
   if(state == AppLifecycleState.resumed){
-    if(await NativeServicesPermissions.storageIsGranted){
+    if(await NativeServicesPermissions.storageIsGranted || true){
       final List<NavigationRoute> routesTree = await routesManager.routesTree;
       if(routesTree.last != NavigationRoute.AdjuntarFotosVisita)
         await _initDataInitialization(null);
     }
-    else
-      await _requestStorageActivation();
+    //else
+      //await _requestStorageActivation();
   }
 }
 
