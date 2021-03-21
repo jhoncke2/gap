@@ -3,16 +3,21 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/logic/bloc/entities/visits/visits_bloc.dart';
 import 'package:gap/data/models/entities/entities.dart';
+import 'package:gap/ui/widgets/header/app_back_button.dart';
 import 'package:gap/ui/widgets/page_title.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 // ignore: must_be_immutable
 class LoadedFormHead extends StatelessWidget {
+
   final SizeUtils _sizeUtils = SizeUtils();
   final FormulariosState formsState;
   final Formulario _formulario;
+  final bool hasBackButton;
   BuildContext _context;
+
   LoadedFormHead({
-    @required this.formsState
+    @required this.formsState,
+    this.hasBackButton = false
   }):
     this._formulario = formsState.chosenForm
     ;
@@ -26,6 +31,7 @@ class LoadedFormHead extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          _createBackButton(),
           PageTitle(title: chosenVisitName, underlined: false),
           SizedBox(height: _sizeUtils.veryLittleSizedBoxHeigh),
           _createInitFullDate(),
@@ -38,6 +44,10 @@ class LoadedFormHead extends StatelessWidget {
     final VisitsBloc vBloc = BlocProvider.of<VisitsBloc>(_context);
     final String chosenVisitName = vBloc.state.chosenVisit.name;
     return chosenVisitName;
+  }
+
+  Widget _createBackButton(){
+    return hasBackButton? AppBackButton() : Container(height: _sizeUtils.largeSizedBoxHeigh, color: Colors.transparent);
   }
 
   Widget _createInitFullDate(){

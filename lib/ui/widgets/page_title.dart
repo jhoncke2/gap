@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 class PageTitle extends StatelessWidget {
+
   final SizeUtils _sizeUtils = SizeUtils();
   final String title;
   final bool underlined;
   final bool centerText;
+
   PageTitle({
     @required this.title,
     this.underlined = true,

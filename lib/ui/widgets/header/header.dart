@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/logic/central_manager/pages_navigation_manager.dart';
 import 'package:gap/ui/utils/size_utils.dart';
+import 'package:gap/ui/widgets/header/app_back_button.dart';
 // ignore: must_be_immutable
 class Header extends StatelessWidget {
   final bool showBackNavButton;
@@ -42,25 +43,9 @@ class Header extends StatelessWidget {
 
   Widget _elegirTopElement(){
     if(showBackNavButton)
-      return _createBackButton();
+      return AppBackButton();
     else
       return _createEmptyContainer();
-  }
-
-  Widget _createBackButton(){
-    return Container(
-      margin: EdgeInsets.only(left: _sizeUtils.xasisSobreYasis * 0.05),
-      child: IconButton(
-        iconSize: _sizeUtils.largeIconSize,
-        color: Theme.of(_context).primaryColor,
-        icon: Icon(
-          Icons.arrow_back_ios
-        ),
-        onPressed: (){
-          PagesNavigationManager.pop();
-        },
-      ),
-    );
   }
 
   Widget _createEmptyContainer(){

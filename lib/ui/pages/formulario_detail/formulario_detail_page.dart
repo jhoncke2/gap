@@ -24,7 +24,7 @@ class FormularioDetailPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               SafeArea(child: Container()),
-              SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
+              //SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
               _createFormBuilder()
             ],
           ),
@@ -59,8 +59,9 @@ class _LoadedFormularioDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double screenHeight = MediaQuery.of(context).size.height;
     return Container(
-      height: _sizeUtils.xasisSobreYasis * 1.15,
+      height: screenHeight * 0.92,
       margin: EdgeInsets.all(0),
       child: Column(
         children: [

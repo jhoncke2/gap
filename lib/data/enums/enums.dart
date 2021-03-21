@@ -56,7 +56,7 @@ abstract class NavRouteEnum extends Enum<String>{
 
 class NavigationRoute extends NavRouteEnum{
   const NavigationRoute(String value, {String step}) : super(value, step: step);
-  
+  static const NavigationRoute Firmers = const NavigationRoute('firmers');
   static const NavigationRoute Init = const NavigationRoute('init');
   static const NavigationRoute Login = const NavigationRoute('login');
   static const NavigationRoute Projects = const NavigationRoute('projects');

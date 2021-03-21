@@ -22,10 +22,12 @@ class BottomFirmsOptions extends StatelessWidget {
       builder: (context, state) {
         _defineOnPressedButtonsFunctions();
         return Container(
-          //height: _sizeUtils.xasisSobreYasis * 0.3,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [_createAddFirmButton(), _createFinishButton()],
+            children: [
+              _createAddFirmButton(), 
+              _createFinishButton()
+            ],
           )
         );
       },
@@ -37,8 +39,7 @@ class BottomFirmsOptions extends StatelessWidget {
   }
 
   void _defineOnPressedButtonsFunctions() {
-    final bool btnsAreActive =
-        ChosenFormManagerSingleton.chosenFormManager.canGoToNextFormStep();
+    final bool btnsAreActive = ChosenFormManagerSingleton.chosenFormManager.canGoToNextFormStep();
     if (btnsAreActive) {
       _onAddFirmPressed = _addNewFirm;
       _onFinishPressed = _finish;

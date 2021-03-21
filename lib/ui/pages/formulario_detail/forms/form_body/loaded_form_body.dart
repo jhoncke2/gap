@@ -4,7 +4,7 @@ import 'package:gap/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/ui/utils/size_utils.dart';
-import 'package:gap/ui/widgets/page_title.dart';
+import 'package:gap/ui/widgets/form_process_container.dart';
 import 'package:gap/ui/widgets/unloaded_elements/unloaded_nav_items.dart';
 
 import 'bottom_containers/bottom_firms_options.dart';
@@ -27,30 +27,11 @@ class LoadedFormBody extends StatelessWidget{
     ;
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        padding: _createGeneralPadding(),
-        color: Colors.grey.withOpacity(0.2),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            PageTitle(title: _formulario.name, underlined: false, centerText: true),
-            _ChosenFormCurrentComponent()
-          ],
-        )
-      ),
+    return FormProcessMainContainer(
+      formName: _formulario.name,
+      bottomChild: _ChosenFormCurrentComponent()
     );
-  }
-
-  EdgeInsets _createGeneralPadding(){
-    return EdgeInsets.only(
-      top: _sizeUtils.xasisSobreYasis * 0.025,
-      bottom: _sizeUtils.xasisSobreYasis * 0.045,
-      left: _sizeUtils.xasisSobreYasis * 0.045,
-      right: _sizeUtils.xasisSobreYasis * 0.045
-    );
+    
   }
 }
 
