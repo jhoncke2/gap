@@ -26,9 +26,19 @@ class PagesNavigationManager{
     await _goToInitialPage(NavigationRoute.Login);
   }
   
-  static Future<void> navToProjects()async{
-    await _updateProjectsData();
-    await _goToPageByHavingOrNotError(NavigationRoute.Projects, true);
+  
+  static Future<void> navToProjects(Map<String, dynamic> loginInfo)async{
+    await _login(loginInfo);
+    if(!dataDisributorErrorHandlingManager.happendError){
+      await _updateProjectsData();
+      await _goToPageByHavingOrNotError(NavigationRoute.Projects, true);
+    }  
+  }
+  
+
+  static Future _login(Map<String, dynamic> loginInfo)async{
+    loginInfo['type'] = 'first_login';
+    await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.LOGIN, loginInfo);
   }
 
   static Future<void> _updateProjectsData()async{

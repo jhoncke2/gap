@@ -42,6 +42,9 @@ abstract class DataDistributor{
 
   Future<void> updateAccessToken(String accessToken)async{}
 
+  Future login(Map<String, dynamic> loginInfo)async{
+  }
+
   Future<void> updateProjects()async{}
 
   Future<void> updateChosenProject(Project project)async{

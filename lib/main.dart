@@ -20,6 +20,7 @@ void main()async{
 Future<void> doInitialConfig()async{
   WidgetsFlutterBinding.ensureInitialized();
   //await _testRemovePartOfStorage();
+  await _testAddInitialUserInformation();
   app = GapApp();
   WidgetsBinding.instance.addObserver(app.state);
   app.state.didChangeDependenciesMethod = _onStartingApp;
@@ -72,11 +73,21 @@ Future _requestStorageActivation()async{
 }
 
 Future<void> _testRemovePartOfStorage()async{
-  UserStorageManager.removeAuthToken();
+  await UserStorageManager.removeAuthToken();
   StorageConnector sc = StorageConnector();
   await sc.removeResource('new_auth_token');
   await sc.removeResource('projects_with_preloaded_visits');
   await sc.removeResource('preloaded_visits');
   await sc.removeResource('preloaded_forms');
   await sc.setStringResource('new_auth_token', 'fake_auth_token');
+  await sc.removeResource('user_information');
+}
+
+Future _testAddInitialUserInformation()async{
+  StorageConnector sc = StorageConnector();
+  final Map<String, dynamic> emailInfo = {
+    'email': 'oskrjag@gmail.com',
+    'password': '12345678'
+  };
+  await sc.setMapResource('user_information', emailInfo);
 }

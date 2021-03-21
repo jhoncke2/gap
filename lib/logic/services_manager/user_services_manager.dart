@@ -2,13 +2,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/errors/services/service_status_err.dart';
 import 'package:gap/logic/bloc/entities/user/user_bloc.dart';
-import 'package:gap/logic/central_manager/pages_navigation_manager.dart';
 import 'package:gap/logic/storage_managers/user/user_storage_manager.dart';
 import 'package:gap/services/auth_service.dart';
 import 'package:gap/ui/utils/dialogs.dart' as dialogs;
 
 class UserServicesManager{
   static Future login(String email, String password, BuildContext context)async{
+    final Map<String, dynamic> loginInfo = { 'email':email, 'password':password };
+    final String accessToken = await _obtainAccessToken(loginInfo);
+    await _saveAccessToken(accessToken, context);
+  }
+
+  static Future loginOld(String email, String password, BuildContext context)async{
     try{
       await _tryLogin(email, password, context);
     }on ServiceStatusErr catch(err){
@@ -19,10 +24,8 @@ class UserServicesManager{
   }
 
   static Future _tryLogin(String email, String password, BuildContext context)async{
-    final Map<String, dynamic> loginInfo = { 'email':email, 'password':password };
-    final String accessToken = await _obtainAccessToken(loginInfo);
-    await _saveAccessToken(accessToken, context);
-    await PagesNavigationManager.navToProjects();
+    
+    //await PagesNavigationManager.navToProjects();
   }
 
   static Future<String> _obtainAccessToken(Map<String, dynamic> loginInfo)async{

@@ -5,13 +5,22 @@ import '../../../mock/storage/mock_flutter_secure_storage.dart';
 import './user_storage_manager_descriptions.dart' as descriptions;
 
 final String fakeAuthToken = 'fake_auth_token';
+final Map<String, dynamic> fakeUserInformation = {
+  'email':'email1@gmail.com',
+  'password':'password123'
+};
 
 void main(){
   _initStorageConnector();
   group(descriptions.authTokenGroupDescription, (){
     _testSetAuthToken();
     _testGetAuthToken();
-    _testRemoveAuthToken();    
+    _testRemoveAuthToken();
+  });
+
+  group(descriptions.userInformationGroupDescription, (){   
+    _testSetUserInformation();
+    _testGetUserInformation();
   });
 }
 
@@ -62,4 +71,35 @@ void _testRemoveAuthToken(){
 
 Future<void> _tryTestRemoveAuthToken()async{
   await UserStorageManager.removeAuthToken();
+}
+
+void _testSetUserInformation(){
+  test(descriptions.testSetUserInformation, ()async{
+    try{
+      await _tryTestSetUserInformation();
+    }catch(err){
+      fail('Ocurrió un error: $err');
+    }
+  });
+}
+
+Future _tryTestSetUserInformation()async{
+  await UserStorageManager.setUserInformation(fakeUserInformation['email'], fakeUserInformation['password']);
+}
+
+void _testGetUserInformation(){
+  test(descriptions.testGetUserInformation, ()async{
+    try{
+      await _tryTestGetUserInformation();
+    }catch(err){
+      fail('Ocurrió un error: $err');
+    }
+  });
+}
+
+Future _tryTestGetUserInformation()async{
+  final Map<String, dynamic> userInfo = await UserStorageManager.getUserInformation();
+  expect(userInfo, isNotNull);
+  expect(userInfo['email'], fakeUserInformation['email']);
+  expect(userInfo['password'], fakeUserInformation['password']);
 }

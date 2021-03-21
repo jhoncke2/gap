@@ -5,6 +5,14 @@ class AuthService extends BasicService{
   static final String _authUrl = BasicService.apiUrl + 'auth/';
 
   Future<Map<String, dynamic>> login(Map<String, dynamic> loginInfo)async{
+    try{
+      return await _tryLogin(loginInfo);
+    }catch(err){
+      throw ServiceStatusErr(message: 'Credenciales inválidas', extraInformation: 'login');
+    }
+  }
+
+  Future <Map<String, dynamic>> _tryLogin(Map<String, dynamic> loginInfo)async{
     final String requestUrl = _authUrl + 'login';
     final Map<String, String> headers = { 'accept':'application/json' };
     final Map<String, Map<String, dynamic>> headersAndBody = createHeadersAndBodyForARequest(body: loginInfo, headers: headers);

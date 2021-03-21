@@ -15,6 +15,7 @@ class DataDistributorManager{
   Function _currentExecutedFunction;
 
   final List functionsWithValue = [
+    DataDistrFunctionName.LOGIN,
     DataDistrFunctionName.UPDATE_ACCESS_TOKEN, 
     DataDistrFunctionName.UPDATE_CHOSEN_PROJECT,
     DataDistrFunctionName.UPDATE_CHOSEN_VISIT, 
@@ -42,6 +43,7 @@ class DataDistributorManager{
   _initializeDataDistributorFunctionsValues(){
     _dataDistributorFunctionsValues =  EnumValues<DataDistrFunctionName, Function>({
       DataDistrFunctionName.DO_INITIAL_CONFIG:  dataDistributor.doInitialConfig,
+      DataDistrFunctionName.LOGIN: dataDistributor.login,
       DataDistrFunctionName.UPDATE_ACCESS_TOKEN: dataDistributor.updateAccessToken,
       DataDistrFunctionName.UPDATE_PROJECTS: dataDistributor.updateProjects,
       DataDistrFunctionName.UPDATE_CHOSEN_PROJECT: dataDistributor.updateChosenProject,

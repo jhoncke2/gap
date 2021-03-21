@@ -5,10 +5,12 @@ import 'package:gap/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/logic/bloc/entities/projects/projects_bloc.dart';
 import 'package:gap/logic/bloc/entities/user/user_bloc.dart';
 import 'package:gap/logic/bloc/entities/visits/visits_bloc.dart';
+import 'package:gap/logic/bloc/nav_routes/custom_navigator.dart';
 import 'package:gap/logic/bloc/widgets/commented_images/commented_images_bloc.dart';
 import 'package:gap/logic/central_manager/data_distributor/data_distributor.dart';
 import 'package:gap/logic/central_manager/preloaded_storage_to_services.dart';
 import 'package:gap/logic/services_manager/projects_services_manager.dart';
+import 'package:gap/logic/services_manager/user_services_manager.dart';
 import 'package:gap/logic/storage_managers/forms/chosen_form_storage_manager.dart';
 import 'package:gap/logic/storage_managers/forms/formularios_storage_manager.dart';
 import 'package:gap/logic/storage_managers/forms/preloaded_forms_storage_manager.dart';
@@ -35,6 +37,24 @@ class DataDistributorWithConnection extends DataDistributor{
   Future updateAccessToken(String accessToken)async{
     _authTokenValidator.userBloc = DataDistributor.blocsAsMap[BlocName.User];
     await _authTokenValidator.refreshAuthToken(accessToken);
+  }
+
+  @override
+  Future login(Map<String, dynamic> loginInfo)async{
+    if(loginInfo['type'] == 'first_login')
+      await _doFirstLogin(loginInfo['email'], loginInfo['password']);
+    else
+      await _doPreloadingLogin(); 
+  }
+
+  Future _doFirstLogin(String email, String password)async{
+    await UserServicesManager.login(email, password, CustomNavigator.navigatorKey.currentContext);
+    await UserStorageManager.setUserInformation(email, password);
+  }
+
+  Future _doPreloadingLogin()async{
+    final Map<String, dynamic> userInformation = await UserStorageManager.getUserInformation();
+    await UserServicesManager.login(userInformation['email'], userInformation['password'], CustomNavigator.navigatorKey.currentContext);
   }
 
   @override

@@ -22,9 +22,12 @@ class DataDisributorErrorHandlingManager{
       await _manageServiceStatusErr(err, functionName, value);
     }on UnfoundStorageElementErr catch(err){
       await _manageUnfoundStorageElementErr(err);
-    }catch(err){
+    }
+    /*
+    catch(err){
       await _manageGeneralErr(err);
     }
+    */
   }
 
   Future _tryExecuteFunction(DataDistrFunctionName functionName, [dynamic value])async{
@@ -33,7 +36,9 @@ class DataDisributorErrorHandlingManager{
   }
 
   Future _manageServiceStatusErr(ServiceStatusErr err, DataDistrFunctionName functionName, dynamic value)async{
-    if(err.extraInformation == 'refresh_token'){
+    if(err.extraInformation == 'login'){
+      await _manageLoginErr(err, value);
+    }else if(err.extraInformation == 'refresh_token'){
       await _manageRefreshTokenErr(err);
     }
     else{
@@ -45,16 +50,27 @@ class DataDisributorErrorHandlingManager{
     }
   }
 
+  Future _manageLoginErr(ServiceStatusErr err, Map<String, dynamic> loginInfo)async{
+    _updateErrorInfo(err);
+    if(loginInfo['type'] == 'first_login'){
+      await _showDialog(err.message);
+      navigationTodoByError = null;
+    }else{
+      navigationTodoByError = NavigationRoute.Login;
+    }
+  }
+
   Future _manageRefreshTokenErr(ServiceStatusErr err)async{
     _updateErrorInfo(err);
-    await _showDialog(authenticationErrMessage);
-    navigationTodoByError = NavigationRoute.Login;
+    final Map<String, dynamic> loginInfo = {'type':'reloading_login'};
+    await executeFunction(DataDistrFunctionName.LOGIN, loginInfo);
   }
 
   Future _manageFirstServiceStatusErr(ServiceStatusErr err, DataDistrFunctionName functionName, dynamic value)async{
     _updateErrorInfo(err);
-    final String accessToken = await UserStorageManager.getAccessToken();
-    await executeFunction(DataDistrFunctionName.UPDATE_ACCESS_TOKEN, accessToken);
+    //final String accessToken = await UserStorageManager.getAccessToken();
+    //await executeFunction(DataDistrFunctionName.UPDATE_ACCESS_TOKEN, accessToken);
+    await executeFunction(DataDistrFunctionName.LOGIN, {'type':'reloading_login'});
     if(!happendError){
       await executeFunction(functionName, value);
     }

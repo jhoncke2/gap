@@ -155,6 +155,7 @@ class InputType extends Enum<String>{
 
 enum DataDistrFunctionName{
   DO_INITIAL_CONFIG,
+  LOGIN,
   UPDATE_ACCESS_TOKEN,
   UPDATE_PROJECTS,
   UPDATE_CHOSEN_PROJECT,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/logic/bloc/entities/user/user_bloc.dart';
+import 'package:gap/logic/central_manager/pages_navigation_manager.dart';
 import 'package:gap/logic/services_manager/user_services_manager.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/utils/static_data/buttons_keys.dart';
@@ -173,7 +174,9 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _login()async{
-    await UserServicesManager.login(_emailController.text, _passwordController.text, _context);
+    //await UserServicesManager.login(_emailController.text, _passwordController.text, _context);
+    final Map<String, dynamic> loginInfo = {'email':_emailController.text, 'password':_passwordController.text};
+    await PagesNavigationManager.navToProjects(loginInfo);
   }
   
   Widget _createBottomComponents(){
