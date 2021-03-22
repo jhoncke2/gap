@@ -110,8 +110,11 @@ class DataDistributorWithConnection extends DataDistributor{
   }
 
   Future _addFormToPreloadedStorageIfIsntCompleted(Formulario form, int visitId)async{
-    if(!form.completo)
+    if(!form.completo){
+      deleteNullFirmersFromForm(form);
       await PreloadedFormsStorageManager.setPreloadedForm(form, visitId);
+    }
+      
   }
 
   @override
@@ -139,6 +142,7 @@ class DataDistributorWithConnection extends DataDistributor{
     final String accessToken = await UserStorageManager.getAccessToken();
     await ProjectsServicesManager.updateForm(form, chosenVisit.id, accessToken);
     form.campos = [];
+    deleteNullFirmersFromForm(form);
     await PreloadedFormsStorageManager.setPreloadedForm(form, chosenVisit.id);
   }
 
@@ -161,8 +165,9 @@ class DataDistributorWithConnection extends DataDistributor{
     await ProjectsServicesManager.saveFirmer(accessToken, lastFirmer, chosenForm.id, chosenVisit.id);
     chosenForm.firmers.removeAt(0);
     print(chosenFormB.state.firmers);
-    await PreloadedFormsStorageManager.setPreloadedForm(chosenForm, chosenVisit.id);
-    await ChosenFormStorageManager.setChosenForm(chosenForm);
+    await updateChosenFormInStorage(chosenForm);
+    //await PreloadedFormsStorageManager.setPreloadedForm(chosenForm, chosenVisit.id);
+    //await ChosenFormStorageManager.setChosenForm(chosenForm);
   }
 
   @override

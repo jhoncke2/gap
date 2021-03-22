@@ -10,7 +10,6 @@ import 'forms/loaded_form_head.dart';
 // ignore: must_be_immutable
 class FormularioDetailPage extends StatelessWidget {
   static final String route = 'formulario_detail';
-  final SizeUtils _sizeUtils = SizeUtils();
   FormularioDetailPage({Key key}) : super(key: key);
 
   @override
@@ -65,7 +64,7 @@ class _LoadedFormularioDetail extends StatelessWidget {
       margin: EdgeInsets.all(0),
       child: Column(
         children: [
-          LoadedFormHead(formsState: formsState),
+          LoadedFormHead(formsState: formsState, hasBackButton: true),
           SizedBox(height: _sizeUtils.littleSizedBoxHeigh),
           LoadedFormBody(formsState: formsState)
         ],

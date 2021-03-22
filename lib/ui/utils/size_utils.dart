@@ -125,4 +125,8 @@ class SizeUtils{
   double get giantSizedBoxHeight{
     return _xasisYasisProm * 0.165;
   }
+
+  double get colosalSizedBoxHeight{
+    return _xasisYasisProm * 0.2;
+  }
 }

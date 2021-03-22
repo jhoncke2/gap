@@ -43,6 +43,12 @@ class RoutesManager{
     await CustomNavigator.navigateReplacingTo(_currentRoute);
   }
 
+  Future popNTimes(int n)async{
+    await NavigationRoutesStorageManager.removeNRoutes(n);
+    await loadRoute();
+    await CustomNavigator.navigateReplacingTo(_currentRoute);
+  }
+
   NavigationRoute get currentRoute => _currentRoute;
   Future<List<NavigationRoute>> get routesTree async => await NavigationRoutesStorageManager.getNavigationRoutes();
   

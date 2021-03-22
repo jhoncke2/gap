@@ -47,7 +47,7 @@ class LoadedFormHead extends StatelessWidget {
   }
 
   Widget _createBackButton(){
-    return hasBackButton? AppBackButton() : Container(height: _sizeUtils.largeSizedBoxHeigh, color: Colors.transparent);
+    return hasBackButton? AppBackButton(withLeftMargin: false) : Container(height: _sizeUtils.largeSizedBoxHeigh, color: Colors.transparent);
   }
 
   Widget _createInitFullDate(){

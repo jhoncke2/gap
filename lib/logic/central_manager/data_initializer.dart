@@ -127,6 +127,9 @@ class DataInitializer{
       case NavigationRoute.AdjuntarFotosVisita:
         await _doAdjuntarFotosUpdating();
         break;
+      case NavigationRoute.Firmers:
+        await _doFirmersUpdating();
+        break;
     }
   }
 
@@ -160,6 +163,11 @@ class DataInitializer{
 
   Future _doAdjuntarFotosUpdating()async{
     await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_COMMENTED_IMAGES);
+  }
+
+  Future _doFirmersUpdating()async{
+    // Deberían haberse actualizado los firmers en el _doFormDetailUpdating (el chosen form contenia las firmas)
+    //await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.)
   }
 
   void _evaluateifThereWasAnyErr(){

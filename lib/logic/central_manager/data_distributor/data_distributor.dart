@@ -164,7 +164,7 @@ abstract class DataDistributor{
     await _addFinalPosition(chosenForm);
     chosenForm.advanceInStep();
     _initOnFirstFirmerInformation();
-    await _updateChosenFormInStorage();
+    await updateChosenFormInStorage(chosenForm);
   }
 
   @protected
@@ -173,24 +173,33 @@ abstract class DataDistributor{
     form.finalPosition = currentPosition;
   }
 
-  Future _updateChosenFormInStorage()async{
-    final Formulario chosenForm = formsB.state.chosenForm;
-    await ChosenFormStorageManager.setChosenForm(chosenForm);
-    await PreloadedFormsStorageManager.setPreloadedForm(chosenForm, visitsB.state.chosenVisit.id);
+  @protected
+  Future updateChosenFormInStorage(Formulario form)async{
+    deleteNullFirmersFromForm(form);  
+    await ChosenFormStorageManager.setChosenForm(form);
+    await PreloadedFormsStorageManager.setPreloadedForm(form, visitsB.state.chosenVisit.id);
+  }
+
+  @protected
+  void deleteNullFirmersFromForm(Formulario form){
+    List<PersonalInformation> firmers = form.firmers.where((f){
+      return ![f.firm, f.name, f.identifDocumentType, f.identifDocumentNumber].contains(null);
+    }).toList();
+    form.firmers = firmers;
   }
   
   Future initFirstFirmerFillingOut()async{
     final Formulario chosenForm = formsB.state.chosenForm;
     chosenForm.advanceInStep();
     chosenFormB.add(InitFirmsFillingOut());
-    await _updateChosenFormInStorage();
+    await updateChosenFormInStorage(chosenForm);
   }
 
   Future initFirstFirmerFirm()async{
     final Formulario chosenForm = formsB.state.chosenForm;
     chosenForm.advanceInStep();
     _addNewFirmer(InitFirstFirmerFirm());
-    await _updateChosenFormInStorage();
+    await updateChosenFormInStorage(chosenForm);
   }
 
   Future updateFirmers()async{
@@ -198,10 +207,8 @@ abstract class DataDistributor{
     chosenForm.firmers.add( chosenFormB.state.firmers.last.clone() );
     final File currentFirmFile = await PainterToImageConverter.createFileFromFirmPainter(firmPaintB.state.firmPainter, chosenForm.firmers.length-1);
     chosenForm.firmers.last.firm = currentFirmFile;
-    //_updateFormStepInFirmers(chosenForm);
     _advanceInStepIfIsInFirstFirmerFirm(chosenForm);
-    await ChosenFormStorageManager.setChosenForm(chosenForm);
-    await PreloadedFormsStorageManager.setPreloadedForm(chosenForm, visitsB.state.chosenVisit.id);
+    await updateChosenFormInStorage(chosenForm);
     chosenFormB.add(UpdateFirmerPersonalInformation(firmer: chosenForm.firmers.last));
     _addNewFirmer(InitFirmsFillingOut());
   }

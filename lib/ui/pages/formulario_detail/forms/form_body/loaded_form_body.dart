@@ -3,10 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/data/models/entities/entities.dart';
-import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/form_process_container.dart';
 import 'package:gap/ui/widgets/unloaded_elements/unloaded_nav_items.dart';
-
 import 'bottom_containers/bottom_firms_options.dart';
 import 'bottom_containers/bottom_formfilling_navigation.dart';
 import 'center_containers/first_firmer_firm.dart';
@@ -16,7 +14,6 @@ import 'center_containers/secondary_firmer_firm.dart';
 
 // ignore: must_be_immutable
 class LoadedFormBody extends StatelessWidget{
-  final SizeUtils _sizeUtils = SizeUtils();
   final FormulariosState formsState;
   final Formulario _formulario;
 
@@ -31,7 +28,6 @@ class LoadedFormBody extends StatelessWidget{
       formName: _formulario.name,
       bottomChild: _ChosenFormCurrentComponent()
     );
-    
   }
 }
 
@@ -92,6 +88,3 @@ class _ChosenFormCurrentComponent extends StatelessWidget {
     }
   }
 }
-
-
-// ignore: must_be_immutable

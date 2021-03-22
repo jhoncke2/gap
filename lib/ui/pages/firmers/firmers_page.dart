@@ -28,11 +28,12 @@ class FirmersPage extends StatelessWidget{
     _context = context;
     final FormulariosState formsState = BlocProvider.of<FormulariosBloc>(context).state;
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       body: GestureDetector(
         child: Column(
           children: [
             SafeArea(child: Container()),
-            LoadedFormHead(hasBackButton: true, formsState: formsState),
+            LoadedFormHead(formsState: formsState),
             SizedBox(height: _sizeUtils.littleSizedBoxHeigh),
             FormProcessMainContainer(
               formName: formsState.chosenForm.name,
@@ -48,15 +49,19 @@ class FirmersPage extends StatelessWidget{
   }
 
   Widget _createFirmsWidgets(){
+    final double screenHeight = MediaQuery.of(_context).size.height;
     return BlocBuilder<ChosenFormBloc, ChosenFormState>(
       builder: (context, state) {
         _defineWidgetsByState(state);
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            _bodyWidget,
-            _bottomWidget
-          ],
+        return Container(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _bodyWidget,
+              SizedBox(height: screenHeight * 0.15),
+              _bottomWidget
+            ],
+          ),
         );
       },
     );

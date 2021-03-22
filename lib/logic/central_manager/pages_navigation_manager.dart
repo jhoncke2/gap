@@ -71,8 +71,8 @@ class PagesNavigationManager{
   }
 
   static bool _formularioSePuedeAbrir(Formulario formulario){
-    //return formulario.formStep != FormStep.Finished && formulario.campos.length > 0;
-    return !formulario.completo && formulario.campos.isNotEmpty; 
+    return !formulario.completo && formulario.campos.isNotEmpty;
+    //return true;
   }
 
   static Future _updateForm(Formulario formulario)async{
@@ -95,6 +95,7 @@ class PagesNavigationManager{
 
   static Future _endFormFillingOut()async{
     await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.END_FORM_FILLING_OUT);
+    await _goToPageByHavingOrNotError(NavigationRoute.Firmers, false);
   }
 
   static Future initFirstFirmerFirm()async{
@@ -107,7 +108,9 @@ class PagesNavigationManager{
 
   static Future<void> endFormFirmers()async{
     await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.END_ALL_FORM_PROCESS); 
-    await pop();
+    //await pop();
+    await _backToVisits();
+    await routesManager.popNTimes(2);
   }
 
   static Future<void> navToAdjuntarImages()async{
@@ -182,6 +185,8 @@ class PagesNavigationManager{
     else if(route == NavigationRoute.VisitDetail)
       await _backToVisitDetail();
     else if(route == NavigationRoute.Formularios)
+      await _backToForms();
+    else if(route == NavigationRoute.Firmers)
       await _backToForms();
   }
 
