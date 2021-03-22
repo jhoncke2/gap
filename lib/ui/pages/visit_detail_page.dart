@@ -6,6 +6,7 @@ import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/header/header.dart';
 import 'package:gap/ui/widgets/navigation_list/navigation_list_with_icons.dart';
 import 'package:gap/ui/widgets/page_title.dart';
+import 'package:gap/ui/widgets/progress_indicator.dart';
 import 'package:gap/ui/widgets/unloaded_elements/unloaded_nav_items.dart';
 
 // ignore: must_be_immutable
@@ -13,80 +14,82 @@ class VisitDetailPage extends StatelessWidget {
   static final String route = 'visit_detail';
   final SizeUtils _sizeUtils = SizeUtils();
   BuildContext _context;
-  
+
   @override
   Widget build(BuildContext context) {
     _initInitialConfiguration(context);
     return Scaffold(
       body: SafeArea(
-        child: Column(
-          children: [
-            SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
-            Header(),
-            SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
-            _createBodyComponents()
-          ],
+        child: BlocBuilder<VisitsBloc, VisitsState>(
+          builder: (context, state) {
+            if(state.chosenVisitIsBlocked)
+              return CustomProgressIndicator();
+            else
+              return _createLoadedComponents(state.chosenVisit);
+          },
         ),
       ),
     );
   }
 
-  void _initInitialConfiguration(BuildContext appContext){
+  void _initInitialConfiguration(BuildContext appContext) {
     _context = appContext;
     _sizeUtils.initUtil(MediaQuery.of(appContext).size);
   }
 
-  Widget _createBodyComponents(){
-    return BlocBuilder<VisitsBloc, VisitsState>(
-      builder: (_, state) {
-        if(state.chosenVisit != null){          
-          return _VisitDetailComponents(visit: state.chosenVisit);
-        }else{
-          return UnloadedNavItems();
-        }
-      },
+  Widget _createLoadedComponents(Visit chosenVisit){
+    return Column(
+      children: [
+        SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
+        Header(),
+        SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
+        _createBodyComponents(chosenVisit)
+      ],
     );
   }
-}
 
+  Widget _createBodyComponents(Visit chosenVisit){
+    if(chosenVisit != null)
+      return _VisitDetailComponents(visit: chosenVisit);
+    else
+      return CustomProgressIndicator(heightScreenPercentage: 0.5);
+  }
+}
 
 // ignore: must_be_immutable
 class _VisitDetailComponents extends StatelessWidget {
   final SizeUtils _sizeUtils = SizeUtils();
   final Visit visit;
   BuildContext _context;
-  _VisitDetailComponents({
-    @required this.visit
-  });
+  _VisitDetailComponents({@required this.visit});
 
   @override
   Widget build(BuildContext context) {
     _context = context;
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: _sizeUtils.normalHorizontalScaffoldPadding),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          PageTitle(title: visit.name, underlined: false),
-          SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
-          _createDateText(),
-          SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
-          NavigationListWithIcons(
-            currentVisitProcessState: visit.stage, 
-          )
-        ],
-      )
-    );
+        padding: EdgeInsets.symmetric(
+            horizontal: _sizeUtils.normalHorizontalScaffoldPadding),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            PageTitle(title: visit.name, underlined: false),
+            SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
+            _createDateText(),
+            SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
+            NavigationListWithIcons(
+              currentVisitProcessState: visit.stage,
+            )
+          ],
+        ));
   }
 
-  Widget _createDateText(){
+  Widget _createDateText() {
     final DateTime date = visit.date;
     return Text(
       'Fecha: ${date.toString().split(' ')[0]}',
       style: TextStyle(
-        color: Theme.of(_context).primaryColor,
-        fontSize: _sizeUtils.normalTextSize
-      ),
+          color: Theme.of(_context).primaryColor,
+          fontSize: _sizeUtils.normalTextSize),
     );
   }
 }

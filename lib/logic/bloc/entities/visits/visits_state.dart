@@ -12,6 +12,7 @@ class VisitsState {
   final List<Visit> visitsByFilterDate;
   final Visit chosenVisit;
   final bool backing;
+  final bool chosenVisitIsBlocked;
 
   VisitsState({
     this.visitsAreLoaded = true,
@@ -23,7 +24,8 @@ class VisitsState {
     DateTime filterDate,
     List<Visit> visitsByFilterDate,
     Visit chosenVisit,
-    bool backing
+    bool backing,
+    bool chosenVisitIsBlocked
   }):
     this.visits = visits??[],
     this.selectedStepInNav = selectedStepInNav??ProcessStage.Pendiente,
@@ -33,7 +35,8 @@ class VisitsState {
     this.filterDate = filterDate??null,
     this.visitsByFilterDate = visitsByFilterDate??null,
     this.chosenVisit = chosenVisit??null,
-    this.backing = backing??false
+    this.backing = backing??false,
+    this.chosenVisitIsBlocked = chosenVisitIsBlocked??false
     ;
 
   VisitsState copyWith({
@@ -46,7 +49,8 @@ class VisitsState {
     DateTime filterDate,
     List<Visit> visitsByFilterDate,
     Visit chosenVisit,
-    bool backing
+    bool backing,
+    bool chosenVisitIsBlocked
   })=>VisitsState(
     visitsAreLoaded: visitsAreLoaded??this.visitsAreLoaded,
     visits: visits??this.visits,
@@ -57,7 +61,8 @@ class VisitsState {
     filterDate: filterDate??this.filterDate,
     visitsByFilterDate: visitsByFilterDate??this.visitsByFilterDate,
     chosenVisit: chosenVisit??this.chosenVisit,
-    backing: backing??this.backing
+    backing: backing??this.backing,
+    chosenVisitIsBlocked: chosenVisitIsBlocked??this.chosenVisitIsBlocked
   );
 
   VisitsState reset() => VisitsState();

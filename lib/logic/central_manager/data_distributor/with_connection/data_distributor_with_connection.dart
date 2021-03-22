@@ -11,7 +11,6 @@ import 'package:gap/logic/central_manager/data_distributor/data_distributor.dart
 import 'package:gap/logic/central_manager/preloaded_storage_to_services.dart';
 import 'package:gap/logic/services_manager/projects_services_manager.dart';
 import 'package:gap/logic/services_manager/user_services_manager.dart';
-import 'package:gap/logic/storage_managers/forms/chosen_form_storage_manager.dart';
 import 'package:gap/logic/storage_managers/forms/formularios_storage_manager.dart';
 import 'package:gap/logic/storage_managers/forms/preloaded_forms_storage_manager.dart';
 import 'package:gap/logic/storage_managers/projects/projects_storage_manager.dart';
@@ -120,7 +119,8 @@ class DataDistributorWithConnection extends DataDistributor{
   @override
   Future updateChosenForm(Formulario form)async{
     Formulario realForm = await getUpdatedChosenForm(form);
-    await addInitialPosition(realForm);
+    if(realForm.initialPosition == null)
+      await addInitialPosition(realForm);
     final String accessToken = await UserStorageManager.getAccessToken();
     await ProjectsServicesManager.updateFormInitialization(accessToken, realForm.initialPosition, realForm.id);
     await super.updateChosenForm(realForm);
@@ -203,6 +203,7 @@ class DataDistributorWithConnection extends DataDistributor{
 
   @override
   Future updateCommentedImages()async{
+    visitsB.add(ChangeChosenVisitBlocking(isBlocked: true));
     final String accessToken = await UserStorageManager.getAccessToken();
     final Visit chosenVisit = UploadedBlocsData.dataContainer[NavigationRoute.VisitDetail];
     final List<CommentedImage> cmmImages = await ProjectsServicesManager.getCommentedImages(accessToken, chosenVisit.id);
@@ -211,7 +212,6 @@ class DataDistributorWithConnection extends DataDistributor{
     }else{
       commImgsB.add(InitSentCommImgsWatching(sentCommentedImages: cmmImages, onEnd: changeNPagesToIndex));
     }
-
   }
 
   @override
@@ -236,7 +236,8 @@ class DataDistributorWithConnection extends DataDistributor{
     await FormulariosStorageManager.removeForms();
   }
 
-  Future endCommentedImagesProcess()async{  
+  Future endCommentedImagesProcess()async{
+    visitsB.add(ChangeChosenVisitBlocking(isBlocked: false));
     if(commImgsB.state.dataType == CmmImgDataType.UNSENT)
       await _postUnsetCommentedImages();
     else

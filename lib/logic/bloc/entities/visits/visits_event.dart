@@ -33,6 +33,12 @@ class ChooseVisit extends VisitsEvent{
   });
 }
 
-class ResetVisits extends VisitsEvent{}
-
 class ResetDateFilter extends VisitsEvent{}
+
+class ChangeChosenVisitBlocking extends VisitsEvent{
+  final bool isBlocked;
+  ChangeChosenVisitBlocking({ @required this.isBlocked });
+
+}
+
+class ResetVisits extends VisitsEvent{}

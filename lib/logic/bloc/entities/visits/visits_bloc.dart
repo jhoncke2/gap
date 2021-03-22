@@ -22,12 +22,14 @@ class VisitsBloc extends Bloc<VisitsEvent, VisitsState> {
       changeSelectedStepInNav(event);
     }else if(event is ChangeDateFilterItem){
       changeDateFilterItem(event);
-    }else if(event is ChooseVisit){
-      chooseVisit(event);
-    }else if(event is ResetVisits){
-      resetAllOfVisits();
     }else if(event is ResetDateFilter){
       resetDateFilter();      
+    }else if(event is ChooseVisit){
+      chooseVisit(event);
+    }else if(event is ChangeChosenVisitBlocking){
+      _changeChosenVisitBlocking(event);
+    }else if(event is ResetVisits){
+      resetAllOfVisits();
     }
     yield _currentYieldedState;
   }
@@ -84,15 +86,6 @@ class VisitsBloc extends Bloc<VisitsEvent, VisitsState> {
   }
 
   @protected
-  void chooseVisit(ChooseVisit event){
-    final Visit chosenOne = event.chosenOne;
-    final List<Visit> visits = state.visits;
-    int chosenIndex = visits.indexWhere((element) => element.id == chosenOne.id);
-    visits[chosenIndex] = chosenOne;
-    _currentYieldedState = state.copyWith(chosenVisit: chosenOne, visits: visits);
-  }
-
-  @protected
   void resetDateFilter(){
     _currentYieldedState = VisitsState(
       visitsAreLoaded: state.visitsAreLoaded,
@@ -102,6 +95,19 @@ class VisitsBloc extends Bloc<VisitsEvent, VisitsState> {
       realizadasVisits: state.realizadasVisits,
       chosenVisit: state.chosenVisit
     );
+  }
+
+  @protected
+  void chooseVisit(ChooseVisit event){
+    final Visit chosenOne = event.chosenOne;
+    final List<Visit> visits = state.visits;
+    int chosenIndex = visits.indexWhere((element) => element.id == chosenOne.id);
+    visits[chosenIndex] = chosenOne;
+    _currentYieldedState = state.copyWith(chosenVisit: chosenOne, visits: visits);
+  }
+
+  void _changeChosenVisitBlocking(ChangeChosenVisitBlocking event){
+    _currentYieldedState = state.copyWith(chosenVisitIsBlocked: event.isBlocked);
   }
 
   @protected

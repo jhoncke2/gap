@@ -32,6 +32,8 @@ class ChosenFormBloc extends Bloc<ChosenFormEvent, ChosenFormState> {
       _initFirstFirmerFirm(event);
     }else if(event is InitFirmsFillingOut){
       _initFirmsFillingOut(event);
+    }else if(event is InitFirmsFinishing){
+      _initFirmsFinishing();
     }else if(event is UpdateFirmerPersonalInformation){
       _updateFirmerPersonalInformation(event);
     }else if(event is ResetChosenForm){
@@ -80,6 +82,12 @@ class ChosenFormBloc extends Bloc<ChosenFormEvent, ChosenFormState> {
     _currentStateToYield = state.copyWith(
       formStep: FormStep.OnSecondaryFirms,
       firmers: firmers
+    );
+  }
+
+  void _initFirmsFinishing(){
+    _currentStateToYield = state.copyWith(
+      formStep: FormStep.Finished
     );
   }
 

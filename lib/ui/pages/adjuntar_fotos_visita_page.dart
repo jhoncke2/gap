@@ -12,6 +12,7 @@ import 'package:gap/ui/widgets/indexing/index_pagination.dart';
 import 'package:gap/ui/widgets/page_title.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/utils/dialogs.dart' as dialogs;
+import 'package:gap/ui/widgets/progress_indicator.dart';
 
 // ignore: must_be_immutable
 class AdjuntarFotosVisitaPage extends StatelessWidget {
@@ -30,7 +31,7 @@ class AdjuntarFotosVisitaPage extends StatelessWidget {
             child: BlocBuilder<CommentedImagesBloc, CommentedImagesState>(
               builder: (context, state) {
                 if(state.isLoading)
-                  return _createLoadingWidget();
+                  return CustomProgressIndicator();
                 else
                   return _createContentItems();
               },
@@ -39,19 +40,6 @@ class AdjuntarFotosVisitaPage extends StatelessWidget {
           onTap: (){
             FocusScope.of(_context).requestFocus(new FocusNode());
           }
-        ),
-      ),
-    );
-  }
-
-  Widget _createLoadingWidget(){
-    Size size = MediaQuery.of(_context).size;
-    return Container(
-      height: size.height * 0.9,
-      child: Center(
-        child: CircularProgressIndicator(
-          backgroundColor: Colors.cyan[600],
-          strokeWidth: 7.5,
         ),
       ),
     );

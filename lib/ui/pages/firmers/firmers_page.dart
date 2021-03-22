@@ -12,6 +12,7 @@ import 'package:gap/ui/pages/formulario_detail/forms/loaded_form_head.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/buttons/general_button.dart';
 import 'package:gap/ui/widgets/form_process_container.dart';
+import 'package:gap/ui/widgets/progress_indicator.dart';
 
 // ignore: must_be_immutable
 class FirmersPage extends StatelessWidget{
@@ -104,7 +105,7 @@ class FirmersPage extends StatelessWidget{
   }
 
   void _defineOnNothingWidgets(){
-    _bodyWidget = Container();
+    _bodyWidget = CustomProgressIndicator(heightScreenPercentage: 0.4);
     _bottomWidget = Container();
   }
 }

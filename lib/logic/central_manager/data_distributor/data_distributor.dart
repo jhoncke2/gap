@@ -204,13 +204,17 @@ abstract class DataDistributor{
 
   Future updateFirmers()async{
     final Formulario chosenForm = formsB.state.chosenForm;
-    chosenForm.firmers.add( chosenFormB.state.firmers.last.clone() );
-    final File currentFirmFile = await PainterToImageConverter.createFileFromFirmPainter(firmPaintB.state.firmPainter, chosenForm.firmers.length-1);
-    chosenForm.firmers.last.firm = currentFirmFile;
+    await _updateFirmersInForm(chosenForm);
     _advanceInStepIfIsInFirstFirmerFirm(chosenForm);
     await updateChosenFormInStorage(chosenForm);
     chosenFormB.add(UpdateFirmerPersonalInformation(firmer: chosenForm.firmers.last));
     _addNewFirmer(InitFirmsFillingOut());
+  }
+
+  Future _updateFirmersInForm(Formulario form)async{
+    form.firmers.add( chosenFormB.state.firmers.last.clone() );
+    final File currentFirmFile = await PainterToImageConverter.createFileFromFirmPainter(firmPaintB.state.firmPainter, form.firmers.length-1);
+    form.firmers.last.firm = currentFirmFile;
   }
 
   void _addNewFirmer(ChosenFormEvent cfEvent){
@@ -224,10 +228,13 @@ abstract class DataDistributor{
   }
 
   Future endAllFormProcess()async{
+    chosenFormB.add(InitFirmsFinishing());
     final Formulario chosenForm = formsB.state.chosenForm;
     chosenForm.formStep = FormStep.Finished;
-    await updateFirmers();
-     chosenFormB.add(ResetChosenForm());
+    //await updateFirmers();
+    await _updateFirmersInForm(chosenForm);
+    await updateChosenFormInStorage(chosenForm);
+    chosenFormB.add(ResetChosenForm());
     indexB.add(ResetAllOfIndex());  
   }
 
@@ -277,8 +284,10 @@ abstract class DataDistributor{
 
   Future endCommentedImagesProcess()async{
     indexB.add(ResetAllOfIndex());
-    await updateProjects();
-    await updateVisits();
+    if(commImgsB.state.dataType == CmmImgDataType.UNSENT){
+      await updateProjects();
+      await updateVisits();
+    }
   }
 
   Future<void> addStorageDataToIndexBloc()async{
@@ -322,7 +331,8 @@ abstract class DataDistributor{
 
   Future resetChosenForm()async{}
 
-  Future resetCommentedImages()async{}
+  Future resetCommentedImages()async{
+  }
 }
 
 

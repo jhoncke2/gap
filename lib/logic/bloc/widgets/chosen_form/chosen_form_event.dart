@@ -18,6 +18,8 @@ class InitFirstFirmerFirm extends ChosenFormEvent{}
 
 class InitFirmsFillingOut extends ChosenFormEvent{}
 
+class InitFirmsFinishing extends ChosenFormEvent{}
+
 class UpdateFirmerPersonalInformation extends ChosenFormEvent{
   final PersonalInformation firmer;
   UpdateFirmerPersonalInformation({

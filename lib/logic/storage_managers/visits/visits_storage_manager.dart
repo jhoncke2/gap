@@ -41,7 +41,7 @@ class VisitsStorageManager{
     final Map<String, dynamic> visitAsJson = await StorageConnectorSingleton.storageConnector.getMapResource(_chosenVisitKey);
     final Visit visit = Visit.fromJson(visitAsJson);
     return visit;
-  }
+  } 
 
   static Future<void> removeChosenVisit()async{
     await StorageConnectorSingleton.storageConnector.removeResource(_chosenVisitKey);

@@ -3,12 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/logic/bloc/widgets/firm_paint/firm_paint_bloc.dart';
 import 'package:gap/logic/blocs_manager/chosen_form_manager.dart';
 import 'package:gap/logic/central_manager/pages_navigation_manager.dart';
-import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/buttons/general_button.dart';
 
 // ignore: must_be_immutable
 class BottomFirmsOptions extends StatelessWidget {
-  final SizeUtils _sizeUtils = SizeUtils();
   BuildContext _context;
   Function _onAddFirmPressed;
   Function _onFinishPressed;
@@ -49,6 +47,16 @@ class BottomFirmsOptions extends StatelessWidget {
     }
   }
 
+  Future<void> _addNewFirm()async{
+    //await ChosenFormManagerSingleton.chosenFormManager.addFirmToFirmer();
+    //ChosenFormManagerSingleton.chosenFormManager.addNewFirm();
+    await PagesNavigationManager.addFirmer();
+  }
+
+  Future<void> _finish()async{
+    await PagesNavigationManager.endFormFirmers();
+  }
+
   Widget _createAddFirmButton() {
     return GeneralButton(
         text: 'Agregar Firma',
@@ -57,21 +65,11 @@ class BottomFirmsOptions extends StatelessWidget {
         backgroundColor: Theme.of(_context).secondaryHeaderColor);
   }
 
-  Future<void> _addNewFirm()async{
-    //await ChosenFormManagerSingleton.chosenFormManager.addFirmToFirmer();
-    //ChosenFormManagerSingleton.chosenFormManager.addNewFirm();
-    await PagesNavigationManager.addFirmer();
-  }
-
   Widget _createFinishButton() {
     return GeneralButton(
       text: 'Finalizar',
       onPressed: _onFinishPressed,
       backgroundColor: Theme.of(_context).secondaryHeaderColor
     );
-  }
-
-  Future<void> _finish()async{
-    await PagesNavigationManager.endFormFirmers();
   }
 }

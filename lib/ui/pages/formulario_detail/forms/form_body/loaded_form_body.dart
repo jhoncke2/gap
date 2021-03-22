@@ -4,13 +4,10 @@ import 'package:gap/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/ui/widgets/form_process_container.dart';
+import 'package:gap/ui/widgets/progress_indicator.dart';
 import 'package:gap/ui/widgets/unloaded_elements/unloaded_nav_items.dart';
-import 'bottom_containers/bottom_firms_options.dart';
 import 'bottom_containers/bottom_formfilling_navigation.dart';
-import 'center_containers/first_firmer_firm.dart';
-import 'center_containers/first_firmer_pers_info.dart';
 import 'center_containers/form_fields_fraction.dart';
-import 'center_containers/secondary_firmer_firm.dart';
 
 // ignore: must_be_immutable
 class LoadedFormBody extends StatelessWidget{
@@ -61,14 +58,24 @@ class _ChosenFormCurrentComponent extends StatelessWidget {
   }
 
   void _elegirComponentsSegunFormState(){
+    if(_state.formStep == FormStep.WithoutForm){
+      _centerComponents = UnloadedNavItems();
+      _bottomComponents = Container();
+    }else if(_state.formStep == FormStep.OnForm){
+      _centerComponents = FormInputsFraction();
+      _bottomComponents = BottomFormFillingNavigation();
+    }else{
+      _centerComponents = CustomProgressIndicator(heightScreenPercentage: 0.45);
+      _bottomComponents = Container();
+    }
+
+    /*
     switch(_state.formStep){      
       case FormStep.WithoutForm:
-        _centerComponents = UnloadedNavItems();
-        _bottomComponents = Container();
+        
         break;
       case FormStep.OnForm:
-        _centerComponents = FormInputsFraction();
-        _bottomComponents = BottomFormFillingNavigation();
+        
         break;
       case FormStep.OnFirstFirmerInformation:
         _centerComponents = FirstFirmerPersInfo();
@@ -86,5 +93,6 @@ class _ChosenFormCurrentComponent extends StatelessWidget {
         _centerComponents = Container();
         _bottomComponents = Container();
     }
+    */
   }
 }
