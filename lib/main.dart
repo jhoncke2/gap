@@ -81,6 +81,7 @@ Future<void> _testRemovePartOfStorage()async{
   await sc.removeResource('preloaded_forms');
   await sc.setStringResource('new_auth_token', 'fake_auth_token');
   await sc.removeResource('user_information');
+  await sc.removeResource('first_time_runned');
 }
 
 Future _testAddInitialUserInformation()async{

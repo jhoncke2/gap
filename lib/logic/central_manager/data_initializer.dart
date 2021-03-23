@@ -1,3 +1,4 @@
+import 'package:gap/logic/bloc/nav_routes/custom_navigator.dart';
 import 'package:gap/logic/central_manager/data_distributor/data_distributor_error_handler_manager.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/cupertino.dart';
@@ -20,8 +21,15 @@ class DataInitializer{
 
   Future init(BuildContext context, NetConnectionState netConnState)async{
     _continueInitialization = true;
-    final PermissionStatus storagePermissionStatus = await NativeServicesPermissions.storageServiceStatus;
-    await _doFunctionByStoragePermissionStatus(storagePermissionStatus, context, netConnState);
+    dataDisributorErrorHandlingManager.netConnectionState = netConnState;
+    final bool alreadyRunned = await UserStorageManager.alreadyRunnedApp();
+    if(alreadyRunned){
+      final PermissionStatus storagePermissionStatus = await NativeServicesPermissions.storageServiceStatus;
+      await _doFunctionByStoragePermissionStatus(storagePermissionStatus, CustomNavigator.navigatorKey.currentContext, netConnState);
+    }else{
+      await UserStorageManager.setFirstTimeRunned();
+      _navigateToLogin(CustomNavigator.navigatorKey.currentContext, netConnState);
+    }
   }
 
   Future _doFunctionByStoragePermissionStatus(PermissionStatus permissionStatus, BuildContext context, NetConnectionState netConnState)async{
@@ -38,7 +46,6 @@ class DataInitializer{
   }
 
   Future _init(BuildContext context, NetConnectionState netConnState)async{
-    dataDisributorErrorHandlingManager.netConnectionState = netConnState;
     final String accessToken = await UserStorageManager.getAccessToken();
     await _doInitializationByAccessToken(accessToken, context, netConnState);
   }
@@ -50,13 +57,22 @@ class DataInitializer{
       await _doInitialization(context, netConnState);
   }
 
+  Future _navigateToLogin(BuildContext context, NetConnectionState netConnState)async{
+    _defineLogginButtonAvaibleless(netConnState);
+    await PagesNavigationManager.navToLogin();
+  }
+
+  void _defineLogginButtonAvaibleless(NetConnectionState netConnState)async{
+    final bool loginButtonAvaibleless = (netConnState == NetConnectionState.Connected)? true : false;
+    BlocProvidersCreator.userBloc.add(ChangeLoginButtopnAvaibleless(isAvaible: loginButtonAvaibleless));
+  }
+
   Future _doInitialization(BuildContext context, NetConnectionState netConnState)async{
     await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.DO_INITIAL_CONFIG);
     if(dataDisributorErrorHandlingManager.happendError)
       await _routesManager.replaceAllRoutesForNew(dataDisributorErrorHandlingManager.navigationTodoByError??NavigationRoute.Login);
     else
       await _continueInitializationAfterUpdateToken(context, netConnState);
-    
   }
 
   Future _continueInitializationAfterUpdateToken(BuildContext context, NetConnectionState netConnState)async{
@@ -75,16 +91,6 @@ class DataInitializer{
   Future<bool> _currentNavRouteIsLogin()async{
     final NavigationRoute currentNavRoute = _routesManager.currentRoute;
     return (currentNavRoute == NavigationRoute.Login);
-  }
-
-  Future _navigateToLogin(BuildContext context, NetConnectionState netConnState)async{
-    _defineLogginButtonAvaibleless(netConnState);
-    await PagesNavigationManager.navToLogin();
-  }
-
-  void _defineLogginButtonAvaibleless(NetConnectionState netConnState)async{
-    final bool loginButtonAvaibleless = (netConnState == NetConnectionState.Connected)? true : false;
-  BlocProvidersCreator.userBloc.add(ChangeLoginButtopnAvaibleless(isAvaible: loginButtonAvaibleless));
   }
 
   Future _doAllNavigationTree(BuildContext context)async{

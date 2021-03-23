@@ -207,19 +207,18 @@ abstract class DataDistributor{
     await _updateFirmersInForm(chosenForm);
     _advanceInStepIfIsInFirstFirmerFirm(chosenForm);
     await updateChosenFormInStorage(chosenForm);
-    chosenFormB.add(UpdateFirmerPersonalInformation(firmer: chosenForm.firmers.last));
+    chosenFormB.add(UpdateFirmerPersonalInformation(firmer: chosenForm.firmers.last.clone()));
+    print(chosenFormB.state.firmers.last);
+    print(chosenForm.firmers.last);
     _addNewFirmer(InitFirmsFillingOut());
   }
 
   Future _updateFirmersInForm(Formulario form)async{
     form.firmers.add( chosenFormB.state.firmers.last.clone() );
+    print(chosenFormB.state.firmers.last);
+    print(form.firmers.last);
     final File currentFirmFile = await PainterToImageConverter.createFileFromFirmPainter(firmPaintB.state.firmPainter, form.firmers.length-1);
     form.firmers.last.firm = currentFirmFile;
-  }
-
-  void _addNewFirmer(ChosenFormEvent cfEvent){
-    chosenFormB.add(cfEvent);
-    firmPaintB.add(ResetFirmPaint());
   }
 
   void _advanceInStepIfIsInFirstFirmerFirm(Formulario form){
@@ -227,7 +226,13 @@ abstract class DataDistributor{
       form.advanceInStep();
   }
 
+  void _addNewFirmer(ChosenFormEvent cfEvent){
+    chosenFormB.add(cfEvent);
+    firmPaintB.add(ResetFirmPaint());
+  }
+
   Future endAllFormProcess()async{
+    print(formsB.state.chosenForm);
     chosenFormB.add(InitFirmsFinishing());
     final Formulario chosenForm = formsB.state.chosenForm;
     chosenForm.formStep = FormStep.Finished;

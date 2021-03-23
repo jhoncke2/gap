@@ -2,7 +2,6 @@ import 'package:gap/data/enums/enums.dart';
 import 'package:gap/errors/services/service_status_err.dart';
 import 'package:gap/errors/storage/unfound_storage_element_err.dart';
 import 'package:gap/logic/central_manager/data_distributor/data_distributor_manager.dart';
-import 'package:gap/logic/storage_managers/user/user_storage_manager.dart';
 import 'package:gap/ui/utils/dialogs.dart' as dialogs;
 
 class DataDisributorErrorHandlingManager{
@@ -22,12 +21,10 @@ class DataDisributorErrorHandlingManager{
       await _manageServiceStatusErr(err, functionName, value);
     }on UnfoundStorageElementErr catch(err){
       await _manageUnfoundStorageElementErr(err);
-    }
-    /*
-    catch(err){
+    }catch(err){
       await _manageGeneralErr(err);
     }
-    */
+    
   }
 
   Future _tryExecuteFunction(DataDistrFunctionName functionName, [dynamic value])async{

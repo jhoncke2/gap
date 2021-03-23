@@ -7,6 +7,7 @@ class UserStorageManager{
   static final String _authTokenKey = 'auth_token';
   @protected
   static final String _userInformationKey = 'user_information';
+  static final String _firstRunningKey = 'first_time_runned';
 
   static Future<void> setAccessToken(String authToken)async{
     await StorageConnectorSingleton.storageConnector.setStringResource(_authTokenKey, authToken);
@@ -14,7 +15,6 @@ class UserStorageManager{
 
   static Future<String> getAccessToken()async{
     final String authToken = await StorageConnectorSingleton.storageConnector.getStringResource(_authTokenKey);
-    //TODO: Implementar lanzamiento de errores desde el storage connector.
     //_throwErrIfUnfound(authToken);
     return authToken;
   }
@@ -37,4 +37,15 @@ class UserStorageManager{
     final Map<String, dynamic> userInfo = await StorageConnectorSingleton.storageConnector.getMapResource(_userInformationKey);
     return userInfo;
   }
+
+  static Future setFirstTimeRunned()async{
+    await StorageConnectorSingleton.storageConnector.setMapResource(_firstRunningKey, {'runned':true});
+  }
+
+  static Future<bool> alreadyRunnedApp()async{
+    final Map<String, dynamic> stringRunnedAtFirstTime = await StorageConnectorSingleton.storageConnector.getMapResource(_firstRunningKey);
+    final bool runnedAtFirstTime = stringRunnedAtFirstTime['runned']??false;
+    return runnedAtFirstTime;
+  }
+
 }

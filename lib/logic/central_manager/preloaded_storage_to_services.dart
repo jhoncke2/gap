@@ -129,12 +129,22 @@ class _FormEvaluater{
   }
 
   Future _sendFormIfHasFields(Formulario form, int visitId)async{
+    if(form.initialPosition != null){
+      await ProjectsServicesManager.updateFormInitialization(_accessToken, form.initialPosition, form.id);
+      form.initialPosition = null;
+    }
+        
     if(_formHasFields(form)){
       await ProjectsServicesManager.updateForm(form, visitId, _accessToken);
-      anyDataWasSended = true;
+      anyDataWasSended = true;  
       form.campos = [];
       await PreloadedFormsStorageManager.setPreloadedForm(form, visitId);
     }
+    if(form.finalPosition != null){
+      await ProjectsServicesManager.updateFormFillingOutFinalization(_accessToken, form.finalPosition, form.id);
+      form.finalPosition = null;
+    }
+      
   }
 
   Future _sendFirmersIfHasFirmers(Formulario form, int visitId)async{

@@ -65,7 +65,7 @@ class  PersonalInformation{
     'nombre':name
   };
 
-  PersonalInformation clone()=>PersonalInformation(
+  PersonalInformation clone()=> PersonalInformation(
     id: this.id,
     name: this.name,
     identifDocumentType: this.identifDocumentType,

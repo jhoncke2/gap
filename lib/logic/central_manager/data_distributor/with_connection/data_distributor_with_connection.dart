@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:gap/data/enums/enums.dart';
 import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/errors/storage/unfound_storage_element_err.dart';
@@ -154,17 +155,17 @@ class DataDistributorWithConnection extends DataDistributor{
   @override
   Future updateFirmers()async{
     await super.updateFirmers();
-    await _sendFirmerToService();
+    await sendFirmerToService();
   }
 
-  Future _sendFirmerToService()async{
+  @protected
+  Future sendFirmerToService()async{
     final Formulario chosenForm = formsB.state.chosenForm;
     final PersonalInformation lastFirmer = chosenForm.firmers.last.clone();
     final String accessToken = await UserStorageManager.getAccessToken();
     final Visit chosenVisit = visitsB.state.chosenVisit;
     await ProjectsServicesManager.saveFirmer(accessToken, lastFirmer, chosenForm.id, chosenVisit.id);
     chosenForm.firmers.removeAt(0);
-    print(chosenFormB.state.firmers);
     await updateChosenFormInStorage(chosenForm);
     //await PreloadedFormsStorageManager.setPreloadedForm(chosenForm, chosenVisit.id);
     //await ChosenFormStorageManager.setChosenForm(chosenForm);
@@ -173,6 +174,7 @@ class DataDistributorWithConnection extends DataDistributor{
   @override
   Future endAllFormProcess()async{
     await super.endAllFormProcess();
+    await sendFirmerToService();
     await _updatePreloadedDataAfterFormProcessEnd();
   }
 
