@@ -14,14 +14,16 @@ import 'form_fields/form_field_widget_factory.dart';
 class FormInputsFraction extends StatefulWidget {
 
   final ScrollController formFieldsScrollController = ScrollController();
-  bool alreadyOnceBuilded = false;
   double lastScrollOffset = 0;
   // ignore: close_sinks
   final StreamController<int> onTextFieldChangeController = StreamController.broadcast();
   Stream<int> onTextFieldTapStream;
-  int currentTappedTextFormField;
+  final ScrollController elementsScrollController = ScrollController();
 
-  FormInputsFraction({Key key}) : super(key: key){
+  int currentTappedTextFormField;
+  double screenHeightPercent;
+
+  FormInputsFraction({Key key, @required this.screenHeightPercent}) : super(key: key){
     onTextFieldTapStream = onTextFieldChangeController.stream;
   }
 
@@ -81,7 +83,7 @@ class _FormInputsFractionState extends State<FormInputsFraction> {
     });
   }
 
-void _initOnTextFieldTapStream(){
+  void _initOnTextFieldTapStream(){
     widget.onTextFieldTapStream.listen((int tappedIndex) {
       _moveScrollByTappedFormIndex(tappedIndex);
     });
@@ -120,18 +122,20 @@ void _initOnTextFieldTapStream(){
 
   Widget _createFormFieldsWithIndex(){
     List<CustomFormField> formFIeldsByPage = _getFormFIeldsByCurrentPage();
-    return SingleChildScrollView(
-      child: Container(
+    return Container(
+      child: Scrollbar(
+        controller: widget.elementsScrollController,
+        isAlwaysShown: true,
         child: ListView.separated(
-          controller: widget.formFieldsScrollController,
+          controller: widget.elementsScrollController,
           itemCount: formFIeldsByPage.length,
           separatorBuilder: (_, __)=>SizedBox(height: _sizeUtils.xasisSobreYasis * 0.1),
           itemBuilder: (_, int i)=>FormFieldWidgetFactory.createFormFieldWidget(formFIeldsByPage[i], i, widget.onTextFieldChangeController),
           padding: EdgeInsets.only(top: 10, bottom: _listViewBotPadding),
         ),
-        height: _sizeUtils.xasisSobreYasis * 0.65,
-        width: double.infinity,
-      )
+      ),
+      height: _sizeUtils.xasisSobreYasis * widget.screenHeightPercent,
+      width: double.infinity,
     );
   }
 

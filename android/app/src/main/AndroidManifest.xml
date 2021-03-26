@@ -17,10 +17,11 @@
          FlutterApplication and put your custom class here. -->
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="gap"
+        android:label="GAP"
         android:icon="@mipmap/launcher_icon"
-        android:allowBackup="false"
-        android:fullBackupContent="false">
+        android:allowBackup="true" 
+        android:fullBackupContent="@xml/backup_rules"
+        >
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

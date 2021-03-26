@@ -32,8 +32,8 @@ class PagesNavigationManager{
     await _login(loginInfo);
     if(!dataDisributorErrorHandlingManager.happendError){
       await _updateProjectsData();
-      await _goToPageByHavingOrNotError(NavigationRoute.Projects, true);
-    }  
+    }
+    await _goToPageByHavingOrNotError(NavigationRoute.Projects, true);
   }
   
 
@@ -67,6 +67,7 @@ class PagesNavigationManager{
   }
 
   static Future<void> navToForms()async{
+    await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_FORMULARIOS);
     await _goToNextPage(NavigationRoute.Formularios);
   }
 

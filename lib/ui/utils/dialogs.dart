@@ -10,17 +10,21 @@ Future<void> showAdjuntarFotosDialog(BuildContext context)async{
     useRootNavigator: false,
     context: context,
     barrierColor: Colors.black.withOpacity(0.0175),
-    child: Dialog(
-      child: AdjuntarFotosDialog(),
-      shape: _createGeneralDialogBorder(context)
-    )
+    builder: (BuildContext context){
+      return Dialog(
+        child: AdjuntarFotosDialog(),
+        shape: _createGeneralDialogBorder(context)
+      );
+    },
   );
 }
 
 Future showErrDialog(BuildContext context, String errorMsg)async{
   await showDialog(
     context: context,
-    child: _GeneralDialog(errorMsg)
+    builder: (BuildContext context){
+      return _GeneralDialog(errorMsg);
+    }
   );
 }
 
@@ -45,7 +49,9 @@ Future showBlockedDialog(BuildContext context, String message)async{
   await showDialog(
     barrierDismissible: false,
     context: context,
-    child: _GeneralDialog(message)
+    builder: (BuildContext context){
+      return _GeneralDialog(message);
+    },
   );
 }
 

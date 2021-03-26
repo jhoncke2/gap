@@ -11,7 +11,9 @@ class DialogShower{
     _updateContext(context);
     showDialog(
       context: _context,
-      child: _createFileDialog(image)
+      builder: (BuildContext context){
+        return _createFileDialog(image);
+      }
     );
   }
 

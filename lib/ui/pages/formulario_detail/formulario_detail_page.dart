@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/ui/utils/size_utils.dart';
-import 'package:gap/ui/widgets/unloaded_elements/unloaded_nav_items.dart';
-
-import 'forms/form_body/loaded_form_body.dart';
+import 'package:gap/ui/widgets/form_process_container.dart';
+import 'package:gap/ui/widgets/progress_indicator.dart';
+import 'forms/form_body/chosen_form_current_component.dart';
 import 'forms/loaded_form_head.dart';
 
 // ignore: must_be_immutable
@@ -15,7 +15,8 @@ class FormularioDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context){
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomInset: false,
+      //resizeToAvoidBottomPadding: false,
       body: GestureDetector(
         child: Container(
           height: MediaQuery.of(context).size.height,
@@ -41,7 +42,7 @@ class FormularioDetailPage extends StatelessWidget {
         if(state.chosenForm != null){          
           return _LoadedFormularioDetail(formsState: state);
         }else{
-          return UnloadedNavItems();
+          return CustomProgressIndicator(heightScreenPercentage: 0.85);
         }
       },
     );
@@ -66,7 +67,10 @@ class _LoadedFormularioDetail extends StatelessWidget {
         children: [
           LoadedFormHead(formsState: formsState, hasBackButton: true),
           SizedBox(height: _sizeUtils.littleSizedBoxHeigh),
-          LoadedFormBody(formsState: formsState)
+          FormProcessMainContainer(
+            formName: formsState.chosenForm.name,
+            bottomChild: ChosenFormCurrentComponent()
+          )
         ],
       )
     );

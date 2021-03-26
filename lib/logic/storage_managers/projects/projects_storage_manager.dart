@@ -11,12 +11,6 @@ class ProjectsStorageManager{
     await StorageConnectorSingleton.storageConnector.setListResource(_projectsKey, projectsAsJson);
   }
 
-  static List<Map<String, dynamic>> _convertProjectsToJson(List<Project> projects){
-    return projects.map<Map<String, dynamic>>(
-      (Project p)=> p.toJson()
-    ).toList();
-  }
-
   static Future<List<Project>> getProjects()async{
     return await _getListOfProjects(_projectsKey);
   }

@@ -13,16 +13,6 @@ class UserServicesManager{
     await _saveAccessToken(accessToken, context);
   }
 
-  static Future loginOld(String email, String password, BuildContext context)async{
-    try{
-      await _tryLogin(email, password, context);
-    }on ServiceStatusErr catch(err){
-      await dialogs.showErrDialog(context, err.message);
-    }catch(err){
-      await dialogs.showErrDialog(context, err.toString());
-    }
-  }
-
   static Future _tryLogin(String email, String password, BuildContext context)async{
     
     //await PagesNavigationManager.navToProjects();

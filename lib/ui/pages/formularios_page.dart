@@ -8,6 +8,7 @@ import 'package:gap/ui/widgets/header/header.dart';
 import 'package:gap/ui/widgets/navigation_list/navigation_list_with_stage_color_buttons.dart';
 import 'package:gap/ui/widgets/page_title.dart';
 import 'package:gap/ui/utils/size_utils.dart';
+import 'package:gap/ui/widgets/progress_indicator.dart';
 // ignore: must_be_immutable
 class FormulariosPage extends StatelessWidget {
   static final String route = 'formularios';
@@ -18,10 +19,10 @@ class FormulariosPage extends StatelessWidget {
       body: SafeArea(
         child: BlocBuilder<FormulariosBloc, FormulariosState>(
           builder: (_, state) {
-            if(state.formsAreLoaded && !state.backing){
+            if(state.formsAreLoaded && !state.backing && !state.formsAreBlocked){
               return _createContent(state);
             }else{
-              return _createLoadingWidget();
+              return CustomProgressIndicator();
             }
           },
         ),
@@ -50,17 +51,6 @@ class FormulariosPage extends StatelessWidget {
         SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
         _FormulariosComponents(visitForms: state.forms)
       ],
-    );
-  }
-
-  Widget _createLoadingWidget() {
-    return Container(
-      child: Center(
-        child: CircularProgressIndicator(
-          backgroundColor: Colors.cyan[600],
-          strokeWidth: 7.5,
-        ),
-      ),
     );
   }
 

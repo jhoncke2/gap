@@ -80,10 +80,15 @@ class NumberFormFieldWidget extends TextFormFieldWidget {
   }
 
   void onChanged(String stringNewValue){
-    currentValue = int.parse(stringNewValue);
-    final int newValue = _getValueBasedOnItIsBetweenLimits(currentValue);
+    int newValue;
+    if(stringNewValue == ''){
+      newValue = null;
+    }else{
+      int currentValue = int.parse(stringNewValue);
+      newValue = _getValueBasedOnItIsBetweenLimits(currentValue);
+    }
     number.value = newValue;
-    _textFieldController.text = newValue.toString();
+    _textFieldController.text = newValue == null? null : newValue.toString();
     PagesNavigationManager.updateFormFieldsPage();
     
   }

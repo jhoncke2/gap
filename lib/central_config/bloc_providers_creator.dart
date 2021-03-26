@@ -11,6 +11,7 @@ import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/logic/bloc/widgets/commented_images/commented_images_bloc.dart';
 import 'package:gap/logic/bloc/widgets/firm_paint/firm_paint_bloc.dart';
 import 'package:gap/logic/bloc/widgets/index/index_bloc.dart';
+import 'package:gap/logic/bloc/widgets/keyboard_listener/keyboard_listener_bloc.dart';
 
 class BlocProvidersCreator{
   static final UserBloc userBloc = UserBloc();
@@ -23,6 +24,7 @@ class BlocProvidersCreator{
   static final CommentedImagesBloc commentedImagesBloc = CommentedImagesBloc();
   static final FirmPaintBloc firmPaintBloc = FirmPaintBloc();
   static final VisitsSingleton visitsSingleton = VisitsSingleton();
+  static final KeyboardListenerBloc keyboardListenerBloc = KeyboardListenerBloc();
 
   static final blocProviders = [
     BlocProvider<ProjectsBloc>(create: (_)=>projectsBloc),
@@ -34,9 +36,10 @@ class BlocProvidersCreator{
     BlocProvider<CommentedImagesBloc>(create: (_)=>commentedImagesBloc),
     BlocProvider<FirmPaintBloc>(create: (_)=>firmPaintBloc),
     BlocProvider<UserBloc>(create: (_)=>userBloc),
+    BlocProvider<KeyboardListenerBloc>(create: (_)=>keyboardListenerBloc)
   ];
 
-  static final singletons = [
+  static final singletones = [
     visitsSingleton
   ];
 
@@ -48,7 +51,8 @@ class BlocProvidersCreator{
     chosenFormBloc.close();
     imagesBloc.close();
     commentedImagesBloc.close();
-    firmPaintBloc.close();    
+    firmPaintBloc.close();
+    keyboardListenerBloc.close();
   }
 
   static Map<BlocName, Bloc> get blocsAsMap => {

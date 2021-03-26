@@ -22,6 +22,8 @@ class FormulariosBloc extends Bloc<FormulariosEvent, FormulariosState> {
       _chooseForm(event);
     }else if(event is ResetForms){
       _resetForms();
+    }else if(event is ChangeFormsAreBlocked){
+      _changeFormsAreBlocked(event);
     }
     yield _currentYieldedState;
   }
@@ -45,6 +47,10 @@ class FormulariosBloc extends Bloc<FormulariosEvent, FormulariosState> {
     );
   }
 
+  void _changeFormsAreBlocked(ChangeFormsAreBlocked event){
+    _currentYieldedState = state.copyWith(formsAreBlocked: event.areBlocked);
+  }
+
   void _resetForms(){
     _currentYieldedState = state.reset();
   }
@@ -56,7 +62,8 @@ class FormulariosBloc extends Bloc<FormulariosEvent, FormulariosState> {
     forms[chosenIndex] = chosenOne;
     _currentYieldedState = state.copyWith(
       chosenForm: chosenOne,
-      forms: forms
+      forms: forms,
+      formsAreBlocked: true
     );
   }
 }

@@ -7,11 +7,16 @@ class NavigationList extends StatelessWidget {
   final List<String> itemsNames;
   List<Function> itemsFunctions;
   final double horizontalPadding;
+  final bool scrollIsAllwaysShown;
+  final ScrollController scrollController = new ScrollController();
   BuildContext context;
+
+
   NavigationList({
     @required this.itemsNames,
     @required this.itemsFunctions,
-    this.horizontalPadding = 0
+    this.horizontalPadding = 0,
+    this.scrollIsAllwaysShown = false
   });
 
   @override
@@ -25,9 +30,15 @@ class NavigationList extends StatelessWidget {
     final List<Widget> navItems = createButtonItems();
     return Expanded(
       child: Container(
-        child: ListView(
-          padding: EdgeInsets.symmetric(horizontal: _sizeUtils.xasisSobreYasis * horizontalPadding),
-          children: navItems,
+        child: Scrollbar(
+          isAlwaysShown: scrollIsAllwaysShown,
+          showTrackOnHover: true,
+          controller: scrollController,
+          child: ListView(
+            controller: scrollController,
+            padding: EdgeInsets.symmetric(horizontal: _sizeUtils.xasisSobreYasis * horizontalPadding),
+            children: navItems,
+          ),
         ),
       ),
     );

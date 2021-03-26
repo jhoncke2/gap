@@ -105,9 +105,9 @@ class DataInitializer{
   }
 
   Future _doUpdatingIfContinueInitialization(NavigationRoute nr, BuildContext context)async{
-    _evaluateifThereWasAnyErr();
     if(_continueInitialization)
         await _doUpdating(nr, context);
+    _evaluateifThereWasAnyErr();
   }
 
   Future _doUpdating(NavigationRoute navRoute, BuildContext context)async{

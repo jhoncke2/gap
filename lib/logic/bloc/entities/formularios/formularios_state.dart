@@ -8,6 +8,7 @@ class FormulariosState{
   final List<Formulario> realizadosForms;
   final Formulario chosenForm;
   final bool backing;
+  final bool formsAreBlocked;
 
   FormulariosState({
     this.formsAreLoaded = false,
@@ -15,7 +16,8 @@ class FormulariosState{
     this.pendientesForms,
     this.realizadosForms,
     this.chosenForm,
-    this.backing = true
+    this.backing = true,
+    this.formsAreBlocked = true
   });
 
   FormulariosState copyWith({
@@ -24,14 +26,16 @@ class FormulariosState{
     List<Formulario> pendientesForms,
     List<Formulario> realizadosForms,
     Formulario chosenForm,
-    bool backing
+    bool backing,
+    bool formsAreBlocked
   }) => FormulariosState(
     formsAreLoaded: formsAreLoaded??this.formsAreLoaded,
     forms: forms??this.forms,
     pendientesForms: pendientesForms??this.pendientesForms,
     realizadosForms: realizadosForms??this.realizadosForms,
     chosenForm: chosenForm??this.chosenForm,
-    backing: backing??this.backing
+    backing: backing??this.backing,
+    formsAreBlocked: formsAreBlocked??this.formsAreBlocked
   );
 
   FormulariosState reset() => FormulariosState();

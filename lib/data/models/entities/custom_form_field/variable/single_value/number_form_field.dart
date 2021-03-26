@@ -26,6 +26,6 @@ class NumberFormField extends SingleValueFormField{
 
   int get value => super.uniqueValue == null? null : int.parse(super.uniqueValue);
   set value(int newValue){
-    super.uniqueValue = newValue.toString();
+    super.uniqueValue = newValue == null? null : newValue.toString();
   }
 }

@@ -29,7 +29,7 @@ class _GapAppState extends State<GapApp> with WidgetsBindingObserver{
 
   MaterialApp _createMaterialApp(BuildContext context){
     return MaterialApp(
-      title: 'Material App',
+      title: 'GAPP',
       debugShowCheckedModeBanner: false,
       navigatorKey: CustomNavigator.navigatorKey,
       theme: ThemeData(

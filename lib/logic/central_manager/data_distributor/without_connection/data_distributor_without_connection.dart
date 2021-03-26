@@ -59,11 +59,12 @@ class SourceDataToBlocWithoutConnection extends DataDistributor{
   @override
   Future<void> updateFormularios()async{
     //final FormulariosBloc formsB = blocsAsMap[BlocName.Formularios];
-    final Visit chosenVisit = UploadedBlocsData.dataContainer[NavigationRoute.VisitDetail];
-    final List<Formulario> formsGroupedByPreloadedVisit = await PreloadedFormsStorageManager.getPreloadedFormsByVisitId(chosenVisit.id);
-    final SetForms sfEvent = SetForms(forms: formsGroupedByPreloadedVisit);
-    formsB.add(sfEvent);
-    UploadedBlocsData.dataContainer[NavigationRoute.Formularios] = formsGroupedByPreloadedVisit;
+    await super.updateFormularios();
+    //final Visit chosenVisit = UploadedBlocsData.dataContainer[NavigationRoute.VisitDetail];
+    //final List<Formulario> formsGroupedByPreloadedVisit = await PreloadedFormsStorageManager.getPreloadedFormsByVisitId(chosenVisit.id);
+    //final SetForms sfEvent = SetForms(forms: formsGroupedByPreloadedVisit);
+    //formsB.add(sfEvent);
+    //UploadedBlocsData.dataContainer[NavigationRoute.Formularios] = formsGroupedByPreloadedVisit;
   }
 
   @override

@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/services/basic_service.dart';
 

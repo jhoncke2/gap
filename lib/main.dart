@@ -8,7 +8,6 @@ import 'package:gap/logic/central_manager/data_initializer.dart';
 import 'package:gap/logic/storage_managers/user/user_storage_manager.dart';
 import 'package:gap/ui/gap_app.dart';
 import 'package:gap/ui/utils/dialogs.dart' as dialogs;
-import 'package:gap/logic/bloc/nav_routes/routes_manager.dart';
 
 GapApp app;
 void main()async{
@@ -35,6 +34,9 @@ Future _onStartingApp()async{
 }
 
 void _onResumeApp(AppLifecycleState state)async{
+  print(CustomNavigator.navigatorKey.currentState.widget.initialRoute);
+  //CustomNavigator.navigatorKey.currentState.popUntil((route) => route.isCurrent);
+  /*
   if(state == AppLifecycleState.resumed){
     if(await NativeServicesPermissions.storageIsGranted || true){
       final List<NavigationRoute> routesTree = await routesManager.routesTree;
@@ -43,7 +45,8 @@ void _onResumeApp(AppLifecycleState state)async{
     }
     //else
       //await _requestStorageActivation();
-  }
+    */
+  
 }
 
 Future _initApp(BuildContext context)async{

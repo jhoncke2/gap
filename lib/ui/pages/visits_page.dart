@@ -8,7 +8,6 @@ import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/header/header.dart';
 import 'package:gap/ui/widgets/navigation_list/navigation_list_with_stage_color_buttons.dart';
 import 'package:gap/ui/widgets/page_title.dart';
-import 'package:gap/ui/widgets/unloaded_elements/unloaded_nav_items.dart';
 import 'package:gap/ui/widgets/visits_date_filter.dart';
 class VisitsPage extends StatefulWidget {
   static final String route = 'visits';
@@ -16,7 +15,7 @@ class VisitsPage extends StatefulWidget {
   _VisitsPageState createState() => _VisitsPageState();
 }
 
-class _VisitsPageState extends State<VisitsPage> {
+class _VisitsPageState extends State<VisitsPage>{
   SizeUtils _sizeUtils;
 
   @override

@@ -17,4 +17,11 @@ class ChooseForm extends FormulariosEvent{
   });
 }
 
+class ChangeFormsAreBlocked extends FormulariosEvent{
+  final bool areBlocked;
+  ChangeFormsAreBlocked({
+    @required this.areBlocked
+  });
+}
+
 class ResetForms extends FormulariosEvent{}

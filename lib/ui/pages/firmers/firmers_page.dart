@@ -29,7 +29,8 @@ class FirmersPage extends StatelessWidget{
     _context = context;
     final FormulariosState formsState = BlocProvider.of<FormulariosBloc>(context).state;
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomInset: false,
+      //resizeToAvoidBottomPadding: false,
       body: GestureDetector(
         child: Column(
           children: [

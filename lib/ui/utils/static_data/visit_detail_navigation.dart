@@ -14,7 +14,7 @@ final List<Map<String, dynamic>> navigationItemsParts = [
     'nav_function':PagesNavigationManager.navToAdjuntarImages,
   },
   {
-    'icon': Icons.remove_red_eye_outlined,
+    'icon': Icons.remove_red_eye,
     'name':'Visualizar visita',
     'navigation_route':FormulariosPage.route,
     'nav_function':PagesNavigationManager.navToForms,

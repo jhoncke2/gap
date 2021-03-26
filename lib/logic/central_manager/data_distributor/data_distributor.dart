@@ -7,6 +7,7 @@ import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/logic/bloc/entities/images/images_bloc.dart';
 import 'package:gap/logic/bloc/entities/projects/projects_bloc.dart';
+import 'package:gap/logic/bloc/entities/user/user_bloc.dart';
 import 'package:gap/logic/bloc/entities/visits/visits_bloc.dart';
 import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/logic/bloc/widgets/commented_images/commented_images_bloc.dart';
@@ -28,6 +29,7 @@ abstract class DataDistributor{
   final Map<BlocName, ChangeNotifier> singletonesAsMap = BlocProvidersCreator.singletonesAsMap;
   Map<NavigationRoute, dynamic> dataAddedToBlocsByExistingNavs = {};
 
+  final UserBloc userB = blocsAsMap[BlocName.User];
   final ProjectsBloc projectsB =  blocsAsMap[BlocName.Projects];
   final VisitsBloc visitsB = blocsAsMap[BlocName.Visits];
   final FormulariosBloc formsB = blocsAsMap[BlocName.Formularios];
@@ -79,9 +81,12 @@ abstract class DataDistributor{
     UploadedBlocsData.dataContainer[NavigationRoute.VisitDetail] = visit;
   }
 
-  Future<void> updateFormularios()async{}
+  Future<void> updateFormularios()async{
+    formsB.add(ChangeFormsAreBlocked(areBlocked: false));
+  }
   
   Future<void> updateChosenForm(Formulario form)async{
+    //formsB.add(ChangeFormsAreBlocked(areBlocked: true));
     formsB.add(ChooseForm(chosenOne: form));
     await ChosenFormStorageManager.setChosenForm(form);
     await _chooseBlocMethodByChosenFormStep(form);
@@ -161,9 +166,10 @@ abstract class DataDistributor{
 
   Future endFormFillingOut()async{
     final Formulario chosenForm = formsB.state.chosenForm;
+    _initOnFirstFirmerInformation();
     await _addFinalPosition(chosenForm);
     chosenForm.advanceInStep();
-    _initOnFirstFirmerInformation();
+    //_initOnFirstFirmerInformation();
     await updateChosenFormInStorage(chosenForm);
   }
 
@@ -334,7 +340,9 @@ abstract class DataDistributor{
     await updateChosenVisit(chosenVisit);
   }
 
-  Future resetChosenForm()async{}
+  Future resetChosenForm()async{
+    formsB.add(ChangeFormsAreBlocked(areBlocked: false));
+  }
 
   Future resetCommentedImages()async{
   }

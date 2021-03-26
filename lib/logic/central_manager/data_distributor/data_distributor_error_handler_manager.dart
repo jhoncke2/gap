@@ -1,6 +1,8 @@
+import 'package:gap/central_config/bloc_providers_creator.dart';
 import 'package:gap/data/enums/enums.dart';
 import 'package:gap/errors/services/service_status_err.dart';
 import 'package:gap/errors/storage/unfound_storage_element_err.dart';
+import 'package:gap/logic/bloc/entities/user/user_bloc.dart';
 import 'package:gap/logic/central_manager/data_distributor/data_distributor_manager.dart';
 import 'package:gap/ui/utils/dialogs.dart' as dialogs;
 
@@ -50,6 +52,7 @@ class DataDisributorErrorHandlingManager{
   Future _manageLoginErr(ServiceStatusErr err, Map<String, dynamic> loginInfo)async{
     _updateErrorInfo(err);
     if(loginInfo['type'] == 'first_login'){
+      BlocProvidersCreator.userBloc.add(ChangeLoginButtopnAvaibleless(isAvaible: true));
       await _showDialog(err.message);
       navigationTodoByError = null;
     }else{
@@ -59,24 +62,29 @@ class DataDisributorErrorHandlingManager{
 
   Future _manageRefreshTokenErr(ServiceStatusErr err)async{
     _updateErrorInfo(err);
-    final Map<String, dynamic> loginInfo = {'type':'reloading_login'};
-    await executeFunction(DataDistrFunctionName.LOGIN, loginInfo);
+    await _executeReloadingLogin();
   }
 
   Future _manageFirstServiceStatusErr(ServiceStatusErr err, DataDistrFunctionName functionName, dynamic value)async{
     _updateErrorInfo(err);
     //final String accessToken = await UserStorageManager.getAccessToken();
     //await executeFunction(DataDistrFunctionName.UPDATE_ACCESS_TOKEN, accessToken);
-    await executeFunction(DataDistrFunctionName.LOGIN, {'type':'reloading_login'});
+    await _executeReloadingLogin();
     if(!happendError){
       await executeFunction(functionName, value);
+      lastErrorType = null;
     }
+  }
+  
+  Future _executeReloadingLogin()async{
+    await executeFunction(DataDistrFunctionName.LOGIN, {'type':'reloading_login'});
   }
 
   Future _manageRepeatedServiceStatusErr(ServiceStatusErr err)async{
     _updateErrorInfo(err);
     await _showDialog(generalServiceErrMessage);
     navigationTodoByError = NavigationRoute.Login;
+    lastErrorType = null;
   }
 
   Future _showDialog(String message)async{
@@ -93,15 +101,18 @@ class DataDisributorErrorHandlingManager{
     if(err.elementType == StorageElementType.AUTH_TOKEN){
       //await _showDialog(authenticationErrMessage);
       navigationTodoByError = NavigationRoute.Login;
+      lastErrorType = null;
     }
     else{
       if(lastErrorType != err.runtimeType){
         await _showDialog(storageErrMessage);
         navigationTodoByError = NavigationRoute.Projects;
+        lastErrorType = null;
       }  
       else{
         await _showDialog(storageErrMessage);
         navigationTodoByError = NavigationRoute.Login;
+        lastErrorType = null;
       }
     }
   }

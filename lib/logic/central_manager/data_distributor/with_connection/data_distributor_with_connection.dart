@@ -44,15 +44,16 @@ class DataDistributorWithConnection extends DataDistributor{
     if(loginInfo['type'] == 'first_login')
       await _doFirstLogin(loginInfo['email'], loginInfo['password']);
     else
-      await _doPreloadingLogin(); 
+      await _doReloadingLogin();
   }
 
   Future _doFirstLogin(String email, String password)async{
+    userB.add(ChangeLoginButtopnAvaibleless(isAvaible: false));
     await UserServicesManager.login(email, password, CustomNavigator.navigatorKey.currentContext);
     await UserStorageManager.setUserInformation(email, password);
   }
 
-  Future _doPreloadingLogin()async{
+  Future _doReloadingLogin()async{
     final Map<String, dynamic> userInformation = await UserStorageManager.getUserInformation();
     await UserServicesManager.login(userInformation['email'], userInformation['password'], CustomNavigator.navigatorKey.currentContext);
   }
@@ -114,11 +115,11 @@ class DataDistributorWithConnection extends DataDistributor{
       deleteNullFirmersFromForm(form);
       await PreloadedFormsStorageManager.setPreloadedForm(form, visitId);
     }
-      
   }
 
   @override
   Future updateChosenForm(Formulario form)async{
+    formsB.add(ChangeFormsAreBlocked(areBlocked: true));
     Formulario realForm = await getUpdatedChosenForm(form);
     if(realForm.initialPosition == null)
       await addInitialPosition(realForm);
@@ -129,6 +130,7 @@ class DataDistributorWithConnection extends DataDistributor{
 
   @override
   Future<void> updateFormularios()async{
+    await super.updateFormularios();
   }
 
   Future endFormFillingOut()async{
