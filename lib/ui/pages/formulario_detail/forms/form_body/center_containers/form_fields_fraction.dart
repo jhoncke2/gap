@@ -7,7 +7,6 @@ import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/logic/bloc/widgets/index/index_bloc.dart';
 import 'package:gap/logic/blocs_manager/chosen_form_manager.dart';
 import 'package:gap/ui/utils/size_utils.dart';
-
 import 'form_fields/form_field_widget_factory.dart';
 
 // ignore: must_be_immutable
@@ -19,7 +18,6 @@ class FormInputsFraction extends StatefulWidget {
   final StreamController<int> onTextFieldChangeController = StreamController.broadcast();
   Stream<int> onTextFieldTapStream;
   final ScrollController elementsScrollController = ScrollController();
-
   int currentTappedTextFormField;
   double screenHeightPercent;
 
@@ -47,7 +45,6 @@ class _FormInputsFractionState extends State<FormInputsFraction> {
 
   @override
   Widget build(BuildContext context) {
-    _initBuildingConfig(context);
     _unlockIndexIfFormFieldsAreCompleted();
     return BlocBuilder<IndexBloc, IndexState>(
       builder: (_, IndexState state){
@@ -112,17 +109,19 @@ class _FormInputsFractionState extends State<FormInputsFraction> {
   void _animateScrollToInitialOffset(){
     widget.lastScrollOffset = 0.0;
     //widget.formFieldsScrollController.jumpTo(widget.lastScrollOffset);
-    widget.formFieldsScrollController.animateTo(widget.lastScrollOffset, duration: Duration(milliseconds: 2), curve: Curves.bounceIn);
+    //widget.formFieldsScrollController.animateTo(widget.lastScrollOffset, duration: Duration(milliseconds: 2), curve: Curves.bounceIn);
   }
 
   Future _animateScrollToPosition(double offset)async{
-    await widget.formFieldsScrollController.animateTo(offset, duration: Duration(milliseconds: 15), curve: Curves.bounceIn);
+    //await widget.formFieldsScrollController.animateTo(offset, duration: Duration(milliseconds: 15), curve: Curves.bounceIn);
     print(widget.formFieldsScrollController.offset);
   }
 
   Widget _createFormFieldsWithIndex(){
     List<CustomFormField> formFIeldsByPage = _getFormFIeldsByCurrentPage();
+    final double screenHeight = MediaQuery.of(context).size.height;
     return Container(
+      //color: Colors.blueAccent.withOpacity(0.5),
       child: Scrollbar(
         controller: widget.elementsScrollController,
         isAlwaysShown: true,
@@ -131,10 +130,10 @@ class _FormInputsFractionState extends State<FormInputsFraction> {
           itemCount: formFIeldsByPage.length,
           separatorBuilder: (_, __)=>SizedBox(height: _sizeUtils.xasisSobreYasis * 0.1),
           itemBuilder: (_, int i)=>FormFieldWidgetFactory.createFormFieldWidget(formFIeldsByPage[i], i, widget.onTextFieldChangeController),
-          padding: EdgeInsets.only(top: 10, bottom: _listViewBotPadding),
+          padding: EdgeInsets.only(top: 0, bottom: 75),
         ),
       ),
-      height: _sizeUtils.xasisSobreYasis * widget.screenHeightPercent,
+      height: screenHeight * widget.screenHeightPercent,
       width: double.infinity,
     );
   }

@@ -44,6 +44,7 @@ class BlocProvidersCreator{
   ];
 
   static void dispose(){
+    userBloc.close();
     projectsBloc.close();
     visitsBloc.close();
     formulariosBloc.close();
@@ -65,7 +66,6 @@ class BlocProvidersCreator{
     BlocName.CommentedImages: commentedImagesBloc,
     BlocName.FirmPaint: firmPaintBloc,
     BlocName.User: userBloc,
-    
   };
 
   static Map<BlocName, ChangeNotifier> get singletonesAsMap => {

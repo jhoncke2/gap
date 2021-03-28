@@ -56,7 +56,6 @@ abstract class NavRouteEnum extends Enum<String>{
 
 class NavigationRoute extends NavRouteEnum{
   const NavigationRoute(String value, {String step}) : super(value, step: step);
-  static const NavigationRoute Firmers = const NavigationRoute('firmers');
   static const NavigationRoute Init = const NavigationRoute('init');
   static const NavigationRoute Login = const NavigationRoute('login');
   static const NavigationRoute Projects = const NavigationRoute('projects');
@@ -66,6 +65,7 @@ class NavigationRoute extends NavRouteEnum{
   static const NavigationRoute Formularios = const NavigationRoute('formularios');
   static const NavigationRoute FormularioDetailForms = const NavigationRoute('formulario_detail', step: 'forms');
   static const NavigationRoute FormularioDetailFirmers = const NavigationRoute('formulario_detail', step: 'firmers');
+  static const NavigationRoute Firmers = const NavigationRoute('firmers');
   static const NavigationRoute AdjuntarFotosVisita = const NavigationRoute('adjuntar_fotos_visit');
 
   factory NavigationRoute.fromJson(Map<String, dynamic> json){
@@ -86,7 +86,9 @@ class NavigationRoute extends NavRouteEnum{
       return _getExactFormularioDetailRoute(json['step']);
     }else if(jsonRoute == AdjuntarFotosVisita.value){
       return AdjuntarFotosVisita;
-    }else
+    }else if(jsonRoute == Firmers.value)
+      return Firmers;
+    else
       return Init;
   }
 
@@ -154,6 +156,7 @@ class InputType extends Enum<String>{
 }
 
 enum DataDistrFunctionName{
+  DO_FIRST_APP_INITIALIZATION,
   DO_INITIAL_CONFIG,
   LOGIN,
   UPDATE_ACCESS_TOKEN,

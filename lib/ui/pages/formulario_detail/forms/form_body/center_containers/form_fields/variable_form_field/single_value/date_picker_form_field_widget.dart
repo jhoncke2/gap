@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/data/models/entities/custom_form_field/variable/single_value/single_value_picker_form_field.dart';
-import 'package:gap/logic/central_manager/pages_navigation_manager.dart';
+import 'package:gap/logic/central_managers/pages_navigation_manager.dart';
 
 import '../variable_form_field_container.dart';
 // ignore: must_be_immutable

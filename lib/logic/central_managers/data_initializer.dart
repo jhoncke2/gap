@@ -1,5 +1,5 @@
 import 'package:gap/logic/bloc/nav_routes/custom_navigator.dart';
-import 'package:gap/logic/central_manager/data_distributor/data_distributor_error_handler_manager.dart';
+import 'package:gap/logic/central_managers/data_distributor/data_distributor_error_handler_manager.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:gap/data/enums/enums.dart';
@@ -8,7 +8,7 @@ import 'package:gap/central_config/bloc_providers_creator.dart';
 import 'package:gap/native_connectors/permissions.dart';
 import 'package:gap/logic/bloc/entities/user/user_bloc.dart';
 import 'package:gap/logic/bloc/nav_routes/routes_manager.dart';
-import 'package:gap/logic/central_manager/pages_navigation_manager.dart';
+import 'package:gap/logic/central_managers/pages_navigation_manager.dart';
 import 'package:gap/logic/storage_managers/forms/chosen_form_storage_manager.dart';
 import 'package:gap/logic/storage_managers/projects/projects_storage_manager.dart';
 import 'package:gap/logic/storage_managers/user/user_storage_manager.dart';
@@ -22,8 +22,8 @@ class DataInitializer{
   Future init(BuildContext context, NetConnectionState netConnState)async{
     _continueInitialization = true;
     dataDisributorErrorHandlingManager.netConnectionState = netConnState;
-    final bool alreadyRunned = await UserStorageManager.alreadyRunnedApp();
-    if(alreadyRunned){
+    await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.DO_FIRST_APP_INITIALIZATION);
+    if(!dataDisributorErrorHandlingManager.happendError){
       final PermissionStatus storagePermissionStatus = await NativeServicesPermissions.storageServiceStatus;
       await _doFunctionByStoragePermissionStatus(storagePermissionStatus, CustomNavigator.navigatorKey.currentContext, netConnState);
     }else{
@@ -72,10 +72,10 @@ class DataInitializer{
     if(dataDisributorErrorHandlingManager.happendError)
       await _routesManager.replaceAllRoutesForNew(dataDisributorErrorHandlingManager.navigationTodoByError??NavigationRoute.Login);
     else
-      await _continueInitializationAfterUpdateToken(context, netConnState);
+      await _continueInitializationAfterDoneInitialConfig(context, netConnState);
   }
 
-  Future _continueInitializationAfterUpdateToken(BuildContext context, NetConnectionState netConnState)async{
+  Future _continueInitializationAfterDoneInitialConfig(BuildContext context, NetConnectionState netConnState)async{
     await _routesManager.loadRoute();
     await _doAllNavigationByEvaluatingInitialConditions(context, netConnState);
   }

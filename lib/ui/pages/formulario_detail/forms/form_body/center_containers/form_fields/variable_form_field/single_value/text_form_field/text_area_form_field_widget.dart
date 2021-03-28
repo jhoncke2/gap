@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:gap/data/models/entities/custom_form_field/variable/single_value/raw_text_form_field.dart';
-import 'package:gap/logic/central_manager/pages_navigation_manager.dart';
+import 'package:gap/logic/central_managers/pages_navigation_manager.dart';
 import '../../variable_form_field_container.dart';
 import 'text_form_field_widget.dart';
 

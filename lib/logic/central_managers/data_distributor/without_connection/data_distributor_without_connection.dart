@@ -4,7 +4,7 @@ import 'package:gap/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/logic/bloc/entities/projects/projects_bloc.dart';
 import 'package:gap/logic/bloc/entities/user/user_bloc.dart';
 import 'package:gap/logic/bloc/entities/visits/visits_bloc.dart';
-import 'package:gap/logic/central_manager/data_distributor/data_distributor.dart';
+import 'package:gap/logic/central_managers/data_distributor/data_distributor.dart';
 import 'package:gap/logic/storage_managers/forms/preloaded_forms_storage_manager.dart';
 import 'package:gap/logic/storage_managers/projects/projects_storage_manager.dart';
 import 'package:gap/logic/storage_managers/user/user_storage_manager.dart';

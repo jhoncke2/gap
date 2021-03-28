@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/central_config/bloc_providers_creator.dart';
 import 'package:gap/data/enums/enums.dart';
 import 'package:gap/data/models/entities/entities.dart';
+import 'package:gap/errors/storage/app_never_runned.dart';
 import 'package:gap/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/logic/bloc/entities/images/images_bloc.dart';
 import 'package:gap/logic/bloc/entities/projects/projects_bloc.dart';
@@ -19,8 +20,10 @@ import 'package:gap/logic/storage_managers/forms/chosen_form_storage_manager.dar
 import 'package:gap/logic/storage_managers/forms/preloaded_forms_storage_manager.dart';
 import 'package:gap/logic/storage_managers/index/index_storage_manager.dart';
 import 'package:gap/logic/storage_managers/projects/projects_storage_manager.dart';
+import 'package:gap/logic/storage_managers/user/user_storage_manager.dart';
 import 'package:gap/logic/storage_managers/visits/visits_storage_manager.dart';
 import 'package:gap/native_connectors/gps.dart';
+import 'package:gap/native_connectors/storage_connector.dart';
 import 'package:geolocator/geolocator.dart';
 
 abstract class DataDistributor{
@@ -37,6 +40,15 @@ abstract class DataDistributor{
   final FirmPaintBloc firmPaintB = blocsAsMap[BlocName.FirmPaint];
   final IndexBloc indexB = blocsAsMap[BlocName.Index];
   final CommentedImagesBloc commImgsB = blocsAsMap[BlocName.CommentedImages];
+
+  Future updateFirstInitialization()async{
+    final bool alreadyRunned = await UserStorageManager.alreadyRunnedApp();
+    if(!alreadyRunned){
+      await StorageConnectorSingleton.storageConnector.deleteAll();
+      await UserStorageManager.setFirstTimeRunned();
+      throw AppNeverRunnedErr();
+    }
+  }
 
   Future doInitialConfig()async{
 
@@ -90,6 +102,7 @@ abstract class DataDistributor{
     formsB.add(ChooseForm(chosenOne: form));
     await ChosenFormStorageManager.setChosenForm(form);
     await _chooseBlocMethodByChosenFormStep(form);
+    //formsB.add(ChangeFormsAreBlocked(areBlocked: false));
   }
 
   @protected

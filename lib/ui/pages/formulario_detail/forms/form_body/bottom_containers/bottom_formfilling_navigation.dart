@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/logic/bloc/widgets/index/index_bloc.dart';
 import 'package:gap/logic/blocs_manager/chosen_form_manager.dart';
-import 'package:gap/logic/central_manager/pages_navigation_manager.dart';
+import 'package:gap/logic/central_managers/pages_navigation_manager.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/buttons/general_button.dart';
 import 'package:gap/ui/widgets/indexing/index_pagination.dart';
@@ -62,18 +62,19 @@ class _ChangeFormStepButton extends StatelessWidget {
   Widget build(BuildContext context){
     _initInitialConfiguration(context);
     _generateOnPressedFunction();
-    return BlocBuilder<IndexBloc, IndexState>(
-      builder: (_, state) {
-        if(state.currentIndexPage == state.nPages-1){
-          return GeneralButton(
-            backgroundColor: Theme.of(_context).secondaryHeaderColor,
-            text: 'Siguiente',
-            onPressed: _onPressed,
-          );
-        }else
-          return Container();
-      },
-    );
+    return _createButtonByIndexState(context);
+  }
+
+  Widget _createButtonByIndexState(BuildContext context){
+    final IndexState indexState = BlocProvider.of<IndexBloc>(context).state;
+    if(indexState.currentIndexPage == indexState.nPages-1){
+      return GeneralButton(
+        backgroundColor: Theme.of(_context).secondaryHeaderColor,
+        text: 'Siguiente',
+        onPressed: _onPressed,
+      );
+    }else
+      return Container();
   }
 
   void _initInitialConfiguration(BuildContext appContext){

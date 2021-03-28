@@ -63,4 +63,8 @@ class StorageConnector{
   Future<void> delete(String key)async{
     await fss.delete(key: key);
   }
+
+  Future deleteAll()async{
+    await fss.deleteAll();
+  }
 }

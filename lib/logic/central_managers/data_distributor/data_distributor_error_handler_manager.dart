@@ -1,9 +1,12 @@
+import 'package:flutter/services.dart';
 import 'package:gap/central_config/bloc_providers_creator.dart';
 import 'package:gap/data/enums/enums.dart';
 import 'package:gap/errors/services/service_status_err.dart';
+import 'package:gap/errors/storage/app_never_runned.dart';
 import 'package:gap/errors/storage/unfound_storage_element_err.dart';
 import 'package:gap/logic/bloc/entities/user/user_bloc.dart';
-import 'package:gap/logic/central_manager/data_distributor/data_distributor_manager.dart';
+import 'package:gap/logic/central_managers/data_distributor/data_distributor_manager.dart';
+import 'package:gap/native_connectors/storage_connector.dart';
 import 'package:gap/ui/utils/dialogs.dart' as dialogs;
 
 class DataDisributorErrorHandlingManager{
@@ -19,19 +22,27 @@ class DataDisributorErrorHandlingManager{
   Future executeFunction(DataDistrFunctionName functionName, [dynamic value])async{
     try{
       await _tryExecuteFunction(functionName, value);
+    }on AppNeverRunnedErr catch(err){
+      await _manageAppNeverRunnedErr();
     }on ServiceStatusErr catch(err){
       await _manageServiceStatusErr(err, functionName, value);
     }on UnfoundStorageElementErr catch(err){
       await _manageUnfoundStorageElementErr(err);
+    }on PlatformException catch(exception){
+      await _managePlatformException(exception, functionName, value);
     }catch(err){
       await _manageGeneralErr(err);
     }
-    
   }
 
   Future _tryExecuteFunction(DataDistrFunctionName functionName, [dynamic value])async{
     happendError = false;
     await dataDistributorManager.executeFunction(functionName, value);
+  }
+
+  Future _manageAppNeverRunnedErr()async{
+    happendError = true;
+    navigationTodoByError = NavigationRoute.Login;
   }
 
   Future _manageServiceStatusErr(ServiceStatusErr err, DataDistrFunctionName functionName, dynamic value)async{
@@ -115,6 +126,19 @@ class DataDisributorErrorHandlingManager{
         lastErrorType = null;
       }
     }
+  }
+
+  Future _managePlatformException(PlatformException exception, DataDistrFunctionName functionName, dynamic value)async{
+    if(lastErrorType != exception.runtimeType){
+      await StorageConnectorSingleton.storageConnector.deleteAll();
+      await executeFunction(functionName, value);
+    }else{
+      happendError = true;
+      lastErrorType = exception.runtimeType;
+      navigationTodoByError = NavigationRoute.Login;
+      await StorageConnectorSingleton.storageConnector.deleteAll();
+    }
+    
   }
 
   Future _manageGeneralErr(err)async{

@@ -1,5 +1,5 @@
 
-import 'package:gap/logic/central_manager/pages_navigation_manager.dart';
+import 'package:gap/logic/central_managers/pages_navigation_manager.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/data/models/entities/custom_form_field/variable/multi_value/multi_value_form_field.dart';
 import 'package:gap/data/models/entities/custom_form_field/variable/multi_value/with_alignment.dart';
-import 'package:gap/logic/central_manager/pages_navigation_manager.dart';
+import 'package:gap/logic/central_managers/pages_navigation_manager.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 import '../variable_form_field_container.dart';
 import 'alignment_multi_option_list.dart';

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gap/logic/central_manager/pages_navigation_manager.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/header/app_back_button.dart';
 // ignore: must_be_immutable

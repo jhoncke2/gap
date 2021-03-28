@@ -1,8 +1,8 @@
 import 'package:gap/data/enums/enums.dart';
 import 'package:gap/data/models/entities/entities.dart';
-import 'package:gap/logic/central_manager/data_distributor/data_distributor.dart';
-import 'package:gap/logic/central_manager/data_distributor/with_connection/data_distributor_with_connection.dart';
-import 'package:gap/logic/central_manager/data_distributor/without_connection/data_distributor_without_connection.dart';
+import 'package:gap/logic/central_managers/data_distributor/data_distributor.dart';
+import 'package:gap/logic/central_managers/data_distributor/with_connection/data_distributor_with_connection.dart';
+import 'package:gap/logic/central_managers/data_distributor/without_connection/data_distributor_without_connection.dart';
 
 class DataDistributorManager{
   static final NetConnectionStateContainer _netConnectionContainer = NetConnectionStateContainer();
@@ -42,6 +42,7 @@ class DataDistributorManager{
 
   _initializeDataDistributorFunctionsValues(){
     _dataDistributorFunctionsValues =  EnumValues<DataDistrFunctionName, Function>({
+      DataDistrFunctionName.DO_FIRST_APP_INITIALIZATION: dataDistributor.updateFirstInitialization,
       DataDistrFunctionName.DO_INITIAL_CONFIG:  dataDistributor.doInitialConfig,
       DataDistrFunctionName.LOGIN: dataDistributor.login,
       DataDistrFunctionName.UPDATE_ACCESS_TOKEN: dataDistributor.updateAccessToken,

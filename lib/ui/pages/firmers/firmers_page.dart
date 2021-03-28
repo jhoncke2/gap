@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/logic/blocs_manager/chosen_form_manager.dart';
-import 'package:gap/logic/central_manager/pages_navigation_manager.dart';
+import 'package:gap/logic/central_managers/pages_navigation_manager.dart';
 import 'package:gap/ui/pages/formulario_detail/forms/form_body/bottom_containers/bottom_firms_options.dart';
 import 'package:gap/ui/pages/formulario_detail/forms/form_body/center_containers/first_firmer_firm.dart';
 import 'package:gap/ui/pages/formulario_detail/forms/form_body/center_containers/first_firmer_pers_info.dart';
@@ -31,21 +31,23 @@ class FirmersPage extends StatelessWidget{
     return Scaffold(
       resizeToAvoidBottomInset: false,
       //resizeToAvoidBottomPadding: false,
-      body: GestureDetector(
-        child: Column(
-          children: [
-            SafeArea(child: Container()),
-            LoadedFormHead(formsState: formsState),
-            SizedBox(height: _sizeUtils.littleSizedBoxHeigh),
-            FormProcessMainContainer(
-              formName: formsState.chosenForm.name,
-              bottomChild: _createFirmsWidgets(),
-            )
-          ],
+      body: SafeArea(
+        child: GestureDetector(
+          child: Column(
+            children: [
+              Container(),
+              LoadedFormHead(formsState: formsState),
+              SizedBox(height: _sizeUtils.littleSizedBoxHeigh),
+              FormProcessMainContainer(
+                formName: formsState.chosenForm.name,
+                bottomChild: _createFirmsWidgets(),
+              )
+            ],
+          ),
+          onTap: (){
+            FocusScope.of(context).requestFocus(new FocusNode());
+          }
         ),
-        onTap: (){
-          FocusScope.of(context).requestFocus(new FocusNode());
-        }
       ),
     );
   }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gap/logic/central_manager/pages_navigation_manager.dart';
+import 'package:gap/logic/central_managers/pages_navigation_manager.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 class AppBackButton extends StatelessWidget {
   final SizeUtils _sizeUtils = SizeUtils();

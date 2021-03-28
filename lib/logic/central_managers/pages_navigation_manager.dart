@@ -1,5 +1,5 @@
 import 'package:gap/logic/bloc/nav_routes/custom_navigator.dart';
-import 'package:gap/logic/central_manager/data_distributor/data_distributor_error_handler_manager.dart';
+import 'package:gap/logic/central_managers/data_distributor/data_distributor_error_handler_manager.dart';
 import 'package:gap/native_connectors/gps.dart';
 import 'package:gap/native_connectors/storage_connector.dart';
 import 'package:geolocator/geolocator.dart';
