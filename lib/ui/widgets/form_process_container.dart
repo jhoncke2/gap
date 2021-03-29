@@ -5,7 +5,9 @@ class FormProcessMainContainer extends StatelessWidget {
   static final SizeUtils _sizeUtils = SizeUtils();
   final String formName;
   final Widget bottomChild;
-  FormProcessMainContainer({Key key, @required this.formName, @required this.bottomChild}) : super(key: key);
+  final MainAxisAlignment mainAxisAlignment;
+  final double separerHeightPercent;
+  FormProcessMainContainer({Key key, @required this.formName, @required this.bottomChild, this.mainAxisAlignment = MainAxisAlignment.spaceBetween, this.separerHeightPercent = 0.0}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,9 +18,10 @@ class FormProcessMainContainer extends StatelessWidget {
         color: Colors.grey.withOpacity(0.2),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: this.mainAxisAlignment,
           children: [
             PageTitle(title: formName, underlined: false, centerText: true),
+            SizedBox(height: _sizeUtils.size.height * this.separerHeightPercent),
             bottomChild
           ],
         )
@@ -29,7 +32,7 @@ class FormProcessMainContainer extends StatelessWidget {
   EdgeInsets _createGeneralPadding(){
     return EdgeInsets.only(
       top: _sizeUtils.xasisSobreYasis * 0.025,
-      bottom: _sizeUtils.xasisSobreYasis * 0.045,
+      bottom: _sizeUtils.xasisSobreYasis * 0.0125,
       left: _sizeUtils.xasisSobreYasis * 0.045,
       right: _sizeUtils.xasisSobreYasis * 0.045
     );

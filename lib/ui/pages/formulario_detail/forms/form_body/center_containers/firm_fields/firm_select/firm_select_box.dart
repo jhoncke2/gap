@@ -3,10 +3,12 @@ import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/buttons/general_button.dart';
 // ignore: must_be_immutable
 class FirmSelectBox extends StatelessWidget{
-  final SizeUtils _sizeUtils = SizeUtils();
+  static final SizeUtils _sizeUtils = SizeUtils();
   final List<String> items;
   final Function onSelected;
   final BtnBorderShape borderShape;
+  final double popUpMenuWidth;
+  Offset offset = Offset(-_sizeUtils.xasisSobreYasis * 0.025, _sizeUtils.xasisSobreYasis * 0);
   BuildContext _context;
   BorderRadius _mainElementBorderRadius;
   List<PopupMenuEntry<int>> _popupItems;
@@ -16,6 +18,8 @@ class FirmSelectBox extends StatelessWidget{
     @required this.items,
     @required this.onSelected,
     @required this.borderShape,
+    this.offset,
+    this.popUpMenuWidth,
     String initialValue
   }):
     _selectedValue = initialValue
@@ -31,8 +35,8 @@ class FirmSelectBox extends StatelessWidget{
         borderRadius: BorderRadius.circular(_sizeUtils.xasisSobreYasis * 0.068)
       ),
       offset: Offset(
-        -_sizeUtils.xasisSobreYasis * 0.025,
-        _sizeUtils.xasisSobreYasis * 0.355,
+        -_sizeUtils.xasisSobreYasis * 0.01,
+        _sizeUtils.xasisSobreYasis * 0.0355,
       ),
       padding: EdgeInsets.all(0.0),
       child: _crearPopUpChild(),
@@ -49,11 +53,14 @@ class FirmSelectBox extends StatelessWidget{
       _popupItems.add(
         PopupMenuItem(
           value: i,
-          child: Text(
-            item,
-            style: TextStyle(
-              color: Theme.of(_context).primaryColor,
-              fontSize: _sizeUtils.normalTextSize
+          child: Container(
+            width: _sizeUtils.size.width * 0.55,
+            child: Text(
+              item,
+              style: TextStyle(
+                color: Theme.of(_context).primaryColor,
+                fontSize: _sizeUtils.normalTextSize
+              ),
             ),
           )
         )

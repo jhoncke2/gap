@@ -1,7 +1,16 @@
 part of 'entities.dart';
 
 
-List<Project> projectsFromJson(List<Map> jsonData) => List<Project>.from(jsonData.map((x) => Project.fromJson(x)));
+List<Project> projectsFromJson(dynamic jsonData){
+  List<Project> projects = [];
+  if(jsonData is Map){
+    (jsonData.cast<String, Map>()).forEach((key, value){
+      projects.add(Project.fromJson((value.cast<String, dynamic>())));
+    });
+  }else
+    projects = List<Project>.from(jsonData.map((x) => Project.fromJson(x)));
+  return projects;
+} 
 
 List<Map<String, dynamic>> projectsToJson(List<Project> data) => List<Map<String, dynamic>>.from(data.map((x) => x.toJson()));
 

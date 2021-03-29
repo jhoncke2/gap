@@ -7,13 +7,12 @@ class ProjectsService extends BasicService{
 
   static final String _panelUrl = BasicService.apiUrl + 'panel/';
 
-  Future<List<Map<String, dynamic>>> getProjects(String accessToken)async{
+  Future<dynamic> getProjects(String accessToken)async{
     final String requestUrl = _panelUrl + 'proyectos/visitas';
     final Map<String, String> headers = _createAccessTokenHeaders(accessToken);
     final Map<String, Map<String, dynamic>> headersAndBody = createHeadersAndBodyForARequest(headers: headers);
     await executeGeneralEndOfRequest(requestType: RequestType.GET, headersAndBody: headersAndBody, requestUrl: requestUrl);
-    return (currentResponseBody as List).cast<Map<String, dynamic>>();
-    //throw ServiceStatusErr(message: 'Proyectos malitos');
+    return currentResponseBody;
   }
 
   Future<List<Map<String, dynamic>>> updateForm(String accessToken, List<Map<String, dynamic>> campos, int visitId)async{

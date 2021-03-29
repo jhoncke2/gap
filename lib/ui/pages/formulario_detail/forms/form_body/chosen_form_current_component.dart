@@ -19,12 +19,12 @@ class ChosenFormCurrentComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _context = context;
-    return BlocBuilder<ChosenFormBloc, ChosenFormState>(
-      builder: (context, chosenFormState) {
-        _chosenFormState = chosenFormState;
-        _elegirComponentsSegunBlocsStates(context);
-        return Expanded(
-          child: Container(
+    return Expanded(
+      child: BlocBuilder<ChosenFormBloc, ChosenFormState>(
+        builder: (context, chosenFormState) {
+          _chosenFormState = chosenFormState;
+          _elegirComponentsSegunBlocsStates(context);
+          return Container(
             child: Column(
               mainAxisAlignment: columnMainAxisAlignment,
               children: [
@@ -34,9 +34,9 @@ class ChosenFormCurrentComponent extends StatelessWidget {
               ],
             ),
             padding: EdgeInsets.only(top: 25),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 
@@ -56,10 +56,10 @@ class ChosenFormCurrentComponent extends StatelessWidget {
 
   void _defineColumnComponentsConfigByKeyboardState(bool keyBoardIsActive){
     final IndexState indexState = BlocProvider.of<IndexBloc>(_context).state;
-    double extraContainerHeightPercent = (indexState.currentIndexPage == indexState.nPages-1)? -0.02   : 0.075;
+    double extraContainerHeightPercent = (indexState.currentIndexPage == indexState.nPages-1)? -0.015   : 0.075;
     if(keyBoardIsActive){
       columnMainAxisAlignment = MainAxisAlignment.start;
-      centerComponentsHeightPercent = 0.415 + extraContainerHeightPercent;
+      centerComponentsHeightPercent = 0.37 + extraContainerHeightPercent;
     }        
     else{
       columnMainAxisAlignment = MainAxisAlignment.spaceBetween;

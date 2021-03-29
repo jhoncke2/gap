@@ -11,7 +11,7 @@ import 'package:geolocator/geolocator.dart';
 class ProjectsServicesManager{
 
   Future<List<Project>> loadProjects(ProjectsBloc bloc, String accessToken)async{
-    final List<Map<String, dynamic>> projectsResponse = await projectsService.getProjects(accessToken);
+    final dynamic projectsResponse = await projectsService.getProjects(accessToken);
     final List<Project> projects = projectsFromJson(projectsResponse);
     return projects;
   }

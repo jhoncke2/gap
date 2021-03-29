@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:gap/data/models/entities/custom_form_field/variable/multi_value/multi_value_form_field.dart';
 import 'package:gap/data/models/entities/custom_form_field/variable/multi_value/select.dart';
 import 'package:gap/logic/central_managers/pages_navigation_manager.dart';
-import 'package:gap/ui/utils/size_utils.dart';
 import '../variable_form_field_container.dart';
 
 class SelectFormFieldWidget extends StatelessWidget {
@@ -28,7 +27,6 @@ class _CustomSelect extends StatefulWidget {
 
 class __CustomSelectState extends State<_CustomSelect> {
 
-  final SizeUtils _sizeUtils = SizeUtils();
   String _currentSelectedValue;
 
   @override

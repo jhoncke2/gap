@@ -102,7 +102,7 @@ class _LoadedFormularioDetail extends StatelessWidget {
       header = Container();
       separer = SizedBox(height: _sizeUtils.littleSizedBoxHeigh * 0.0);
     }else{
-      containerHeight = screenHeight * 0.935;
+      containerHeight = screenHeight * 0.955;
       header = LoadedFormHead(formsState: formsState, hasBackButton: true);
       separer = SizedBox(height: _sizeUtils.littleSizedBoxHeigh);
     }
