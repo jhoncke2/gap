@@ -6,12 +6,13 @@ import 'package:gap/ui/pages/formulario_detail/forms/form_body/center_containers
 import 'text_form_field_widget.dart';
 // ignore: must_be_immutable
 class SingleTextFormFieldWidget extends TextFormFieldWidget {
-
+  
   final UniqueLineText uniqueLineText;
   TextInputType keyboardType;
   bool obscureText;
-  SingleTextFormFieldWidget({Key key, this.uniqueLineText, int indexInPage, StreamController<int> onChangedController}): 
-    super(key: Key(uniqueLineText.name), indexInPage: indexInPage, onTappedController: onChangedController)
+
+  SingleTextFormFieldWidget({Key key, this.uniqueLineText, bool avaible, int indexInPage, StreamController<int> onChangedController}): 
+    super(key: Key(uniqueLineText.name), indexInPage: indexInPage, onTappedController: onChangedController, avaible: avaible)
     ;
   
 
@@ -25,6 +26,7 @@ class SingleTextFormFieldWidget extends TextFormFieldWidget {
   Widget _createTextField(){
     _defineTextFieldParams();
     return TextFieldWithName(
+      isAvaible: super.avaible,
       fieldName: uniqueLineText.label,
       initialValue: uniqueLineText.placeholder,
       helperText: uniqueLineText.description,
@@ -74,7 +76,6 @@ class SingleTextFormFieldWidget extends TextFormFieldWidget {
   }
 
   void onChanged(String newValue){
-    
     uniqueLineText.uniqueValue = newValue;
     PagesNavigationManager.updateFormFieldsPage();
   }

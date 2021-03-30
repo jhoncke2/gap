@@ -72,15 +72,17 @@ class PagesNavigationManager{
   }
 
   static Future<void> navToFormDetail(Formulario formulario, BuildContext context)async{
-    if(_formularioSePuedeAbrir(formulario)){
+    if(await _formularioSePuedeAbrir(formulario)){
       await _testExpectChosenVisitAlreadyExistsInStorage();
       await _GPSValidator.executeMethodByGpsStatus((){_updateForm(formulario);}, _goToAppSetings, gpsActivationRequestMessage);
-    } 
+    }
   }
 
-  static bool _formularioSePuedeAbrir(Formulario formulario){
-    return !formulario.completo && formulario.campos.isNotEmpty;
-    //return true;
+  static Future<bool> _formularioSePuedeAbrir(Formulario formulario)async{
+    bool isEmpty = formulario.campos.isEmpty;
+    if(isEmpty)
+      await dialogs.showTemporalDialog('Formulario sin campos');
+    return !formulario.completo && !isEmpty;
   }
 
   static Future _updateForm(Formulario formulario)async{

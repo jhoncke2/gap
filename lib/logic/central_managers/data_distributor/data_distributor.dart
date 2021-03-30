@@ -99,6 +99,7 @@ abstract class DataDistributor{
   
   Future<void> updateChosenForm(Formulario form)async{
     //formsB.add(ChangeFormsAreBlocked(areBlocked: true));
+    indexB.add(ResetAllOfIndex());
     formsB.add(ChooseForm(chosenOne: form));
     await ChosenFormStorageManager.setChosenForm(form);
     await _chooseBlocMethodByChosenFormStep(form);
@@ -142,8 +143,7 @@ abstract class DataDistributor{
   }
 
   void _onEndInitFormFillingOut(int formFieldsPages){
-    final IndexBloc indexBloc = blocsAsMap[BlocName.Index];
-    indexBloc.add(ChangeNPages(nPages: formFieldsPages, onEnd: _updateFormFieldsPage));
+    indexB.add(ChangeNPages(nPages: formFieldsPages, onEnd: _updateFormFieldsPage));
   }
 
   void _updateFormFieldsPage(int currentPage){
@@ -338,8 +338,7 @@ abstract class DataDistributor{
 
   Future resetChosenVisit()async{
     await CommentedImagesStorageManager.removeCommentedImages();
-    final CommentedImagesBloc cmBloc = blocsAsMap[BlocName.CommentedImages];
-    cmBloc.add(ResetCommentedImages());
+    commImgsB.add(ResetCommentedImages());
     await VisitsStorageManager.removeChosenVisit();
   }
 

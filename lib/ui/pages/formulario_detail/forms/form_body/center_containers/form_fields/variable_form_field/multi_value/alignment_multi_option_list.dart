@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gap/data/models/entities/custom_form_field/variable/multi_value/multi_value_form_field.dart';
-import 'package:gap/ui/utils/size_utils.dart';
 
 // ignore: must_be_immutable
 class AlignmentedMultiOptionList extends StatelessWidget {
-  
 
   final bool withVerticalAlignment;
   final List<MultiFormFieldValue> values;
@@ -17,7 +15,6 @@ class AlignmentedMultiOptionList extends StatelessWidget {
     @required this.onItemCreated
   }): super(key: key);
 
-  final SizeUtils _sizeUtils = SizeUtils();
   Widget _items;
 
   @override

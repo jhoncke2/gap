@@ -13,7 +13,6 @@ class IndexPagination extends StatelessWidget {
     return BlocBuilder<IndexBloc, IndexState>(
       builder: (context, IndexState state) {
         if(state.nPages > 0){
-          print(state);
           return _LoadedIndexPagination(state: state);
         }else{
           return UnloadedIndexPagination();
@@ -156,15 +155,37 @@ class _LoadedIndexPagination extends StatelessWidget {
 
   Widget _createIndexNumberButton(int buttonIndex){
     final Function onTap = _defineOnNumberButtonTap(buttonIndex);
+    
     return GestureDetector(
       child: Container(
         padding: EdgeInsets.zero,
         decoration: _createButtonDecoration(),
         //buttonIndex + 1, porque se debe mostrar de 1(y no de 0) en adelante.
-        child: _createSingleText( (buttonIndex + 1).toString(), _definirSiNumberButtonIsActive(buttonIndex)),
+        child: _createIndexNumberText(buttonIndex),
       ),
       onTap: onTap,
     );
+  }
+
+  Widget _createIndexNumberText(int buttonIndex){
+    final Map<String, dynamic> buttonConfig = _getNumberButtonTextConfigByCurrentIndex(buttonIndex);
+    return _createSingleText( (buttonIndex + 1).toString(), _definirSiNumberButtonIsActive(buttonIndex), buttonConfig['color'], buttonConfig['text_size']);
+  }
+
+  Map<String, dynamic> _getNumberButtonTextConfigByCurrentIndex(int buttonIndex){
+    Color color;
+    double textSize;
+    if(state.currentIndexPage == buttonIndex){
+      color = Theme.of(_context).primaryColor;
+      textSize = _sizeUtils.subtitleSize * 0.85;
+    }else{
+      color = Theme.of(_context).primaryColor.withOpacity(0.75);
+      textSize = _sizeUtils.subtitleSize * 0.8;
+    }
+    return {
+      'color': color,
+      'text_size':textSize
+    };
   }
 
   Function _defineOnNumberButtonTap(int buttonIndex){
@@ -238,13 +259,12 @@ class _LoadedIndexPagination extends StatelessWidget {
     );
   }
 
-  Widget _createSingleText(String text, bool isActive){
-    Color color = (isActive)? Theme.of(_context).primaryColor.withOpacity(0.85) : Theme.of(_context).secondaryHeaderColor.withOpacity(0.85);
+  Widget _createSingleText(String text, bool isActive, [Color color, double textSize]){
     return Text(
       text,
       style: TextStyle(
-        fontSize: _sizeUtils.subtitleSize *0.8,
-        color: Theme.of(_context).primaryColor.withOpacity(0.85)
+        fontSize: textSize??_sizeUtils.subtitleSize * 0.8,
+        color: color?? ((isActive)? Theme.of(_context).primaryColor.withOpacity(0.85) : Theme.of(_context).primaryColor.withOpacity(0.35))
       ),
     );
   }

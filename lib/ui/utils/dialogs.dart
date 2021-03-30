@@ -82,4 +82,3 @@ class _GeneralDialog extends StatelessWidget{
     );
   }
 }
-// ignore: must_be_immutable

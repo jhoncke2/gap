@@ -41,6 +41,7 @@ class FirmField extends StatelessWidget {
 
   Widget _createPainter(){
     final Size fieldSize = Size(double.infinity, _sizeUtils.xasisSobreYasis * 0.21);
+    print(fieldSize);
     return Container(
       width: fieldSize.width,
       height: fieldSize.height,

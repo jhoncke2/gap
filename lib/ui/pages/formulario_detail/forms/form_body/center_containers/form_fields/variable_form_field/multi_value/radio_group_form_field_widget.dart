@@ -7,8 +7,9 @@ import '../variable_form_field_container.dart';
 import 'alignment_multi_option_list.dart';
 class RadiousGroupFormFieldWidget extends StatefulWidget {
   final RadioGroupFormField radioGroupFormField;
+  final bool avaible;
 
-  RadiousGroupFormFieldWidget({Key key, @required this.radioGroupFormField}) : super(key: Key(radioGroupFormField.name));
+  RadiousGroupFormFieldWidget({Key key, @required this.radioGroupFormField, this.avaible = true}) : super(key: Key(radioGroupFormField.name));
 
   @override
   _RadiousGroupFormFieldWidgetState createState() => _RadiousGroupFormFieldWidgetState();
@@ -41,13 +42,18 @@ class _RadiousGroupFormFieldWidgetState extends State<RadiousGroupFormFieldWidge
         selected: value.selected,
         activeColor: Colors.lightGreen[600],
         onChanged: (String newSelected){
-          setState(() {
-            _changeItemStateByNewSelected(value, newSelected); 
-            PagesNavigationManager.updateFormFieldsPage();
-          });
+          if(widget.avaible)
+            _onChangedBeeingAvaible(value, newSelected);
         },
       ),
     );
+  }
+  
+  void _onChangedBeeingAvaible(MultiFormFieldValue value, String newSelected){
+    setState(() {
+      _changeItemStateByNewSelected(value, newSelected); 
+      PagesNavigationManager.updateFormFieldsPage();
+    });
   }
 
   String _getSelectedValueValue(){

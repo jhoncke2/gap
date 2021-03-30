@@ -31,7 +31,7 @@ class HeaderFormField extends StaticFormField{
 class ParagraphFormField extends StaticFormField{
   ParagraphFormField.fromJson(Map<String, dynamic> json):
     super.fromJson(
-      json: json, 
+      json: json,
       subType: ParagraphSubtype.fromValue(json['subtype'])
     );
 }

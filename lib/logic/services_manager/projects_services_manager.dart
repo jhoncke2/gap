@@ -56,7 +56,8 @@ class ProjectsServicesManager{
     if(vff is SingleValueFormField){
       jsonVff['res'] = [vff.uniqueValue];
     }else if(vff is MultiValueFormField){
-      jsonVff['res'] = (vff.values.where((element) => element.selected)).map<String>((e) => e.value).toList();
+      //jsonVff['res'] = (vff.values.where((element) => element.selected)).map<String>((e) => e.value).toList();
+      jsonVff['res'] = (vff.values.map<int>((item) => item.selected?1:0)).toList();
     }
   }
 

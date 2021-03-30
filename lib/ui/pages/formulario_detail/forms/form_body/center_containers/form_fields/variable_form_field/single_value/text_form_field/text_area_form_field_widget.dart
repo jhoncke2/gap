@@ -6,10 +6,11 @@ import '../../variable_form_field_container.dart';
 import 'text_form_field_widget.dart';
 
 class TextAreaFormFieldWidget extends TextFormFieldWidget{
+  
   final TextArea textArea;
 
-  TextAreaFormFieldWidget({this.textArea, int indexInPage, StreamController<int> onChangedController}):
-    super(key: Key(textArea.name), indexInPage: indexInPage, onTappedController: onChangedController)
+  TextAreaFormFieldWidget({bool avaible, this.textArea, int indexInPage, StreamController<int> onChangedController}):
+    super(key: Key(textArea.name), avaible: avaible, indexInPage: indexInPage, onTappedController: onChangedController)
     ;
 
   @override
@@ -22,6 +23,7 @@ class TextAreaFormFieldWidget extends TextFormFieldWidget{
 
   Widget _createTextBox(){
     return TextFormField(
+      enabled: this.avaible,
       initialValue: textArea.placeholder??textArea.value??'',
       maxLines: textArea.rows,
       minLines: 1,

@@ -7,9 +7,9 @@ import '../variable_form_field_container.dart';
 class DatePickerFormFieldWidget extends StatefulWidget {
 
   final DateField dateFormField;
+  final bool avaible;
 
-
-  DatePickerFormFieldWidget({Key key, @required this.dateFormField}) : super(key: Key(dateFormField.name));
+  DatePickerFormFieldWidget({Key key, @required this.dateFormField, this.avaible = true}) : super(key: Key(dateFormField.name));
 
   @override
   _DatePickerFormFieldWidgetState createState() => _DatePickerFormFieldWidgetState();
@@ -40,7 +40,7 @@ class _DatePickerFormFieldWidgetState extends State<DatePickerFormFieldWidget> {
         widget.dateFormField.valueAsString??'Seleccionar fecha',
         textDirection: TextDirection.ltr,
       ),
-      onPressed: _onSelectDatePressed,
+      onPressed: (widget.avaible)? _onSelectDatePressed : null,
     );
   }
 

@@ -7,13 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:gap/ui/pages/formulario_detail/forms/form_body/center_containers/firm_fields/firm_draw_field/firm_paint.dart';
 
 class PainterToImageConverter{
+  //antes estaba Size(350, 350)
+  static final Size _imgsSize = Size(750, 400);
 
-  static final Size _imgsSize = Size(350, 350);
-
+  //TODO: deprecate firmIndex
   static Future<File> createFileFromFirmPainter(FirmPainter painter, int firmIndex)async{
     final ByteData byteData = await _convertPainterToByteData(painter);
     final ByteBuffer dataBuffer = byteData.buffer;
-    final String tempPath = await TempDir.getImgPath('/firm$firmIndex');
+    final String tempPath = await TempDir.getImgPath('/firm');
     return File(tempPath).writeAsBytes(
       dataBuffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes)
     );

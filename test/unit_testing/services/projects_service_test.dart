@@ -38,7 +38,7 @@ final List<UnSentCommentedImage> commentedImages = [
   ),
 ];
 
-List<Map<String, dynamic>> projectsResponse;
+List<Map<String, dynamic>> projectsResponse = [];
 String accessToken;
 int visitWithCommentedImagesId;
 
@@ -52,10 +52,10 @@ void _testGroup(){
     _testGetProjects();
     _testUpdateForm();
     _testPostFirmer();
-    _testPostCommentedImages();
+    //_testPostCommentedImages();
     _testPostFormInitialData();
     _testPostFormFinalData();
-    _testGetCommentedImages();
+    //_testGetCommentedImages();
   });
 }
 
@@ -73,7 +73,12 @@ Future _testGetProjects()async{
 
 Future _tryGetProjects()async{
   accessToken = await _login();
-  projectsResponse = await projectsService.getProjects(accessToken);
+  //En prueba
+  dynamic rawProjectsResponse = await projectsService.getProjects(accessToken);
+  (rawProjectsResponse as Map).cast<String, dynamic>().forEach((key, value) {
+    projectsResponse.add((value as Map).cast<String, dynamic>());
+  });
+  //fin de prueba
   expect(projectsResponse, isNotNull);
   expect(projectsResponse.length, isNot(0));
   final List<Project> projects = projectsFromJson(projectsResponse);
@@ -141,7 +146,7 @@ void _defineFormFieldValuesByTypeOfValues(VariableFormField vff, Map<String, dyn
   if(vff is SingleValueFormField){
     jsonVff['res'] = [vff.uniqueValue];
   }else if(vff is MultiValueFormField){
-    jsonVff['res'] = (vff.values.where((element) => element.selected)).map<String>((e) => e.value).toList();
+    jsonVff['res'] = (vff.values.map<int>((item) => item.selected?1:0)).toList();
   }
 }
 

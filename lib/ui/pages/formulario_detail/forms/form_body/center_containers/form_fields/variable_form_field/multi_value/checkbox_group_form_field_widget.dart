@@ -8,8 +8,9 @@ import 'alignment_multi_option_list.dart';
 class CheckboxGroupFormFieldWidget extends StatefulWidget {
   
   final CheckBoxGroup checkBoxGroup;
+  final bool avaible;
 
-  CheckboxGroupFormFieldWidget({@required this.checkBoxGroup}): super(key: Key('${checkBoxGroup.name}'));
+  CheckboxGroupFormFieldWidget({@required this.checkBoxGroup, this.avaible = true}): super(key: Key('${checkBoxGroup.name}'));
 
   @override
   _CheckboxGroupFormFieldWidgetState createState() => _CheckboxGroupFormFieldWidgetState();
@@ -49,13 +50,18 @@ class _CheckboxGroupFormFieldWidgetState extends State<CheckboxGroupFormFieldWid
         ), 
         value: value.selected,
         onChanged: (bool isSelected){
-          setState((){
-            _onItemSelected(value, isSelected);
-            widget.updateFormFieldsPage();
-          });
+          if(widget.avaible)
+            _onSelectBeeingAvaible(value, isSelected);
         }
       ),
     );
+  }
+
+  void _onSelectBeeingAvaible(MultiFormFieldValue value, bool isSelected){
+    setState((){
+      _onItemSelected(value, isSelected);
+      widget.updateFormFieldsPage();
+    });
   }
 
   void _onItemSelected(MultiFormFieldValue value, bool isSelected){

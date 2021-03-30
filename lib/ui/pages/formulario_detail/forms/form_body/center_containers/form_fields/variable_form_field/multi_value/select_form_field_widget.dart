@@ -5,21 +5,24 @@ import 'package:gap/logic/central_managers/pages_navigation_manager.dart';
 import '../variable_form_field_container.dart';
 
 class SelectFormFieldWidget extends StatelessWidget {
+
   final SelectFormField selectFormField;
-  SelectFormFieldWidget({Key key, @required this.selectFormField}) : super(key: Key(selectFormField.name));
+  final bool avaible;
+  SelectFormFieldWidget({Key key, @required this.selectFormField, this.avaible = true}) : super(key: Key(selectFormField.name));
 
   @override
   Widget build(BuildContext context) {
     return VariableFormFieldContainer(
       title: selectFormField.label,
-      child: _CustomSelect(selectFormField: selectFormField),
+      child: _CustomSelect(selectFormField: selectFormField, avaible: this.avaible),
     );
   }
 }
 
 class _CustomSelect extends StatefulWidget {
   final SelectFormField selectFormField;
-  _CustomSelect({Key key, @required this.selectFormField}) : super(key: key);
+  final bool avaible;
+  _CustomSelect({Key key, @required this.selectFormField, @required this.avaible}) : super(key: key);
 
   @override
   __CustomSelectState createState() => __CustomSelectState();
@@ -53,6 +56,11 @@ class __CustomSelectState extends State<_CustomSelect> {
   }
 
   void _onChanged(String newValue){
+    if(widget.avaible)
+      _onChangedBeeingAvaible(newValue);
+  }
+
+  void _onChangedBeeingAvaible(String newValue){
     widget.selectFormField.values.forEach((
       (v){
           _updateStateBySelection(v, newValue);

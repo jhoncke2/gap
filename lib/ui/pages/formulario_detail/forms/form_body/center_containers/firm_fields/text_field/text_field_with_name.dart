@@ -3,7 +3,8 @@ import '../form_field_structure.dart';
 import '../general_form_field_with_name.dart';
 // ignore: must_be_immutable
 class TextFieldWithName extends GeneralFormFieldWithName implements FormFieldStructure {
-
+  
+  final bool isAvaible;
   final TextInputType keyboardType;
   final bool obscureText;
   final String initialValue;
@@ -12,6 +13,7 @@ class TextFieldWithName extends GeneralFormFieldWithName implements FormFieldStr
 
   TextFieldWithName({
     Key key,
+    this.isAvaible = true,
     @required String fieldName,
     @required Function onFieldChanged,
     this.keyboardType = TextInputType.text,
@@ -35,6 +37,7 @@ class TextFieldWithName extends GeneralFormFieldWithName implements FormFieldStr
   @override
   void createFieldBox(){
     this.fieldBox = TextFormField(
+      enabled: this.isAvaible,
       initialValue: initialValue??'',
       obscureText: obscureText,
       keyboardType: keyboardType,

@@ -11,12 +11,12 @@ import 'text_form_field_widget.dart';
 
 // ignore: must_be_immutable
 class NumberFormFieldWidget extends TextFormFieldWidget {
-
+  
   final NumberFormField number;
   TextEditingController _textFieldController;
 
-  NumberFormFieldWidget({Key key, @required this.number, int indexInPage, StreamController<int> onTappedController}):
-    super(key: Key('${number.name}'), indexInPage: indexInPage, onTappedController: onTappedController){
+  NumberFormFieldWidget({Key key, @required this.number, bool avaible = true, int indexInPage, StreamController<int> onTappedController}):
+    super(key: Key('${number.name}'), indexInPage: indexInPage, onTappedController: onTappedController, avaible: avaible){
       _createTextFieldController();
     }
   
@@ -60,6 +60,7 @@ class NumberFormFieldWidget extends TextFormFieldWidget {
     return Container(
       width: _sizeUtils.xasisSobreYasis * 0.3,
       child: TextFormField(
+        enabled: super.avaible,
         key: Key('${number.name}_textfield'),
         controller: _textFieldController,
         keyboardType: TextInputType.number,
@@ -156,7 +157,7 @@ class NumberFormFieldWidget extends TextFormFieldWidget {
           icon,
           size: _sizeUtils.littleIconSize
         ),
-        onPressed: (){_onChangeByButtons(operation);},
+        onPressed: (this.avaible)? (){_onChangeByButtons(operation);} : null,
       ),
     );
   }

@@ -7,8 +7,9 @@ import '../variable_form_field_container.dart';
 class TimePickerFormFieldWidget extends StatefulWidget {
 
   final TimeField timeFormField;
+  final bool avaible;
 
-  TimePickerFormFieldWidget({Key key, @required this.timeFormField}) : super(key: Key(timeFormField.name));
+  TimePickerFormFieldWidget({Key key, @required this.timeFormField, this.avaible = true}) : super(key: Key(timeFormField.name));
 
   @override
   _TimePickerFormFieldWidgetState createState() => _TimePickerFormFieldWidgetState();
@@ -33,7 +34,7 @@ class _TimePickerFormFieldWidgetState extends State<TimePickerFormFieldWidget> {
       color: Theme.of(_context).primaryColor.withOpacity(0.2),
       shape: _createButtonShape(),
       elevation: 0,
-      onPressed: _onPickDurationPressed,
+      onPressed: (widget.avaible)? _onPickDurationPressed : null,
     );
   }
 
