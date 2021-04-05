@@ -134,15 +134,16 @@ abstract class DataDistributor{
         _onSecondaryFirms(form);
         break;
       case FormStep.Finished:
+        _onFormFinished(form);
         break;
     }
   }
 
   void _initOnForm(Formulario form){
-    chosenFormB.add(InitFormFillingOut(formulario: form, onEndEvent: _onEndInitFormFillingOut));
+    chosenFormB.add(InitFormFillingOut(formulario: form, onEndEvent: _changeIndexBlocNPages));
   }
 
-  void _onEndInitFormFillingOut(int formFieldsPages){
+  void _changeIndexBlocNPages(int formFieldsPages){
     indexB.add(ChangeNPages(nPages: formFieldsPages, onEnd: _updateFormFieldsPage));
   }
 
@@ -168,6 +169,10 @@ abstract class DataDistributor{
     chosenFormB.add(InitFirmsFillingOut());
   }
 
+  void _onFormFinished(Formulario form){
+    chosenFormB.add(InitFormFinishing(form: form, onEnd: _changeIndexBlocNPages));
+  }
+
   Future updateFormFieldsPage()async{
     final int indexPage = indexB.state.currentIndexPage;
     _updateFormFieldsPage(indexPage);
@@ -182,7 +187,6 @@ abstract class DataDistributor{
     _initOnFirstFirmerInformation();
     await _addFinalPosition(chosenForm);
     chosenForm.advanceInStep();
-    //_initOnFirstFirmerInformation();
     await updateChosenFormInStorage(chosenForm);
   }
 
@@ -201,6 +205,7 @@ abstract class DataDistributor{
 
   @protected
   void deleteNullFirmersFromForm(Formulario form){
+    //TODO: Decidir si es necesario revisar todos los cuatro campos de la firma o solo los más importantes
     List<PersonalInformation> firmers = form.firmers.where((f){
       return ![f.firm, f.name, f.identifDocumentType, f.identifDocumentNumber].contains(null);
     }).toList();
@@ -354,6 +359,7 @@ abstract class DataDistributor{
 
   Future resetChosenForm()async{
     formsB.add(ChangeFormsAreBlocked(areBlocked: false));
+    indexB.add(ResetAllOfIndex());
   }
 
   Future resetCommentedImages()async{

@@ -2,7 +2,7 @@ import 'package:gap/data/models/entities/custom_form_field/variable/variable_for
 
 class MultiValueFormField extends VariableFormField{
   List<MultiFormFieldValue> values;
-  //TODO: Averiguar qué significa
+  //TODO: Averiguar qué significa (¿Significa que un select puede tener selección múltiple?)
   bool multiple;
   
   MultiValueFormField.fromJson(Map<String, dynamic> json): 

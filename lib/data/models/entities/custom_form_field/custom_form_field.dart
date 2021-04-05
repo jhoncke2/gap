@@ -11,7 +11,12 @@ final Map<String, dynamic> unsupportedFormFieldJson = {
   'label':'--tipo de campo no soportado--'
 };
 
-List<CustomFormField> customFormFieldsFromJsonString(String str) => List<CustomFormField>.from(json.decode(str).map((x) => CustomFormField.fromJson(x)));
+List<CustomFormField> customFormFieldsFromJson(dynamic rawFormFields){
+  if(rawFormFields is String)
+    return List<CustomFormField>.from(json.decode(rawFormFields).map((x) => CustomFormField.fromJson(x)));
+  else
+    return ((rawFormFields as List).cast<Map<String, dynamic>>()).map((formField) => CustomFormField.fromJson(formField)).toList();
+}
 
 String customFormFieldsToJson(List<CustomFormField> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 

@@ -68,12 +68,16 @@ class _LoadedFormularioDetail extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<IndexBloc, IndexState>(
       builder: (context, indexState) {
-        return BlocBuilder<KeyboardListenerBloc, KeyboardListenerState>(
-          builder: (context, keyboardState) {
-            _defineConfigByBlocsStates(keyboardState, indexState, context);
-            return _createWidgetWithBlocBuilderConfigDefined();
-          },
-        );
+        if(indexState.nPages > 0){
+          return BlocBuilder<KeyboardListenerBloc, KeyboardListenerState>(
+            builder: (context, keyboardState) {
+              _defineConfigByBlocsStates(keyboardState, indexState, context);
+              return _createWidgetWithBlocBuilderConfigDefined();
+            },
+          );
+        }else{
+          return CustomProgressIndicator(heightScreenPercentage: 0.6,);
+        }
       },
     );
   }

@@ -38,7 +38,7 @@ class TextFieldWithName extends GeneralFormFieldWithName implements FormFieldStr
   void createFieldBox(){
     this.fieldBox = TextFormField(
       enabled: this.isAvaible,
-      initialValue: initialValue??'',
+      initialValue: this.initialValue??'',
       obscureText: obscureText,
       keyboardType: keyboardType,
       decoration: InputDecoration(

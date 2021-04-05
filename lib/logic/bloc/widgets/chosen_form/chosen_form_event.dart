@@ -20,6 +20,15 @@ class InitFirmsFillingOut extends ChosenFormEvent{}
 
 class InitFirmsFinishing extends ChosenFormEvent{}
 
+class InitFormFinishing extends ChosenFormEvent{
+  final Function onEnd;
+  final Formulario form;
+  InitFormFinishing({
+    @required this.onEnd,
+    @required this.form
+  });
+}
+
 class UpdateFirmerPersonalInformation extends ChosenFormEvent{
   final PersonalInformation firmer;
   UpdateFirmerPersonalInformation({

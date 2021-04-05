@@ -33,6 +33,17 @@ class __CustomSelectState extends State<_CustomSelect> {
   String _currentSelectedValue;
 
   @override
+  void initState() {
+    for(MultiFormFieldValue v in widget.selectFormField.values){
+      if(v.selected){
+        _currentSelectedValue = v.value;
+        break;
+      }
+    }
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 15),
@@ -40,7 +51,7 @@ class __CustomSelectState extends State<_CustomSelect> {
       child: DropdownButton<String>(
         items: _createItems(),
         value: _currentSelectedValue,
-        onChanged: _onChanged,
+        onChanged: (widget.avaible)? _onChanged : null,
       ),
     );
   }

@@ -47,7 +47,7 @@ class ChosenFormCurrentComponent extends StatelessWidget {
   }
 
   void _elegirComponentsSegunFormState() {
-    if(_chosenFormState.formStep == FormStep.OnForm) {
+    if([FormStep.OnForm, FormStep.Finished].contains( _chosenFormState.formStep )) {
       _bottomComponents = BottomFormFillingNavigation();
     }else{
       _bottomComponents = Container();
@@ -56,7 +56,7 @@ class ChosenFormCurrentComponent extends StatelessWidget {
 
   void _defineColumnComponentsConfigByKeyboardState(bool keyBoardIsActive){
     final IndexState indexState = BlocProvider.of<IndexBloc>(_context).state;
-    double extraContainerHeightPercent = (indexState.currentIndexPage == indexState.nPages-1)? -0.015   : 0.075;
+    double extraContainerHeightPercent = (indexState.currentIndexPage == indexState.nPages-1)? -0.015 : 0.075;
     if(keyBoardIsActive){
       columnMainAxisAlignment = MainAxisAlignment.start;
       centerComponentsHeightPercent = 0.37 + extraContainerHeightPercent;
@@ -68,8 +68,11 @@ class ChosenFormCurrentComponent extends StatelessWidget {
   }
 
   Widget _createCenterComponents(){
-    return _chosenFormState.formStep == FormStep.OnForm? 
-      FormInputsFraction(screenHeightPercent: centerComponentsHeightPercent)
-      : CustomProgressIndicator(heightScreenPercentage: 0.45);
+    if(_chosenFormState.formStep == FormStep.OnForm)
+      return FormInputsFraction(screenHeightPercent: centerComponentsHeightPercent, formFieldsAreEnabled: true);
+    else if(_chosenFormState.formStep == FormStep.Finished)
+      return FormInputsFraction(screenHeightPercent: centerComponentsHeightPercent, formFieldsAreEnabled: false);
+    else
+      return CustomProgressIndicator(heightScreenPercentage: 0.45);
   }
 }

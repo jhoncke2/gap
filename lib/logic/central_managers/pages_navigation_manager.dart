@@ -72,10 +72,10 @@ class PagesNavigationManager{
   }
 
   static Future<void> navToFormDetail(Formulario formulario, BuildContext context)async{
-    if(await _formularioSePuedeAbrir(formulario)){
+    //if(await _formularioSePuedeAbrir(formulario)){
       await _testExpectChosenVisitAlreadyExistsInStorage();
       await _GPSValidator.executeMethodByGpsStatus((){_updateForm(formulario);}, _goToAppSetings, gpsActivationRequestMessage);
-    }
+    //}
   }
 
   static Future<bool> _formularioSePuedeAbrir(Formulario formulario)async{

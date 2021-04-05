@@ -51,7 +51,7 @@ Future _testFromJson()async{
 Future _tryFromJson()async{
   final String dataAsString = await getDataAsString();
   //final String dataAsString = getCocarDataAsString();
-  formFields = customFormFieldsFromJsonString(dataAsString);
+  formFields = customFormFieldsFromJson(dataAsString);
   initialJsonFormFields = jsonDecode(dataAsString).cast<Map<String, dynamic>>();
   expect(formFields, isNotNull, reason: 'Los formFields no deben ser null');
   expect(formFields.length, isNot(0), reason: 'La cantidad de custom form fields debe ser mayor a 0');

@@ -1,9 +1,6 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:gap/data/models/entities/custom_form_field/static/static_form_field.dart';
-import 'package:gap/data/models/entities/custom_form_field/variable/multi_value/multi_value_form_field.dart';
-import 'package:gap/data/models/entities/custom_form_field/variable/single_value/single_value_form_field.dart';
 import 'package:gap/data/models/entities/custom_form_field/variable/variable_form_field.dart';
 import 'package:gap/data/models/entities/entities.dart';
 import 'package:meta/meta.dart';
@@ -32,10 +29,12 @@ class ChosenFormBloc extends Bloc<ChosenFormEvent, ChosenFormState> {
       _initFirstFirmerFirm(event);
     }else if(event is InitFirmsFillingOut){
       _initFirmsFillingOut(event);
-    }else if(event is InitFirmsFinishing){
-      _initFirmsFinishing();
     }else if(event is UpdateFirmerPersonalInformation){
       _updateFirmerPersonalInformation(event);
+    }else if(event is InitFirmsFinishing){
+      _initFirmsFinishing();
+    }else if(event is InitFormFinishing){
+      _initFormFinishing(event);
     }else if(event is ResetChosenForm){
       _resetChosenForm();
     }
@@ -44,15 +43,18 @@ class ChosenFormBloc extends Bloc<ChosenFormEvent, ChosenFormState> {
 
   void _initFormFillingOut(InitFormFillingOut event){
     final Formulario formulario = event.formulario;
-     _formFieldsByPageGenerator.formFields = formulario.campos;
-    final List<List<CustomFormField>> formFieldsPerPages = _formFieldsByPageGenerator.createFormFieldsPerPage();
-    //TODO: Implementar la creación de los formfields
+    final List<List<CustomFormField>> formFieldsPerPages = _createFormsFieldsByPage(formulario);
     _currentStateToYield = state.copyWith(
       formStep: FormStep.OnForm,
       firmers: formulario.firmers,
       formFieldsPerPage: formFieldsPerPages
     ); 
     event.onEndEvent(formFieldsPerPages.length);
+  }
+
+  List<List<CustomFormField>> _createFormsFieldsByPage(Formulario formulario){
+     _formFieldsByPageGenerator.formFields = formulario.campos;
+     return _formFieldsByPageGenerator.createFormFieldsPerPage();
   }
 
   void _initFirstFirmerFillingOut(InitFirstFirmerFillingOut event){
@@ -89,6 +91,16 @@ class ChosenFormBloc extends Bloc<ChosenFormEvent, ChosenFormState> {
     _currentStateToYield = state.copyWith(
       formStep: FormStep.Finished
     );
+  }
+
+  void _initFormFinishing(InitFormFinishing event){
+    final Formulario form = event.form;
+    final List<List<CustomFormField>> formFieldsPerPage = _createFormsFieldsByPage(form);
+    _currentStateToYield = state.copyWith(
+      formStep: FormStep.Finished,
+      formFieldsPerPage: formFieldsPerPage
+    );
+    event.onEnd(formFieldsPerPage.length);
   }
 
   void _resetCurrentFirmer(PersonalInformation firmer){
@@ -137,6 +149,8 @@ class ChosenFormBloc extends Bloc<ChosenFormEvent, ChosenFormState> {
     //ChosenFormStorageManager.removeChosenForm();
   }
 }
+
+
 
 class FormFieldsByPageGenerator{
   List<CustomFormField> _items;

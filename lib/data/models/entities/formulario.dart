@@ -36,7 +36,7 @@ class Formulario extends EntityWithStage {
     id: json["formulario_pivot_id"],
     completo: json["completo"],
     nombre: json["nombre"],
-    campos: customFormFieldsFromJsonString(json['campos']),
+    campos: customFormFieldsFromJson(json['campos']),
     formStepIndex: (json['completo'])? stepsInOrder.length-1 : json['form_step_index'] == null? 1 : stepsInOrder.indexOf( formStepValues.map[json['form_step_index']] ),
     date: DateTime.now(),
     firmers: PersonalInformations.fromJson((json['firmers']??[]).cast<Map<String, dynamic>>()).personalInformations,

@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:gap/data/models/entities/custom_form_field/variable/single_value/raw_text_form_field.dart';
 import 'package:gap/logic/central_managers/pages_navigation_manager.dart';
 import 'package:gap/ui/pages/formulario_detail/forms/form_body/center_containers/firm_fields/text_field/text_field_with_name.dart';
+import 'package:gap/ui/utils/size_utils.dart';
 import 'text_form_field_widget.dart';
 // ignore: must_be_immutable
 class SingleTextFormFieldWidget extends TextFormFieldWidget {
-  
+  static final SizeUtils sizeUtils = SizeUtils();
   final UniqueLineText uniqueLineText;
   TextInputType keyboardType;
   bool obscureText;
@@ -19,21 +20,40 @@ class SingleTextFormFieldWidget extends TextFormFieldWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: _createTextField(),
+      padding: EdgeInsets.symmetric(horizontal: sizeUtils.xasisSobreYasis * 0.0175),
+      child: _createTextField(context),
     );
   }
 
-  Widget _createTextField(){
+  Widget _createTextField(BuildContext context){
     _defineTextFieldParams();
-    return TextFieldWithName(
-      isAvaible: super.avaible,
-      fieldName: uniqueLineText.label,
-      initialValue: uniqueLineText.placeholder,
-      helperText: uniqueLineText.description,
-      keyboardType: keyboardType,
-      obscureText: obscureText,
-      onFieldChanged: onChanged,
-      onTap: super.onTap,
+    return Container(
+      child: Column(
+        children: [
+          Text(uniqueLineText.label),
+          SizedBox(height: sizeUtils.xasisSobreYasis * 0.02),
+          TextFormField(
+            enabled: this.avaible,
+            initialValue: uniqueLineText.uniqueValue??uniqueLineText.placeholder,
+            decoration: InputDecoration(
+              helperText: uniqueLineText.description??'',
+              isDense: true,
+              border: _createInputBorder(context),
+              enabledBorder: _createInputBorder(context)
+            )
+          )
+        ]
+      )
+    );
+  }
+
+  InputBorder _createInputBorder(BuildContext context){
+    return OutlineInputBorder(
+      borderRadius: BorderRadius.circular(sizeUtils.xasisSobreYasis * 0.065),
+      borderSide: BorderSide(
+        color: Theme.of(context).primaryColor.withOpacity(0.525),
+        width: 3.5
+      )
     );
   }
 

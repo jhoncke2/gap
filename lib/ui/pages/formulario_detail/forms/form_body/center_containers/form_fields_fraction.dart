@@ -20,8 +20,9 @@ class FormInputsFraction extends StatefulWidget {
   final ScrollController elementsScrollController = ScrollController();
   int currentTappedTextFormField;
   double screenHeightPercent;
+  final bool formFieldsAreEnabled;
 
-  FormInputsFraction({Key key, @required this.screenHeightPercent}) : super(key: key){
+  FormInputsFraction({Key key, @required this.screenHeightPercent, @required this.formFieldsAreEnabled}) : super(key: key){
     onTextFieldTapStream = onTextFieldChangeController.stream;
   }
 
@@ -33,7 +34,6 @@ class _FormInputsFractionState extends State<FormInputsFraction> {
   final SizeUtils _sizeUtils = SizeUtils();
   IndexState _indexState;
   bool _isReBuilding;
-  double _listViewBotPadding;
 
   @override
   void initState() {
@@ -56,16 +56,6 @@ class _FormInputsFractionState extends State<FormInputsFraction> {
           return _createFormFieldsWithoutIndex();
       }
     );
-  }
-
-  void _initBuildingConfig(BuildContext context){
-    _isReBuilding = true;
-    if(KeyboardVisibilityNotification().isKeyboardVisible){
-      _listViewBotPadding = 200;
-    }
-    else{
-      _listViewBotPadding = 50;
-    }
   }
 
   void _unlockIndexIfFormFieldsAreCompleted(){
@@ -121,7 +111,6 @@ class _FormInputsFractionState extends State<FormInputsFraction> {
     List<CustomFormField> formFIeldsByPage = _getFormFIeldsByCurrentPage();
     final double screenHeight = MediaQuery.of(context).size.height;
     return Container(
-      //color: Colors.blueAccent.withOpacity(0.5),
       child: Scrollbar(
         controller: widget.elementsScrollController,
         isAlwaysShown: true,
@@ -129,7 +118,7 @@ class _FormInputsFractionState extends State<FormInputsFraction> {
           controller: widget.elementsScrollController,
           itemCount: formFIeldsByPage.length,
           separatorBuilder: (_, __)=>SizedBox(height: _sizeUtils.xasisSobreYasis * 0.1),
-          itemBuilder: (_, int i)=>FormFieldWidgetFactory.createFormFieldWidget(formFIeldsByPage[i], i, widget.onTextFieldChangeController),
+          itemBuilder: (_, int i)=>FormFieldWidgetFactory.createFormFieldWidget(formFIeldsByPage[i], i, widget.onTextFieldChangeController, widget.formFieldsAreEnabled),
           padding: EdgeInsets.only(top: 0, bottom: 75),
         ),
       ),
