@@ -42,7 +42,6 @@ class ProcessStage extends Enum<String>{
     else if(value == Realizada.value)
       return Realizada;
     else{
-      //TODO: ¿Una excepción?
       return Pendiente;
     }
       

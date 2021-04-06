@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:gap/data/models/entities/custom_form_field/variable/single_value/raw_text_form_field.dart';
 import 'package:gap/logic/central_managers/pages_navigation_manager.dart';
-import 'package:gap/ui/pages/formulario_detail/forms/form_body/center_containers/firm_fields/text_field/text_field_with_name.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 import 'text_form_field_widget.dart';
 // ignore: must_be_immutable
@@ -40,7 +39,8 @@ class SingleTextFormFieldWidget extends TextFormFieldWidget {
               isDense: true,
               border: _createInputBorder(context),
               enabledBorder: _createInputBorder(context)
-            )
+            ),
+            onChanged: onChanged,
           )
         ]
       )
@@ -69,11 +69,9 @@ class SingleTextFormFieldWidget extends TextFormFieldWidget {
       _defineEmailSubtypeConfig();
     }else if(uniqueLineText.subType == TextSubType.PASSWORD){
       _definePasswordSubtypeConfig();   
-    }
-    else if(uniqueLineText.subType == TextSubType.TEL){
+    }else if(uniqueLineText.subType == TextSubType.TEL){
       _defineTelSubtypeConfig();
-    }
-    else if(uniqueLineText.subType == TextSubType.COLOR){
+    }else if(uniqueLineText.subType == TextSubType.COLOR){
       _defineKeyboardTypeAsText();   
     }
   }

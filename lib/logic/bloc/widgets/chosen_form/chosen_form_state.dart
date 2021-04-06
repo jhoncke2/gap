@@ -2,7 +2,8 @@ part of 'chosen_form_bloc.dart';
 
 enum FormStep{
   WithoutForm,
-  OnForm,
+  OnFormFillingOut,
+  OnFormReading,
   OnFirstFirmerInformation,
   OnFirstFirmerFirm,
   OnSecondaryFirms,
@@ -11,11 +12,13 @@ enum FormStep{
 
 @immutable
 class ChosenFormState{
+  final bool formIsLocked;
   final FormStep formStep;
   final List<List<CustomFormField>> _formFieldsPerPage;
   final List<PersonalInformation> firmers;
   
   ChosenFormState({
+    this.formIsLocked = false,
     this.formStep = FormStep.WithoutForm,
     List<List<CustomFormField>> formFieldsPerPage, 
     this.firmers
@@ -24,10 +27,12 @@ class ChosenFormState{
   ;
 
   ChosenFormState copyWith({
+    bool formIsLocked,
     FormStep formStep,
     List<List<CustomFormField>> formFieldsPerPage,
     List<PersonalInformation> firmers,
   })=>ChosenFormState(
+    formIsLocked: formIsLocked??this.formIsLocked,
     formStep:formStep??this.formStep,
     formFieldsPerPage:formFieldsPerPage??_formFieldsPerPage,
     firmers:firmers??this.firmers

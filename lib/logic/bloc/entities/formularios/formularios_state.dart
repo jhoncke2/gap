@@ -2,6 +2,7 @@ part of 'formularios_bloc.dart';
 
 @immutable
 class FormulariosState{
+//TODO: Averiguar diferencia entre formsAreLoaded y formsAreBlocked (¿para qué se usa cada uno?)
   final bool formsAreLoaded;
   final List<Formulario> forms;
   final List<Formulario> pendientesForms;

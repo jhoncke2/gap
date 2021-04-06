@@ -23,20 +23,27 @@ class ChosenFormCurrentComponent extends StatelessWidget {
       child: BlocBuilder<ChosenFormBloc, ChosenFormState>(
         builder: (context, chosenFormState) {
           _chosenFormState = chosenFormState;
-          _elegirComponentsSegunBlocsStates(context);
-          return Container(
-            child: Column(
-              mainAxisAlignment: columnMainAxisAlignment,
-              children: [
-                _createCenterComponents(),
-                //SizedBox(height: _sizeUtils.giantSizedBoxHeight),
-                _bottomComponents
-              ],
-            ),
-            padding: EdgeInsets.only(top: 25),
-          );
+          if(chosenFormState.formIsLocked)
+            return CustomProgressIndicator();
+          else
+            return _createUnlockedChosenFormCurrentComponent(context);
         },
       ),
+    );
+  }
+
+  Widget _createUnlockedChosenFormCurrentComponent(BuildContext context){
+    _elegirComponentsSegunBlocsStates(context);
+    return Container(
+      child: Column(
+        mainAxisAlignment: columnMainAxisAlignment,
+        children: [
+          _createCenterComponents(),
+          //SizedBox(height: _sizeUtils.giantSizedBoxHeight),
+          _bottomComponents
+        ],
+      ),
+      padding: EdgeInsets.only(top: 25),
     );
   }
 
@@ -47,7 +54,7 @@ class ChosenFormCurrentComponent extends StatelessWidget {
   }
 
   void _elegirComponentsSegunFormState() {
-    if([FormStep.OnForm, FormStep.Finished].contains( _chosenFormState.formStep )) {
+    if([FormStep.OnFormFillingOut, FormStep.OnFormReading, FormStep.Finished].contains( _chosenFormState.formStep )) {
       _bottomComponents = BottomFormFillingNavigation();
     }else{
       _bottomComponents = Container();
@@ -68,9 +75,9 @@ class ChosenFormCurrentComponent extends StatelessWidget {
   }
 
   Widget _createCenterComponents(){
-    if(_chosenFormState.formStep == FormStep.OnForm)
+    if(_chosenFormState.formStep == FormStep.OnFormFillingOut)
       return FormInputsFraction(screenHeightPercent: centerComponentsHeightPercent, formFieldsAreEnabled: true);
-    else if(_chosenFormState.formStep == FormStep.Finished)
+    else if([FormStep.OnFormReading, FormStep.Finished].contains( _chosenFormState.formStep ))
       return FormInputsFraction(screenHeightPercent: centerComponentsHeightPercent, formFieldsAreEnabled: false);
     else
       return CustomProgressIndicator(heightScreenPercentage: 0.45);

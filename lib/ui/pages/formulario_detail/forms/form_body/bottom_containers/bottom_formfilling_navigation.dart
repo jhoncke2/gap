@@ -36,7 +36,7 @@ class BottomFormFillingNavigation extends StatelessWidget {
   }
 
   Widget _createIndexField(){
-    if([FormStep.OnForm, FormStep.Finished].contains( _chosenFormState.formStep )){
+    if([FormStep.OnFormFillingOut, FormStep.OnFormReading, FormStep.Finished].contains( _chosenFormState.formStep )){
       return IndexPagination();
     }else{
       return Container(
@@ -83,8 +83,6 @@ class _ChangeFormStepButton extends StatelessWidget {
   }
 
   void _generateOnPressedFunction(){
-    //TODO: Implementar verificación de que todos los formularios estén diligenciados
-
     if(ChosenFormManagerSingleton.chosenFormManager.canGoToNextFormStep()){
       _onPressed = _irASiguienteWidget;
     }else{
@@ -93,7 +91,9 @@ class _ChangeFormStepButton extends StatelessWidget {
   }
 
   void _irASiguienteWidget(){
-    if(chosenFormState.formStep == FormStep.OnForm)
+    if(chosenFormState.formStep == FormStep.OnFormFillingOut)
+      PagesNavigationManager.endFormFillingOut();
+    else if(chosenFormState.formStep == FormStep.OnFormReading)
       PagesNavigationManager.initFirstFirmerFillingOut();
     else
       PagesNavigationManager.initFirstFirmerFirm();

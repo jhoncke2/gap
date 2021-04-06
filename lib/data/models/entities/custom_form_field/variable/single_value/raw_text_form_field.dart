@@ -2,7 +2,6 @@ import 'package:gap/data/models/entities/custom_form_field/variable/single_value
 import 'package:gap/data/models/entities/entities.dart';
 
 abstract class RawTextFormField extends SingleValueFormField{
-
   static final int defaultMaxLength = 2000;
   int maxLength;
 

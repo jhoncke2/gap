@@ -7,6 +7,7 @@ import 'package:gap/logic/bloc/entities/projects/projects_bloc.dart';
 import 'package:gap/logic/bloc/entities/user/user_bloc.dart';
 import 'package:gap/logic/bloc/entities/visits/visits_bloc.dart';
 import 'package:gap/logic/bloc/nav_routes/custom_navigator.dart';
+import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/logic/bloc/widgets/commented_images/commented_images_bloc.dart';
 import 'package:gap/logic/central_managers/data_distributor/data_distributor.dart';
 import 'package:gap/logic/central_managers/preloaded_storage_to_services.dart';
@@ -134,10 +135,12 @@ class DataDistributorWithConnection extends DataDistributor{
   }
 
   Future endFormFillingOut()async{
+    chosenFormB.add(ChangeFormIsLocked(isLocked: true));
     await super.endFormFillingOut();
     final Formulario chosenForm = formsB.state.chosenForm;
     await _sendFormToService(chosenForm);
     await _sendFormFinalPosition(chosenForm);
+    chosenFormB.add(ChangeFormIsLocked(isLocked: false));
   }
 
   Future _sendFormToService(Formulario form)async{

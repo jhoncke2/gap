@@ -85,7 +85,7 @@ class ChosenFormManager{
     switch(chosenFormState.formStep){
       case FormStep.WithoutForm:
         return true;
-      case FormStep.OnForm:
+      case FormStep.OnFormFillingOut:
         return _sePuedeAvanzarDesdeOnFormFillingOut();
       case FormStep.OnFirstFirmerInformation:
         return _sePuedeAvanzarDesdeFirstFirmerInfo();

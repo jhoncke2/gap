@@ -161,4 +161,4 @@ class DataDisributorErrorHandlingManager{
   }
 }
 
-final DataDisributorErrorHandlingManager dataDisributorErrorHandlingManager = DataDisributorErrorHandlingManager();
+final DataDisributorErrorHandlingManager dataDisrtibutorErrorHandlingManager = DataDisributorErrorHandlingManager();

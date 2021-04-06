@@ -19,10 +19,14 @@ class ChosenFormBloc extends Bloc<ChosenFormEvent, ChosenFormState> {
   Stream<ChosenFormState> mapEventToState(
     ChosenFormEvent event,
   ) async* {
-    if(event is InitFormFillingOut){
+    if(event is ChangeFormIsLocked){
+      _changeFormIsLocked(event);
+    }if(event is InitFormFillingOut){
       _initFormFillingOut(event);
     }else if(event is UpdateFormField){
       _updateFormField(event);
+    }else if (event is InitFormReading){
+      _initFormReading(event);
     }else if(event is InitFirstFirmerFillingOut){
       _initFirstFirmerFillingOut(event);
     }else if(event is InitFirstFirmerFirm){
@@ -41,11 +45,15 @@ class ChosenFormBloc extends Bloc<ChosenFormEvent, ChosenFormState> {
     yield _currentStateToYield;
   }
 
+  void _changeFormIsLocked(ChangeFormIsLocked event){
+    _currentStateToYield = state.copyWith(formIsLocked: event.isLocked);
+  }
+
   void _initFormFillingOut(InitFormFillingOut event){
     final Formulario formulario = event.formulario;
     final List<List<CustomFormField>> formFieldsPerPages = _createFormsFieldsByPage(formulario);
     _currentStateToYield = state.copyWith(
-      formStep: FormStep.OnForm,
+      formStep: FormStep.OnFormFillingOut,
       firmers: formulario.firmers,
       formFieldsPerPage: formFieldsPerPages
     ); 
@@ -55,6 +63,42 @@ class ChosenFormBloc extends Bloc<ChosenFormEvent, ChosenFormState> {
   List<List<CustomFormField>> _createFormsFieldsByPage(Formulario formulario){
      _formFieldsByPageGenerator.formFields = formulario.campos;
      return _formFieldsByPageGenerator.createFormFieldsPerPage();
+  }
+
+  void _updateFormField(UpdateFormField event){
+    _currentStateToYield = state.copyWith();
+    final List<CustomFormField> formFieldsByPage = state.getFormFieldsByIndex(event.pageOfFormField);
+    final bool formFieldsByPageAreFilled = _formFieldsAreFilled(formFieldsByPage);
+    event.onEndFunction(formFieldsByPageAreFilled);
+  }
+
+  bool _formFieldsAreFilled(List<CustomFormField> formFields){
+    bool allAreCompleted = true;
+    for(CustomFormField ff in formFields){
+      if(_isVariableAndRequired(ff))
+        if(!_variableRequiredFormFieldIsCompleted(ff))
+          return false;
+    }
+    return allAreCompleted;
+  }
+
+  bool _isVariableAndRequired(CustomFormField ff){
+    return ff is VariableFormField && ff.isRequired;
+  }
+
+  bool _variableRequiredFormFieldIsCompleted(VariableFormField vff){
+    return vff.isCompleted;
+  }
+
+  void _initFormReading(InitFormReading event){
+    final Formulario formulario = event.formulario;
+    final List<List<CustomFormField>> formFieldsPerPages = _createFormsFieldsByPage(formulario);
+    _currentStateToYield = state.copyWith(
+      formStep: FormStep.OnFormReading,
+      formFieldsPerPage: formFieldsPerPages
+    );
+    if(event.onEndEvent != null)
+      event.onEndEvent(formFieldsPerPages.length);
   }
 
   void _initFirstFirmerFillingOut(InitFirstFirmerFillingOut event){
@@ -117,31 +161,6 @@ class ChosenFormBloc extends Bloc<ChosenFormEvent, ChosenFormState> {
     _currentStateToYield = state.copyWith(
       firmers: firmers
     );
-  }
-
-  void _updateFormField(UpdateFormField event){
-    _currentStateToYield = state.copyWith();
-    final List<CustomFormField> formFieldsByPage = state.getFormFieldsByIndex(event.pageOfFormField);
-    final bool formFieldsByPageAreFilled = _formFieldsAreFilled(formFieldsByPage);
-    event.onEndFunction(formFieldsByPageAreFilled);
-  }
-
-  bool _formFieldsAreFilled(List<CustomFormField> formFields){
-    bool allAreCompleted = true;
-    for(CustomFormField ff in formFields){
-      if(_isVariableAndRequired(ff))
-        if(!_variableRequiredFormFieldIsCompleted(ff))
-          return false;
-    }
-    return allAreCompleted;
-  }
-
-  bool _isVariableAndRequired(CustomFormField ff){
-    return ff is VariableFormField && ff.isRequired;
-  }
-
-  bool _variableRequiredFormFieldIsCompleted(VariableFormField vff){
-    return vff.isCompleted;
   }
   
   void _resetChosenForm(){

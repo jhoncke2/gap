@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/logic/bloc/entities/formularios/formularios_bloc.dart';
+import 'package:gap/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/logic/bloc/widgets/index/index_bloc.dart';
 import 'package:gap/logic/bloc/widgets/keyboard_listener/keyboard_listener_bloc.dart';
 import 'package:gap/ui/utils/size_utils.dart';
@@ -107,8 +108,19 @@ class _LoadedFormularioDetail extends StatelessWidget {
       separer = SizedBox(height: _sizeUtils.littleSizedBoxHeigh * 0.0);
     }else{
       containerHeight = screenHeight * 0.955;
-      header = LoadedFormHead(formsState: formsState, hasBackButton: true);
+      header = _createLoadedFormHead();
       separer = SizedBox(height: _sizeUtils.littleSizedBoxHeigh);
     }
+  }
+
+  Widget _createLoadedFormHead(){
+    return BlocBuilder<ChosenFormBloc, ChosenFormState>(
+      builder: (_, chosenFormState){
+        if([FormStep.OnFormFillingOut, FormStep.Finished].contains( chosenFormState.formStep ))
+          return LoadedFormHead(formsState: formsState, hasBackButton: true);
+        else
+          return LoadedFormHead(formsState: formsState, hasBackButton: false);
+      },
+    );
   }
 }

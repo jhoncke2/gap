@@ -3,12 +3,27 @@ part of 'chosen_form_bloc.dart';
 @immutable
 abstract class ChosenFormEvent{}
 
+class ChangeFormIsLocked extends ChosenFormEvent{
+  final bool isLocked;
+  ChangeFormIsLocked({@required this.isLocked});
+}
+
 class InitFormFillingOut extends ChosenFormEvent{
   final Formulario formulario;
   final void Function(int) onEndEvent;
   InitFormFillingOut({
     @required this.formulario,
     @required this.onEndEvent
+  });
+}
+
+class InitFormReading extends ChosenFormEvent{
+  final Formulario formulario;
+  final void Function(int) onEndEvent;
+
+  InitFormReading({
+    @required this.formulario, 
+    this.onEndEvent
   });
 }
 

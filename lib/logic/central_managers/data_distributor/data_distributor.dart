@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:gap/central_config/bloc_providers_creator.dart';
 import 'package:gap/data/enums/enums.dart';
 import 'package:gap/data/models/entities/entities.dart';
@@ -22,9 +23,10 @@ import 'package:gap/logic/storage_managers/index/index_storage_manager.dart';
 import 'package:gap/logic/storage_managers/projects/projects_storage_manager.dart';
 import 'package:gap/logic/storage_managers/user/user_storage_manager.dart';
 import 'package:gap/logic/storage_managers/visits/visits_storage_manager.dart';
+import 'package:gap/ui/utils/dialogs.dart' as dialogs;
 import 'package:gap/native_connectors/gps.dart';
 import 'package:gap/native_connectors/storage_connector.dart';
-import 'package:geolocator/geolocator.dart';
+
 
 abstract class DataDistributor{
 
@@ -103,6 +105,7 @@ abstract class DataDistributor{
     formsB.add(ChooseForm(chosenOne: form));
     await ChosenFormStorageManager.setChosenForm(form);
     await _chooseBlocMethodByChosenFormStep(form);
+    formsB.add(ChangeFormsAreBlocked(areBlocked: false));
     //formsB.add(ChangeFormsAreBlocked(areBlocked: false));
   }
 
@@ -121,8 +124,11 @@ abstract class DataDistributor{
     switch(form.formStep){ 
       case FormStep.WithoutForm:
         break;
-      case FormStep.OnForm:
-        _initOnForm(form);
+      case FormStep.OnFormFillingOut:
+        _initOnFormFillingOut(form);
+        break;
+      case FormStep.OnFormReading:
+        _initOnFormReading(form);
         break;
       case FormStep.OnFirstFirmerInformation:
         _initOnFirstFirmerInformation();
@@ -139,8 +145,12 @@ abstract class DataDistributor{
     }
   }
 
-  void _initOnForm(Formulario form){
+  void _initOnFormFillingOut(Formulario form){
     chosenFormB.add(InitFormFillingOut(formulario: form, onEndEvent: _changeIndexBlocNPages));
+  }
+
+  void _initOnFormReading(Formulario form){
+    chosenFormB.add(InitFormReading(formulario: form, onEndEvent: _changeIndexBlocNPages));
   }
 
   void _changeIndexBlocNPages(int formFieldsPages){
@@ -184,10 +194,12 @@ abstract class DataDistributor{
 
   Future endFormFillingOut()async{
     final Formulario chosenForm = formsB.state.chosenForm;
-    _initOnFirstFirmerInformation();
+    //_initOnFirstFirmerInformation();
     await _addFinalPosition(chosenForm);
     chosenForm.advanceInStep();
     await updateChosenFormInStorage(chosenForm);
+    _initOnFormReading(chosenForm);
+    await dialogs.showTemporalDialog('Puedes visualizar tus resupestas antes de firmar');
   }
 
   @protected
@@ -214,8 +226,8 @@ abstract class DataDistributor{
   
   Future initFirstFirmerFillingOut()async{
     final Formulario chosenForm = formsB.state.chosenForm;
+    _initOnFirstFirmerInformation();
     chosenForm.advanceInStep();
-    chosenFormB.add(InitFirmsFillingOut());
     await updateChosenFormInStorage(chosenForm);
   }
 
@@ -223,7 +235,8 @@ abstract class DataDistributor{
     final Formulario chosenForm = formsB.state.chosenForm;
     chosenForm.advanceInStep();
     _addNewFirmer(InitFirstFirmerFirm());
-    await updateChosenFormInStorage(chosenForm);
+    
+    //await updateChosenFormInStorage(chosenForm);
   }
 
   Future updateFirmers()async{

@@ -37,17 +37,17 @@ class Formulario extends EntityWithStage {
     completo: json["completo"],
     nombre: json["nombre"],
     campos: customFormFieldsFromJson(json['campos']),
-    formStepIndex: (json['completo'])? stepsInOrder.length-1 : json['form_step_index'] == null? 1 : stepsInOrder.indexOf( formStepValues.map[json['form_step_index']] ),
+    formStepIndex: _getStepIndexFromJson(json),
     date: DateTime.now(),
     firmers: PersonalInformations.fromJson((json['firmers']??[]).cast<Map<String, dynamic>>()).personalInformations,
     initialPosition: json['initial_position'] == null? null : _positionFromJson(json['initial_position']),
     finalPosition: json['final_position'] == null? null: _positionFromJson(json['final_position'])
   );
 
-  static String _getStringDateFromString(String date){
-    final DateTime nowDate = DateTime.now();
-    String realDate = '${nowDate.year}-${nowDate.month}-${nowDate.day} ${nowDate.hour}:${nowDate.minute}';
-    return realDate;
+  static int _getStepIndexFromJson(Map<String, dynamic> json){
+    if(json['form_step_index'] == 'on_form')
+      json['form_step_index'] = 'on_form_filling_out';
+    return (json['completo'])? stepsInOrder.length-1 : json['form_step_index'] == null? 1 : stepsInOrder.indexOf( formStepValues.map[json['form_step_index']] );
   }
 
   @override
@@ -122,7 +122,8 @@ class Formulario extends EntityWithStage {
 
 final List<FormStep> stepsInOrder = [
   FormStep.WithoutForm,
-  FormStep.OnForm,
+  FormStep.OnFormFillingOut,
+  FormStep.OnFormReading,
   FormStep.OnFirstFirmerInformation,
   FormStep.OnFirstFirmerFirm,
   FormStep.OnSecondaryFirms,
@@ -130,7 +131,9 @@ final List<FormStep> stepsInOrder = [
 ];
 
 final formStepValues = EnumValues({
-  'on_form':FormStep.OnForm,
+  'on_form_filling_out':FormStep.OnFormFillingOut,
+  //TODO: Revisar que no se rompa nada con esta adición
+  'on_form_reading':FormStep.OnFormReading,
   'on_first_firmer_information':FormStep.OnFirstFirmerInformation,
   'on_secondary_firms':FormStep.OnSecondaryFirms,
   'finished':FormStep.Finished

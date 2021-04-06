@@ -21,9 +21,9 @@ class DataInitializer{
 
   Future init(BuildContext context, NetConnectionState netConnState)async{
     _continueInitialization = true;
-    dataDisributorErrorHandlingManager.netConnectionState = netConnState;
-    await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.DO_FIRST_APP_INITIALIZATION);
-    if(!dataDisributorErrorHandlingManager.happendError){
+    dataDisrtibutorErrorHandlingManager.netConnectionState = netConnState;
+    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.DO_FIRST_APP_INITIALIZATION);
+    if(!dataDisrtibutorErrorHandlingManager.happendError){
       final PermissionStatus storagePermissionStatus = await NativeServicesPermissions.storageServiceStatus;
       await _doFunctionByStoragePermissionStatus(storagePermissionStatus, CustomNavigator.navigatorKey.currentContext, netConnState);
     }else{
@@ -68,9 +68,9 @@ class DataInitializer{
   }
 
   Future _doInitialization(BuildContext context, NetConnectionState netConnState)async{
-    await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.DO_INITIAL_CONFIG);
-    if(dataDisributorErrorHandlingManager.happendError)
-      await _routesManager.replaceAllRoutesForNew(dataDisributorErrorHandlingManager.navigationTodoByError??NavigationRoute.Login);
+    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.DO_INITIAL_CONFIG);
+    if(dataDisrtibutorErrorHandlingManager.happendError)
+      await _routesManager.replaceAllRoutesForNew(dataDisrtibutorErrorHandlingManager.navigationTodoByError??NavigationRoute.Login);
     else
       await _continueInitializationAfterDoneInitialConfig(context, netConnState);
   }
@@ -101,7 +101,7 @@ class DataInitializer{
     if(_continueInitialization)
       await _routesManager.updateLastRoute();
     else
-      await _routesManager.replaceAllRoutesForNew(dataDisributorErrorHandlingManager.navigationTodoByError??NavigationRoute.Login);
+      await _routesManager.replaceAllRoutesForNew(dataDisrtibutorErrorHandlingManager.navigationTodoByError??NavigationRoute.Login);
   }
 
   Future _doUpdatingIfContinueInitialization(NavigationRoute nr, BuildContext context)async{
@@ -140,35 +140,35 @@ class DataInitializer{
   }
 
   Future _doProjectsUpdating()async{ 
-   await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_PROJECTS);
+   await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_PROJECTS);
   }
 
   Future _doProjectDetailUpdating()async{
     final Project chosenOne = await ProjectsStorageManager.getChosenProject();
-    await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_CHOSEN_PROJECT, chosenOne);
+    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_CHOSEN_PROJECT, chosenOne);
   }
 
   Future _doVisitsUpdating()async{
-    await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_VISITS);
+    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_VISITS);
   }
 
   Future _doVisitDetailUpdating()async{
     final Visit chosenOne = await VisitsStorageManager.getChosenVisit();
-    await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_CHOSEN_VISIT, chosenOne);
+    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_CHOSEN_VISIT, chosenOne);
   }
 
   Future _doFormsUpdating()async{
-    await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_FORMULARIOS);
+    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_FORMULARIOS);
   }
 
   Future _doFormDetailUpdating()async{
     final Formulario chosenOne = await ChosenFormStorageManager.getChosenForm();
-    await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_CHOSEN_FORM, chosenOne);
+    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_CHOSEN_FORM, chosenOne);
   }
 
 
   Future _doAdjuntarFotosUpdating()async{
-    await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_COMMENTED_IMAGES);
+    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_COMMENTED_IMAGES);
   }
 
   Future _doFirmersUpdating()async{
@@ -177,7 +177,7 @@ class DataInitializer{
   }
 
   void _evaluateifThereWasAnyErr(){
-    _continueInitialization = ! dataDisributorErrorHandlingManager.happendError;
+    _continueInitialization = ! dataDisrtibutorErrorHandlingManager.happendError;
   }
 }
 

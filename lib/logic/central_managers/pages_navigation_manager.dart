@@ -30,7 +30,7 @@ class PagesNavigationManager{
   
   static Future<void> navToProjects(Map<String, dynamic> loginInfo)async{
     await _login(loginInfo);
-    if(!dataDisributorErrorHandlingManager.happendError){
+    if(!dataDisrtibutorErrorHandlingManager.happendError){
       await _updateProjectsData();
     }
     await _goToPageByHavingOrNotError(NavigationRoute.Projects, true);
@@ -39,54 +39,49 @@ class PagesNavigationManager{
 
   static Future _login(Map<String, dynamic> loginInfo)async{
     loginInfo['type'] = 'first_login';
-    await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.LOGIN, loginInfo);
+    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.LOGIN, loginInfo);
   }
 
   static Future<void> _updateProjectsData()async{
-    await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_PROJECTS);
+    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_PROJECTS);
   }
 
   static Future<void> navToProjectDetail(Project project)async{
-    await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_CHOSEN_PROJECT, project);
+    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_CHOSEN_PROJECT, project);
     await _goToPageByHavingOrNotError(NavigationRoute.ProjectDetail, false);
   }
 
   static Future<void> navToVisits()async{
-    await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_VISITS);
+    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_VISITS);
     await _goToPageByHavingOrNotError(NavigationRoute.Visits, false);
   }
 
-  static Future _testExpectChosenVisitAlreadyExistsInStorage()async{
-    final Map<String, dynamic> jsonChosenVisit = await StorageConnectorSingleton.storageConnector.getMapResource('chosen_visit');
-    print(jsonChosenVisit);
-  }
-
   static Future<void> navToVisitDetail(Visit visit)async{
-    await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_CHOSEN_VISIT, visit);
+    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_CHOSEN_VISIT, visit);
     await _goToPageByHavingOrNotError(NavigationRoute.VisitDetail, false);
   }
 
   static Future<void> navToForms()async{
-    await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_FORMULARIOS);
+    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_FORMULARIOS);
     await _goToNextPage(NavigationRoute.Formularios);
   }
 
   static Future<void> navToFormDetail(Formulario formulario, BuildContext context)async{
-    //if(await _formularioSePuedeAbrir(formulario)){
-      await _testExpectChosenVisitAlreadyExistsInStorage();
+    if(await _formularioSePuedeAbrir(formulario)){
       await _GPSValidator.executeMethodByGpsStatus((){_updateForm(formulario);}, _goToAppSetings, gpsActivationRequestMessage);
-    //}
+    }
   }
 
   static Future<bool> _formularioSePuedeAbrir(Formulario formulario)async{
     bool isEmpty = formulario.campos.isEmpty;
     if(isEmpty)
       await dialogs.showTemporalDialog('Formulario sin campos');
-    return !formulario.completo && !isEmpty;
+    //return !formulario.completo && !isEmpty;
+    return !isEmpty;
   }
 
   static Future _updateForm(Formulario formulario)async{
-    await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_CHOSEN_FORM, formulario);
+    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_CHOSEN_FORM, formulario);
     await _goToPageByHavingOrNotError(NavigationRoute.FormularioDetailForms, false);
   }
 
@@ -96,64 +91,61 @@ class PagesNavigationManager{
   }
 
   static Future updateFormFieldsPage()async{
-    await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_FORM_FIELDS_PAGE);
+    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_FORM_FIELDS_PAGE);
   }
 
-  static Future initFirstFirmerFillingOut()async{
+  static Future endFormFillingOut()async{
     await _GPSValidator.executeMethodByGpsStatus(_endFormFillingOut, _goToAppSetings, gpsActivationRequestMessage);
   }
 
   static Future _endFormFillingOut()async{
-    await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.END_FORM_FILLING_OUT);
-    await _testExpectChosenVisitAlreadyExistsInStorage();
+    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.END_FORM_FILLING_OUT);
+    //await _goToPageByHavingOrNotError(NavigationRoute.Firmers, false);
+  }
+
+  static Future initFirstFirmerFillingOut()async{
+    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.INIT_FIRST_FIRMER_FILLING_OUT);
     await _goToPageByHavingOrNotError(NavigationRoute.Firmers, false);
   }
 
   static Future initFirstFirmerFirm()async{
-    await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.INIT_FIRST_FIRMER_FIRM);
-    await _testExpectChosenVisitAlreadyExistsInStorage();
+    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.INIT_FIRST_FIRMER_FIRM);
   }
 
   static Future<void> addFirmer()async{
-    await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_FIRMERS);
-    await _testExpectChosenVisitAlreadyExistsInStorage();
+    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_FIRMERS);
   }
 
   static Future<void> endFormFirmers()async{
-    await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.END_ALL_FORM_PROCESS); 
+    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.END_ALL_FORM_PROCESS); 
     await _backToForms();
-    await _testExpectChosenVisitAlreadyExistsInStorage();
     await routesManager.popNTimes(2);
   }
 
   static Future<void> navToAdjuntarImages()async{
-    await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_COMMENTED_IMAGES);
-    await _testExpectChosenVisitAlreadyExistsInStorage();
+    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_COMMENTED_IMAGES);
     await _goToPageByHavingOrNotError(NavigationRoute.AdjuntarFotosVisita, false);
   }
 
   static Future<void> updateImgsToCommentedImgs()async{
-    await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.ADD_CURRENT_PHOTOS_TO_COMMENTED_IMAGES);
-    await _testExpectChosenVisitAlreadyExistsInStorage();
+    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.ADD_CURRENT_PHOTOS_TO_COMMENTED_IMAGES);
   }
 
   static Future<void> endAdjuntarImages(BuildContext context)async{
-    await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.END_COMMENTED_IMAGES_PROCESS);
-    await _testExpectChosenVisitAlreadyExistsInStorage();
+    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.END_COMMENTED_IMAGES_PROCESS);
     await pop();
   }
 
   static Future<void> _backToProjects()async{
-    await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.RESET_CHOSEN_PROJECT);
+    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.RESET_CHOSEN_PROJECT);
   }
 
   static Future<void> _backToProjectDetail()async{
-    await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.RESET_VISITS);
+    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.RESET_VISITS);
   }
 
   static Future<void> _backToVisits()async{
-    await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.RESET_CHOSEN_VISIT);
-    await _testExpectChosenVisitAlreadyExistsInStorage();
+    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.RESET_CHOSEN_VISIT);
   }
 
   static Future<void> _backToVisitDetail()async{
@@ -162,14 +154,13 @@ class PagesNavigationManager{
   }
 
   static Future<void> _backToForms()async{
-    await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.RESET_CHOSEN_FORM);
-    await _testExpectChosenVisitAlreadyExistsInStorage();
+    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.RESET_CHOSEN_FORM);
   }
 
   static Future _goToPageByHavingOrNotError(NavigationRoute destinationRoute, bool replacingAllRoutes)async{
-    if(dataDisributorErrorHandlingManager.happendError){
-      if(dataDisributorErrorHandlingManager.navigationTodoByError != null) 
-        await _goToInitialPage(dataDisributorErrorHandlingManager.navigationTodoByError??NavigationRoute.Login);
+    if(dataDisrtibutorErrorHandlingManager.happendError){
+      if(dataDisrtibutorErrorHandlingManager.navigationTodoByError != null) 
+        await _goToInitialPage(dataDisrtibutorErrorHandlingManager.navigationTodoByError??NavigationRoute.Login);
     }
     else
       await _goToPage(destinationRoute, replacingAllRoutes);
@@ -207,9 +198,9 @@ class PagesNavigationManager{
 
   static Future _chooseMethodByCurrentBackingRoute(NavigationRoute route)async{
     if(route == NavigationRoute.AdjuntarFotosVisita)
-      await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.END_COMMENTED_IMAGES_PROCESS);
+      await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.END_COMMENTED_IMAGES_PROCESS);
     else if(route == NavigationRoute.Formularios)
-      await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.RESET_FORMS);
+      await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.RESET_FORMS);
   }
 }
 
