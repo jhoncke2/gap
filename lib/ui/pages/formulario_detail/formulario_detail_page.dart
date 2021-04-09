@@ -6,6 +6,7 @@ import 'package:gap/logic/bloc/widgets/index/index_bloc.dart';
 import 'package:gap/logic/bloc/widgets/keyboard_listener/keyboard_listener_bloc.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/form_process_container.dart';
+import 'package:gap/ui/widgets/native_back_button_locker.dart';
 import 'package:gap/ui/widgets/progress_indicator.dart';
 import 'forms/form_body/chosen_form_current_component.dart';
 import 'forms/loaded_form_head.dart';
@@ -19,25 +20,27 @@ class FormularioDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      body: SingleChildScrollView(
-        child: GestureDetector(
-          child: Container(
-            height: MediaQuery.of(context).size.height,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(),
-                SafeArea(
-                  child: _createFormBuilder(),
-                  bottom: false,
-                  maintainBottomViewPadding: true,
-                ),
-              ],
+      body: NativeBackButtonLocker(
+        child: SingleChildScrollView(
+          child: GestureDetector(
+            child: Container(
+              height: MediaQuery.of(context).size.height,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(),
+                  SafeArea(
+                    child: _createFormBuilder(),
+                    bottom: false,
+                    maintainBottomViewPadding: true,
+                  ),
+                ],
+              ),
             ),
+            onTap: (){
+              FocusScope.of(context).requestFocus(new FocusNode());
+            }
           ),
-          onTap: (){
-            FocusScope.of(context).requestFocus(new FocusNode());
-          }
         ),
       )
     );

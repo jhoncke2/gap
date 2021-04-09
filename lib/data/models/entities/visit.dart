@@ -46,17 +46,20 @@ List<Map<String, dynamic>> visitsToStorageJson(List<Visit> visits){
 
 class Visit extends EntityWithStage{
   DateTime date;
-  bool completo;
+  bool _completo;
   Sede sede;
   List<Formulario> formularios;
 
   Visit({
       int id,
-      this.completo,
+      bool completo,
       this.date,
       this.sede,
       this.formularios,
-  }):super(
+  })
+  :
+  _completo = completo,
+  super(
     id: id,
     stage: ProcessStage.fromValue(completo? 'realizada':'pendiente'),
     name: (sede == null)? null : sede.nombre
@@ -81,12 +84,17 @@ class Visit extends EntityWithStage{
   Map<String, dynamic> toJson(){
     final Map<String, dynamic> json = super.toJson();
     json['sede'] = sede.toJson();
-    json['completo'] = completo;
+    json['completo'] = _completo;
     json['fecha'] = transformDateInToString(date);
     json['formularios'] = formulariosToJson(formularios);
     return json;
   }
 
+  set completo(bool completo){
+    _completo = completo;
+    super.stage = ProcessStage.fromValue(completo? 'realizada':'pendiente');
+  }
+  bool get completo => _completo;
   String get stringDate => transformDateInToString(date);
 }
 

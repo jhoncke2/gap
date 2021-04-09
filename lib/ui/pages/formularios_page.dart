@@ -5,6 +5,7 @@ import 'package:gap/logic/bloc/entities/visits/visits_bloc.dart';
 import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/logic/central_managers/pages_navigation_manager.dart';
 import 'package:gap/ui/widgets/header/header.dart';
+import 'package:gap/ui/widgets/native_back_button_locker.dart';
 import 'package:gap/ui/widgets/navigation_list/navigation_list_with_stage_color_buttons.dart';
 import 'package:gap/ui/widgets/page_title.dart';
 import 'package:gap/ui/utils/size_utils.dart';
@@ -16,15 +17,17 @@ class FormulariosPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: BlocBuilder<FormulariosBloc, FormulariosState>(
-          builder: (_, state) {
-            if(state.formsAreLoaded && !state.backing && !state.formsAreBlocked){
-              return _createContent(state);
-            }else{
-              return CustomProgressIndicator();
-            }
-          },
+      body: NativeBackButtonLocker(
+        child: SafeArea(
+          child: BlocBuilder<FormulariosBloc, FormulariosState>(
+            builder: (_, state) {
+              if(state.formsAreLoaded && !state.backing && !state.formsAreBlocked){
+                return _createContent(state);
+              }else{
+                return CustomProgressIndicator();
+              }
+            },
+          ),
         ),
       ),
     );

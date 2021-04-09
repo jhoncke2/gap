@@ -122,8 +122,7 @@ class DataDistributorWithConnection extends DataDistributor{
   Future updateChosenForm(Formulario form)async{
     formsB.add(ChangeFormsAreBlocked(areBlocked: true));
     Formulario realForm = await getUpdatedChosenForm(form);
-    if(realForm.initialPosition == null)
-      await addInitialPosition(realForm);
+    await addInitialPosition(realForm);
     final String accessToken = await UserStorageManager.getAccessToken();
     await ProjectsServicesManager.updateFormInitialization(accessToken, realForm.initialPosition, realForm.id);
     await super.updateChosenForm(realForm);

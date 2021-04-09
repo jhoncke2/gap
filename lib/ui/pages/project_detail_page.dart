@@ -4,6 +4,7 @@ import 'package:gap/logic/bloc/entities/projects/projects_bloc.dart';
 import 'package:gap/logic/central_managers/pages_navigation_manager.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/header/header.dart';
+import 'package:gap/ui/widgets/native_back_button_locker.dart';
 import 'package:gap/ui/widgets/navigation_list/navigation_list.dart';
 
 // ignore: must_be_immutable
@@ -17,14 +18,16 @@ class ProjectDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     _initInitialConfiguration(context);
     return Scaffold(body: SafeArea(
-      child: Container(
-        child: BlocBuilder<ProjectsBloc, ProjectsState>(
-          builder: (context, state) {
-            if(state.loadingProjects)
-              return _createLoadingProjectsWidget();
-            else
-              return _createLoadedElements();
-          },
+      child: NativeBackButtonLocker(
+        child: Container(
+          child: BlocBuilder<ProjectsBloc, ProjectsState>(
+            builder: (context, state) {
+              if(state.loadingProjects)
+                return _createLoadingProjectsWidget();
+              else
+                return _createLoadedElements();
+            },
+          ),
         ),
       ),
     ));

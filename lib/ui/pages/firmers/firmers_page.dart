@@ -13,6 +13,7 @@ import 'package:gap/ui/pages/formulario_detail/forms/loaded_form_head.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/buttons/general_button.dart';
 import 'package:gap/ui/widgets/form_process_container.dart';
+import 'package:gap/ui/widgets/native_back_button_locker.dart';
 import 'package:gap/ui/widgets/progress_indicator.dart';
 
 // ignore: must_be_immutable
@@ -31,12 +32,14 @@ class FirmersPage extends StatelessWidget {
     _context = context;
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: SafeArea(
-        child: GestureDetector(
-          child: _createAlignedComponents(),
-          onTap: () {
-            FocusScope.of(context).requestFocus(new FocusNode());
-          }
+      body: NativeBackButtonLocker(
+        child: SafeArea(
+          child: GestureDetector(
+            child: _createAlignedComponents(),
+            onTap: () {
+              FocusScope.of(context).requestFocus(new FocusNode());
+            }
+          ),
         ),
       ),
     );

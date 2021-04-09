@@ -6,6 +6,7 @@ import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/utils/static_data/buttons_keys.dart';
 import 'package:gap/ui/widgets/buttons/general_button.dart';
 import 'package:gap/ui/widgets/logo.dart';
+import 'package:gap/ui/widgets/native_back_button_locker.dart';
 
 class LoginPage extends StatefulWidget {
   static final String route = 'login';
@@ -27,19 +28,21 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     _initInitialConfiguration(context);
     return Scaffold(
-      body: GestureDetector(
-        child: SafeArea(
-          child: SingleChildScrollView(
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                  horizontal: _sizeUtils.largeHorizontalScaffoldPadding),
-              child: _crearComponentes(),
+      body: NativeBackButtonLocker(
+        child: GestureDetector(
+          child: SafeArea(
+            child: SingleChildScrollView(
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                    horizontal: _sizeUtils.largeHorizontalScaffoldPadding),
+                child: _crearComponentes(),
+              ),
             ),
           ),
+          onTap: () {
+            FocusScope.of(_context).requestFocus(new FocusNode());
+          },
         ),
-        onTap: () {
-          FocusScope.of(_context).requestFocus(new FocusNode());
-        },
       ),
     );
   }

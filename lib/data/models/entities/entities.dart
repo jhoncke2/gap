@@ -21,7 +21,6 @@ part 'old_entities/old_custom_form_field.dart';
 part 'personal_information.dart';
 part 'commented_image.dart';
 part 'custom_form_field/custom_form_field.dart';
-part 'visit_temp.dart';
 
 //Date format: yyyy-mm-dd
 DateTime transformStringInToDate(String stringDate){

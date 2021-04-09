@@ -36,7 +36,8 @@ class SourceDataToBlocWithoutConnection extends DataDistributor{
   @override
   Future<void> updateVisits()async{
     final Project chosenProject = UploadedBlocsData.dataContainer[NavigationRoute.ProjectDetail];
-    final List<Visit> preloadedVisits = await PreloadedVisitsStorageManager.getVisitsByProjectId(chosenProject.id);
+    List<Visit> preloadedVisits = await PreloadedVisitsStorageManager.getVisitsByProjectId(chosenProject.id);
+    preloadedVisits = preloadedVisits.where((element) => !element.completo).toList();
     final SetVisits svEvent = SetVisits(visits: preloadedVisits);
     visitsB.add(svEvent);
     UploadedBlocsData.dataContainer[NavigationRoute.Visits] = preloadedVisits;
@@ -80,5 +81,41 @@ class SourceDataToBlocWithoutConnection extends DataDistributor{
     final Formulario chosenForm = formsB.state.chosenForm;
     final Visit chosenVisit = visitsB.state.chosenVisit;
     await PreloadedFormsStorageManager.setPreloadedForm(chosenForm, chosenVisit.id);
+  }
+
+  @override
+  Future resetChosenVisit()async{
+    final List<Formulario> forms = formsB.state.forms;
+    final bool chosenVisitIsCompleted = _chosenVisitIsCompleted(forms);
+    if(chosenVisitIsCompleted){
+      await _changeDataOfVisitRecentlyCompleted();
+    }
+    await super.resetChosenVisit();
+  }
+
+  bool _chosenVisitIsCompleted(List<Formulario> forms){
+    for(Formulario form in forms){
+      if(!form.completo)
+        return false;
+    }
+    return true;
+  }
+
+  Future _changeDataOfVisitRecentlyCompleted()async{
+    visitsB.state.chosenVisit.completo = true;
+    final int chosenProjectId = projectsB.state.chosenProject.id;
+    await PreloadedVisitsStorageManager.setVisit(visitsB.state.chosenVisit, chosenProjectId);
+    await _replaceAllVisitsInBloc(visitsB.state.chosenVisit);
+  }
+
+  Future _replaceAllVisitsInBloc(Visit chosenVisit)async{
+    List<Visit> visits = visitsB.state.visits;
+    final int indexOfChosenVisit = visits.indexWhere((element) => element.id == chosenVisit.id);
+    if(indexOfChosenVisit == -1)
+      visits.add(chosenVisit);
+    else
+      visits[indexOfChosenVisit] = chosenVisit;
+    visits = visits.where((element) => !element.completo).toList();
+    visitsB.add(SetVisits(visits: visits));
   }
 }

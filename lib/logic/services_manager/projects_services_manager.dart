@@ -43,6 +43,14 @@ class ProjectsServicesManager{
     };
   }
 
+  static void _defineFormFieldValuesByTypeOfValues(VariableFormField vff, Map<String, dynamic> jsonVff){
+    if(vff is SingleValueFormField){
+      jsonVff['res'] = [vff.uniqueValue??''];
+    }else if(vff is MultiValueFormField){
+      jsonVff['res'] = (vff.values.map<int>((item) => item.selected?1:0)).toList();
+    }
+  }
+
   static void _throwErrIsUpdateFormIsntOk(List<Map<String, dynamic>> response, List<Map<String, dynamic>> formattedFormCampos){
     if(!_updateFormResponseIsOk(response, formattedFormCampos))
       throw ServiceStatusErr(message: 'El servicio de enviar el formulario no se efectuó correctamente');
@@ -50,14 +58,6 @@ class ProjectsServicesManager{
 
   static bool _updateFormResponseIsOk(List<Map<String, dynamic>> response, List<Map<String, dynamic>> formattedFormCampos){
     return response.length == formattedFormCampos.length;
-  }
-
-  static void _defineFormFieldValuesByTypeOfValues(VariableFormField vff, Map<String, dynamic> jsonVff){
-    if(vff is SingleValueFormField){
-      jsonVff['res'] = [vff.uniqueValue];
-    }else if(vff is MultiValueFormField){
-      jsonVff['res'] = (vff.values.map<int>((item) => item.selected?1:0)).toList();
-    }
   }
 
   static Future saveFirmer(String accessToken, PersonalInformation firmer, int formId, int visitId)async{

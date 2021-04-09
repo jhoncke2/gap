@@ -3,6 +3,7 @@ import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/logic/central_managers/data_distributor/data_distributor.dart';
 import 'package:gap/logic/central_managers/data_distributor/with_connection/data_distributor_with_connection.dart';
 import 'package:gap/logic/central_managers/data_distributor/without_connection/data_distributor_without_connection.dart';
+import 'package:gap/native_connectors/net_connection_detector.dart';
 
 class DataDistributorManager{
   static final NetConnectionStateContainer _netConnectionContainer = NetConnectionStateContainer();
@@ -23,16 +24,15 @@ class DataDistributorManager{
   ];
 
   Future executeFunction(DataDistrFunctionName functionName, [dynamic value])async{
+    await _updateConnectionState();
     happendError = false;
     _currentExecutedFunction = _dataDistributorFunctionsValues.map[functionName];
     await _executeFunctionByHavingValue(functionName, value);
   }
 
-  Future _executeFunctionByHavingValue(DataDistrFunctionName functionName, [dynamic value])async{
-    if(functionsWithValue.contains(functionName))
-      await _currentExecutedFunction(value);
-    else
-      await _currentExecutedFunction();
+  Future _updateConnectionState()async{
+    final NetConnectionState newState = await NetConnectionDetector.netConnectionState;
+    this.netConnectionState = newState;
   }
 
   set netConnectionState(NetConnectionState newState){
@@ -41,7 +41,7 @@ class DataDistributorManager{
   }
 
   _initializeDataDistributorFunctionsValues(){
-    _dataDistributorFunctionsValues =  EnumValues<DataDistrFunctionName, Function>({
+    _dataDistributorFunctionsValues = EnumValues<DataDistrFunctionName, Function>({
       DataDistrFunctionName.DO_FIRST_APP_INITIALIZATION: dataDistributor.updateFirstInitialization,
       DataDistrFunctionName.DO_INITIAL_CONFIG:  dataDistributor.doInitialConfig,
       DataDistrFunctionName.LOGIN: dataDistributor.login,
@@ -69,6 +69,13 @@ class DataDistributorManager{
       DataDistrFunctionName.RESET_CHOSEN_FORM: dataDistributor.resetChosenForm,
       DataDistrFunctionName.RESET_COMMENTED_IMAGES: dataDistributor.resetCommentedImages,
     });
+  }
+
+  Future _executeFunctionByHavingValue(DataDistrFunctionName functionName, [dynamic value])async{
+    if(functionsWithValue.contains(functionName))
+      await _currentExecutedFunction(value);
+    else
+      await _currentExecutedFunction();
   }
 
   DataDistributor get dataDistributor{

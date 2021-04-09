@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/logic/blocs_manager/chosen_form_manager.dart';
 import 'package:gap/logic/blocs_manager/commented_images_index_manager.dart';
 import 'package:gap/ui/utils/size_utils.dart';
+import 'package:gap/ui/widgets/native_back_button_locker.dart';
 
 // ignore: must_be_immutable
 class InitPage extends StatelessWidget{
@@ -16,11 +17,13 @@ class InitPage extends StatelessWidget{
   Widget build(BuildContext context){
     _doInitialConfig(context);
     return Scaffold(
-      body: Container(
-        child: Center(
-          child: CircularProgressIndicator(
-            backgroundColor: Colors.cyan[600],
-            strokeWidth: 7.5,
+      body: NativeBackButtonLocker(
+        child: Container(
+          child: Center(
+            child: CircularProgressIndicator(
+              backgroundColor: Colors.cyan[600],
+              strokeWidth: 7.5,
+            ),
           ),
         ),
       ),

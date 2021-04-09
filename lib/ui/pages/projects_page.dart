@@ -5,6 +5,7 @@ import 'package:gap/data/models/entities/entities.dart';
 import 'package:gap/logic/central_managers/pages_navigation_manager.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/widgets/header/header.dart';
+import 'package:gap/ui/widgets/native_back_button_locker.dart';
 import 'package:gap/ui/widgets/navigation_list/navigation_list.dart';
 import 'package:gap/ui/widgets/page_title.dart';
 import 'package:gap/ui/widgets/unloaded_elements/unloaded_nav_items.dart';
@@ -18,11 +19,13 @@ class ProjectsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     _initInitialConfiguration(context);
     return Scaffold(
-      body: SafeArea(
-        child: Container(
-          padding: EdgeInsets.symmetric(
-              horizontal: _sizeUtils.xasisSobreYasis * 0.00),
-          child: _createBodyComponents()
+      body: NativeBackButtonLocker(
+        child: SafeArea(
+          child: Container(
+            padding: EdgeInsets.symmetric(
+                horizontal: _sizeUtils.xasisSobreYasis * 0.00),
+            child: _createBodyComponents()
+          ),
         ),
       ),
     );

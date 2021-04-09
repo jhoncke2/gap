@@ -101,9 +101,16 @@ class VisitsBloc extends Bloc<VisitsEvent, VisitsState> {
   void chooseVisit(ChooseVisit event){
     final Visit chosenOne = event.chosenOne;
     final List<Visit> visits = state.visits;
-    int chosenIndex = visits.indexWhere((element) => element.id == chosenOne.id);
-    visits[chosenIndex] = chosenOne;
+    _addChosenVisit(chosenOne, visits);
     _currentYieldedState = state.copyWith(chosenVisit: chosenOne, visits: visits);
+  }
+
+  void _addChosenVisit(Visit chosenOne, List<Visit> visits){
+    int chosenIndex = visits.indexWhere((element) => element.id == chosenOne.id);
+    if(chosenIndex != -1)
+      visits[chosenIndex] = chosenOne;
+    else
+      visits.add(chosenOne);
   }
 
   void _changeChosenVisitBlocking(ChangeChosenVisitBlocking event){

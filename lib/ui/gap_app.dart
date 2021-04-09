@@ -21,10 +21,18 @@ class _GapAppState extends State<GapApp> with WidgetsBindingObserver{
   @override
   Widget build(BuildContext context) {
     app = _createMaterialApp(context);
-    return MultiBlocProvider(
-      providers: BlocProvidersCreator.blocProviders,
-      child: _createMaterialApp(context),
+    return WillPopScope(
+      onWillPop: _onBackButton,
+      child: MultiBlocProvider(
+        providers: BlocProvidersCreator.blocProviders,
+        child: _createMaterialApp(context),
+      ),
     );
+  }
+
+  Future<bool> _onBackButton()async{
+    print('backing');
+    return false;
   }
 
   MaterialApp _createMaterialApp(BuildContext context){

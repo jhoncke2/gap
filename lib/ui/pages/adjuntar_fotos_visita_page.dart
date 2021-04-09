@@ -9,6 +9,7 @@ import 'package:gap/ui/widgets/buttons/general_button.dart';
 import 'package:gap/ui/widgets/commented_images/commented_images_section.dart';
 import 'package:gap/ui/widgets/header/header.dart';
 import 'package:gap/ui/widgets/indexing/index_pagination.dart';
+import 'package:gap/ui/widgets/native_back_button_locker.dart';
 import 'package:gap/ui/widgets/page_title.dart';
 import 'package:gap/ui/utils/size_utils.dart';
 import 'package:gap/ui/utils/dialogs.dart' as dialogs;
@@ -25,21 +26,23 @@ class AdjuntarFotosVisitaPage extends StatelessWidget {
   Widget build(BuildContext context) {
     _context = context;
     return Scaffold(
-      body: SafeArea(
-        child: GestureDetector(
-          child: SingleChildScrollView(
-            child: BlocBuilder<CommentedImagesBloc, CommentedImagesState>(
-              builder: (context, state) {
-                if(state.isLoading)
-                  return CustomProgressIndicator();
-                else
-                  return _createContentItems();
-              },
-            ),
-          ), 
-          onTap: (){
-            FocusScope.of(_context).requestFocus(new FocusNode());
-          }
+      body: NativeBackButtonLocker(
+        child: SafeArea(
+          child: GestureDetector(
+            child: SingleChildScrollView(
+              child: BlocBuilder<CommentedImagesBloc, CommentedImagesState>(
+                builder: (context, state) {
+                  if(state.isLoading)
+                    return CustomProgressIndicator();
+                  else
+                    return _createContentItems();
+                },
+              ),
+            ), 
+            onTap: (){
+              FocusScope.of(_context).requestFocus(new FocusNode());
+            }
+          ),
         ),
       ),
     );

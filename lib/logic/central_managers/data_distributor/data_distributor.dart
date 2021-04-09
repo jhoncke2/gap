@@ -200,6 +200,7 @@ abstract class DataDistributor{
     await updateChosenFormInStorage(chosenForm);
     _initOnFormReading(chosenForm);
     await dialogs.showTemporalDialog('Puedes visualizar tus resupestas antes de firmar');
+    indexB.add(ChangeIndexPage(newIndexPage: 0));
   }
 
   @protected

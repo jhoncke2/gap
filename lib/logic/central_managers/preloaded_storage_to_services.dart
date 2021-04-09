@@ -77,7 +77,7 @@ class _VisitEvaluater{
     for(Formulario f in preloadedForms){
       await _evaluateForm(f, visit.id, accessToken);
     }
-    await _endPreloadedVisitIfFinished(visit, projectId);
+    await _removePreloadedVisitIfFinished(visit, projectId);
 
   }
 
@@ -86,13 +86,13 @@ class _VisitEvaluater{
     visitIsFinished = _formEvaluater.formIsFinished? visitIsFinished : false;
   }
 
-  Future<void> _endPreloadedVisitIfFinished(Visit visit, int projectId)async{
+  Future<void> _removePreloadedVisitIfFinished(Visit visit, int projectId)async{
     if(visitIsFinished || visit.completo){
-      await _endPreloadedVisit(visit.id, projectId);
+      await _removePreloadedVisit(visit.id, projectId);
     }
   }
 
-  Future<void> _endPreloadedVisit(int visitId, int projectId)async{
+  Future<void> _removePreloadedVisit(int visitId, int projectId)async{
     PreloadedVisitsStorageManager.removeVisit(visitId, projectId);
   }
 }
@@ -122,7 +122,8 @@ class _FormEvaluater{
   Future<void> _endPreloadedForm(Formulario form, int visitId)async{
     await _sendFormIfHasFields(form, visitId);
     await _sendFirmersIfHasFirmers(form, visitId);
-    await PreloadedFormsStorageManager.removePreloadedForm(form.id, visitId);
+    //await PreloadedFormsStorageManager.removePreloadedForm(form.id, visitId);
+    await _removePreloadedFormIfFinished(form, visitId);
     //Test
     final List<Formulario> preloadedForms = await PreloadedFormsStorageManager.getPreloadedFormsByVisitId(visitId);
     print(preloadedForms);
@@ -132,8 +133,7 @@ class _FormEvaluater{
     if(form.initialPosition != null){
       await ProjectsServicesManager.updateFormInitialization(_accessToken, form.initialPosition, form.id);
       form.initialPosition = null;
-    }
-        
+    }   
     if(_formHasFields(form)){
       await ProjectsServicesManager.updateForm(form, visitId, _accessToken);
       anyDataWasSended = true;  
@@ -165,5 +165,10 @@ class _FormEvaluater{
       await ProjectsServicesManager.saveFirmer(_accessToken, firmer, form.id, visitId);
       anyDataWasSended = true;
     }
+  }
+
+  Future _removePreloadedFormIfFinished(Formulario form, int visitId)async{
+    if(form.campos == [] && form.initialPosition == null && form.finalPosition == null)
+      await PreloadedFormsStorageManager.removePreloadedForm(form.id, visitId);
   }
 }
