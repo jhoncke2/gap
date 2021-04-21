@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:gap/native_connectors/permissions.dart';
-import 'package:gap/native_connectors/storage_connector.dart';
-import 'package:gap/native_connectors/net_connection_detector.dart';
-import 'package:gap/data/enums/enums.dart';
-import 'package:gap/logic/bloc/nav_routes/custom_navigator.dart';
-import 'package:gap/logic/central_managers/data_initializer.dart';
-import 'package:gap/logic/storage_managers/user/user_storage_manager.dart';
-import 'package:gap/ui/gap_app.dart';
-import 'package:gap/ui/utils/dialogs.dart' as dialogs;
+import 'package:gap/old_architecture/native_connectors/permissions.dart';
+import 'package:gap/old_architecture/native_connectors/storage_connector.dart';
+import 'package:gap/old_architecture/native_connectors/net_connection_detector.dart';
+import 'package:gap/old_architecture/data/enums/enums.dart';
+import 'package:gap/old_architecture/logic/bloc/nav_routes/custom_navigator.dart';
+import 'package:gap/old_architecture/logic/central_managers/data_initializer.dart';
+import 'package:gap/old_architecture/logic/storage_managers/user/user_storage_manager.dart';
+import 'package:gap/old_architecture/ui/gap_app.dart';
+import 'package:gap/old_architecture/ui/utils/dialogs.dart' as dialogs;
 
 GapApp app;
 void main()async{
@@ -77,7 +77,7 @@ Future _requestStorageActivation()async{
 
 Future<void> _testRemovePartOfStorage()async{
   await UserStorageManager.removeAuthToken();
-  StorageConnector sc = StorageConnector();
+  StorageConnectorOld sc = StorageConnectorOld();
   await sc.removeResource('new_auth_token');
   await sc.removeResource('projects_with_preloaded_visits');
   await sc.removeResource('preloaded_visits');
@@ -88,7 +88,7 @@ Future<void> _testRemovePartOfStorage()async{
 }
 
 Future _testAddInitialUserInformation()async{
-  StorageConnector sc = StorageConnector();
+  StorageConnectorOld sc = StorageConnectorOld();
   final Map<String, dynamic> emailInfo = {
     'email': 'oskrjag@gmail.com',
     'password': '12345678'
