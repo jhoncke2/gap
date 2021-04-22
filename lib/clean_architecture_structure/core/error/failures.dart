@@ -1,3 +1,4 @@
+import 'package:gap/clean_architecture_structure/core/error/exceptions.dart';
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
 
@@ -21,8 +22,10 @@ class StorageFailure extends Failure{
   final StorageFailureType type;
 
   StorageFailure({
-    @required this.type
-  });
+    @required StorageExceptionType excType
+  }):
+    this.type = excType == StorageExceptionType.PLATFORM? StorageFailureType.PLATFORM : StorageFailureType.NORMAL
+  ;
 }
 
 class ServerFailure extends Failure{
