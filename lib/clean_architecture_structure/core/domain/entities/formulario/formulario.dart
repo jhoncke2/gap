@@ -3,7 +3,6 @@ import 'package:gap/old_architecture/data/enums/enums.dart';
 import 'package:gap/old_architecture/data/models/entities/entities.dart';
 import 'package:gap/old_architecture/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:geolocator/geolocator.dart';
-
 import 'firmer.dart';
 
 final List<FormStep> stepsInOrder = [

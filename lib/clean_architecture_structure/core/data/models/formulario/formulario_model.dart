@@ -52,6 +52,28 @@ class FormularioModel extends Formulario{
     return (json['completo'])? stepsInOrder.length-1 : (json['form_step_index'] == null)? 1 : json['form_step_index'];
   }
 
+  FormularioModel copyWith({
+    int id, 
+    bool completo, 
+    DateTime initialDate, 
+    List<FirmerModel> firmers, 
+    List<CustomFormField> campos, 
+    int formStepIndex, 
+    Position initialPosition, 
+    Position finalPosition, 
+    String nombre
+  })=>FormularioModel(
+    id: id??this.id,
+    completo: completo??this.completo,
+    initialDate: initialDate??this.initialDate,
+    firmers: firmers??this.firmers,
+    campos: campos??this.campos,
+    formStepIndex: formStepIndex??this.formStepIndex,
+    initialPosition: initialPosition??this.initialPosition,
+    finalPosition: finalPosition??this.finalPosition,
+    nombre: nombre??this.name
+  );
+
   Map<String, dynamic> toJson(){
     final Map<String, dynamic> json = {
       'formulario_pivot_id' : id,
