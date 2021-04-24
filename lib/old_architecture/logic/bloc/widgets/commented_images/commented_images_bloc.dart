@@ -51,14 +51,14 @@ class CommentedImagesBloc extends Bloc<CommentedImagesEvent, CommentedImagesStat
     final int page = event.page;
     final int positionInPage = event.positionInPage;
     final String newCommentary = event.commentary;
-    final List<List<CommentedImage>> commentedImagesPages = state._commentedImagesPerPage;
-    final CommentedImage commImageWithNewCommentary = commentedImagesPages[page][positionInPage];
+    final List<List<CommentedImageOld>> commentedImagesPages = state._commentedImagesPerPage;
+    final CommentedImageOld commImageWithNewCommentary = commentedImagesPages[page][positionInPage];
     commImageWithNewCommentary.commentary = newCommentary;
     _currentStateToYield = state.copyWith();
   }
 
   void _initSentCommImgsWatching(InitSentCommImgsWatching event){
-    final List<CommentedImage> sentCommImgs = event.sentCommentedImages;
+    final List<CommentedImageOld> sentCommImgs = event.sentCommentedImages;
     _currentStateToYield = _commentedImagesGenerator.generateSentCommentedImagesByPage(sentCommImgs);
   }
 
@@ -71,13 +71,13 @@ class CommentedImagesBloc extends Bloc<CommentedImagesEvent, CommentedImagesStat
 
 
 class _CommentedImagesGenerator{
-  List<List<CommentedImage>> currentCommImgs;
+  List<List<CommentedImageOld>> currentCommImgs;
   List<File> newImages;
   int _currentNPages;
-  List<CommentedImage> _newCommentedImages;
+  List<CommentedImageOld> _newCommentedImages;
   CommentedImagesState _currentState;
 
-  CommentedImagesState addCommentedImagesToCurrentCommentedImages(List<File> newImages, List<List<CommentedImage>> currentCommImgs){
+  CommentedImagesState addCommentedImagesToCurrentCommentedImages(List<File> newImages, List<List<CommentedImageOld>> currentCommImgs){
     _initUnsentInitialConfig(newImages, currentCommImgs);
     _defineConfigOfNewState(CmmImgDataType.UNSENT);
     return _currentState;
@@ -88,20 +88,20 @@ class _CommentedImagesGenerator{
     _generateState(dataType);
   }
 
-  void _initUnsentInitialConfig(List<File> newImages, List<List<CommentedImage>> currentCommImgs){
+  void _initUnsentInitialConfig(List<File> newImages, List<List<CommentedImageOld>> currentCommImgs){
     this.newImages = newImages;
     this.currentCommImgs = currentCommImgs;
     _newCommentedImages = _transformToCommentedImages();
     _defineNPages(_newCommentedImages.length);
   }
 
-  List<CommentedImage> _transformToCommentedImages(){
-    final List<CommentedImage> commImages = [];
-    currentCommImgs.forEach((List<CommentedImage> commImgsForOnePage) {
+  List<CommentedImageOld> _transformToCommentedImages(){
+    final List<CommentedImageOld> commImages = [];
+    currentCommImgs.forEach((List<CommentedImageOld> commImgsForOnePage) {
       commImages.addAll(commImgsForOnePage);
     });
-    final List<CommentedImage> newCommImages = this.newImages.map<CommentedImage>(
-      (File image) =>  UnSentCommentedImage(image: image, commentary: '')
+    final List<CommentedImageOld> newCommImages = this.newImages.map<CommentedImageOld>(
+      (File image) =>  UnSentCommentedImageOld(image: image, commentary: '')
     ).toList();
     commImages.addAll(newCommImages);
     return commImages;
@@ -112,20 +112,20 @@ class _CommentedImagesGenerator{
     _currentNPages = unExactlyNPages.ceil();
   }
 
-  List<List<CommentedImage>> _generateCommImgsPerPage(){
-    final List<List<CommentedImage>> commImagesWidgetsPerPage = [];
+  List<List<CommentedImageOld>> _generateCommImgsPerPage(){
+    final List<List<CommentedImageOld>> commImagesWidgetsPerPage = [];
     for(int pageIndex = 0; pageIndex < _currentNPages; pageIndex++){
-      final List<CommentedImage> commImgsOfCurrentPage = _createCommImgsForCurrentPage(pageIndex);
+      final List<CommentedImageOld> commImgsOfCurrentPage = _createCommImgsForCurrentPage(pageIndex);
       commImagesWidgetsPerPage.add(commImgsOfCurrentPage);
     }
     return commImagesWidgetsPerPage;
   }
 
-  List<CommentedImage> _createCommImgsForCurrentPage(int pageIndex){
-    final List<CommentedImage> commImgsOfCurrentPage = [];
+  List<CommentedImageOld> _createCommImgsForCurrentPage(int pageIndex){
+    final List<CommentedImageOld> commImgsOfCurrentPage = [];
     final int sobrante = _definirSobranteDeUltimaPageIndex(pageIndex);
     for(int j = 0; j < _nCommImgsPerPage - sobrante; j++){
-      final CommentedImage commImage = _newCommentedImages[pageIndex*_nCommImgsPerPage + j];
+      final CommentedImageOld commImage = _newCommentedImages[pageIndex*_nCommImgsPerPage + j];
       commImage.positionInPage = j;
       commImgsOfCurrentPage.add(commImage);
     }
@@ -152,13 +152,13 @@ class _CommentedImagesGenerator{
     );
   }
 
-  CommentedImagesState generateSentCommentedImagesByPage(List<CommentedImage> commentedImages){
+  CommentedImagesState generateSentCommentedImagesByPage(List<CommentedImageOld> commentedImages){
     _initSentInitialConfig(commentedImages);
     _defineConfigOfNewState(CmmImgDataType.SENT);
     return _currentState;
   }
 
-  void _initSentInitialConfig(List<CommentedImage> commentedImages){
+  void _initSentInitialConfig(List<CommentedImageOld> commentedImages){
     this.currentCommImgs = [];
     _newCommentedImages = commentedImages;
     _defineNPages(_newCommentedImages.length);

@@ -52,6 +52,7 @@ class PreloadedLocalDataSourceImpl implements PreloadedLocalDataSource{
   @override
   Future<List<int>> getPreloadedProjectsIds()async{
     Map<String, dynamic> preloadedData = await storageConnector.getMap(preloadedDataStorageKey);
+    preloadedData = _getPreloadedDataWithEmptyProjects(preloadedData);
     List<int> projectsIds = [];
     preloadedData.forEach((key, _) {
       projectsIds.add(int.parse(key));
@@ -59,10 +60,21 @@ class PreloadedLocalDataSourceImpl implements PreloadedLocalDataSource{
     return projectsIds;
   }
 
+  @protected
+  Map<String, dynamic> _getPreloadedDataWithEmptyProjects(Map<String, dynamic> preloadedData){
+    Map<String, dynamic> cleanedPreloadedData = {};
+    preloadedData.forEach((key, value) {
+      if((value as Map).isNotEmpty)
+        cleanedPreloadedData[key] = value;
+    });
+    return cleanedPreloadedData;
+  }
+
   @override
   Future<List<int>> getPreloadedVisitsIds(int projectId)async{
     final Map<String, dynamic> preloadedData = await storageConnector.getMap(preloadedDataStorageKey);
-    final Map<String, dynamic> projectData = preloadedData['$projectId'];
+    Map<String, dynamic> projectData = preloadedData['$projectId'];
+    projectData = _getProjectDataWithEmptyVisitsRemoved(projectData);
     List<int> visitsIds = [];
     if(projectData != null){
       projectData.forEach((key, _) {
@@ -70,6 +82,15 @@ class PreloadedLocalDataSourceImpl implements PreloadedLocalDataSource{
       });
     }
     return visitsIds;
+  }
+
+  Map<String, dynamic> _getProjectDataWithEmptyVisitsRemoved(Map<String, dynamic> projectData){
+    Map<String, dynamic> cleanedProjectData = {};
+    projectData.forEach((key, value) {
+      if(value!=null && (value as List).isNotEmpty)
+        cleanedProjectData[key] = value;
+    });
+    return cleanedProjectData;
   }
 
   @override
@@ -105,7 +126,7 @@ class PreloadedLocalDataSourceImpl implements PreloadedLocalDataSource{
     Map<String, dynamic> preloadedData = (await storageConnector.getMap(preloadedDataStorageKey) )??{};
     preloadedData = preloadedData.map((projectId, projectData){
       return MapEntry(
-        projectId, 
+        projectId,
         (projectData as Map).map((visitId, visitData){
           visitData = (visitData as List).where((f) => f['formulario_pivot_id'] != formularioId).toList();
           return MapEntry(visitId, visitData);

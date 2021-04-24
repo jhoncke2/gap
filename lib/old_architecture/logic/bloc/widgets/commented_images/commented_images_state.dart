@@ -10,14 +10,14 @@ enum CmmImgDataType{
 class CommentedImagesState {
   final int nPaginasDeCommImages;
   final int commImgsPerPage;
-  final List<List<CommentedImage>> _commentedImagesPerPage;
+  final List<List<CommentedImageOld>> _commentedImagesPerPage;
   final CmmImgDataType dataType;
   final bool isLoading;
 
   CommentedImagesState({
     this.nPaginasDeCommImages = 0, 
     this.commImgsPerPage,
-    List<List<CommentedImage>> commentedImagesPerPage,
+    List<List<CommentedImageOld>> commentedImagesPerPage,
     this.dataType = CmmImgDataType.NONE,
     this.isLoading = true,
   }):
@@ -27,7 +27,7 @@ class CommentedImagesState {
   CommentedImagesState copyWith({
     int nPaginasDeWidgets,
     int nWidgetsPerPage,
-    List<List<CommentedImage>> commentedImagesPerPage,
+    List<List<CommentedImageOld>> commentedImagesPerPage,
     CmmImgDataType dataType,
     bool isLoading
   }) => CommentedImagesState(
@@ -38,12 +38,12 @@ class CommentedImagesState {
     isLoading: isLoading??this.isLoading
   );
   
-  List<CommentedImage>  getCommImgsByIndex(int index){
+  List<CommentedImageOld>  getCommImgsByIndex(int index){
     return _commentedImagesPerPage[index];
   }
 
-  List<CommentedImage> get allCommentedImages{
-    final List<CommentedImage> commImgs = [];
+  List<CommentedImageOld> get allCommentedImages{
+    final List<CommentedImageOld> commImgs = [];
     _commentedImagesPerPage.forEach((currentCommImgs) {
       commImgs.addAll(currentCommImgs);
     });

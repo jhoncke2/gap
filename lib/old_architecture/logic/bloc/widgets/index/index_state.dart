@@ -1,7 +1,7 @@
 part of 'index_bloc.dart';
 
 @immutable
-class IndexState {
+class IndexState{
   final int nPages;
   final int currentIndexPage;
   final bool sePuedeAvanzar;
@@ -29,9 +29,9 @@ class IndexState {
   factory IndexState.fromJson(Map<String, dynamic> json){
     return IndexState(
       nPages: json['n_pages'],
-        currentIndexPage: json['current_index'],
-        sePuedeAvanzar: json['se_puede_avanzar'],
-        sePuedeRetroceder: json['se_puede_retroceder']
+      currentIndexPage: json['current_index'],
+      sePuedeAvanzar: json['se_puede_avanzar'],
+      sePuedeRetroceder: json['se_puede_retroceder']
     );
   }
 }

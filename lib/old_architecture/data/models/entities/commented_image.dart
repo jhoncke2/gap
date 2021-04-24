@@ -1,14 +1,14 @@
 part of 'entities.dart';
 
-List<CommentedImage> commentedImagesFromJson(List<Map<String, dynamic>> jsonCommImgs)=>jsonCommImgs.map<CommentedImage>((json)=>SentCommentedImage.fromJson(json)).toList();
-List<Map<String, dynamic>> commentedImagesToJson(List<CommentedImage> cmmImgs)=>cmmImgs.map((cmmImg) => cmmImg.toJson()).toList();
+List<CommentedImageOld> commentedImagesFromJson(List<Map<String, dynamic>> jsonCommImgs)=>jsonCommImgs.map<CommentedImageOld>((json)=>SentCommentedImageOld.fromJson(json)).toList();
+List<Map<String, dynamic>> commentedImagesToJson(List<CommentedImageOld> cmmImgs)=>cmmImgs.map((cmmImg) => cmmImg.toJson()).toList();
 
-abstract class CommentedImage{
+abstract class CommentedImageOld{
   String commentary;
   int positionInPage;
   String imgnUrl;
 
-  CommentedImage({
+  CommentedImageOld({
     @required this.commentary,
     @required this.imgnUrl,
     this.positionInPage,
@@ -17,11 +17,11 @@ abstract class CommentedImage{
   Map<String, dynamic> toJson() =>{};
 }
 
-class UnSentCommentedImage extends CommentedImage{
+class UnSentCommentedImageOld extends CommentedImageOld{
 
   File image;
 
-  UnSentCommentedImage({
+  UnSentCommentedImageOld({
     @required this.image,  
     String commentary = '',
     int positionInPage,
@@ -31,7 +31,7 @@ class UnSentCommentedImage extends CommentedImage{
     positionInPage: positionInPage
   );
 
-  factory UnSentCommentedImage.fromJson(Map<String, dynamic> json)=>UnSentCommentedImage(
+  factory UnSentCommentedImageOld.fromJson(Map<String, dynamic> json)=>UnSentCommentedImageOld(
     image: File(json['image_url']),
     commentary: json['commentary'],
     positionInPage: json['position_in_page']
@@ -45,11 +45,11 @@ class UnSentCommentedImage extends CommentedImage{
   };
 }
 
-class SentCommentedImage extends CommentedImage{
+class SentCommentedImageOld extends CommentedImageOld{
   static final String baseUrl = 'https://gapfergon.com/';
   String url;
 
-  SentCommentedImage({
+  SentCommentedImageOld({
     @required String url,
     String commentary = ''
   }):
@@ -59,7 +59,7 @@ class SentCommentedImage extends CommentedImage{
     imgnUrl: baseUrl + url
   );
   
-  factory SentCommentedImage.fromJson(Map<String, dynamic> json)=>SentCommentedImage(
+  factory SentCommentedImageOld.fromJson(Map<String, dynamic> json)=>SentCommentedImageOld(
     url: json['ruta'],
     commentary: json['descripcion'],
   );

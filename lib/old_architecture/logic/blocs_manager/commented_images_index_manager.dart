@@ -49,8 +49,8 @@ class CommentedImagesIndexManager{
   bool allCommentedImagesAreCompleted(){
     final int nPages = indexBloc.state.nPages;
     for(int index = 0; index < nPages; index++){
-      final List<CommentedImage> commImagesForCurrentIndxPage = commImgsBloc.state.getCommImgsByIndex(index);
-      for(CommentedImage commImg in commImagesForCurrentIndxPage){
+      final List<CommentedImageOld> commImagesForCurrentIndxPage = commImgsBloc.state.getCommImgsByIndex(index);
+      for(CommentedImageOld commImg in commImagesForCurrentIndxPage){
         if([null, ''].contains(commImg.commentary)){
           return false;
         }
@@ -76,15 +76,15 @@ class CommentedImagesIndexManager{
   void _doDefinitionOfActivation(){
     final int currentIndex = indexBloc.state.currentIndexPage;
     final CommentedImagesState commImgsState = commImgsBloc.state;
-    final List<CommentedImage> commImgsByIndex = commImgsState.getCommImgsByIndex(currentIndex).cast<CommentedImage>();
+    final List<CommentedImageOld> commImgsByIndex = commImgsState.getCommImgsByIndex(currentIndex).cast<CommentedImageOld>();
     bool sePuedeAvanzar = _definirSiSePuedeAvanzar(commImgsByIndex);
     if(indexBloc.state.sePuedeAvanzar != sePuedeAvanzar){
       _changeSePuedeAvanzar(sePuedeAvanzar);
     }
   }
 
-  bool _definirSiSePuedeAvanzar(List<CommentedImage> commImgsByIndex){
-    for(CommentedImage commImg in commImgsByIndex){
+  bool _definirSiSePuedeAvanzar(List<CommentedImageOld> commImgsByIndex){
+    for(CommentedImageOld commImg in commImgsByIndex){
       if([null, ''].contains(commImg.commentary)){
         return false;
       }

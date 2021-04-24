@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gap/clean_architecture_structure/core/data/data_sources/preloaded_data/preloaded_local_data_source.dart';
+import 'package:gap/clean_architecture_structure/core/data/data_sources/preloaded/preloaded_local_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/models/formulario/formulario_model.dart';
 import 'package:gap/clean_architecture_structure/core/platform/storage_connector.dart';
 import 'package:mockito/mockito.dart';
@@ -102,10 +102,12 @@ List<FormularioModel> _getFormulariosFromFixtures(){
 void _testGetPreloadedProjectsIdsGroup(){
   group('getPreloadedProjectsIds', (){
     List<int> tProjectsIds;
+    List<int> tCleanedProjectsIds;
     Map<String, dynamic> tPreloaded4ProjectsData;
 
     setUp((){
       tProjectsIds = [1,2,3,4];
+      tCleanedProjectsIds = [tProjectsIds[0],tProjectsIds[1]];
       tPreloaded4ProjectsData = {
         '${tProjectsIds[0]}':{'1':[]},
         '${tProjectsIds[1]}':{'2':[], '3':[]},
@@ -118,7 +120,7 @@ void _testGetPreloadedProjectsIdsGroup(){
       when(storageConnector.getMap(any)).thenAnswer((realInvocation) async => tPreloaded4ProjectsData);
       final List<int> preloadedProjectsIds = await preloadedLocalDataSource.getPreloadedProjectsIds();
       verify(storageConnector.getMap(PreloadedLocalDataSourceImpl.preloadedDataStorageKey));
-      expect(preloadedProjectsIds, tProjectsIds);
+      expect(preloadedProjectsIds, tCleanedProjectsIds);
     });
   });
 }
@@ -127,18 +129,22 @@ void _testGetPreloadedVisitsIdsGroup(){
   group('getPreloadedVisitsIds', (){
     List<int> tProjectsIds;
     List<int> tVisitsIdsP1;
+    List<int> tCleanedVisitsIdsP1;
     List<int> tVisitsIdsP2;
+    List<int> tCleanedVisitsIdsP2;
     Map<String, dynamic> tPreloaded2Projects3VisitsData;
-
+    FormularioModel tFormulario;
     setUp((){
       tProjectsIds = [1,2];
       tVisitsIdsP1 = [1];
       tVisitsIdsP2 = [1,2,3];
+      tCleanedVisitsIdsP2 = [tVisitsIdsP2[0], tVisitsIdsP2[1]];
+      tFormulario = _getFormulariosFromFixtures()[0];
       tPreloaded2Projects3VisitsData = {
         '${tProjectsIds[0]}':{'${tVisitsIdsP1[0]}':[]},
         '${tProjectsIds[1]}':{
-          '${tVisitsIdsP2[0]}':[], 
-          '${tVisitsIdsP2[1]}':[],
+          '${tVisitsIdsP2[0]}':[tFormulario], 
+          '${tVisitsIdsP2[1]}':[tFormulario],
           '${tVisitsIdsP2[2]}':[]
         },
       };
@@ -148,10 +154,8 @@ void _testGetPreloadedVisitsIdsGroup(){
       when(storageConnector.getMap(any)).thenAnswer((realInvocation) async => tPreloaded2Projects3VisitsData );
       List<int> visitsIds = await preloadedLocalDataSource.getPreloadedVisitsIds(tProjectsIds[1]);
       verify(storageConnector.getMap(PreloadedLocalDataSourceImpl.preloadedDataStorageKey));
-      expect(visitsIds, tVisitsIdsP2);
-
-      visitsIds = await preloadedLocalDataSource.getPreloadedVisitsIds(tProjectsIds[0]);
-      expect(visitsIds, tVisitsIdsP1);
+      visitsIds = await preloadedLocalDataSource.getPreloadedVisitsIds(tProjectsIds[1]);
+      expect(visitsIds, tCleanedVisitsIdsP2);
     });
   });
 }
@@ -200,6 +204,7 @@ void _testUpdatePreloadedFormularioGroup(){
     List<FormularioModel> tFormularios;
     Map<String, dynamic> tJsonUpdatedFormulario;
     Map<String, dynamic> tPreloaded1Project1VisitAllForms;
+    List<Map<String, dynamic>> tPreloadedFormulariosWithUpdatedFirstFormulario;
     Map<String, dynamic> tPreloaded1Project1VisitAllForms1Updated;
     
     setUp((){
@@ -214,9 +219,11 @@ void _testUpdatePreloadedFormularioGroup(){
           '$tPreloadedVisitId1': formulariosToJson(tFormularios)
         }
       };
+      tPreloadedFormulariosWithUpdatedFirstFormulario = formulariosToJson(tFormularios);
+      tPreloadedFormulariosWithUpdatedFirstFormulario[0] = tJsonUpdatedFormulario;
       tPreloaded1Project1VisitAllForms1Updated = {
         '$tPreloadedProjectId': {
-          '$tPreloadedVisitId1': [tJsonUpdatedFormulario, tFormularios[1].toJson()]
+          '$tPreloadedVisitId1': tPreloadedFormulariosWithUpdatedFirstFormulario
         }
       };
     });
@@ -247,7 +254,7 @@ void _testRemovePreloadedFormularioGroup(){
       tVisitsIdsP1 = [1];
       tVisitsIdsP2 = [1,2,3];
       tFormulariosP2V2 = _getFormulariosFromFixtures();
-      tFormulariosp2V2WithRemovedOne = [ tFormulariosP2V2[1] ];
+      tFormulariosp2V2WithRemovedOne = _getFormulariosFromFixtures()..removeAt(0);
       tFormulariosP2V3 = [tFormulariosP2V2[1]];
       tPreloaded2Projects3VisitsData3FormsData = {
         '${tProjectsIds[0]}':{'${tVisitsIdsP1[0]}':[]},

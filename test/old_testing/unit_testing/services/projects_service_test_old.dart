@@ -23,16 +23,16 @@ final PersonalInformationOld firmer = PersonalInformationOld.fromJson({
   'firm':'assets/logos/logo_con_fondo.png'
 });
 
-final List<UnSentCommentedImage> commentedImages = [
-  UnSentCommentedImage(
+final List<UnSentCommentedImageOld> commentedImages = [
+  UnSentCommentedImageOld(
     image: File('assets/logos/logo_con_fondo.png'),
     commentary:'Commentary 1'
   ),
-  UnSentCommentedImage(
+  UnSentCommentedImageOld(
     image: File('assets/logos/logo_sin_fondo.png'),
     commentary:'Commentary 2'
   ),
-  UnSentCommentedImage(
+  UnSentCommentedImageOld(
     image: File('assets/logos/logo_con_fondo.png'),
     commentary:'Commentary 2'
   ),

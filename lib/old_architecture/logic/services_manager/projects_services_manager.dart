@@ -74,7 +74,7 @@ class ProjectsServicesManager{
     return ![response['ruta'], response['tipo_dc'], response['cc'], response['nombre']].contains(null);
   }
 
-  static Future saveCommentedImages(String accessToken, List<UnSentCommentedImage> commentedImages, int visitId)async{
+  static Future saveCommentedImages(String accessToken, List<UnSentCommentedImageOld> commentedImages, int visitId)async{
     final List<File> imgFiles = [];
     final List<String> imgCommentaries = [];
     _separateImgsAndComments(commentedImages, imgFiles, imgCommentaries);
@@ -82,29 +82,29 @@ class ProjectsServicesManager{
     _throwErrIfSaveCommImgsFailed(serviceResponse, commentedImages, visitId);
   }
 
-  static void _separateImgsAndComments(List<UnSentCommentedImage> commentedImages, List<File> files, List<String> comments){
+  static void _separateImgsAndComments(List<UnSentCommentedImageOld> commentedImages, List<File> files, List<String> comments){
     commentedImages.forEach((commImg) {
       files.add(commImg.image);
       comments.add(commImg.commentary);
     });
   }
 
-  static void _throwErrIfSaveCommImgsFailed(List<Map<String, dynamic>> serviceResponse, List<UnSentCommentedImage> commImgs, visitId){
+  static void _throwErrIfSaveCommImgsFailed(List<Map<String, dynamic>> serviceResponse, List<UnSentCommentedImageOld> commImgs, visitId){
     if(serviceResponse.length!=commImgs.length)
       throw ServiceStatusErr(message: 'Servicio de guardar imágemnes comentadas incompleto.');
     _evaluateIfAllReturnedCommImgsAreOk(serviceResponse, commImgs, visitId);
   }
 
-  static void _evaluateIfAllReturnedCommImgsAreOk(List<Map<String, dynamic>> serviceResponse, List<UnSentCommentedImage> commImgs, int visitId){
+  static void _evaluateIfAllReturnedCommImgsAreOk(List<Map<String, dynamic>> serviceResponse, List<UnSentCommentedImageOld> commImgs, int visitId){
     serviceResponse.forEach((element) {
       if(!_serviceReturnedCommImgIsOk(element, visitId))
         throw ServiceStatusErr(message: 'Servicio de guardar imágenes comentadas fallido.');
     });
   }
 
-  static Future<List<CommentedImage>> getCommentedImages(String accessToken, int visitId)async{
+  static Future<List<CommentedImageOld>> getCommentedImages(String accessToken, int visitId)async{
     final List<Map<String, dynamic>> serviceResponse = await projectsService.getCommentedImages(accessToken, visitId);
-    final List<CommentedImage> cmmImgs = commentedImagesFromJson(serviceResponse);
+    final List<CommentedImageOld> cmmImgs = commentedImagesFromJson(serviceResponse);
     return cmmImgs;
   } 
 

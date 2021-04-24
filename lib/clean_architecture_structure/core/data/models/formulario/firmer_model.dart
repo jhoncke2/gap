@@ -50,3 +50,19 @@ class FirmerModel extends Firmer{
     'nombre':name
   };
 }
+
+List<FirmerModel> firmersFromJson(List<Map<String, dynamic>> json){
+  if(json == null)
+    return [];
+  final List<FirmerModel> firmers = json.map(
+    (Map<String, dynamic> item)=>FirmerModel.fromStorageJson(item)
+  ).toList();
+  return firmers;
+}
+
+List<Map<String, dynamic>> firmersToJson(List<FirmerModel> firmers){
+  final List<Map<String, dynamic>> jsonFirmers = firmers.map(
+    (FirmerModel fi) => fi.toStorageJson()
+  ).toList();
+  return jsonFirmers;
+}

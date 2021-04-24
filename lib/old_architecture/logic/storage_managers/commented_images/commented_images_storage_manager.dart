@@ -10,29 +10,29 @@ class CommentedImagesStorageManager{
     this.storageConnector = StorageConnectorOldSingleton.storageConnector
     ;
 
-  static Future<void> setCommentedImages(List<UnSentCommentedImage> projects)async{
+  static Future<void> setCommentedImages(List<UnSentCommentedImageOld> projects)async{
     final List<Map<String, dynamic>> projectsAsJson = _convertCommentedImagesToJson(projects);
     await StorageConnectorOldSingleton.storageConnector.setListResource(_commentedImagesKey, projectsAsJson);
   }
 
-  static List<Map<String, dynamic>> _convertCommentedImagesToJson(List<UnSentCommentedImage> commentedImages){
+  static List<Map<String, dynamic>> _convertCommentedImagesToJson(List<UnSentCommentedImageOld> commentedImages){
     final List<Map<String, dynamic>> commentedImagesAsJson = [];
-    commentedImages.forEach((UnSentCommentedImage ci)async{
+    commentedImages.forEach((UnSentCommentedImageOld ci)async{
       final Map<String, dynamic> ciAsJson = ci.toJson();
       commentedImagesAsJson.add(ciAsJson);
     });
     return commentedImagesAsJson;
   }
 
-  static Future<List<UnSentCommentedImage>> getCommentedImages()async{
+  static Future<List<UnSentCommentedImageOld>> getCommentedImages()async{
     final List<Map<String, dynamic>> commentedImagesAsJson = await StorageConnectorOldSingleton.storageConnector.getListResource(_commentedImagesKey);
-    final List<UnSentCommentedImage> commentedImages = _convertJsonCommentedImagesToObject(commentedImagesAsJson);
+    final List<UnSentCommentedImageOld> commentedImages = _convertJsonCommentedImagesToObject(commentedImagesAsJson);
     return commentedImages;
   }
 
-  static List<UnSentCommentedImage> _convertJsonCommentedImagesToObject(List<Map<String, dynamic>> commentedImagesAsJson){  
-    return commentedImagesAsJson.map<UnSentCommentedImage>(
-      (Map<String, dynamic> jsonProject) => UnSentCommentedImage.fromJson(jsonProject)
+  static List<UnSentCommentedImageOld> _convertJsonCommentedImagesToObject(List<Map<String, dynamic>> commentedImagesAsJson){  
+    return commentedImagesAsJson.map<UnSentCommentedImageOld>(
+      (Map<String, dynamic> jsonProject) => UnSentCommentedImageOld.fromJson(jsonProject)
     ).toList();
   }
 

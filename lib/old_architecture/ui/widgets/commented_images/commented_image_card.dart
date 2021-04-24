@@ -9,7 +9,7 @@ import 'package:gap/old_architecture/ui/utils/size_utils.dart';
 class CommentedImageCard extends StatelessWidget {
   final SizeUtils _sizeUtils = SizeUtils();
   final TextEditingController _commentaryController;
-  final CommentedImage commentedImage;
+  final CommentedImageOld commentedImage;
   final FocusNode focusNode;
 
   BuildContext _context;
@@ -49,13 +49,13 @@ class CommentedImageCard extends StatelessWidget {
   }
 
   Widget _createImage(){
-    if(commentedImage is UnSentCommentedImage)
+    if(commentedImage is UnSentCommentedImageOld)
       return _createFileImage(commentedImage);
     else
-      return _createNetworkImage(commentedImage as SentCommentedImage);
+      return _createNetworkImage(commentedImage as SentCommentedImageOld);
   }
 
-  Widget _createFileImage(UnSentCommentedImage commImg){
+  Widget _createFileImage(UnSentCommentedImageOld commImg){
     return Image.file(
       commImg.image,
       height: _sizeUtils.xasisSobreYasis * 0.14,
@@ -64,7 +64,7 @@ class CommentedImageCard extends StatelessWidget {
     );
   }
 
-  Widget _createNetworkImage(SentCommentedImage commImg){
+  Widget _createNetworkImage(SentCommentedImageOld commImg){
     return Image.network(
       commImg.url,
       height: _sizeUtils.xasisSobreYasis * 0.14,
@@ -77,7 +77,7 @@ class CommentedImageCard extends StatelessWidget {
     return Container(
       width: _sizeUtils.xasisSobreYasis * 0.415,
       child: TextFormField(
-        enabled: commentedImage is UnSentCommentedImage,
+        enabled: commentedImage is UnSentCommentedImageOld,
         controller: _commentaryController,
         maxLines: 4,
         decoration: _createCommentaryDecoration(),

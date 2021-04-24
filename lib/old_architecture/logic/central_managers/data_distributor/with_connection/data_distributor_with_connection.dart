@@ -212,7 +212,7 @@ class DataDistributorWithConnection extends DataDistributor{
     visitsB.add(ChangeChosenVisitBlocking(isBlocked: true));
     final String accessToken = await UserStorageManager.getAccessToken();
     final VisitOld chosenVisit = UploadedBlocsData.dataContainer[NavigationRoute.VisitDetail];
-    final List<CommentedImage> cmmImages = await ProjectsServicesManager.getCommentedImages(accessToken, chosenVisit.id);
+    final List<CommentedImageOld> cmmImages = await ProjectsServicesManager.getCommentedImages(accessToken, chosenVisit.id);
     if(cmmImages.isEmpty){
       commImgsB.add(InitImagesCommenting());
     }else{
@@ -253,11 +253,11 @@ class DataDistributorWithConnection extends DataDistributor{
 
   Future _postUnsetCommentedImages()async{
     final String accessToken = await UserStorageManager.getAccessToken();
-    final List<CommentedImage> commImgs = commImgsB.state.allCommentedImages.toList();
+    final List<CommentedImageOld> commImgs = commImgsB.state.allCommentedImages.toList();
     final VisitOld chosenVisit = visitsB.state.chosenVisit;
     commImgsB.add(ResetCommentedImages());
     if(commImgs.length > 0)
-      await ProjectsServicesManager.saveCommentedImages(accessToken, commImgs.cast<UnSentCommentedImage>(), chosenVisit.id);
+      await ProjectsServicesManager.saveCommentedImages(accessToken, commImgs.cast<UnSentCommentedImageOld>(), chosenVisit.id);
   }
 }
 

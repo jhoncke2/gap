@@ -2,7 +2,7 @@ import 'package:gap/clean_architecture_structure/core/domain/entities/entity_wit
 import 'package:gap/old_architecture/data/enums/enums.dart';
 import 'package:gap/old_architecture/data/models/entities/entities.dart';
 import 'package:gap/old_architecture/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
-import 'package:geolocator/geolocator.dart';
+import 'custom_position.dart';
 import 'firmer.dart';
 
 final List<FormStep> stepsInOrder = [
@@ -31,12 +31,12 @@ class Formulario extends EntityWithStage{
   final List<Firmer> firmers;
   final List<CustomFormField> campos;
   int formStepIndex;
-  final Position initialPosition;
-  final Position finalPosition;
+  final CustomPosition initialPosition;
+  final CustomPosition finalPosition;
 
   Formulario({
     this.id,
-    this.completo, 
+    this.completo,
     this.initialDate, 
     this.firmers,
     this.campos, 
@@ -71,3 +71,4 @@ class Formulario extends EntityWithStage{
     }
   }
 }
+

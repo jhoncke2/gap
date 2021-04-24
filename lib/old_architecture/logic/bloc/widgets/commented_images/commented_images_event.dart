@@ -26,7 +26,7 @@ class AddImages extends CommentedImagesEvent{
 
 class SetCommentedImages extends CommentedImagesEvent{
   final CmmImgDataType dataType;
-  final List<UnSentCommentedImage> commentedImages;
+  final List<UnSentCommentedImageOld> commentedImages;
   SetCommentedImages({
     @required this.dataType,
     @required this.commentedImages
@@ -49,7 +49,7 @@ class CommentImage extends CommentedImagesEvent{
 }
 
 class InitSentCommImgsWatching extends CommentedImagesEvent{
-  final List<CommentedImage> sentCommentedImages;
+  final List<CommentedImageOld> sentCommentedImages;
   InitSentCommImgsWatching({
     @required this.sentCommentedImages,
     @required Function onEnd

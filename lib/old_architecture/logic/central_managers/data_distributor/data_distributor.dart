@@ -283,17 +283,17 @@ abstract class DataDistributor{
 
   Future updateCommentedImages()async{
     commImgsB.add(InitImagesCommenting());
-    final List<UnSentCommentedImage> commentedImages = await CommentedImagesStorageManager.getCommentedImages();
+    final List<UnSentCommentedImageOld> commentedImages = await CommentedImagesStorageManager.getCommentedImages();
     _addCommentedImagesToBlocIfExistsInStorage(commentedImages);
   }
 
-  void _addCommentedImagesToBlocIfExistsInStorage(List<UnSentCommentedImage> commentedImages)async{
+  void _addCommentedImagesToBlocIfExistsInStorage(List<UnSentCommentedImageOld> commentedImages)async{
     if(commentedImages.length > 0){
       _addCommentedImagesToBloc(commentedImages);
     } 
   }
 
-  void _addCommentedImagesToBloc(List<UnSentCommentedImage> commentedImages)async{
+  void _addCommentedImagesToBloc(List<UnSentCommentedImageOld> commentedImages)async{
     final CommentedImagesBloc ciBloc = blocsAsMap[BlocName.CommentedImages];
     final SetCommentedImages sciEvent = SetCommentedImages(dataType: CmmImgDataType.UNSENT, commentedImages: commentedImages);
     ciBloc.add(sciEvent);
