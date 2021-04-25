@@ -16,7 +16,7 @@ import 'cocar_form_fields_data.dart';
 import 'custom_form_fields_string.dart';
 //*********** ************
 
-List<CustomFormField> formFields;
+List<CustomFormFieldOld> formFields;
 List<Map<String, dynamic>> initialJsonFormFields;
 int numberOfElementsTraveled = 0;
 int nHeaders = 0;
@@ -65,7 +65,7 @@ Future _testCustFormFieldElements()async{
       await _tryTestCustFormFieldElements();
     }catch(err){
       print('Número de elementos recorridos. $numberOfElementsTraveled');
-      final CustomFormField errCustomFormField = formFields[numberOfElementsTraveled-1];
+      final CustomFormFieldOld errCustomFormField = formFields[numberOfElementsTraveled-1];
       print('Elemento con error: ');
       print(errCustomFormField.toJson().toString());
       throw err;
@@ -74,65 +74,65 @@ Future _testCustFormFieldElements()async{
 }
 
 Future _tryTestCustFormFieldElements()async{
-  for(CustomFormField cff in formFields)
+  for(CustomFormFieldOld cff in formFields)
     _expectCustomFormField(cff);
   _printNElementsOfEveryType();
 }
 
-void _expectCustomFormField(CustomFormField cff){
+void _expectCustomFormField(CustomFormFieldOld cff){
   numberOfElementsTraveled++;
   expect(cff, isNotNull, reason: 'El custom form field actual no debe ser null');
   expect(cff.label, isNotNull, reason: 'El label del field no debe ser null');
   //expect(cff.isRequired, isNotNull, reason: 'El isRequired del field no debe ser null');
-  final FormFieldType fieldType = cff.type;
+  final FormFieldTypeOld fieldType = cff.type;
   expect(fieldType, isNotNull, reason: 'El type del form field no debe ser null');
   _expectByType(cff, fieldType);
   _printNotRequiredVariables(cff);
 }
 
-void _expectByType(CustomFormField cff, FormFieldType type){
+void _expectByType(CustomFormFieldOld cff, FormFieldTypeOld type){
   switch(type){
-    case FormFieldType.HEADER:
+    case FormFieldTypeOld.HEADER:
       _expectHeaderField(cff);
       break;
-    case FormFieldType.PARAGRAPH:
+    case FormFieldTypeOld.PARAGRAPH:
       _expectParagraphField(cff);
       break;
-    case FormFieldType.SINGLE_TEXT:
+    case FormFieldTypeOld.SINGLE_TEXT:
       _expectTextField(cff);
       break;
-    case FormFieldType.TEXT_AREA:
+    case FormFieldTypeOld.TEXT_AREA:
       _expectTextAreaField(cff);
       break;
-    case FormFieldType.NUMBER:
+    case FormFieldTypeOld.NUMBER:
       _expectNumberField(cff);
       break;
-    case FormFieldType.DATE:
+    case FormFieldTypeOld.DATE:
       _expectDateField(cff);
       break;
-    case FormFieldType.TIME:
+    case FormFieldTypeOld.TIME:
       _expectTimeField(cff);
       break;
-    case FormFieldType.CHECKBOX_GROUP:
+    case FormFieldTypeOld.CHECKBOX_GROUP:
       _expectCheckBoxGroupField(cff);
       break;
-    case FormFieldType.RADIO_GROUP:
+    case FormFieldTypeOld.RADIO_GROUP:
       _expectRadioGroupField(cff);
       break; 
-    case FormFieldType.SELECT:
+    case FormFieldTypeOld.SELECT:
       _expectSelectField(cff);
       break;
   }
 }
 
-void _expectHeaderField(HeaderFormField cff){
+void _expectHeaderField(HeaderFormFieldOld cff){
   nHeaders++;
   _expectStaticSubType(cff);
   _expectIsWithoutValue(cff);
   _expectCustFormFieldToJson(cff);
 }
 
-void _expectCustFormFieldToJson(CustomFormField cff){
+void _expectCustFormFieldToJson(CustomFormFieldOld cff){
   final Map<String, dynamic> initialJson = _getCurrentInitialJson();
   _expectTextSingleValue(cff, initialJson);
   final Map<String, dynamic> currentFormFieldJson = cff.toJson();
@@ -155,7 +155,7 @@ void _transformCurrentFormFieldJson(Map<String, dynamic> formFieldJson){
   formFieldJson.removeWhere((key, value) => value == null);
 }
 
-void _expectParagraphField(ParagraphFormField cff){
+void _expectParagraphField(ParagraphFormFieldOld cff){
   nParagraphs++;
   _expectStaticSubType(cff);
   _expectIsWithoutValue(cff);
@@ -165,7 +165,7 @@ void _expectParagraphField(ParagraphFormField cff){
   //print(cff.toJson());
 }
 
-void _expectTextField(UniqueLineText cff){
+void _expectTextField(UniqueLineTextOld cff){
   nTexts++;
   _expectRequiredAndName(cff);
   //_expectOldSubType(cff);
@@ -173,7 +173,7 @@ void _expectTextField(UniqueLineText cff){
   _expectCustFormFieldToJson(cff);
 }
 
-void _expectTextAreaField(TextArea cff){
+void _expectTextAreaField(TextAreaOld cff){
   nTextAreas++;
   _expectRequiredAndName(cff);
   //_expectOldSubType(cff);
@@ -181,7 +181,7 @@ void _expectTextAreaField(TextArea cff){
   _expectCustFormFieldToJson(cff);
 }
 
-void _expectNumberField(NumberFormField cff){
+void _expectNumberField(NumberFormFieldOld cff){
   nNumbers++;
   //_expectRequiredAndName(cff);
   _expectIsSingleValue(cff);
@@ -189,21 +189,21 @@ void _expectNumberField(NumberFormField cff){
   _expectCustFormFieldToJson(cff);
 }
 
-void _expectDateField(DateField cff){
+void _expectDateField(DateFieldOld cff){
   nDates++;
   _expectRequiredAndName(cff);
   _expectIsSingleValue(cff);
   _expectCustFormFieldToJson(cff);
 }
 
-void _expectTimeField(TimeField cff){
+void _expectTimeField(TimeFieldOld cff){
   nTimes++;
   _expectRequiredAndName(cff);
   _expectIsSingleValue(cff);
   _expectCustFormFieldToJson(cff);
 }
 
-void _expectCheckBoxGroupField(CheckBoxGroup cff){
+void _expectCheckBoxGroupField(CheckBoxGroupOld cff){
   nCheckBoxGroups++;
   _expectRequiredAndName(cff);
   expect(cff.withSwitchType, isNotNull, reason: 'El toggle de un ckeckbox no deberia ser null');
@@ -212,7 +212,7 @@ void _expectCheckBoxGroupField(CheckBoxGroup cff){
   _expectMultiValueFieldToJson(cff);
 }
 
-void _expectMultiValueFieldToJson(MultiValueFormField cff){
+void _expectMultiValueFieldToJson(MultiValueFormFieldOld cff){
   final Map<String, dynamic> initialJson = _getCurrentInitialJson();
   initialJson['label'] = null;
   final Map<String, dynamic> currentFormFieldJson = cff.toJson();
@@ -232,7 +232,7 @@ void _transformMultiValueWildFormFieldJson(Map<String, dynamic> json){
   );
 }
 
-void _expectRadioGroupField(RadioGroupFormField cff){
+void _expectRadioGroupField(RadioGroupFormFieldOld cff){
   nRadioGroups++;
   _expectRequiredAndName(cff);
   _expectLineal(cff);
@@ -240,73 +240,73 @@ void _expectRadioGroupField(RadioGroupFormField cff){
   _expectMultiValueFieldToJson(cff);
 }
 
-void _expectSelectField(SelectFormField cff){
+void _expectSelectField(SelectFormFieldOld cff){
   nSelects++;
   _expectRequiredAndName(cff);
   _expectIsMultiValue(cff);
   _expectMultiValueFieldToJson(cff);
 }
 
-void _expectRequiredAndName(VariableFormField cff){
+void _expectRequiredAndName(VariableFormFieldOld cff){
   expect(cff.isRequired, isNotNull, reason: 'El isRequired del formfield actual no debería ser null');
   expect(cff.name, isNotNull, reason: 'El name del formfield actual no debería ser null');
 }
 
-void _expectStaticSubType(StaticFormField sff){
+void _expectStaticSubType(StaticFormFieldOld sff){
   expect(sff.subType, isNotNull, reason: 'El subtype del static formfield actual no debería ser null');
 }
 
-void _expectVariableFormField(VariableFormField vff){
+void _expectVariableFormField(VariableFormFieldOld vff){
   expect(vff.isRequired, isNotNull, reason: 'El isRequired de un variable form field no debe ser null');
   expect(vff.name, isNotNull, reason: 'El name del formfield actual no debería ser null');
 }
 
-void _expectLineal(MultiValueWithAlignment cff){
+void _expectLineal(MultiValueWithAlignmentOld cff){
   expect(cff.withVerticalAlignment, isNotNull, reason: 'El inLine del formField actual no deberia ser null');
 }
 
-void _expectIsMultiValue(MultiValueFormField mvff){
+void _expectIsMultiValue(MultiValueFormFieldOld mvff){
   expect(mvff.values, isNotNull, reason: 'Los values de un multivalue no pueden ser null');
   expect(mvff.values.length, isNot(0), reason: 'Los values de un multivalue deben ser al menos uno en cantidad');
 }
 
-void _expectIsSingleValue(CustomFormField cff){
+void _expectIsSingleValue(CustomFormFieldOld cff){
   //expect(cff.value, isNotNull, reason: 'El value unitario de un singleValue no debe ser null');
   //expect(cff.values, isNull, reason: 'Los values de un singleValue deben ser null');
 }
 
-void _expectIsWithoutValue(StaticFormField cff){
+void _expectIsWithoutValue(StaticFormFieldOld cff){
   //expect(cff.values, isNull, reason: 'Los values de un static form field deben ser null'); 
   //expect(cff.value, isNull, reason: 'El value unitario de un static form field debe ser null');
 }
 
-void _expectTextSingleValue(CustomFormField cff, Map<String, dynamic> initialJson){
-  if(cff is RawTextFormField){
+void _expectTextSingleValue(CustomFormFieldOld cff, Map<String, dynamic> initialJson){
+  if(cff is RawTextFormFieldOld){
     _processAndExpectDefaultValuesOfRawTextFormField(cff, initialJson);
-  }if(cff is NumberFormField){
+  }if(cff is NumberFormFieldOld){
     _processAndExpectDefaultValuesOfNumber(cff, initialJson);
   }
 }
 
-void _processAndExpectDefaultValuesOfRawTextFormField(RawTextFormField rtff, Map<String, dynamic> initialJson){
+void _processAndExpectDefaultValuesOfRawTextFormField(RawTextFormFieldOld rtff, Map<String, dynamic> initialJson){
   if(initialJson['maxlength'] == null){
-    expect(rtff.maxLength, RawTextFormField.defaultMaxLength);
+    expect(rtff.maxLength, RawTextFormFieldOld.defaultMaxLength);
     rtff.maxLength = null;
   }
-  if(rtff is TextArea){
-    expect(rtff.rows, TextArea.defaultNumberOfRows);
+  if(rtff is TextAreaOld){
+    expect(rtff.rows, TextAreaOld.defaultNumberOfRows);
     rtff.rows = null;
   }
 }
 
-void _processAndExpectDefaultValuesOfNumber(NumberFormField nff, Map<String, dynamic> initialJson){
+void _processAndExpectDefaultValuesOfNumber(NumberFormFieldOld nff, Map<String, dynamic> initialJson){
   if(initialJson['step'] == null){
-    expect(nff.step, NumberFormField.defaultStep);
+    expect(nff.step, NumberFormFieldOld.defaultStep);
     nff.step = null;
   }
 }
 
-void _printNotRequiredVariables(CustomFormField cff){
+void _printNotRequiredVariables(CustomFormFieldOld cff){
   if(cff.other != null)
     print('[[ With Other: ${cff.type}::${cff.label}::${cff.other} ]]');
   

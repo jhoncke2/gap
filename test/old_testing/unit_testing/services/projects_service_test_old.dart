@@ -125,29 +125,29 @@ Map<String, dynamic> _getFormWithFormFieldsAndItsVisitId(){
 
 List<Map<String, dynamic>> _getFormattedFormCampos(FormularioOld form){
   final List<Map<String, dynamic>> jsonCampos = [];
-  for(CustomFormField cff in form.campos)
-    if(cff is VariableFormField)
+  for(CustomFormFieldOld cff in form.campos)
+    if(cff is VariableFormFieldOld)
       _addVariableFormFieldToList(cff, jsonCampos, form.id); 
   return jsonCampos;
 }
 
-void _addVariableFormFieldToList(VariableFormField vff, List<Map<String, dynamic>> jsonCampos, int formId){
+void _addVariableFormFieldToList(VariableFormFieldOld vff, List<Map<String, dynamic>> jsonCampos, int formId){
   final Map<String, dynamic> jsonCff = _getServiceJsonByVariableFormField(vff, formId);
   _defineFormFieldValuesByTypeOfValues(vff, jsonCff);
   jsonCampos.add(jsonCff);
 }
 
-Map<String, dynamic> _getServiceJsonByVariableFormField(VariableFormField vff, int formId){
+Map<String, dynamic> _getServiceJsonByVariableFormField(VariableFormFieldOld vff, int formId){
   return {
     'formulario_visita_id':formId,
     'name':vff.name
   };
 }
 
-void _defineFormFieldValuesByTypeOfValues(VariableFormField vff, Map<String, dynamic> jsonVff){
-  if(vff is SingleValueFormField){
+void _defineFormFieldValuesByTypeOfValues(VariableFormFieldOld vff, Map<String, dynamic> jsonVff){
+  if(vff is SingleValueFormFieldOld){
     jsonVff['res'] = [vff.uniqueValue];
-  }else if(vff is MultiValueFormField){
+  }else if(vff is MultiValueFormFieldOld){
     jsonVff['res'] = (vff.values.map<int>((item) => item.selected?1:0)).toList();
   }
 }

@@ -1,9 +1,9 @@
 import 'package:gap/old_architecture/data/models/entities/custom_form_field/variable/multi_value/multi_value_form_field.dart';
 
-class MultiValueWithAlignment extends MultiValueFormField{
+class MultiValueWithAlignmentOld extends MultiValueFormFieldOld{
   bool withVerticalAlignment;
   bool other;
-  MultiValueWithAlignment.fromJson(Map<String, dynamic> json): 
+  MultiValueWithAlignmentOld.fromJson(Map<String, dynamic> json): 
     withVerticalAlignment = json['inline']??false,
     other = json['other'],
     super.fromJson(json)
@@ -17,10 +17,10 @@ class MultiValueWithAlignment extends MultiValueFormField{
   }
 }
 
-class CheckBoxGroup extends MultiValueWithAlignment{
+class CheckBoxGroupOld extends MultiValueWithAlignmentOld{
   bool withSwitchType;
   
-  CheckBoxGroup.fromJson(Map<String, dynamic> json): 
+  CheckBoxGroupOld.fromJson(Map<String, dynamic> json): 
     withSwitchType = json['toggle'],
     super.fromJson(json)
     ;
@@ -32,8 +32,8 @@ class CheckBoxGroup extends MultiValueWithAlignment{
   }
 }
 
-class RadioGroupFormField extends MultiValueWithAlignment{
+class RadioGroupFormFieldOld extends MultiValueWithAlignmentOld{
 
-  RadioGroupFormField.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+  RadioGroupFormFieldOld.fromJson(Map<String, dynamic> json) : super.fromJson(json);
   Map<String, dynamic> toJson()=>super.toJson();
 }

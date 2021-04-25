@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:gap/old_architecture/data/models/entities/entities.dart';
 
-abstract class StaticFormField extends CustomFormField{
-  FormFieldSubType subType;
+abstract class StaticFormFieldOld extends CustomFormFieldOld{
+  FormFieldSubTypeOld subType;
 
-  StaticFormField.fromJson({
+  StaticFormFieldOld.fromJson({
     Map<String, dynamic> json,
     @required this.subType
   }):
@@ -20,50 +20,50 @@ abstract class StaticFormField extends CustomFormField{
   }
 }
 
-class HeaderFormField extends StaticFormField{
-  HeaderFormField.fromJson(Map<String, dynamic> json):
+class HeaderFormFieldOld extends StaticFormFieldOld{
+  HeaderFormFieldOld.fromJson(Map<String, dynamic> json):
     super.fromJson(
       json: json,
-      subType: HeaderSubType.fromValue(json['subtype'])
+      subType: HeaderSubTypeOld.fromValue(json['subtype'])
     );
 }
 
-class ParagraphFormField extends StaticFormField{
-  ParagraphFormField.fromJson(Map<String, dynamic> json):
+class ParagraphFormFieldOld extends StaticFormFieldOld{
+  ParagraphFormFieldOld.fromJson(Map<String, dynamic> json):
     super.fromJson(
       json: json,
-      subType: ParagraphSubtype.fromValue(json['subtype'])
+      subType: ParagraphSubtypeOld.fromValue(json['subtype'])
     );
 }
 
-class HeaderSubType extends FormFieldSubType{
-  static final List<HeaderSubType> subtypes = [H1, H2, H3, H4, H5, H6];
-  HeaderSubType(String value) : super(value);
+class HeaderSubTypeOld extends FormFieldSubTypeOld{
+  static final List<HeaderSubTypeOld> subtypes = [H1, H2, H3, H4, H5, H6];
+  HeaderSubTypeOld(String value) : super(value);
 
-  static HeaderSubType H1 = HeaderSubType('h1');  
-  static HeaderSubType H2 = HeaderSubType('h2');
-  static HeaderSubType H3 = HeaderSubType('h3');
-  static HeaderSubType H4 = HeaderSubType('h4');
-  static HeaderSubType H5 = HeaderSubType('h5');
-  static HeaderSubType H6 = HeaderSubType('h6');
+  static HeaderSubTypeOld H1 = HeaderSubTypeOld('h1');  
+  static HeaderSubTypeOld H2 = HeaderSubTypeOld('h2');
+  static HeaderSubTypeOld H3 = HeaderSubTypeOld('h3');
+  static HeaderSubTypeOld H4 = HeaderSubTypeOld('h4');
+  static HeaderSubTypeOld H5 = HeaderSubTypeOld('h5');
+  static HeaderSubTypeOld H6 = HeaderSubTypeOld('h6');
 
-  factory HeaderSubType.fromValue(String value){
-    return FormFieldSubType.getSubTypeFromValue(value, subtypes);
+  factory HeaderSubTypeOld.fromValue(String value){
+    return FormFieldSubTypeOld.getSubTypeFromValue(value, subtypes);
   }
 }
 
-class ParagraphSubtype extends FormFieldSubType{
-  static final List<ParagraphSubtype> subtypes = [P, ADDRESS, BLOCKQUOTE, CANVAS, OUTPUT];
+class ParagraphSubtypeOld extends FormFieldSubTypeOld{
+  static final List<ParagraphSubtypeOld> subtypes = [P, ADDRESS, BLOCKQUOTE, CANVAS, OUTPUT];
 
-  ParagraphSubtype(String value) : super(value);
+  ParagraphSubtypeOld(String value) : super(value);
 
-  static ParagraphSubtype P = ParagraphSubtype('p');
-  static ParagraphSubtype ADDRESS = ParagraphSubtype('address');
-  static ParagraphSubtype BLOCKQUOTE = ParagraphSubtype('blockquote');
-  static ParagraphSubtype CANVAS = ParagraphSubtype('canvas');
-  static ParagraphSubtype OUTPUT = ParagraphSubtype('output');
+  static ParagraphSubtypeOld P = ParagraphSubtypeOld('p');
+  static ParagraphSubtypeOld ADDRESS = ParagraphSubtypeOld('address');
+  static ParagraphSubtypeOld BLOCKQUOTE = ParagraphSubtypeOld('blockquote');
+  static ParagraphSubtypeOld CANVAS = ParagraphSubtypeOld('canvas');
+  static ParagraphSubtypeOld OUTPUT = ParagraphSubtypeOld('output');
 
-  factory ParagraphSubtype.fromValue(String value){
-    return FormFieldSubType.getSubTypeFromValue(value, subtypes);
+  factory ParagraphSubtypeOld.fromValue(String value){
+    return FormFieldSubTypeOld.getSubTypeFromValue(value, subtypes);
   }
 }

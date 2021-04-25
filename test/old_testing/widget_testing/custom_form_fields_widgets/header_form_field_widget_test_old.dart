@@ -7,12 +7,12 @@ import 'mock_app.dart';
 
 
 
-final HeaderFormField headerFormFieldH1 = HeaderFormField.fromJson({
+final HeaderFormFieldOld headerFormFieldH1 = HeaderFormFieldOld.fromJson({
   'type':'header',
   'label':'header h1',
   'subtype':'h1',
 });
-final HeaderFormField headerFormFieldH6 = HeaderFormField.fromJson({
+final HeaderFormFieldOld headerFormFieldH6 = HeaderFormFieldOld.fromJson({
   'type':'header',
   'label':'header h2',
   'subtype':'h6',

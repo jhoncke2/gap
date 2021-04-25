@@ -107,7 +107,7 @@ class _FormInputsFractionState extends State<FormInputsFraction> {
   }
 
   Widget _createFormFieldsWithIndex(){
-    List<CustomFormField> formFIeldsByPage = _getFormFIeldsByCurrentPage();
+    List<CustomFormFieldOld> formFIeldsByPage = _getFormFIeldsByCurrentPage();
     final double screenHeight = MediaQuery.of(context).size.height;
     return Container(
       child: Scrollbar(
@@ -130,10 +130,10 @@ class _FormInputsFractionState extends State<FormInputsFraction> {
     return Container();
   }
 
-  List<CustomFormField> _getFormFIeldsByCurrentPage(){
+  List<CustomFormFieldOld> _getFormFIeldsByCurrentPage(){
     final int currentPage = _indexState.currentIndexPage;
     final ChosenFormBloc cfBloc = BlocProvider.of<ChosenFormBloc>(context);
-    final List<CustomFormField> formFieldsByCurrentPage = cfBloc.state.getFormFieldsByIndex(currentPage);
+    final List<CustomFormFieldOld> formFieldsByCurrentPage = cfBloc.state.getFormFieldsByIndex(currentPage);
     return formFieldsByCurrentPage;
   }
 

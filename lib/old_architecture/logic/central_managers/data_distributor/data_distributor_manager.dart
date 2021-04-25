@@ -12,7 +12,7 @@ class DataDistributorManager{
   bool happendError;
   int errorRepetitions;
 
-  EnumValues<DataDistrFunctionName, Function> _dataDistributorFunctionsValues;
+  EnumValuesOld<DataDistrFunctionName, Function> _dataDistributorFunctionsValues;
   Function _currentExecutedFunction;
 
   final List functionsWithValue = [
@@ -41,7 +41,7 @@ class DataDistributorManager{
   }
 
   _initializeDataDistributorFunctionsValues(){
-    _dataDistributorFunctionsValues = EnumValues<DataDistrFunctionName, Function>({
+    _dataDistributorFunctionsValues = EnumValuesOld<DataDistrFunctionName, Function>({
       DataDistrFunctionName.DO_FIRST_APP_INITIALIZATION: dataDistributor.updateFirstInitialization,
       DataDistrFunctionName.DO_INITIAL_CONFIG:  dataDistributor.doInitialConfig,
       DataDistrFunctionName.LOGIN: dataDistributor.login,

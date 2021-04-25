@@ -15,7 +15,7 @@ final List<FormStep> stepsInOrder = [
   FormStep.Finished
 ];
 
-final formStepValues = EnumValues({
+final formStepValues = EnumValuesOld({
   'on_form_filling_out':FormStep.OnFormFillingOut,
   'on_form_reading':FormStep.OnFormReading,
   'on_first_firmer_information':FormStep.OnFirstFirmerInformation,
@@ -29,7 +29,7 @@ class Formulario extends EntityWithStage{
   bool completo;
   final DateTime initialDate;
   final List<Firmer> firmers;
-  final List<CustomFormField> campos;
+  final List<CustomFormFieldOld> campos;
   int formStepIndex;
   final CustomPosition initialPosition;
   final CustomPosition finalPosition;

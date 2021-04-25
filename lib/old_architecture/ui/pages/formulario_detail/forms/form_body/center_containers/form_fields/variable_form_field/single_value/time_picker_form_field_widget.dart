@@ -6,7 +6,7 @@ import 'package:gap/old_architecture/logic/central_managers/pages_navigation_man
 import '../variable_form_field_container.dart';
 class TimePickerFormFieldWidget extends StatefulWidget {
 
-  final TimeField timeFormField;
+  final TimeFieldOld timeFormField;
   final bool avaible;
 
   TimePickerFormFieldWidget({Key key, @required this.timeFormField, this.avaible = true}) : super(key: Key(timeFormField.name));

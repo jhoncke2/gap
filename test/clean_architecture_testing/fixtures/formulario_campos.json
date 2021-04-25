@@ -1,0 +1,94 @@
+[
+    {
+        "type": "number",
+        "required": false,
+        "label": "NUMERO DE ORDEN DE SERVICIO",
+        "className": "form-control",
+        "value":"4",
+        "name": "number-1586211811903",
+        "access": false
+    },
+    {
+        "type": "date",
+        "required": false,
+        "label": "FECHA DE VISITA",
+        "value":"2021-04-22",
+        "className": "form-control",
+        "name": "date-1586208213893",
+        "access": false
+    },
+    {
+        "type": "select",
+        "required": false,
+        "label": "CLIENTE",
+        "className": "form-control",
+        "name": "select-1586202480938",
+        "access": false,
+        "multiple": false,
+        "values": [
+            {
+                "label": "ACCIONA AGUA",
+                "value": "ACCIONA AGUA",
+                "selected": true
+            },
+            {
+                "label": "ALIANZA COLOMBO FRANCESA ",
+                "value": "ALIANZA COLOMBO FRANCESA "
+            },
+            {
+                "label": "ASOPAVAL",
+                "value": "ASOPAVAL"
+            },
+            {
+                "label": "BARUC ",
+                "value": "BARUC "
+            }
+        ]
+    },
+    {
+        "type": "text",
+        "required": false,
+        "label": "Otro",
+        "description": "Cliente",
+        "className": "form-control",
+        "name": "text-1618235283610",
+        "access": false,
+        "subtype": "text",
+        "value":"texto"
+    },
+    {
+        "type": "checkbox-group",
+        "required": false,
+        "label": "SERVICIO REALIZADO",
+        "toggle": false,
+        "inline": false,
+        "name": "checkbox-group-1618234129444",
+        "access": false,
+        "other": false,
+        "values": [
+            {
+                "label": "REVISIÓN DE EQUIPO",
+                "value": "REVISIÓN DE EQUIPO",
+                "selected":true
+            },
+            {
+                "label": "MANTENIMIENTO DE EQUIPO",
+                "value": "MANTENIMIENTO DE EQUIPO",
+                "selected":true
+            },
+            {
+                "label": "MANTENIMIENTO CORRECTIVO",
+                "value": "MANTENIMIENTO CORRECTIVO",
+                "selected":true
+            },
+            {
+                "label": "RETIRO DE EQUIPO",
+                "value": "RETIRO DE EQUIPO"
+            },
+            {
+                "label": "INSTALACIÓN DE EQUIPO",
+                "value": "INSTALACIÓN DE EQUIPO"
+            }
+        ]
+    }
+]

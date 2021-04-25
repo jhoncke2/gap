@@ -1,6 +1,10 @@
 import 'dart:convert';
 
 import 'package:gap/clean_architecture_structure/core/error/exceptions.dart';
+import 'package:gap/old_architecture/data/models/entities/custom_form_field/variable/multi_value/multi_value_form_field.dart';
+import 'package:gap/old_architecture/data/models/entities/custom_form_field/variable/single_value/single_value_form_field.dart';
+import 'package:gap/old_architecture/data/models/entities/custom_form_field/variable/variable_form_field.dart';
+import 'package:gap/old_architecture/data/models/entities/entities.dart';
 import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
 import 'package:gap/clean_architecture_structure/core/data/data_sources/central/remote_data_source.dart';
@@ -35,7 +39,7 @@ class FormulariosRemoteDataSourceImpl extends RemoteDataSourceWithMultiPartReque
     return await _executeService(()async{
       final response = await client.get(
         Uri.http(super.BASE_URL, '${super.BASE_PANEL_UNCODED_PATH}$FORMULARIOS_URL$visitId'),
-        headers: _createAuthorizationHeaders(accessToken)
+        headers: createAuthorizationHeaders(accessToken)
       );
       if(response.statusCode != 200)
         throw Exception();
@@ -49,7 +53,7 @@ class FormulariosRemoteDataSourceImpl extends RemoteDataSourceWithMultiPartReque
     return await _executeService(()async{
       final response = await client.get(
         Uri.http(super.BASE_URL, '${super.BASE_PANEL_UNCODED_PATH}$CHOSEN_FORMULARIO_URL$formularioId'),
-        headers: _createAuthorizationHeaders(accessToken)
+        headers: createAuthorizationHeaders(accessToken)
       );
       if(response.statusCode != 200)
         throw Exception();
@@ -67,7 +71,7 @@ class FormulariosRemoteDataSourceImpl extends RemoteDataSourceWithMultiPartReque
       };
       final response = await client.post(
         Uri.http(super.BASE_URL, '${super.BASE_PANEL_UNCODED_PATH}$INITIAL_POSITION_URL$formularioId'),
-        headers: _createAuthorizationHeaders(accessToken),
+        headers: createAuthorizationHeaders(accessToken),
         body: body
       );
       if(response.statusCode != 200)
@@ -77,14 +81,64 @@ class FormulariosRemoteDataSourceImpl extends RemoteDataSourceWithMultiPartReque
 
   @override
   Future<void> setCampos(FormularioModel formulario, int visitId, String accessToken)async{
-    // TODO: implement setFormulario
-    throw UnimplementedError();
+    await _executeService(()async{
+      final Map<String, dynamic> body = {'respuestas':_getFormattedFormCampos(formulario)};
+      final response = await client.post(
+        Uri.http(super.BASE_URL, '${super.BASE_PANEL_UNCODED_PATH}$CAMPOS_URL$visitId'),
+        headers: createAuthorizationHeaders(accessToken),
+        body: body
+      );
+      if(response.statusCode != 200)
+        throw Exception();
+      final dynamic jsonResponse = jsonDecode(response.body);
+      return jsonResponse;
+    });
+  }
+
+  static List<Map<String, dynamic>> _getFormattedFormCampos(FormularioModel formulario){
+    final List<Map<String, dynamic>> jsonCampos = [];
+    for(CustomFormFieldOld cff in formulario.campos)
+      if(cff is VariableFormFieldOld)
+        _addVariableFormFieldToList(cff, jsonCampos, formulario.id); 
+    return jsonCampos;
+  }
+
+  static void _addVariableFormFieldToList(VariableFormFieldOld vff, List<Map<String, dynamic>> jsonCampos, int formId){
+    final Map<String, dynamic> jsonCff = _getServiceJsonByVariableFormField(vff, formId);
+    _defineFormFieldValuesByTypeOfValues(vff, jsonCff);
+    jsonCampos.add(jsonCff);
+  }
+
+  static Map<String, dynamic> _getServiceJsonByVariableFormField(VariableFormFieldOld vff, int formId){
+    return {
+      'formulario_visita_id': formId,
+      'name': vff.name
+    };
+  }
+
+  static void _defineFormFieldValuesByTypeOfValues(VariableFormFieldOld vff, Map<String, dynamic> jsonVff){
+    if(vff is SingleValueFormFieldOld){
+      jsonVff['res'] = [vff.uniqueValue??''];
+    }else if(vff is MultiValueFormFieldOld){
+      jsonVff['res'] = (vff.values.map<int>((item) => item.selected?1:0)).toList();
+    }
   }
 
   @override
   Future<void> setFinalPosition(CustomPositionModel position, int formularioId, String accessToken)async{
-    // TODO: implement setFinalPosition
-    throw UnimplementedError();
+    await _executeService(()async{
+      final Map<String, dynamic> body = {
+        'latitud_final':position.latitude,
+        'longitud_final':position.longitude
+      };
+      final response = await client.post(
+        Uri.http(super.BASE_URL, '${super.BASE_PANEL_UNCODED_PATH}$FINAL_POSITION_URL$formularioId'),
+        headers: createAuthorizationHeaders(accessToken),
+        body: body
+      );
+      if(response.statusCode != 200)
+        throw ServerException();
+    });
   }
 
   @override
@@ -102,13 +156,6 @@ class FormulariosRemoteDataSourceImpl extends RemoteDataSourceWithMultiPartReque
       if(response.statusCode != 200)
         throw Exception();
     });
-  }
-
-  Map<String, String> _createAuthorizationHeaders(String accessToken){
-    return {
-      'Authorization':'Bearer $accessToken',
-      'Content-Type':'application/json'
-    };
   }
 
   Future<dynamic> _executeService(

@@ -12,6 +12,12 @@ abstract class RemoteDataSource{
   // ignore: non_constant_identifier_names
   final BASE_AUTH_UNCODED_PATH = '$BASE_API_UNCODED_PATH/auth/';
 
+  Map<String, String> createAuthorizationHeaders(String accessToken){
+    return {
+      'Authorization':'Bearer $accessToken',
+      'Content-Type':'application/json'
+    };
+  }
   
 }
 

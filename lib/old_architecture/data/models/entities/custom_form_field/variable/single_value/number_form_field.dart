@@ -1,13 +1,13 @@
 import 'package:gap/old_architecture/data/models/entities/custom_form_field/variable/single_value/single_value_form_field.dart';
 
-class NumberFormField extends SingleValueFormField{
+class NumberFormFieldOld extends SingleValueFormFieldOld{
 
   static final int defaultStep = 1;
   int max;
   int min;
   int step;
 
-  NumberFormField.fromJson(Map<String, dynamic> json):
+  NumberFormFieldOld.fromJson(Map<String, dynamic> json):
     max = json['max'],
     min = json['min'],
     step = json['step']??defaultStep,

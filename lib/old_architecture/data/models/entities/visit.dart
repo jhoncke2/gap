@@ -73,9 +73,9 @@ class VisitOld extends EntityWithStageOld{
   factory VisitOld.fromJson(Map<String, dynamic> json)=>VisitOld(
     id: json['id'],
     completo: json['completo']??false,
-    date: json['fecha'] == null? DateTime.now() : transformStringInToDate(json['fecha']),
+    date: json['fecha'] == null? DateTime.now() : transformStringInToDateOld(json['fecha']),
     sede: SedeOld.fromJson(json['sede']),
-    formularios: formulariosFromJson((json["formularios"]??[]).cast<Map<String, dynamic>>()),
+    formularios: formulariosFromJsonOld((json["formularios"]??[]).cast<Map<String, dynamic>>()),
   );
 
   /*
@@ -92,8 +92,8 @@ class VisitOld extends EntityWithStageOld{
     final Map<String, dynamic> json = super.toJson();
     json['sede'] = sede.toJson();
     json['completo'] = _completo;
-    json['fecha'] = transformDateInToString(date);
-    json['formularios'] = formulariosToJson(formularios);
+    json['fecha'] = transformDateInToStringOld(date);
+    json['formularios'] = formulariosToJsonOld(formularios);
     return json;
   }
 
@@ -102,7 +102,7 @@ class VisitOld extends EntityWithStageOld{
     super.stage = ProcessStage.fromValue(completo? 'realizada':'pendiente');
   }
   bool get completo => _completo;
-  String get stringDate => transformDateInToString(date);
+  String get stringDate => transformDateInToStringOld(date);
 }
 
 class SedeOld {

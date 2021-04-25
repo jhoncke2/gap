@@ -6,7 +6,7 @@ import '../variable_form_field_container.dart';
 // ignore: must_be_immutable
 class DatePickerFormFieldWidget extends StatefulWidget {
 
-  final DateField dateFormField;
+  final DateFieldOld dateFormField;
   final bool avaible;
 
   DatePickerFormFieldWidget({Key key, @required this.dateFormField, this.avaible = true}) : super(key: Key(dateFormField.name));

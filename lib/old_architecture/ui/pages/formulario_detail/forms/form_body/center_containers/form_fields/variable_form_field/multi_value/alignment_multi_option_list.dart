@@ -5,8 +5,8 @@ import 'package:gap/old_architecture/data/models/entities/custom_form_field/vari
 class AlignmentedMultiOptionList extends StatelessWidget {
 
   final bool withVerticalAlignment;
-  final List<MultiFormFieldValue> values;
-  final Function(MultiFormFieldValue, Function(Function)) onItemCreated;
+  final List<MultiFormFieldValueOld> values;
+  final Function(MultiFormFieldValueOld, Function(Function)) onItemCreated;
 
   AlignmentedMultiOptionList({
     Key key,

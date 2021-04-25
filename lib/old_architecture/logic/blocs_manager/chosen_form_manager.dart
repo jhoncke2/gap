@@ -63,20 +63,20 @@ class ChosenFormManager{
   void updateIndexByFormFieldsChange(){
     _updateStates();
     final int currentIndexPage = indexBloc.state.currentIndexPage;
-    final List<CustomFormField> pageFormFields = chosenFormState.getFormFieldsByIndex(currentIndexPage);
+    final List<CustomFormFieldOld> pageFormFields = chosenFormState.getFormFieldsByIndex(currentIndexPage);
     final bool allFormFieldsFromPageAreCompleted = _thoseFormFieldsAreCompleted(pageFormFields);
     _updateIndexIfPageFormFieldsAreCompleted(allFormFieldsFromPageAreCompleted, currentIndexPage);
   }
 
-  bool _thoseFormFieldsAreCompleted(List<CustomFormField> formFields){
-    for(CustomFormField cff in formFields)
+  bool _thoseFormFieldsAreCompleted(List<CustomFormFieldOld> formFields){
+    for(CustomFormFieldOld cff in formFields)
       if(!_formFieldIsCompleted(cff))
         return false;
     return true;
   }
 
-  static bool _formFieldIsCompleted(CustomFormField cff){
-    return !(cff is VariableFormField && ((cff.isRequired && cff.isCompleted) || !cff.isRequired)) || cff is StaticFormField;
+  static bool _formFieldIsCompleted(CustomFormFieldOld cff){
+    return !(cff is VariableFormFieldOld && ((cff.isRequired && cff.isCompleted) || !cff.isRequired)) || cff is StaticFormFieldOld;
   }
 
   void _updateIndexIfPageFormFieldsAreCompleted(bool pageFormFieldsAreCompleted, int currentIndexPage){

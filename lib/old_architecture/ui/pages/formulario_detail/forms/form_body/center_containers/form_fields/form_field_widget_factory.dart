@@ -14,27 +14,27 @@ import '../form_fields/variable_form_field/single_value/text_form_field/text_are
 import '../form_fields/variable_form_field/single_value/time_picker_form_field_widget.dart';
 
 class FormFieldWidgetFactory{
-  static Widget createFormFieldWidget(CustomFormField cff, int fieldPageIndex, StreamController<int> onFieldChangedController, bool isEnabled){
+  static Widget createFormFieldWidget(CustomFormFieldOld cff, int fieldPageIndex, StreamController<int> onFieldChangedController, bool isEnabled){
     switch(cff.type){
-      case FormFieldType.HEADER:
+      case FormFieldTypeOld.HEADER:
         return HeaderFormFieldWidget(headerFormField: cff);
-      case FormFieldType.PARAGRAPH:
+      case FormFieldTypeOld.PARAGRAPH:
         return ParagraphFormFieldWidget(paragraphFormField: cff);
-      case FormFieldType.SINGLE_TEXT:
+      case FormFieldTypeOld.SINGLE_TEXT:
         return SingleTextFormFieldWidget(uniqueLineText: cff, indexInPage: fieldPageIndex, onChangedController: onFieldChangedController, avaible: isEnabled);
-      case FormFieldType.TEXT_AREA:
+      case FormFieldTypeOld.TEXT_AREA:
         return TextAreaFormFieldWidget(textArea: cff, indexInPage: fieldPageIndex, onChangedController: onFieldChangedController, avaible: isEnabled);
-      case FormFieldType.NUMBER:
+      case FormFieldTypeOld.NUMBER:
         return NumberFormFieldWidget(number: cff, indexInPage: fieldPageIndex, onTappedController: onFieldChangedController, avaible: isEnabled);
-      case FormFieldType.DATE:
+      case FormFieldTypeOld.DATE:
         return DatePickerFormFieldWidget(dateFormField: cff, avaible: isEnabled);
-      case FormFieldType.TIME:
+      case FormFieldTypeOld.TIME:
         return TimePickerFormFieldWidget(timeFormField: cff, avaible: isEnabled);
-      case FormFieldType.CHECKBOX_GROUP:
+      case FormFieldTypeOld.CHECKBOX_GROUP:
         return CheckboxGroupFormFieldWidget(checkBoxGroup: cff, avaible: isEnabled);
-      case FormFieldType.RADIO_GROUP:
+      case FormFieldTypeOld.RADIO_GROUP:
         return RadiousGroupFormFieldWidget(radioGroupFormField: cff, avaible: isEnabled);
-      case FormFieldType.SELECT:
+      case FormFieldTypeOld.SELECT:
         return SelectFormFieldWidget(selectFormField: cff, avaible: isEnabled);
       default:
         return Container();

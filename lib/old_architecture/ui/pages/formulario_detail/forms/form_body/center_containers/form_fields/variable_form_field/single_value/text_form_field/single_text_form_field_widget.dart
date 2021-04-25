@@ -7,7 +7,7 @@ import 'text_form_field_widget.dart';
 // ignore: must_be_immutable
 class SingleTextFormFieldWidget extends TextFormFieldWidget {
   static final SizeUtils sizeUtils = SizeUtils();
-  final UniqueLineText uniqueLineText;
+  final UniqueLineTextOld uniqueLineText;
   TextInputType keyboardType;
   bool obscureText;
 
@@ -63,15 +63,15 @@ class SingleTextFormFieldWidget extends TextFormFieldWidget {
   }
 
   void _defineKeyboardTypeByTextSubType(){
-    if(uniqueLineText.subType == TextSubType.TEXT){
+    if(uniqueLineText.subType == TextSubTypeOld.TEXT){
       _defineKeyboardTypeAsText();
-    }else if(uniqueLineText.subType == TextSubType.EMAIL){
+    }else if(uniqueLineText.subType == TextSubTypeOld.EMAIL){
       _defineEmailSubtypeConfig();
-    }else if(uniqueLineText.subType == TextSubType.PASSWORD){
+    }else if(uniqueLineText.subType == TextSubTypeOld.PASSWORD){
       _definePasswordSubtypeConfig();   
-    }else if(uniqueLineText.subType == TextSubType.TEL){
+    }else if(uniqueLineText.subType == TextSubTypeOld.TEL){
       _defineTelSubtypeConfig();
-    }else if(uniqueLineText.subType == TextSubType.COLOR){
+    }else if(uniqueLineText.subType == TextSubTypeOld.COLOR){
       _defineKeyboardTypeAsText();   
     }
   }

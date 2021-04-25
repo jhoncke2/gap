@@ -13,7 +13,7 @@ class HeaderFormFieldWidget extends StatelessWidget {
   
   final SizeUtils _sizeUtils = SizeUtils();
   
-  final HeaderFormField headerFormField;
+  final HeaderFormFieldOld headerFormField;
   BuildContext _context;
   @protected
   TextStyle textStyle;
@@ -41,17 +41,17 @@ class HeaderFormFieldWidget extends StatelessWidget {
   }
 
   void _defineTextStyleBySubtype(){
-    if(headerFormField.subType == HeaderSubType.H1){
+    if(headerFormField.subType == HeaderSubTypeOld.H1){
       _defineTextStyle(_sizeUtils.subtitleSize * h1FontSizePercentage, FontWeight.bold);
-    }else if(headerFormField.subType == HeaderSubType.H2){
+    }else if(headerFormField.subType == HeaderSubTypeOld.H2){
       _defineTextStyle(_sizeUtils.subtitleSize * h2FontSizePercentage, FontWeight.bold);
-    }else if(headerFormField.subType == HeaderSubType.H3){
+    }else if(headerFormField.subType == HeaderSubTypeOld.H3){
       _defineTextStyle(_sizeUtils.subtitleSize * h3FontSizePercentage, FontWeight.bold);      
-    }else if(headerFormField.subType == HeaderSubType.H4){
+    }else if(headerFormField.subType == HeaderSubTypeOld.H4){
       _defineTextStyle(_sizeUtils.subtitleSize * h4FontSizePercentage, FontWeight.w800);      
-    }else if(headerFormField.subType == HeaderSubType.H5){
+    }else if(headerFormField.subType == HeaderSubTypeOld.H5){
       _defineTextStyle(_sizeUtils.subtitleSize * h5FontSizePercentage, FontWeight.w700);      
-    }else if(headerFormField.subType == HeaderSubType.H6){
+    }else if(headerFormField.subType == HeaderSubTypeOld.H6){
       _defineTextStyle(_sizeUtils.subtitleSize * h6FontSizePercentage, FontWeight.w600);      
     }
   }

@@ -4,7 +4,7 @@ import 'package:gap/old_architecture/ui/pages/formulario_detail/forms/form_body/
 // ignore: must_be_immutable
 class MockCheckBoxGroupFormFieldWidget extends CheckboxGroupFormFieldWidget{
 
-  MockCheckBoxGroupFormFieldWidget({CheckBoxGroup checkBoxGroup}):super(checkBoxGroup: checkBoxGroup);
+  MockCheckBoxGroupFormFieldWidget({CheckBoxGroupOld checkBoxGroup}):super(checkBoxGroup: checkBoxGroup);
 
   @override
   void updateFormFieldsPage(){}

@@ -1,14 +1,14 @@
 part of 'entities.dart';
 
-List<FormularioOld> formulariosFromJson(List<Map<String, dynamic>> jsonData) => List<FormularioOld>.from(jsonData.map((x) => FormularioOld.fromJson(x)));
+List<FormularioOld> formulariosFromJsonOld(List<Map<String, dynamic>> jsonData) => List<FormularioOld>.from(jsonData.map((x) => FormularioOld.fromJson(x)));
 
-List<Map<String, dynamic>> formulariosToJson(List<FormularioOld> data) => List<Map<String, dynamic>>.from(data.map((x) => x.toJson()));
+List<Map<String, dynamic>> formulariosToJsonOld(List<FormularioOld> data) => List<Map<String, dynamic>>.from(data.map((x) => x.toJson()));
 
 class FormularioOld extends EntityWithStageOld {
   bool _completo;
   final DateTime date;
   List<PersonalInformationOld> firmers;
-  List<CustomFormField> campos;
+  List<CustomFormFieldOld> campos;
   int formStepIndex;
   Position initialPosition;
   Position finalPosition;
@@ -89,15 +89,15 @@ class FormularioOld extends EntityWithStageOld {
   }
   
   
-  static bool thoseFormFieldsAreCompleted(List<CustomFormField> formFields){ 
-    for(CustomFormField cff in formFields)
+  static bool thoseFormFieldsAreCompleted(List<CustomFormFieldOld> formFields){ 
+    for(CustomFormFieldOld cff in formFields)
       if(!_formFieldIsCompleted(cff))
         return false;
     return true;
   }  
 
-  static bool _formFieldIsCompleted(CustomFormField cff){
-    return !(cff is VariableFormField && ((cff.isRequired && cff.isCompleted) || !cff.isRequired)) || cff is StaticFormField;
+  static bool _formFieldIsCompleted(CustomFormFieldOld cff){
+    return !(cff is VariableFormFieldOld && ((cff.isRequired && cff.isCompleted) || !cff.isRequired)) || cff is StaticFormFieldOld;
   }
   
   bool get completo => _completo;
@@ -133,7 +133,7 @@ final List<FormStep> stepsInOrderOld = [
 ];
 
 
-final formStepValuesOld = EnumValues({
+final formStepValuesOld = EnumValuesOld({
   'on_form_filling_out':FormStep.OnFormFillingOut,
   //TODO: Revisar que no se rompa nada con esta adición
   'on_form_reading':FormStep.OnFormReading,

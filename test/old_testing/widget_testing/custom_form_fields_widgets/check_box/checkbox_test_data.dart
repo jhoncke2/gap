@@ -37,7 +37,7 @@ final List<Map<String, dynamic>> anySelectedValues = [
   }
 ];
 
-CheckBoxGroup unselectedCheckBox = CheckBoxGroup.fromJson({
+CheckBoxGroupOld unselectedCheckBox = CheckBoxGroupOld.fromJson({
   'type':'checkbox',
   'label':'check 1',
   'name':'check_1',
@@ -47,7 +47,7 @@ CheckBoxGroup unselectedCheckBox = CheckBoxGroup.fromJson({
   'values':unSelectedValues
 });
 
-CheckBoxGroup checkBoxWithAnySelected = CheckBoxGroup.fromJson({
+CheckBoxGroupOld checkBoxWithAnySelected = CheckBoxGroupOld.fromJson({
   'type':'checkbox',
   'label':'check 2',
   'name':'check_2',

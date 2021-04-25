@@ -1,11 +1,11 @@
 import 'package:gap/old_architecture/data/models/entities/custom_form_field/variable/single_value/single_value_form_field.dart';
 import 'package:gap/old_architecture/data/models/entities/entities.dart';
 
-abstract class RawTextFormField extends SingleValueFormField{
+abstract class RawTextFormFieldOld extends SingleValueFormFieldOld{
   static final int defaultMaxLength = 2000;
   int maxLength;
 
-  RawTextFormField.fromJson(Map<String, dynamic> json):
+  RawTextFormFieldOld.fromJson(Map<String, dynamic> json):
     maxLength = json['maxlength']??defaultMaxLength,
     super.fromJson(json)
     ;
@@ -22,10 +22,10 @@ abstract class RawTextFormField extends SingleValueFormField{
   }
 }
 
-class UniqueLineText extends RawTextFormField{
-  TextSubType subType;
-  UniqueLineText.fromJson(Map<String, dynamic> json):
-    subType = json['subtype'] == null? TextSubType.TEXT : TextSubType.fromValue(json['subtype']),
+class UniqueLineTextOld extends RawTextFormFieldOld{
+  TextSubTypeOld subType;
+  UniqueLineTextOld.fromJson(Map<String, dynamic> json):
+    subType = json['subtype'] == null? TextSubTypeOld.TEXT : TextSubTypeOld.fromValue(json['subtype']),
     super.fromJson(json)
     ;
   Map<String, dynamic> toJson(){
@@ -35,13 +35,13 @@ class UniqueLineText extends RawTextFormField{
   }
 }
 
-class TextArea extends RawTextFormField{
+class TextAreaOld extends RawTextFormFieldOld{
 
   static final defaultNumberOfRows = 5;  
-  TextAreaSubType subType;
+  TextAreaSubTypeOld subType;
   int rows;
-  TextArea.fromJson(Map<String, dynamic> json):
-    subType = TextAreaSubType.fromValue(json['subtype']),
+  TextAreaOld.fromJson(Map<String, dynamic> json):
+    subType = TextAreaSubTypeOld.fromValue(json['subtype']),
     rows = json['rows']??defaultNumberOfRows,
     super.fromJson(json)
     ;
@@ -54,30 +54,30 @@ class TextArea extends RawTextFormField{
   }
 }
 
-class TextSubType extends FormFieldSubType{
-  static final List<TextSubType> subtypes = [TEXT, PASSWORD, EMAIL, COLOR, TEL];
+class TextSubTypeOld extends FormFieldSubTypeOld{
+  static final List<TextSubTypeOld> subtypes = [TEXT, PASSWORD, EMAIL, COLOR, TEL];
 
-  TextSubType(String value) : super(value);
+  TextSubTypeOld(String value) : super(value);
 
-  static TextSubType TEXT = TextSubType('text');
-  static TextSubType PASSWORD = TextSubType('password');
-  static TextSubType EMAIL = TextSubType('email');
-  static TextSubType COLOR = TextSubType('color');
-  static TextSubType TEL = TextSubType('tel');
+  static TextSubTypeOld TEXT = TextSubTypeOld('text');
+  static TextSubTypeOld PASSWORD = TextSubTypeOld('password');
+  static TextSubTypeOld EMAIL = TextSubTypeOld('email');
+  static TextSubTypeOld COLOR = TextSubTypeOld('color');
+  static TextSubTypeOld TEL = TextSubTypeOld('tel');
 
-  factory TextSubType.fromValue(String value){
-    return FormFieldSubType.getSubTypeFromValue(value, subtypes);
+  factory TextSubTypeOld.fromValue(String value){
+    return FormFieldSubTypeOld.getSubTypeFromValue(value, subtypes);
   }
 }
 
-class TextAreaSubType extends FormFieldSubType{
-  static final List<TextAreaSubType> subtypes = [TEXTAREA];
+class TextAreaSubTypeOld extends FormFieldSubTypeOld{
+  static final List<TextAreaSubTypeOld> subtypes = [TEXTAREA];
 
-  TextAreaSubType(String value) : super(value);
+  TextAreaSubTypeOld(String value) : super(value);
 
-  static TextAreaSubType TEXTAREA = TextAreaSubType('textarea');
+  static TextAreaSubTypeOld TEXTAREA = TextAreaSubTypeOld('textarea');
 
-  factory TextAreaSubType.fromValue(String value){
-    return FormFieldSubType.getSubTypeFromValue(value, subtypes);
+  factory TextAreaSubTypeOld.fromValue(String value){
+    return FormFieldSubTypeOld.getSubTypeFromValue(value, subtypes);
   }
 }

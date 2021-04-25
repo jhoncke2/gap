@@ -14,13 +14,13 @@ enum FormStep{
 class ChosenFormState{
   final bool formIsLocked;
   final FormStep formStep;
-  final List<List<CustomFormField>> _formFieldsPerPage;
+  final List<List<CustomFormFieldOld>> _formFieldsPerPage;
   final List<PersonalInformationOld> firmers;
   
   ChosenFormState({
     this.formIsLocked = false,
     this.formStep = FormStep.WithoutForm,
-    List<List<CustomFormField>> formFieldsPerPage, 
+    List<List<CustomFormFieldOld>> formFieldsPerPage, 
     this.firmers
   }):
     _formFieldsPerPage = formFieldsPerPage??[]
@@ -29,7 +29,7 @@ class ChosenFormState{
   ChosenFormState copyWith({
     bool formIsLocked,
     FormStep formStep,
-    List<List<CustomFormField>> formFieldsPerPage,
+    List<List<CustomFormFieldOld>> formFieldsPerPage,
     List<PersonalInformationOld> firmers,
   })=>ChosenFormState(
     formIsLocked: formIsLocked??this.formIsLocked,
@@ -38,13 +38,13 @@ class ChosenFormState{
     firmers:firmers??this.firmers
   );
 
-  List<CustomFormField> getFormFieldsByIndex(int index){
+  List<CustomFormFieldOld> getFormFieldsByIndex(int index){
     return _formFieldsPerPage.length > index? _formFieldsPerPage[index]:[];
   }
 
-  List<CustomFormField> get allFields{
-    final List<CustomFormField> fields = [];
-    for(List<CustomFormField> section in _formFieldsPerPage)
+  List<CustomFormFieldOld> get allFields{
+    final List<CustomFormFieldOld> fields = [];
+    for(List<CustomFormFieldOld> section in _formFieldsPerPage)
       fields.addAll(section);
     return fields;
   }

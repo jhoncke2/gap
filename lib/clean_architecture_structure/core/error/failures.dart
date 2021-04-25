@@ -28,6 +28,24 @@ class StorageFailure extends Failure{
   ;
 }
 
+enum ServerFailureType{
+  LOGIN,
+  NORMAL
+}
+
 class ServerFailure extends Failure{
-  
+  final String message;
+  final ServerFailureType type;
+
+  ServerFailure({
+    this.message,
+    ServerExceptionType servExcType
+  }):
+    this.type = (servExcType==ServerExceptionType.LOGIN)? 
+      ServerFailureType.LOGIN : 
+      ServerFailureType.NORMAL,
+    super(
+      properties: [message, servExcType]
+    )
+  ;
 }

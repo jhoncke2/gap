@@ -22,7 +22,7 @@ part 'commented_image.dart';
 part 'custom_form_field/custom_form_field.dart';
 
 //Date format: yyyy-mm-dd
-DateTime transformStringInToDate(String stringDate){
+DateTime transformStringInToDateOld(String stringDate){
   final List<String> stringDateParts = stringDate.split('-');
   final int year =  int.parse( stringDateParts[0] );
   final int month =  int.parse( stringDateParts[1] );
@@ -31,11 +31,11 @@ DateTime transformStringInToDate(String stringDate){
   return date;
 }
 
-String transformDateInToString(DateTime date){
-  return '${date.year}-${_getFormatedDayOrMonthDay(date.month)}-${_getFormatedDayOrMonthDay(date.day)}';
+String transformDateInToStringOld(DateTime date){
+  return '${date.year}-${_getFormatedDayOrMonthDayOld(date.month)}-${_getFormatedDayOrMonthDayOld(date.day)}';
 }
 
-String _getFormatedDayOrMonthDay(int value){
+String _getFormatedDayOrMonthDayOld(int value){
   return '${(value<10)?"0":""}$value';
 }
 
@@ -54,7 +54,7 @@ String transformTimeInToString(DateTime time){
 }
 */
 
-TimeOfDay transformStringIntoTime(String stringDuration){
+TimeOfDay transformStringIntoTimeOld(String stringDuration){
   final List<String> stringDurationParts = stringDuration.split(':');
   final int hour = int.parse(stringDurationParts[0]);
   final int minute = int.parse(stringDurationParts[1]);
@@ -62,15 +62,15 @@ TimeOfDay transformStringIntoTime(String stringDuration){
   return time;
 }
 
-String transformTimeInToString(TimeOfDay time){
+String transformTimeInToStringOld(TimeOfDay time){
   return '${time.hour}:${time.minute}';
 }
 
-class EnumValues<V,T> {
+class EnumValuesOld<V,T> {
   Map<V, T> map;
   Map<T, V> reverseMap;
 
-  EnumValues(this.map);
+  EnumValuesOld(this.map);
 
   Map<T, V> get reverse {
     if (reverseMap == null) {

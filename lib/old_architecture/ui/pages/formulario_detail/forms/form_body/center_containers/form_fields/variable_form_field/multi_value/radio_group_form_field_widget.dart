@@ -6,7 +6,7 @@ import 'package:gap/old_architecture/ui/utils/size_utils.dart';
 import '../variable_form_field_container.dart';
 import 'alignment_multi_option_list.dart';
 class RadiousGroupFormFieldWidget extends StatefulWidget {
-  final RadioGroupFormField radioGroupFormField;
+  final RadioGroupFormFieldOld radioGroupFormField;
   final bool avaible;
 
   RadiousGroupFormFieldWidget({Key key, @required this.radioGroupFormField, this.avaible = true}) : super(key: Key(radioGroupFormField.name));
@@ -30,7 +30,7 @@ class _RadiousGroupFormFieldWidgetState extends State<RadiousGroupFormFieldWidge
     );
   }
 
-  Widget _onItemCreated(MultiFormFieldValue value, Function(Function) onSetState){
+  Widget _onItemCreated(MultiFormFieldValueOld value, Function(Function) onSetState){
     return Container(
       margin: EdgeInsets.symmetric(vertical: 5),
       width: _sizeUtils.xasisSobreYasis * 0.25,
@@ -49,7 +49,7 @@ class _RadiousGroupFormFieldWidgetState extends State<RadiousGroupFormFieldWidge
     );
   }
   
-  void _onChangedBeeingAvaible(MultiFormFieldValue value, String newSelected){
+  void _onChangedBeeingAvaible(MultiFormFieldValueOld value, String newSelected){
     setState(() {
       _changeItemStateByNewSelected(value, newSelected); 
       PagesNavigationManager.updateFormFieldsPage();
@@ -57,13 +57,13 @@ class _RadiousGroupFormFieldWidgetState extends State<RadiousGroupFormFieldWidge
   }
 
   String _getSelectedValueValue(){
-    final List<MultiFormFieldValue> selected = widget.radioGroupFormField.values.where((element) => element.selected).toList();
+    final List<MultiFormFieldValueOld> selected = widget.radioGroupFormField.values.where((element) => element.selected).toList();
     if(selected.length > 0)
       return _getUniqueValue(selected[0].value);
     return ''; 
   }
 
-  void _changeItemStateByNewSelected(MultiFormFieldValue value, String newSelected){
+  void _changeItemStateByNewSelected(MultiFormFieldValueOld value, String newSelected){
     _disSelectAll();
     if(_getUniqueValue(value.value) == newSelected)
       value.selected = true;  

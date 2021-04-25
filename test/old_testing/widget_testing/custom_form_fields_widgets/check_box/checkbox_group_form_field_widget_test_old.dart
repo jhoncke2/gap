@@ -30,7 +30,7 @@ Future _testCheckBoxWithoutInitialData(WidgetTester tester)async{
   _expectUnselectedWidgetFunctionality(tester);
 }
 
-void _expectWidgetName(CustomFormField formField){
+void _expectWidgetName(CustomFormFieldOld formField){
   final inputFinder = find.text(formField.label);
   expect(inputFinder, findsOneWidget, reason: 'Debe haber un widget text con el texto introducido');
 }
@@ -45,7 +45,7 @@ Future _expectUnselectedWidgetFunctionality(WidgetTester tester)async{
   _expectTappingSequence(cbListTilesFinder, expectedNCheckBoxListTiles, tester, unselectedCheckBox);
 }
 
-Future _expectTappingSequence(Finder cbListTilesFinder, int nItems, WidgetTester tester, CheckBoxGroup formField)async{
+Future _expectTappingSequence(Finder cbListTilesFinder, int nItems, WidgetTester tester, CheckBoxGroupOld formField)async{
   bool expectedCheckValue = true;
   for(int j = 0; j < nItems; j++){
     print(formField.values[j].selected);

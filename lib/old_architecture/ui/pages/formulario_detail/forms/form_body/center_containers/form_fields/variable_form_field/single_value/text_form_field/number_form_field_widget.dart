@@ -12,7 +12,7 @@ import 'text_form_field_widget.dart';
 // ignore: must_be_immutable
 class NumberFormFieldWidget extends TextFormFieldWidget {
   
-  final NumberFormField number;
+  final NumberFormFieldOld number;
   TextEditingController _textFieldController;
 
   NumberFormFieldWidget({Key key, @required this.number, bool avaible = true, int indexInPage, StreamController<int> onTappedController}):

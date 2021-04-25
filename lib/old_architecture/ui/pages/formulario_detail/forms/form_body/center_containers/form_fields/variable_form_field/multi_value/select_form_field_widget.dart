@@ -6,7 +6,7 @@ import '../variable_form_field_container.dart';
 
 class SelectFormFieldWidget extends StatelessWidget {
 
-  final SelectFormField selectFormField;
+  final SelectFormFieldOld selectFormField;
   final bool avaible;
   SelectFormFieldWidget({Key key, @required this.selectFormField, this.avaible = true}) : super(key: Key(selectFormField.name));
 
@@ -20,7 +20,7 @@ class SelectFormFieldWidget extends StatelessWidget {
 }
 
 class _CustomSelect extends StatefulWidget {
-  final SelectFormField selectFormField;
+  final SelectFormFieldOld selectFormField;
   final bool avaible;
   _CustomSelect({Key key, @required this.selectFormField, @required this.avaible}) : super(key: key);
 
@@ -34,7 +34,7 @@ class __CustomSelectState extends State<_CustomSelect> {
 
   @override
   void initState() {
-    for(MultiFormFieldValue v in widget.selectFormField.values){
+    for(MultiFormFieldValueOld v in widget.selectFormField.values){
       if(v.selected){
         _currentSelectedValue = v.value;
         break;
@@ -80,14 +80,14 @@ class __CustomSelectState extends State<_CustomSelect> {
     ));
   }
 
-  void _updateStateBySelection(MultiFormFieldValue v, String newSelectedValue){
+  void _updateStateBySelection(MultiFormFieldValueOld v, String newSelectedValue){
     setState(() {
       _currentSelectedValue = newSelectedValue;
       _decideIfSelectOrDisSelectValue(v, newSelectedValue);
     });
   }
 
-  void _decideIfSelectOrDisSelectValue(MultiFormFieldValue v, String newValue){
+  void _decideIfSelectOrDisSelectValue(MultiFormFieldValueOld v, String newValue){
     if(v.value == newValue)
       v.selected = true;
     else
@@ -95,7 +95,7 @@ class __CustomSelectState extends State<_CustomSelect> {
   }
 
   List<DropdownMenuItem<String>> _createItems(){
-    final List<MultiFormFieldValue> values = widget.selectFormField.values;
+    final List<MultiFormFieldValueOld> values = widget.selectFormField.values;
     return values.map<DropdownMenuItem<String>>(
       (v) => DropdownMenuItem<String>(
         child: Text(v.label),

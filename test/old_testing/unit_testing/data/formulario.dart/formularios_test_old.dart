@@ -19,7 +19,7 @@ void main(){
 Future _testFromJson()async{
   test('probando método fromJson', ()async{
     initialJsonData = await getDataAsJson();
-    formularios = formulariosFromJson(initialJsonData);
+    formularios = formulariosFromJsonOld(initialJsonData);
   });
 }
 

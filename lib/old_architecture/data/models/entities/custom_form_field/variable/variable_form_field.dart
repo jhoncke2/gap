@@ -1,11 +1,11 @@
 import 'package:gap/old_architecture/data/models/entities/entities.dart';
 
-abstract class VariableFormField extends CustomFormField{
+abstract class VariableFormFieldOld extends CustomFormFieldOld{
   String name;
   bool isRequired;
   String description;
 
-  VariableFormField.fromJson(Map<String, dynamic> json):
+  VariableFormFieldOld.fromJson(Map<String, dynamic> json):
   name = json['name'],
   isRequired = json['required']??false,
   description = json['description'],

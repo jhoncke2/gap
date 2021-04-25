@@ -1,11 +1,11 @@
 import 'package:gap/old_architecture/data/models/entities/custom_form_field/variable/variable_form_field.dart';
 
-class MultiValueFormField extends VariableFormField{
-  List<MultiFormFieldValue> values;
+class MultiValueFormFieldOld extends VariableFormFieldOld{
+  List<MultiFormFieldValueOld> values;
   //TODO: Averiguar qué significa (¿Significa que un select puede tener selección múltiple?)
   bool multiple;
   
-  MultiValueFormField.fromJson(Map<String, dynamic> json): 
+  MultiValueFormFieldOld.fromJson(Map<String, dynamic> json): 
     values = json["values"] == null ? null : _valuesFromJson(json['values'].cast<Map<String, dynamic>>()),
     multiple = json['multiple'],
     super.fromJson(json)
@@ -20,15 +20,15 @@ class MultiValueFormField extends VariableFormField{
 
   bool get isCompleted => values.where((value) => _valueIsReallySelected(value)).length > 0;
 
-  bool _valueIsReallySelected(MultiFormFieldValue v) => (v.selected && v.value != null);
+  bool _valueIsReallySelected(MultiFormFieldValueOld v) => (v.selected && v.value != null);
 }
 
-List<MultiFormFieldValue> _valuesFromJson(List<Map<String, dynamic>> jsonValues) => List<MultiFormFieldValue>.from(jsonValues.map((x) => MultiFormFieldValue.fromJson(x)));
-List<Map<String, dynamic>> valuesToJson(List<MultiFormFieldValue> values)=> List<Map<String, dynamic>>.from(values.map((v) => v.toJson()));
+List<MultiFormFieldValueOld> _valuesFromJson(List<Map<String, dynamic>> jsonValues) => List<MultiFormFieldValueOld>.from(jsonValues.map((x) => MultiFormFieldValueOld.fromJson(x)));
+List<Map<String, dynamic>> valuesToJson(List<MultiFormFieldValueOld> values)=> List<Map<String, dynamic>>.from(values.map((v) => v.toJson()));
 
 
-class MultiFormFieldValue {
-    MultiFormFieldValue({
+class MultiFormFieldValueOld {
+    MultiFormFieldValueOld({
         this.label,
         this.value,
         this.selected,
@@ -38,7 +38,7 @@ class MultiFormFieldValue {
     String value;
     bool selected;
 
-    factory MultiFormFieldValue.fromJson(Map<String, dynamic> json) => MultiFormFieldValue(
+    factory MultiFormFieldValueOld.fromJson(Map<String, dynamic> json) => MultiFormFieldValueOld(
         label: json["label"],
         value: json["value"],
         selected: json["selected"] ?? false,

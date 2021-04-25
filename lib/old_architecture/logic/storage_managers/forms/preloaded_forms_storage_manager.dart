@@ -34,7 +34,7 @@ class PreloadedFormsStorageManager{
   }
   
   static void _updateVisitIdMapWithoutRemovedForm(List<FormularioOld> restantPreloadedFormsByVisitId, int visitId){
-    final List<Map<String, dynamic>> restantPrelFormsByVisitIdAsJson = formulariosToJson(restantPreloadedFormsByVisitId);
+    final List<Map<String, dynamic>> restantPrelFormsByVisitIdAsJson = formulariosToJsonOld(restantPreloadedFormsByVisitId);
     currentPreloadedFormsHolder.currentData[visitId.toString()] = restantPrelFormsByVisitIdAsJson;
   }
 
@@ -43,7 +43,7 @@ class PreloadedFormsStorageManager{
     final List<FormularioOld> preloadedFormsByVisitId = await _getPreloadedFormsByVisitId(visitId);
     //preloadedFormsByVisittId.add(form);
     _upgradeCurrentFormInForms(form, preloadedFormsByVisitId);
-    final List<Map<String, dynamic>> preloadedFormsByVisitIdAsJson = formulariosToJson(preloadedFormsByVisitId);
+    final List<Map<String, dynamic>> preloadedFormsByVisitIdAsJson = formulariosToJsonOld(preloadedFormsByVisitId);
     currentPreloadedFormsHolder.currentData[visitId.toString()] = preloadedFormsByVisitIdAsJson;
     await _updateStorageFromCurrentPreloadedFormsHolder();
   }
@@ -76,7 +76,7 @@ class PreloadedFormsStorageManager{
   
   static Future<List<FormularioOld>> _getPreloadedFormsByVisitId(int visitId)async{
     final List<Map<String, dynamic>> preloadedFormsByVisitIdAsJson = currentPreloadedFormsHolder.currentData[visitId.toString()];
-    final List<FormularioOld> preloadedFormsByVisitId = formulariosFromJson( preloadedFormsByVisitIdAsJson??[] );
+    final List<FormularioOld> preloadedFormsByVisitId = formulariosFromJsonOld( preloadedFormsByVisitIdAsJson??[] );
     return preloadedFormsByVisitId;
   }
 

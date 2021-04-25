@@ -51,7 +51,7 @@ class ChosenFormBloc extends Bloc<ChosenFormEvent, ChosenFormState> {
 
   void _initFormFillingOut(InitFormFillingOut event){
     final FormularioOld formulario = event.formulario;
-    final List<List<CustomFormField>> formFieldsPerPages = _createFormsFieldsByPage(formulario);
+    final List<List<CustomFormFieldOld>> formFieldsPerPages = _createFormsFieldsByPage(formulario);
     _currentStateToYield = state.copyWith(
       formStep: FormStep.OnFormFillingOut,
       firmers: formulario.firmers,
@@ -60,21 +60,21 @@ class ChosenFormBloc extends Bloc<ChosenFormEvent, ChosenFormState> {
     event.onEndEvent(formFieldsPerPages.length);
   }
 
-  List<List<CustomFormField>> _createFormsFieldsByPage(FormularioOld formulario){
+  List<List<CustomFormFieldOld>> _createFormsFieldsByPage(FormularioOld formulario){
      _formFieldsByPageGenerator.formFields = formulario.campos;
      return _formFieldsByPageGenerator.createFormFieldsPerPage();
   }
 
   void _updateFormField(UpdateFormField event){
     _currentStateToYield = state.copyWith();
-    final List<CustomFormField> formFieldsByPage = state.getFormFieldsByIndex(event.pageOfFormField);
+    final List<CustomFormFieldOld> formFieldsByPage = state.getFormFieldsByIndex(event.pageOfFormField);
     final bool formFieldsByPageAreFilled = _formFieldsAreFilled(formFieldsByPage);
     event.onEndFunction(formFieldsByPageAreFilled);
   }
 
-  bool _formFieldsAreFilled(List<CustomFormField> formFields){
+  bool _formFieldsAreFilled(List<CustomFormFieldOld> formFields){
     bool allAreCompleted = true;
-    for(CustomFormField ff in formFields){
+    for(CustomFormFieldOld ff in formFields){
       if(_isVariableAndRequired(ff))
         if(!_variableRequiredFormFieldIsCompleted(ff))
           return false;
@@ -82,17 +82,17 @@ class ChosenFormBloc extends Bloc<ChosenFormEvent, ChosenFormState> {
     return allAreCompleted;
   }
 
-  bool _isVariableAndRequired(CustomFormField ff){
-    return ff is VariableFormField && ff.isRequired;
+  bool _isVariableAndRequired(CustomFormFieldOld ff){
+    return ff is VariableFormFieldOld && ff.isRequired;
   }
 
-  bool _variableRequiredFormFieldIsCompleted(VariableFormField vff){
+  bool _variableRequiredFormFieldIsCompleted(VariableFormFieldOld vff){
     return vff.isCompleted;
   }
 
   void _initFormReading(InitFormReading event){
     final FormularioOld formulario = event.formulario;
-    final List<List<CustomFormField>> formFieldsPerPages = _createFormsFieldsByPage(formulario);
+    final List<List<CustomFormFieldOld>> formFieldsPerPages = _createFormsFieldsByPage(formulario);
     _currentStateToYield = state.copyWith(
       formStep: FormStep.OnFormReading,
       formFieldsPerPage: formFieldsPerPages
@@ -139,7 +139,7 @@ class ChosenFormBloc extends Bloc<ChosenFormEvent, ChosenFormState> {
 
   void _initFormFinishing(InitFormFinishing event){
     final FormularioOld form = event.form;
-    final List<List<CustomFormField>> formFieldsPerPage = _createFormsFieldsByPage(form);
+    final List<List<CustomFormFieldOld>> formFieldsPerPage = _createFormsFieldsByPage(form);
     _currentStateToYield = state.copyWith(
       formStep: FormStep.Finished,
       formFieldsPerPage: formFieldsPerPage
@@ -172,28 +172,28 @@ class ChosenFormBloc extends Bloc<ChosenFormEvent, ChosenFormState> {
 
 
 class FormFieldsByPageGenerator{
-  List<CustomFormField> _items;
+  List<CustomFormFieldOld> _items;
   //TODO: Reemplazar por mejor algoritmo
   final int _itemsPerPage = 4;
   int _nPages;
   int _remainderItemsForLastPage;
 
-  set formFields(List<CustomFormField> newFormFields){
+  set formFields(List<CustomFormFieldOld> newFormFields){
     _items = newFormFields;
     _nPages = (_items.length/_itemsPerPage).ceil();
     _remainderItemsForLastPage = _items.length % _itemsPerPage;
   }
 
-  List<List<CustomFormField>> createFormFieldsPerPage(){
+  List<List<CustomFormFieldOld>> createFormFieldsPerPage(){
     //TODO: Implementar un algoritmo mejor
-    final List<List<CustomFormField>> formFieldsByPages = [];
+    final List<List<CustomFormFieldOld>> formFieldsByPages = [];
     for(int i = 0; i < _nPages; i++){
       formFieldsByPages.add( _generateItemsForPage(i) );
     }
     return formFieldsByPages;
   }
   
-  List<CustomFormField> _generateItemsForPage(int page){
+  List<CustomFormFieldOld> _generateItemsForPage(int page){
     if(_isLastPageAndThereIsFinalRemainder(page))
       return _generatePageWithNItems(page, _remainderItemsForLastPage);
     else
@@ -204,8 +204,8 @@ class FormFieldsByPageGenerator{
     return (page == _nPages - 1  && _remainderItemsForLastPage > 0);
   }
 
-  List<CustomFormField> _generatePageWithNItems(int page, int nItems){
-    final List<CustomFormField> items = [];
+  List<CustomFormFieldOld> _generatePageWithNItems(int page, int nItems){
+    final List<CustomFormFieldOld> items = [];
     for(int i = 0; i < nItems; i++)
       items.add(_items[page*_itemsPerPage + i]);
     return items;

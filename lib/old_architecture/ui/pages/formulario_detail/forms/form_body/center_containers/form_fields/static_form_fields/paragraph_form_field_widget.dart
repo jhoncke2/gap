@@ -4,7 +4,7 @@ import 'package:gap/old_architecture/ui/utils/size_utils.dart';
 // ignore: must_be_immutable
 class ParagraphFormFieldWidget extends StatelessWidget {
   final SizeUtils _sizeUtils = SizeUtils();
-  final ParagraphFormField paragraphFormField;
+  final ParagraphFormFieldOld paragraphFormField;
   TextStyle textStyle;
   ParagraphFormFieldWidget({Key key, this.paragraphFormField}) : super(key: key);
 
@@ -22,15 +22,15 @@ class ParagraphFormFieldWidget extends StatelessWidget {
   }
 
   void _defineTextStyleBySubtype(){
-    if(paragraphFormField.subType == ParagraphSubtype.P){
+    if(paragraphFormField.subType == ParagraphSubtypeOld.P){
           _defineTextStyle(_sizeUtils.normalTextSize, FontWeight.normal);
-    }else if(paragraphFormField.subType == ParagraphSubtype.ADDRESS){
+    }else if(paragraphFormField.subType == ParagraphSubtypeOld.ADDRESS){
           _defineTextStyle(_sizeUtils.normalTextSize, FontWeight.normal);
-    }else if(paragraphFormField.subType == ParagraphSubtype.BLOCKQUOTE){
+    }else if(paragraphFormField.subType == ParagraphSubtypeOld.BLOCKQUOTE){
       _defineTextStyle(_sizeUtils.normalTextSize, FontWeight.normal);      
-    }else if(paragraphFormField.subType == ParagraphSubtype.CANVAS){
+    }else if(paragraphFormField.subType == ParagraphSubtypeOld.CANVAS){
       _defineTextStyle(_sizeUtils.normalTextSize, FontWeight.normal);      
-    }else if(paragraphFormField.subType == ParagraphSubtype.OUTPUT){
+    }else if(paragraphFormField.subType == ParagraphSubtypeOld.OUTPUT){
       _defineTextStyle(_sizeUtils.normalTextSize, FontWeight.normal);      
     }
   }

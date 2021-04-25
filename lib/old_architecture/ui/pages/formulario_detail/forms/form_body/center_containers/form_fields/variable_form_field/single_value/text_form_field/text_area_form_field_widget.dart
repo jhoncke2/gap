@@ -7,7 +7,7 @@ import 'text_form_field_widget.dart';
 
 class TextAreaFormFieldWidget extends TextFormFieldWidget{
   
-  final TextArea textArea;
+  final TextAreaOld textArea;
 
   TextAreaFormFieldWidget({bool avaible, this.textArea, int indexInPage, StreamController<int> onChangedController}):
     super(key: Key(textArea.name), avaible: avaible, indexInPage: indexInPage, onTappedController: onChangedController)

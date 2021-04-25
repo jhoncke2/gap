@@ -5,13 +5,13 @@ import 'package:gap/old_architecture/data/models/entities/custom_form_field/vari
 import 'package:gap/old_architecture/ui/pages/formulario_detail/forms/form_body/center_containers/form_fields/variable_form_field/single_value/text_form_field/number_form_field_widget.dart';
 import 'mock_app.dart';
 
-NumberFormField numberWithDefaultValues = NumberFormField.fromJson({
+NumberFormFieldOld numberWithDefaultValues = NumberFormFieldOld.fromJson({
   'type':'number',
   'label':'number 1',
   'name':'number_1'
 });
 
-final NumberFormField numberWithoutDefaultValues = NumberFormField.fromJson({
+final NumberFormFieldOld numberWithoutDefaultValues = NumberFormFieldOld.fromJson({
   'type':'number',
   'label':'number 2',
   'name':'number_2',
@@ -44,7 +44,7 @@ Future _testNumberWithDefaultValues(WidgetTester tester)async{
   _expectWidget1Functionality(tester);
 }
 
-void _expectWidgetName(NumberFormField formField){
+void _expectWidgetName(NumberFormFieldOld formField){
   final inputFinder = find.text(formField.label);
   expect(inputFinder, findsOneWidget, reason: 'Debe haber un widget text con el texto introducido');
 }
@@ -73,7 +73,7 @@ Future _expectSingleInsertion(int insertedNumber, Finder textFieldFinder)async{
   expect(insertedNumber, numberWithDefaultValues.value);
 }
 
-Future _expectPlusButtonTapSuccession(int nTaps, NumberFormField formField, WidgetTester tester, Finder plusButtonFinder, [int initVal])async{
+Future _expectPlusButtonTapSuccession(int nTaps, NumberFormFieldOld formField, WidgetTester tester, Finder plusButtonFinder, [int initVal])async{
   int initialValue = initVal ?? formField.value;
   for(int i = 1; i <= nTaps; i++){
     await _tapButton(tester, plusButtonFinder);
@@ -85,7 +85,7 @@ Future _tapButton(WidgetTester tester, Finder finder)async{
   await tester.tap(finder);
 }
 
-Future _expectSubtractButtonTapSuccession(int nTaps, NumberFormField formField, WidgetTester tester, Finder subtractButtonFinder)async{
+Future _expectSubtractButtonTapSuccession(int nTaps, NumberFormFieldOld formField, WidgetTester tester, Finder subtractButtonFinder)async{
   int initialValue = formField.value;
   for(int i = 1; i <= nTaps; i++){
     await _tapButton(tester, subtractButtonFinder);

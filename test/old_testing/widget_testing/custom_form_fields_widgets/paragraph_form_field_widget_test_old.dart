@@ -5,18 +5,18 @@ import 'package:gap/old_architecture/data/models/entities/custom_form_field/stat
 import 'package:gap/old_architecture/ui/pages/formulario_detail/forms/form_body/center_containers/form_fields/static_form_fields/paragraph_form_field_widget.dart';
 import 'mock_app.dart';
 
-final ParagraphFormField paragraphFormFieldP = ParagraphFormField.fromJson({
+final ParagraphFormFieldOld paragraphFormFieldP = ParagraphFormFieldOld.fromJson({
   'type':'header',
   'label':'paragraph p',
   'subtype':'p',
 });
-final ParagraphFormField paragraphFormFieldAddress = ParagraphFormField.fromJson({
+final ParagraphFormFieldOld paragraphFormFieldAddress = ParagraphFormFieldOld.fromJson({
   'type':'header',
   'label':'paragraph address',
   'subtype':'address',
 });
 
-final ParagraphFormField paragraphFormFieldOutput = ParagraphFormField.fromJson({
+final ParagraphFormFieldOld paragraphFormFieldOutput = ParagraphFormFieldOld.fromJson({
   'type':'header',
   'label':'paragraph output',
   'subtype':'output',

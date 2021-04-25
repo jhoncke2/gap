@@ -3,13 +3,13 @@ import 'package:gap/old_architecture/data/models/entities/custom_form_field/vari
 
 import 'mock_app.dart';
 
-final TextArea textArea1 = TextArea.fromJson({
+final TextAreaOld textArea1 = TextAreaOld.fromJson({
   'type':'textarea',
   'label':'text area x',
   'rows': 4,
 });
 
-final TextArea textArea2 = TextArea.fromJson({
+final TextAreaOld textArea2 = TextAreaOld.fromJson({
   'type':'textarea',
   'label':'text area x',
   'maxlength': 23,

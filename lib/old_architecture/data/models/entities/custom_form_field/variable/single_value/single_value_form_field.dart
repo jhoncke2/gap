@@ -1,10 +1,10 @@
 import 'package:gap/old_architecture/data/models/entities/custom_form_field/variable/variable_form_field.dart';
 
-class SingleValueFormField extends VariableFormField{
+class SingleValueFormFieldOld extends VariableFormFieldOld{
   dynamic uniqueValue;
   String placeholder;
   
-  SingleValueFormField.fromJson(Map<String, dynamic> json):
+  SingleValueFormFieldOld.fromJson(Map<String, dynamic> json):
     uniqueValue = json['value'],
     placeholder = json['placeholder'],
     super.fromJson(json)
