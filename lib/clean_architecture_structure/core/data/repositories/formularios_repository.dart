@@ -40,13 +40,13 @@ class FormulariosRepositoryImpl implements FormulariosRepository{
   @override
   Future<Either<Failure, List<Formulario>>> getFormularios()async{
     try{
+      final ProjectModel chosenProject = await projectsLocalDataSource.getChosenProject();
+      final VisitModel chosenVisit = await visitsLocalDataSource.getChosenVisit(chosenProject.id);
       if(await networkInfo.isConnected()){
         final String accessToken = await userLocalDataSource.getAccessToken();
-        final List<FormularioModel> formularios = await remoteDataSource.getFormularios(accessToken);
+        final List<FormularioModel> formularios = await remoteDataSource.getFormularios(chosenVisit.id, accessToken);
         return Right(formularios);
       }else{
-        final ProjectModel chosenProject = await projectsLocalDataSource.getChosenProject();
-        final VisitModel chosenVisit = await visitsLocalDataSource.getChosenVisit(chosenProject.id);
         final List<FormularioModel> formularios = await preloadedDataSource.getPreloadedFormularios(chosenProject.id, chosenVisit.id);
         return Right(formularios);
       }

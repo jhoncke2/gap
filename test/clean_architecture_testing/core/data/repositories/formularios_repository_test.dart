@@ -79,24 +79,25 @@ void _testGetFormulariosGroup(){
       tProject = ProjectModel(id: 1, nombre: '');
       tVisit = VisitModel(id: 2, date: null, completo: false, sede: null, formularios: []);
       tFormularios = _getFormulariosFromFixture();
+
+      when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tProject);
+      when(visitsLocalDataSource.getChosenVisit(any)).thenAnswer((_) async => tVisit);
     });
 
     test('should get the formularios from remoteDataSource with tAccessToken when there is connectivity', ()async{
       when(networkInfo.isConnected()).thenAnswer((_) async => true);
       when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
-      when(remoteDataSource.getFormularios(any)).thenAnswer((_) async => tFormularios);
+      when(remoteDataSource.getFormularios(any, any)).thenAnswer((_) async => tFormularios);
       await formulariosRepository.getFormularios();
       verify(networkInfo.isConnected());
       verify(userLocalDataSource.getAccessToken());
-      verify(remoteDataSource.getFormularios(tAccessToken));
+      verify(remoteDataSource.getFormularios(tVisit.id, tAccessToken));
     });
 
     test('''should get the formularios from preloadedDataSource obtaining the visitId, projectId from their respective dataSources 
       when there is not connectivity''', 
       ()async{
         when(networkInfo.isConnected()).thenAnswer((_) async => false);
-        when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tProject);
-        when(visitsLocalDataSource.getChosenVisit(any)).thenAnswer((_) async => tVisit);
         when(preloadedDataSource.getPreloadedFormularios(any, any)).thenAnswer((_) async => tFormularios);
         await formulariosRepository.getFormularios();
         verify(projectsLocalDataSource.getChosenProject());
@@ -108,7 +109,7 @@ void _testGetFormulariosGroup(){
     test('should return Right(tFormularios) when there is connection and all goes good', ()async{
       when(networkInfo.isConnected()).thenAnswer((_) async => true);
       when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
-      when(remoteDataSource.getFormularios(any)).thenAnswer((_) async => tFormularios);
+      when(remoteDataSource.getFormularios(any, any)).thenAnswer((_) async => tFormularios);
       final result = await formulariosRepository.getFormularios();
       expect(result, Right(tFormularios));
     });
@@ -116,7 +117,7 @@ void _testGetFormulariosGroup(){
     test('should return Left(ServerFailure) when there is connection and the remoteDataSource throws a ServerException', ()async{
       when(networkInfo.isConnected()).thenAnswer((_) async => true);
       when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
-      when(remoteDataSource.getFormularios(any)).thenThrow(ServerException());
+      when(remoteDataSource.getFormularios(any, any)).thenThrow(ServerException());
       final result = await formulariosRepository.getFormularios();
       expect(result, Left(ServerFailure()));
     });
@@ -124,8 +125,6 @@ void _testGetFormulariosGroup(){
     test('''should return Right(tFormularios) when there is not connectivity and all goes good''', 
       ()async{
         when(networkInfo.isConnected()).thenAnswer((_) async => false);
-        when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tProject);
-        when(visitsLocalDataSource.getChosenVisit(any)).thenAnswer((_) async => tVisit);
         when(preloadedDataSource.getPreloadedFormularios(any, any)).thenAnswer((_) async => tFormularios);
         final result = await formulariosRepository.getFormularios();
         expect(result, Right(tFormularios));

@@ -40,6 +40,7 @@ List<Map<String, dynamic>> visitsToStorageJson(List<VisitModel> visits){
   return jsonVisits;
 }
 
+// ignore: must_be_immutable
 class VisitModel extends Visit{
   VisitModel({
     int id,
@@ -58,7 +59,7 @@ class VisitModel extends Visit{
   factory VisitModel.fromJson(Map<String, dynamic> json)=>VisitModel(
     id: json['id'],
     completo: json['completo']??false,
-    date: json['fecha'] == null? DateTime.now() : transformStringInToDate(json['fecha']),
+    date: json['fecha_visita'] == null? DateTime.now() : transformStringInToDate(json['fecha_visita']),
     sede: SedeModel.fromJson(json['sede']),
     formularios: [],
   );
@@ -67,7 +68,7 @@ class VisitModel extends Visit{
     "id": id,
     'sede': (sede as SedeModel).toJson(), 
     'completo': completo,
-    'fecha':  transformDateInToString(date),
+    'fecha_visita':  transformDateInToString(date),
   };
 }
 

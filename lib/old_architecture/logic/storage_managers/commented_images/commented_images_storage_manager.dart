@@ -1,6 +1,7 @@
 import 'package:gap/old_architecture/data/models/entities/entities.dart';
 import 'package:gap/old_architecture/native_connectors/storage_connector.dart';
 
+
 class CommentedImagesStorageManager{
   
   static final String _commentedImagesKey = 'commented_images';

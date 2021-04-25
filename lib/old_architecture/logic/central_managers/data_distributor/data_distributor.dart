@@ -280,12 +280,13 @@ abstract class DataDistributor{
     chosenFormB.add(ResetChosenForm());
     indexB.add(ResetAllOfIndex());  
   }
-
+  
   Future updateCommentedImages()async{
     commImgsB.add(InitImagesCommenting());
     final List<UnSentCommentedImageOld> commentedImages = await CommentedImagesStorageManager.getCommentedImages();
     _addCommentedImagesToBlocIfExistsInStorage(commentedImages);
   }
+  
 
   void _addCommentedImagesToBlocIfExistsInStorage(List<UnSentCommentedImageOld> commentedImages)async{
     if(commentedImages.length > 0){

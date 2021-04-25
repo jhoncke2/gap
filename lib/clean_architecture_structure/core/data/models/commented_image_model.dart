@@ -1,5 +1,8 @@
 import 'dart:io';
-import 'package:gap/clean_architecture_structure/core/domain/commented_image.dart';
+import 'package:gap/clean_architecture_structure/core/domain/entities/commented_image.dart';
+
+List<SentCommentedImageModel> commentedImagesFromJson(List<Map<String, dynamic>> jsonCommImgs)=>jsonCommImgs.map<SentCommentedImageModel>((json)=>SentCommentedImageModel.fromJson(json)).toList();
+List<Map<String, dynamic>> commentedImagesToJson(List<UnSentCommentedImageModel> cmmImgs)=>cmmImgs.map((cmmImg) => cmmImg.toJson()).toList();
 
 // ignore: must_be_immutable
 class UnSentCommentedImageModel extends UnSentCommentedImage{
