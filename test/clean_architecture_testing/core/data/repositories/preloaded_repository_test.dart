@@ -94,23 +94,23 @@ void main(){
       verify(localDataSource.getPreloadedVisitsIds(tProjectsIds[0]));
       verify(localDataSource.getPreloadedFormularios(tProjectsIds[0], tVisitsIdsP1[0]));
       verify(formulariosRemoteDataSource.setInitialPosition(tFormulariosP1V1[0].initialPosition, tFormulariosP1V1[0].id, tAccessToken));
-      verify(formulariosRemoteDataSource.setFirmer(tFormulariosP1V1[0].firmers[0], tFormulariosP1V1[0].id, tAccessToken));
+      verify(formulariosRemoteDataSource.setFirmer(tFormulariosP1V1[0].firmers[0], tFormulariosP1V1[0].id, tVisitsIdsP1[0], tAccessToken));
       //El project 2
       verify(localDataSource.getPreloadedVisitsIds(tProjectsIds[1]));
       //visit 1 del project 1
       verify(localDataSource.getPreloadedFormularios(tProjectsIds[1], tVisitsIdsP2[0]));
       verify(formulariosRemoteDataSource.setInitialPosition(tFormulariosP2V1[0].initialPosition, tFormulariosP2V1[0].id, tAccessToken));
       verify(formulariosRemoteDataSource.setFinalPosition(tFormulariosP2V1[0].finalPosition, tFormulariosP2V1[0].id, tAccessToken));
-      verify(formulariosRemoteDataSource.setFirmer(tFormulariosP2V1[0].firmers[0], tFormulariosP2V1[0].id, tAccessToken));
-      verify(formulariosRemoteDataSource.setFirmer(tFormulariosP2V1[0].firmers[1], tFormulariosP2V1[0].id, tAccessToken));
+      verify(formulariosRemoteDataSource.setFirmer(tFormulariosP2V1[0].firmers[0], tFormulariosP2V1[0].id, tVisitsIdsP2[0], tAccessToken));
+      verify(formulariosRemoteDataSource.setFirmer(tFormulariosP2V1[0].firmers[1], tFormulariosP2V1[0].id, tVisitsIdsP2[0], tAccessToken));
 
-      verify(formulariosRemoteDataSource.setFirmer(tFormulariosP2V1[1].firmers[0], tFormulariosP2V1[1].id, tAccessToken));
+      verify(formulariosRemoteDataSource.setFirmer(tFormulariosP2V1[1].firmers[0], tFormulariosP2V1[1].id, tVisitsIdsP2[0], tAccessToken));
       
       //visit 2 del project 2
       verify(localDataSource.getPreloadedFormularios(tProjectsIds[1], tVisitsIdsP2[1]));
       verify(formulariosRemoteDataSource.setInitialPosition(tFormulariosP2V2[0].initialPosition, tFormulariosP2V2[0].id, tAccessToken));
       verify(formulariosRemoteDataSource.setFinalPosition(tFormulariosP2V2[0].finalPosition, tFormulariosP2V2[0].id, tAccessToken));
-      verify(formulariosRemoteDataSource.setFirmer(tFormulariosP2V2[0].firmers[0], tFormulariosP2V2[0].id, tAccessToken));
+      verify(formulariosRemoteDataSource.setFirmer(tFormulariosP2V2[0].firmers[0], tFormulariosP2V2[0].id, tVisitsIdsP2[1], tAccessToken));
     });
 
     test('Should do nothing when there is not connectivity', ()async{
@@ -120,9 +120,9 @@ void main(){
       verifyNever(localDataSource.getPreloadedVisitsIds(any));
       verifyNever(localDataSource.getPreloadedFormularios(any, any));
       verifyNever(formulariosRemoteDataSource.setInitialPosition(any, any, any));
-      verifyNever(formulariosRemoteDataSource.setFormulario(any, any, any));
+      verifyNever(formulariosRemoteDataSource.setCampos(any, any, any));
       verifyNever(formulariosRemoteDataSource.setFinalPosition(any, any, any));
-      verifyNever(formulariosRemoteDataSource.setFirmer(any, any, any));
+      verifyNever(formulariosRemoteDataSource.setFirmer(any, any, any, any));
     });
     
     test('should return Right(true) when there is connectivity and sent any data and all goes good', ()async{
@@ -154,13 +154,13 @@ void main(){
       when(formulariosRemoteDataSource.setInitialPosition(any, any, any)).thenThrow(ServerException());
       var result = await preloadedRepository.sendPreloadedData();
       expect(result, Left(ServerFailure()));
-      when(formulariosRemoteDataSource.setFormulario(any, any, any)).thenThrow(ServerException());
+      when(formulariosRemoteDataSource.setCampos(any, any, any)).thenThrow(ServerException());
       result = await preloadedRepository.sendPreloadedData();
       expect(result, Left(ServerFailure()));
       when(formulariosRemoteDataSource.setFinalPosition(any, any, any)).thenThrow(ServerException());
       result = await preloadedRepository.sendPreloadedData();
       expect(result, Left(ServerFailure()));
-      when(formulariosRemoteDataSource.setFirmer(any, any, any)).thenThrow(ServerException());
+      when(formulariosRemoteDataSource.setFirmer(any, any, any, any)).thenThrow(ServerException());
       result = await preloadedRepository.sendPreloadedData();
       expect(result, Left(ServerFailure()));
     });

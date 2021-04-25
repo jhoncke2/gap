@@ -23,7 +23,7 @@ class ProjectsRemoteDataSourceImpl extends RemoteDataSource implements ProjectsR
     try{
       final Map<String, String> headers = {'Authorization': 'Bearer $accessToken'};
       final response = await client.get(
-        Uri.http(BASE_URL, PROJECTS_API_URL),
+        Uri.http(BASE_URL, '${super.BASE_PANEL_UNCODED_PATH}$PROJECTS_API_URL'),
         headers: headers
       );
       if(response.statusCode != 200)

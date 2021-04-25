@@ -13,7 +13,7 @@ abstract class CommentedImagesRemoteDataSource{
 }
 
 class CommentedImagesRemoteDataSourceImpl extends RemoteDataSourceWithMultiPartRequests implements CommentedImagesRemoteDataSource{
-  static const COMM_IMGS_URL = 'panel/visita-fotos';
+  static const COMM_IMGS_URL = 'visita-fotos/';
   final http.Client client;
 
   CommentedImagesRemoteDataSourceImpl({
@@ -23,7 +23,7 @@ class CommentedImagesRemoteDataSourceImpl extends RemoteDataSourceWithMultiPartR
   @override
   Future<void> setCommentedImages(List<UnSentCommentedImageModel> commImgs, int visitId, String accessToken)async{
     try{
-      final String requestUrl = super.BASE_URL + '/$COMM_IMGS_URL/$visitId';
+      final String requestUrl = super.BASE_URL + '/${super.BASE_PANEL_UNCODED_PATH}$COMM_IMGS_URL$visitId';
       final Map<String, String> headers = {'Authorization':'Bearer $accessToken'};
       List<String> commentaries = [];
       List<File> images = [];
@@ -44,10 +44,9 @@ class CommentedImagesRemoteDataSourceImpl extends RemoteDataSourceWithMultiPartR
   @override
   Future<List<SentCommentedImageModel>> getCommentedImages(int visitId, String accessToken)async{
     try{
-      final String unencodedPath = '/$COMM_IMGS_URL/$visitId';
       final Map<String, String> headers = {'Authorization': 'Bearer $accessToken'};
       final response = await client.get(
-        Uri.http(super.BASE_URL, unencodedPath), 
+        Uri.http(super.BASE_URL, '${super.BASE_PANEL_UNCODED_PATH}$COMM_IMGS_URL$visitId'), 
         headers: headers
       );
       if(response.statusCode != 200)

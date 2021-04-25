@@ -1,9 +1,8 @@
 import 'dart:convert';
-import 'package:gap/clean_architecture_structure/core/data/models/formulario/custom_position.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:mockito/mockito.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:dartz/dartz.dart';
+import 'package:gap/clean_architecture_structure/core/data/models/formulario/custom_position.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/projects/projects_local_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/visits/visits_local_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/models/formulario/firmer_model.dart';
@@ -261,7 +260,7 @@ void _testSetFormularioGroup(){
       verify(userLocalDataSource.getAccessToken());
       verify(projectsLocalDataSource.getChosenProject());
       verify(visitsLocalDataSource.getChosenVisit(tProject.id));
-      verify(remoteDataSource.setFormulario(tFormulario, tVisit.id, tAccessToken));
+      verify(remoteDataSource.setCampos(tFormulario, tVisit.id, tAccessToken));
     });
 
     test('should update the Formulario in preloadedDataSource and localDataSource when there is not connectivity', ()async{
@@ -290,7 +289,7 @@ void _testSetFormularioGroup(){
       when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
       when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tProject);
       when(visitsLocalDataSource.getChosenVisit(any)).thenAnswer((_) async => tVisit);
-      when(remoteDataSource.setFormulario(any, any, any)).thenThrow(ServerException());
+      when(remoteDataSource.setCampos(any, any, any)).thenThrow(ServerException());
       final result = await formulariosRepository.setFormulario(tFormulario);
       expect(result, Left(ServerFailure()));
     });
@@ -435,7 +434,7 @@ void _testSetFirmerGroup(){
       verify(userLocalDataSource.getAccessToken());
       verify(projectsLocalDataSource.getChosenProject());
       verify(visitsLocalDataSource.getChosenVisit(tProject.id));
-      verify(remoteDataSource.setFirmer(tFirmer1, tFormulario1.id, tAccessToken));
+      verify(remoteDataSource.setFirmer(tFirmer1, tFormulario1.id, tVisit.id, tAccessToken));
     });
 
     test('''should update the formulario with the new firmer in preloadedDataSource, obtaining the chosenProject from projectsLocalDataSource, 
@@ -471,7 +470,7 @@ void _testSetFirmerGroup(){
       when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tProject);
       when(visitsLocalDataSource.getChosenVisit(any)).thenAnswer((_) async => tVisit);
       when(localDataSource.getChosenFormulario(any)).thenAnswer((_) async => tFormulario1);
-      when(remoteDataSource.setFirmer(any, any, any)).thenThrow(ServerException());
+      when(remoteDataSource.setFirmer(any, any, tVisit.id, any)).thenThrow(ServerException());
       final result = await formulariosRepository.setFirmer(tFirmer1);
       expect(result, Left(ServerFailure()));
     });

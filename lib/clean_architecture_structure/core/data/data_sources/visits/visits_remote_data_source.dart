@@ -23,7 +23,7 @@ class VisitsRemoteDataSourceImpl extends RemoteDataSource implements VisitsRemot
     try{
       final Map<String, String> headers = {'Authorization': 'Bearer $accessToken'};
       final response = await client.get(
-        Uri.http(super.BASE_URL, '$VISITS_API_URL/$projectId'),
+        Uri.http(super.BASE_URL, '${super.BASE_PANEL_UNCODED_PATH}$VISITS_API_URL/$projectId'),
         headers: headers
       );
       if(response.statusCode != 200)

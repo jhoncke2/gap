@@ -58,7 +58,7 @@ class PreloadedRepositoryImpl implements PreloadedRepository{
             sentAnyData = true;
           }
           if(_canSendCampos(formulario)){
-            await formulariosRemoteDataSource.setFormulario(formulario, visitId, accessToken);
+            await formulariosRemoteDataSource.setCampos(formulario, visitId, accessToken);
             sentAnyData = true;
           }
           if(formulario.finalPosition != null){
@@ -67,7 +67,7 @@ class PreloadedRepositoryImpl implements PreloadedRepository{
           }    
           if(![null, []].contains(formulario.firmers)){
             for(FirmerModel firmer in formulario.firmers)
-              await formulariosRemoteDataSource.setFirmer(firmer, formulario.id, accessToken);
+              await formulariosRemoteDataSource.setFirmer(firmer, formulario.id, visitId, accessToken);
             //Por fuera del ciclo: si no pudo enviar todas las firmas, mejor tomarlo como que no se pudo enviar data.
             sentAnyData = true;
           }

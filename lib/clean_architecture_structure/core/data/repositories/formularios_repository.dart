@@ -83,7 +83,7 @@ class FormulariosRepositoryImpl implements FormulariosRepository{
       final VisitModel chosenVisit = await visitsLocalDataSource.getChosenVisit(chosenProject.id);
       if(await networkInfo.isConnected()){
         final String accessToken = await userLocalDataSource.getAccessToken();
-        await remoteDataSource.setFormulario(formulario, chosenVisit.id, accessToken);
+        await remoteDataSource.setCampos(formulario, chosenVisit.id, accessToken);
         return Right(null);
       }else{
         await preloadedDataSource.updatePreloadedFormulario(chosenProject.id, chosenVisit.id, formulario);
@@ -119,7 +119,7 @@ class FormulariosRepositoryImpl implements FormulariosRepository{
       final FormularioModel chosenFormulario = await localDataSource.getChosenFormulario(chosenVisit.id);
       if(await networkInfo.isConnected()){     
         final String accessToken = await userLocalDataSource.getAccessToken();
-        await remoteDataSource.setFirmer(firmer, chosenFormulario.id, accessToken);
+        await remoteDataSource.setFirmer(firmer, chosenFormulario.id, chosenVisit.id, accessToken);
         return Right(null);
       }else{
         chosenFormulario.firmers.add(firmer);

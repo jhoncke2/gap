@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:gap/clean_architecture_structure/core/data/data_sources/central/remote_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/error/exceptions.dart';
 import 'package:test/test.dart';
 import 'package:mockito/mockito.dart';
@@ -28,7 +27,6 @@ void main(){
   });
 
   group('getCommentedImages', (){
-    String tApiUrl;
     String tAccessToken;
     int tVisitId;
     String tStringCommImgs;
@@ -37,7 +35,6 @@ void main(){
     Map<String, String> tHeaders;
 
     setUp((){
-      tApiUrl = remoteDataSource.BASE_URL + CommentedImagesRemoteDataSourceImpl.COMM_IMGS_URL + '$tVisitId';
       tAccessToken = 'access_token';
       tVisitId = 1;
       tStringCommImgs = callFixture('sent_commented_images.json');
@@ -50,7 +47,7 @@ void main(){
       when(client.get(any, headers: anyNamed('headers'))).thenAnswer((_) async => http.Response(tStringCommImgs, 200));
       await remoteDataSource.getCommentedImages(tVisitId, tAccessToken);
       verify(client.get(
-        Uri.http(remoteDataSource.BASE_URL, '/${CommentedImagesRemoteDataSourceImpl.COMM_IMGS_URL}/$tVisitId'), 
+        Uri.http(remoteDataSource.BASE_URL, '${remoteDataSource.BASE_PANEL_UNCODED_PATH}${CommentedImagesRemoteDataSourceImpl.COMM_IMGS_URL}$tVisitId'), 
         headers: tHeaders
       ));
     });
