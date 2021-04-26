@@ -22,7 +22,7 @@ class DataDisributorErrorHandlingManager{
   Future executeFunction(DataDistrFunctionName functionName, [dynamic value])async{
     try{
       await _tryExecuteFunction(functionName, value);
-    }on AppNeverRunnedErr catch(err){
+    }on AppNeverRunnedErr{
       await _manageAppNeverRunnedErr();
     }on ServiceStatusErr catch(err){
       await _manageServiceStatusErr(err, functionName, value);
@@ -138,7 +138,6 @@ class DataDisributorErrorHandlingManager{
       navigationTodoByError = NavigationRoute.Login;
       await StorageConnectorOldSingleton.storageConnector.deleteAll();
     }
-    
   }
 
   Future _manageGeneralErr(err)async{

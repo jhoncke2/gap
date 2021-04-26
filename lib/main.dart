@@ -8,10 +8,12 @@ import 'package:gap/old_architecture/logic/central_managers/data_initializer.dar
 import 'package:gap/old_architecture/logic/storage_managers/user/user_storage_manager.dart';
 import 'package:gap/old_architecture/ui/gap_app.dart';
 import 'package:gap/old_architecture/ui/utils/dialogs.dart' as dialogs;
+import 'clean_architecture_structure/injection_container.dart' as ic;
 
 GapApp app;
 void main()async{
   await doInitialConfig();
+  ic.init();
   return runApp(app);
 }
 

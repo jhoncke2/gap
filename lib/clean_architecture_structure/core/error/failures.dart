@@ -39,13 +39,15 @@ class ServerFailure extends Failure{
 
   ServerFailure({
     this.message,
-    ServerExceptionType servExcType
+    ServerFailureType type,
+    ServerExceptionType servExcType,
   }):
-    this.type = (servExcType==ServerExceptionType.LOGIN)? 
+    this.type = (type!=null)? type : 
+    (servExcType==ServerExceptionType.LOGIN)? 
       ServerFailureType.LOGIN : 
       ServerFailureType.NORMAL,
     super(
-      properties: [message, servExcType]
+      properties: [message, (type??servExcType)]
     )
   ;
 }

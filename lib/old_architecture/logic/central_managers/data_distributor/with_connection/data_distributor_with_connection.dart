@@ -42,10 +42,13 @@ class DataDistributorWithConnection extends DataDistributor{
 
   @override
   Future login(Map<String, dynamic> loginInfo)async{
+    await super.login(loginInfo);
+    /*
     if(loginInfo['type'] == 'first_login')
       await _doFirstLogin(loginInfo['email'], loginInfo['password']);
     else
       await _doReloadingLogin();
+    */
   }
 
   Future _doFirstLogin(String email, String password)async{
@@ -61,10 +64,13 @@ class DataDistributorWithConnection extends DataDistributor{
 
   @override
   Future<void> updateProjects()async{
+    await super.updateProjects();
+    /*
     final String accessToken = await UserStorageManager.getAccessToken();
     final List<ProjectOld> projects = await _projectsServicesManager.loadProjects(projectsB, accessToken);
     projectsB.add(SetProjects(projects: projects));  
     UploadedBlocsData.dataContainer[NavigationRoute.Projects] = projects;
+    */
   }
 
   @override

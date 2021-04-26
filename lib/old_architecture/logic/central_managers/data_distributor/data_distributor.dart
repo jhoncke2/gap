@@ -1,6 +1,19 @@
 import 'dart:io';
 import 'package:bloc/bloc.dart';
+import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/clean_architecture_structure/core/domain/entities/project.dart';
+import 'package:gap/clean_architecture_structure/core/domain/entities/user.dart';
+import 'package:gap/clean_architecture_structure/core/domain/repositories/commented_images_repository.dart';
+import 'package:gap/clean_architecture_structure/core/domain/repositories/formularios_repository.dart';
+import 'package:gap/clean_architecture_structure/core/domain/repositories/index_repository.dart';
+import 'package:gap/clean_architecture_structure/core/domain/repositories/preloaded_repository.dart';
+import 'package:gap/clean_architecture_structure/core/domain/repositories/projects_repository.dart';
+import 'package:gap/clean_architecture_structure/core/domain/repositories/user_repository.dart';
+import 'package:gap/clean_architecture_structure/core/domain/repositories/visits_repository.dart';
+import 'package:gap/clean_architecture_structure/core/error/failures.dart';
+import 'package:gap/clean_architecture_structure/injection_container.dart';
+import 'package:gap/old_architecture/logic/bloc/nav_routes/custom_navigator.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:gap/old_architecture/central_config/bloc_providers_creator.dart';
 import 'package:gap/old_architecture/data/enums/enums.dart';
@@ -29,6 +42,15 @@ import 'package:gap/old_architecture/native_connectors/storage_connector.dart';
 
 
 abstract class DataDistributor{
+
+  final UserRepository userRepository = GetItContainer.sl();
+  final ProjectsRepository projectsRepository = GetItContainer.sl();
+  final VisitsRepository visitsRepository = GetItContainer.sl();
+  final FormulariosRepository formulariosRepository = GetItContainer.sl();
+  final PreloadedRepository preloadedRepository = GetItContainer.sl();
+  final IndexRepository indexRepository = GetItContainer.sl();
+  //TODO: Testear/Crear
+  final CommentedImagesRepository commentedImagesRepository = GetItContainer.sl();
 
   static final Map<BlocName, Bloc> blocsAsMap = BlocProvidersCreator.blocsAsMap;
   final Map<BlocName, ChangeNotifier> singletonesAsMap = BlocProvidersCreator.singletonesAsMap;
@@ -59,9 +81,24 @@ abstract class DataDistributor{
   Future<void> updateAccessToken(String accessToken)async{}
 
   Future login(Map<String, dynamic> loginInfo)async{
+    if(loginInfo['type'] == 'first_login'){
+      final User user = User(email: loginInfo['email'], password: loginInfo['password']);
+      await userRepository.login(user);
+    }else
+      await userRepository.reLogin();
   }
 
-  Future<void> updateProjects()async{}
+  Future<void> updateProjects()async{
+    final Either<Failure, List<Project>> eitherProjects = await projectsRepository.getProjects();
+    eitherProjects.fold((l)async{
+      //TODO: Implementar manejo de error de conexión
+      dialogs.showBlockedDialog(CustomNavigator.navigatorKey.currentContext, 'Ocurrió un error con los datos de los proyectos');
+    }, (projects){
+      List<ProjectOld> oldProjects = projects.map((p) => ProjectOld(id: p.id, nombre: p.nombre, visits: []));
+      projectsB.add(SetProjects(projects: oldProjects));  
+      UploadedBlocsData.dataContainer[NavigationRoute.Projects] = projects;
+    });
+  }
 
   Future<void> updateChosenProject(ProjectOld project)async{
     final List<ProjectOld> projects = UploadedBlocsData.dataContainer[NavigationRoute.Projects] ?? projectsB.state.projects;

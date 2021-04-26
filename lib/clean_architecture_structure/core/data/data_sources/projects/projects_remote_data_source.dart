@@ -11,7 +11,7 @@ abstract class ProjectsRemoteDataSource{
 }
 
 class ProjectsRemoteDataSourceImpl extends RemoteDataSource implements ProjectsRemoteDataSource{
-  static const PROJECTS_API_URL = 'panel/getproyectos';
+  static const PROJECTS_API_URL = 'getproyectos';
   final http.Client client;
 
   ProjectsRemoteDataSourceImpl({
