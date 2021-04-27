@@ -2,12 +2,15 @@ import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/clean_architecture_structure/core/data/models/commented_image_model.dart';
+import 'package:gap/clean_architecture_structure/core/domain/entities/commented_image.dart';
+import 'package:gap/old_architecture/errors/services/service_status_err.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:gap/clean_architecture_structure/core/data/models/formulario/custom_position.dart';
 import 'package:gap/clean_architecture_structure/core/data/models/formulario/firmer_model.dart';
 import 'package:gap/clean_architecture_structure/core/data/models/formulario/formulario_model.dart';
 import 'package:gap/clean_architecture_structure/core/data/models/project_model.dart';
 import 'package:gap/clean_architecture_structure/core/data/models/visit_model.dart';
-import 'package:gap/clean_architecture_structure/core/domain/entities/formulario/custom_position.dart';
 import 'package:gap/clean_architecture_structure/core/domain/entities/project.dart';
 import 'package:gap/clean_architecture_structure/core/domain/entities/user.dart';
 import 'package:gap/clean_architecture_structure/core/domain/entities/visit.dart';
@@ -22,8 +25,6 @@ import 'package:gap/clean_architecture_structure/core/error/failures.dart';
 import 'package:gap/clean_architecture_structure/injection_container.dart';
 import 'package:gap/old_architecture/errors/storage/unfound_storage_element_err.dart';
 import 'package:gap/old_architecture/logic/bloc/nav_routes/custom_navigator.dart';
-import 'package:gap/old_architecture/logic/central_managers/preloaded_storage_to_services.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:gap/old_architecture/central_config/bloc_providers_creator.dart';
 import 'package:gap/old_architecture/data/enums/enums.dart';
 import 'package:gap/old_architecture/data/models/entities/entities.dart';
@@ -42,13 +43,10 @@ import 'package:gap/old_architecture/logic/storage_managers/commented_images/com
 import 'package:gap/old_architecture/logic/storage_managers/forms/chosen_form_storage_manager.dart';
 import 'package:gap/old_architecture/logic/storage_managers/forms/preloaded_forms_storage_manager.dart';
 import 'package:gap/old_architecture/logic/storage_managers/index/index_storage_manager.dart';
-import 'package:gap/old_architecture/logic/storage_managers/projects/projects_storage_manager.dart';
 import 'package:gap/old_architecture/logic/storage_managers/user/user_storage_manager.dart';
-import 'package:gap/old_architecture/logic/storage_managers/visits/visits_storage_manager.dart';
-import 'package:gap/old_architecture/ui/utils/dialogs.dart' as dialogs;
 import 'package:gap/old_architecture/native_connectors/gps.dart';
 import 'package:gap/old_architecture/native_connectors/storage_connector.dart';
-
+import 'package:gap/old_architecture/ui/utils/dialogs.dart' as dialogs;
 
 abstract class DataDistributor{
 
@@ -104,13 +102,29 @@ abstract class DataDistributor{
 
   Future login(Map<String, dynamic> loginInfo)async{
     if(loginInfo['type'] == 'first_login'){
+      userB.add(ChangeLoginButtopnAvaibleless(isAvaible: false));
       final User user = User(email: loginInfo['email'], password: loginInfo['password']);
-      await userRepository.login(user);
-    }else
-      await userRepository.reLogin();
+      final eitherLogin = await userRepository.login(user);
+      eitherLogin.fold((failure){
+        String message;
+        if(failure is ServerFailure)
+          message = failure.message;
+        throw ServiceStatusErr(extraInformation: 'login', message: message);
+      }, (_){
+        //TODO: Implementar algo
+      });
+    }else{
+      final eitherRelogin = await userRepository.reLogin();
+      eitherRelogin.fold((_){
+        throw ServiceStatusErr(extraInformation: 'login');
+      }, (_){
+        //TODO: Implementar algo
+      });
+    }
   }
 
   Future<void> updateProjects()async{
+    projectsB.add(ResetProjects());
     final Either<Failure, List<Project>> eitherProjects = await projectsRepository.getProjects();
     eitherProjects.fold((l)async{
       //TODO: Implementar manejo de error de conexión
@@ -118,11 +132,12 @@ abstract class DataDistributor{
     }, (projects){
       List<ProjectOld> oldProjects = projects.map((p) => ProjectOld(id: p.id, nombre: p.nombre, visits: [])).toList();
       projectsB.add(SetProjects(projects: oldProjects));  
-      UploadedBlocsData.dataContainer[NavigationRoute.Projects] = projects;
+      //UploadedBlocsData.dataContainer[NavigationRoute.Projects] = projects;
     });
   }
 
   Future<void> updateChosenProject(ProjectOld projectOld)async{
+    projectsB.add(ResetProjects());
     final ProjectModel project = ProjectModel(id: projectOld.id, nombre: projectOld.nombre);
     final eitherResult = await projectsRepository.setChosenProject(project);
     eitherResult.fold((l){
@@ -143,13 +158,14 @@ abstract class DataDistributor{
   }
 
   Future<void> updateVisits()async{
+    projectsB.add(ResetProjects());
     final eitherVisits = await visitsRepository.getVisits();
     eitherVisits.fold((failure){
       //TODO: Implementar manejo de errores
     }, (visits){
       final List<VisitOld> visitsOld = visits.map((v) => VisitOld.fromNewVisit(v)).toList();
       visitsB.add(SetVisits(visits: visitsOld));
-      UploadedBlocsData.dataContainer[NavigationRoute.Visits] = visits;
+      //UploadedBlocsData.dataContainer[NavigationRoute.Visits] = visits;
     });
   }
 
@@ -162,13 +178,14 @@ abstract class DataDistributor{
   );
   
   Future<void> updateChosenVisit(VisitOld visitOld)async{
+    visitsB.add(ResetVisits());
     final VisitModel chosenVisit = _getVisitFromVisitOld(visitOld);
     final eitherChooseResult = await visitsRepository.setChosenVisit(chosenVisit);
     eitherChooseResult.fold((failure){
       //TODO: Implementar manejo de errores
     }, (r){
       visitsB.add(ChooseVisit(chosenOne: visitOld));
-      UploadedBlocsData.dataContainer[NavigationRoute.VisitDetail] = visitOld;
+      //UploadedBlocsData.dataContainer[NavigationRoute.VisitDetail] = visitOld;
     });
     //await addChosenVisitToBloc(visit);
     //await VisitsStorageManager.setChosenVisit(visit);
@@ -176,21 +193,24 @@ abstract class DataDistributor{
   }
 
   //TODO: Borrar en su desuso
+  /*
   @protected
   VisitOld getUpdatedChosenVisit(VisitOld newChosenVisit){
     final List<VisitOld> visits = UploadedBlocsData.dataContainer[NavigationRoute.Visits];
     final List<VisitOld> updatedEqualsVisits = visits.where((element) => element.id == newChosenVisit.id).toList();
     return updatedEqualsVisits.length > 0? updatedEqualsVisits[0] : newChosenVisit;
   }
+  */
 
   @protected
   Future addChosenVisitToBloc(VisitOld visit)async{
     final ChooseVisit cvEvent = ChooseVisit(chosenOne: visit);
     blocsAsMap[BlocName.Visits].add(cvEvent);
-    UploadedBlocsData.dataContainer[NavigationRoute.VisitDetail] = visit;
+    //UploadedBlocsData.dataContainer[NavigationRoute.VisitDetail] = visit;
   }
 
   Future<void> updateFormularios()async{
+    visitsB.add(ChangeChosenVisitBlocking(isBlocked: true));
     final eitherFormularios = await formulariosRepository.getFormularios();
     eitherFormularios.fold((failure){
       //TODO: Implementar manejo de errores
@@ -203,10 +223,12 @@ abstract class DataDistributor{
   }
   
   Future<void> updateChosenForm(FormularioOld formOld)async{
+    formsB.add(ChangeFormsAreBlocked(areBlocked: true));
     final FormularioModel chosenForm = _getFormularioFromFormularioOld(formOld);
     final eitherChoose = await formulariosRepository.setChosenFormulario(chosenForm);
     indexB.add(ResetAllOfIndex());
     await eitherChoose.fold((l)async{
+      formsB.add(ChangeFormsAreBlocked(areBlocked: false));
       //TODO: Implementar manejo de errores
     }, (_)async{
       await _updateChosenFormFromRepository(formOld);
@@ -216,6 +238,7 @@ abstract class DataDistributor{
   Future<void> _updateChosenFormFromRepository(FormularioOld formOld)async{
     final eitherUpdatedChosenForm = await formulariosRepository.getChosenFormulario();
     await eitherUpdatedChosenForm.fold((l)async{
+      formsB.add(ChangeFormsAreBlocked(areBlocked: false));
       //TODO: Implementar manejo de errores
     }, (updatedChosenForm)async{
       await _manageUpdatedChosenForm(updatedChosenForm);
@@ -430,7 +453,6 @@ abstract class DataDistributor{
         _addNewFirmer(InitFirmsFillingOut());
       });
     });
-    
   }
 
   Future _updateFirmersInForm(FormularioOld form)async{
@@ -453,15 +475,31 @@ abstract class DataDistributor{
     chosenFormB.add(InitFirmsFinishing());
     final FormularioOld chosenForm = formsB.state.chosenForm;
     chosenForm.formStep = FormStep.Finished;
-    //await updateFirmers();
+    await updateFirmers();
     await _updateFirmersInForm(chosenForm);
-    await updateChosenFormInStorage(chosenForm);
+    //await updateChosenFormInStorage(chosenForm);
     chosenFormB.add(ResetChosenForm());
     indexB.add(ResetAllOfIndex());  
   }
   
   Future updateCommentedImages()async{
     commImgsB.add(InitImagesCommenting());
+    visitsB.add(ChangeChosenVisitBlocking(isBlocked: true));
+    final eitherCommentedImages = await commentedImagesRepository.getCommentedImages();
+    eitherCommentedImages.fold((l){
+      //TODO: Implementar manejo de errores
+      
+    }, (commentedImages){
+      final List<SentCommentedImageOld> commentedImagesOld = commentedImages.map((cI) => SentCommentedImageOld(
+        url: cI.imgnUrl,
+        commentary: cI.commentary??''
+      )).toList();
+      if(commentedImagesOld.isEmpty){
+        commImgsB.add(InitImagesCommenting());
+      }else{
+        commImgsB.add(InitSentCommImgsWatching(sentCommentedImages: commentedImagesOld, onEnd: changeNPagesToIndex));
+      }
+    });
     final List<UnSentCommentedImageOld> commentedImages = await CommentedImagesStorageManager.getCommentedImages();
     _addCommentedImagesToBlocIfExistsInStorage(commentedImages);
   }
@@ -506,13 +544,30 @@ abstract class DataDistributor{
   }
 
   Future endCommentedImagesProcess()async{
+    visitsB.add(ChangeChosenVisitBlocking(isBlocked: false));
     indexB.add(ResetAllOfIndex());
     if(commImgsB.state.dataType == CmmImgDataType.UNSENT){
-      await updateProjects();
+      final List<CommentedImageOld> commImgsOld = commImgsB.state.allCommentedImages.toList();
+      final List<UnSentCommentedImageModel> commentedImages = commImgsOld.map((ciO) => UnSentCommentedImageModel(
+        image: (ciO as UnSentCommentedImageOld).image,
+        commentary: ciO.commentary
+      )).toList();
+      final eitherSetCommImgs = await commentedImagesRepository.setCommentedImages(commentedImages);
+      eitherSetCommImgs.fold((l){
+        //TODO: Implementar manejo de errores
+      }, (r){
+        //TODO: Implementar algo
+      });
+    }
+    else
+      commImgsB.add(ResetCommentedImages());
+    
+    if(commImgsB.state.dataType == CmmImgDataType.UNSENT){
+      //await updateProjects();
       await updateVisits();
     }
   }
-
+  /*
   Future<void> addStorageDataToIndexBloc()async{
     final IndexBloc indexBloc = blocsAsMap[BlocName.Index];
     final IndexState indexConfig = await IndexStorageManager.getIndex();
@@ -523,30 +578,50 @@ abstract class DataDistributor{
     final ChangeIndexPage ciEvent = ChangeIndexPage(newIndexPage: newIndexPage);
     indexBloc.add(ciEvent);
   }
+  */
 
   Future resetChosenProject()async{
     projectsB.add(ResetProjects());
-    await ProjectsStorageManager.removeChosenProject();
+    //await ProjectsStorageManager.removeChosenProject();
     await updateProjects();
   }
 
   Future resetVisits()async{
     visitsB.add(ResetVisits());
-    await VisitsStorageManager.removeVisits();
+    final eitherChosenProject = await projectsRepository.getChosenProject();
+    eitherChosenProject.fold((l){
+
+    }, (chosenProject){
+      final chosenProjectOld = ProjectOld(id: chosenProject.id, nombre: chosenProject.nombre, visits: []);
+      projectsB.add(ChooseProject(chosenOne: chosenProjectOld));
+    });
+    //await VisitsStorageManager.removeVisits();
   }
 
   Future resetChosenVisit()async{
-    await CommentedImagesStorageManager.removeCommentedImages();
+    //await CommentedImagesStorageManager.removeCommentedImages();
+    visitsB.add(ResetVisits());
     commImgsB.add(ResetCommentedImages());
-    await VisitsStorageManager.removeChosenVisit();
+    await updateVisits();
+    
+    //await VisitsStorageManager.removeChosenVisit();
   }
 
   Future resetForms()async{
     formsB.add(ResetForms());
-    await updateProjects(); 
+    //await updateProjects(); 
     //final ProjectOld chosenProject = UploadedBlocsData.dataContainer[NavigationRoute.ProjectDetail];
     //await updateChosenProject(chosenProject);
     await updateVisits();
+    VisitOld chosenVisitOld = visitsB.state.chosenVisit;
+    final eitherVisits = await visitsRepository.getVisits();
+    eitherVisits.fold((failure){
+      //TODO: Implementar manejo de errores
+    }, (visits){
+      Visit chosenVisit = visits.singleWhere((v) => v.id == chosenVisitOld.id);
+      chosenVisitOld = VisitOld.fromNewVisit(chosenVisit);
+      updateChosenVisit(chosenVisitOld);
+    });
     //final VisitOld chosenVisit = UploadedBlocsData.dataContainer[NavigationRoute.VisitDetail];
     //await updateChosenVisit(chosenVisit);
   }

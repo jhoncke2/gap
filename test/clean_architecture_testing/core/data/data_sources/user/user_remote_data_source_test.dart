@@ -50,7 +50,7 @@ void main(){
       when(client.post(any, body: anyNamed('body'))).thenAnswer((_) async => http.Response(jsonEncode(tResponseBody), 200));
       await remoteDataSource.login(tUser);
       verify(client.post(
-        Uri.http(remoteDataSource.BASE_URL, '${remoteDataSource.BASE_AUTH_UNCODED_PATH}${UserRemoteDataSourceImpl.LOGIN_URL}'),
+        Uri.https(remoteDataSource.BASE_URL, '${remoteDataSource.BASE_AUTH_UNCODED_PATH}${UserRemoteDataSourceImpl.LOGIN_URL}'),
         body: tJsonUser
       ));
     });
@@ -107,7 +107,7 @@ void main(){
       when(client.post(any, headers: anyNamed('headers'))).thenAnswer((_) async => http.Response(jsonEncode(tResponseBody), 200));
       await remoteDataSource.refreshAccessToken(tOldAccessToken);
       verify(client.post(
-        Uri.http(remoteDataSource.BASE_URL, '${remoteDataSource.BASE_AUTH_UNCODED_PATH}${UserRemoteDataSourceImpl.REFRESH_ACCESS_TOKEN_URL}'),
+        Uri.https(remoteDataSource.BASE_URL, '${remoteDataSource.BASE_AUTH_UNCODED_PATH}${UserRemoteDataSourceImpl.REFRESH_ACCESS_TOKEN_URL}'),
         headers: tHeaders
       ));
     });

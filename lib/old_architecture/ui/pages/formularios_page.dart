@@ -15,7 +15,7 @@ class FormulariosPage extends StatelessWidget {
   static final String route = 'formularios';
   final SizeUtils _sizeUtils = SizeUtils();
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context){
     return Scaffold(
       body: NativeBackButtonLocker(
         child: SafeArea(

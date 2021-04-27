@@ -15,9 +15,7 @@ import 'package:gap/old_architecture/logic/bloc/entities/user/user_bloc.dart';
 import 'package:gap/old_architecture/logic/bloc/nav_routes/routes_manager.dart';
 import 'package:gap/old_architecture/logic/central_managers/pages_navigation_manager.dart';
 import 'package:gap/old_architecture/logic/storage_managers/forms/chosen_form_storage_manager.dart';
-import 'package:gap/old_architecture/logic/storage_managers/projects/projects_storage_manager.dart';
 import 'package:gap/old_architecture/logic/storage_managers/user/user_storage_manager.dart';
-import 'package:gap/old_architecture/logic/storage_managers/visits/visits_storage_manager.dart';
 import 'package:gap/old_architecture/ui/utils/dialogs.dart' as dialogs;
 
 class DataInitializer{
@@ -45,7 +43,7 @@ class DataInitializer{
     if([PermissionStatus.undetermined, PermissionStatus.denied, PermissionStatus.restricted, PermissionStatus.limited, PermissionStatus.permanentlyDenied].contains(permissionStatus))
       await _repeatStoragePermissionValidation(permissionStatus, context, netConnState);
     else
-      await _init(context, netConnState);
+      await _doInitialization(context, netConnState);
   }
 
   Future _repeatStoragePermissionValidation(PermissionStatus permissionStatus, BuildContext context, NetConnectionState netConnState)async{
@@ -54,6 +52,7 @@ class DataInitializer{
     await _doFunctionByStoragePermissionStatus(permissionStatus, context, netConnState);
   }
 
+  /*
   Future _init(BuildContext context, NetConnectionState netConnState)async{
     final String accessToken = await UserStorageManager.getAccessToken();
     await _doInitializationByAccessToken(accessToken, context, netConnState);
@@ -65,6 +64,7 @@ class DataInitializer{
     else
       await _doInitialization(context, netConnState);
   }
+  */
 
   Future _navigateToLogin(BuildContext context, NetConnectionState netConnState)async{
     _defineLogginButtonAvaibleless(netConnState);
@@ -185,10 +185,16 @@ class DataInitializer{
   }
 
   Future _doFormDetailUpdating()async{
-    final FormularioOld chosenOne = await ChosenFormStorageManager.getChosenForm();
-    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_CHOSEN_FORM, chosenOne);
+    final eitherChosenFormulario = await formulariosRepository.getChosenFormulario();
+    await eitherChosenFormulario.fold((l)async{
+      _continueInitialization = false;
+    }, (chosenFormulario)async{
+      FormularioOld chosenFormularioOld = FormularioOld.fromFormularioNew(chosenFormulario);
+      await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_CHOSEN_FORM, chosenFormularioOld);
+    });
+    //final FormularioOld chosenOne = await ChosenFormStorageManager.getChosenForm();
+    //await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_CHOSEN_FORM, chosenOne);
   }
-
 
   Future _doAdjuntarFotosUpdating()async{
     await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_COMMENTED_IMAGES);

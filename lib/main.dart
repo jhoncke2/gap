@@ -48,7 +48,6 @@ void _onResumeApp(AppLifecycleState state)async{
     //else
       //await _requestStorageActivation();
     */
-  
 }
 
 Future _initApp(BuildContext context)async{
@@ -81,6 +80,7 @@ Future<void> _testRemovePartOfStorage()async{
   await UserStorageManager.removeAuthToken();
   StorageConnectorOld sc = StorageConnectorOld();
   await sc.removeResource('new_auth_token');
+  await sc.removeResource('user');
   await sc.removeResource('projects_with_preloaded_visits');
   await sc.removeResource('preloaded_visits');
   await sc.removeResource('preloaded_forms');

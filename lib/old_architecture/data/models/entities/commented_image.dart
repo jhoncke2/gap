@@ -46,17 +46,17 @@ class UnSentCommentedImageOld extends CommentedImageOld{
 }
 
 class SentCommentedImageOld extends CommentedImageOld{
-  static final String baseUrl = 'https://gapfergon.com/';
+  static final String baseUrl = 'https://gapfergon.com';
   String url;
 
   SentCommentedImageOld({
     @required String url,
     String commentary = ''
   }):
-  this.url = baseUrl + url,
+  this.url = url,
   super(
     commentary: commentary,
-    imgnUrl: baseUrl + url
+    imgnUrl: url
   );
   
   factory SentCommentedImageOld.fromJson(Map<String, dynamic> json)=>SentCommentedImageOld(

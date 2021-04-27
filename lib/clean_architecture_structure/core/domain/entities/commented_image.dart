@@ -40,7 +40,6 @@ class UnSentCommentedImage extends CommentedImage{
 
 // ignore: must_be_immutable
 class SentCommentedImage extends CommentedImage{
-  static final String baseUrl = 'https://gapfergon.com/';
 
   SentCommentedImage({
     @required String url,
@@ -48,6 +47,6 @@ class SentCommentedImage extends CommentedImage{
   }):
   super(
     commentary: commentary,
-    imgnUrl: baseUrl + url
+    imgnUrl: url
   );
 }

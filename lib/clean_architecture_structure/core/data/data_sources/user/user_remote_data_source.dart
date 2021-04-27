@@ -26,7 +26,8 @@ class UserRemoteDataSourceImpl extends RemoteDataSource implements UserRemoteDat
     try{
       final Map<String, dynamic> body = user.toJson();
       final response = await client.post(
-        Uri.http(super.BASE_URL, '${super.BASE_AUTH_UNCODED_PATH}$LOGIN_URL'),
+        //Uri.http(super.BASE_URL, '${super.BASE_AUTH_UNCODED_PATH}$LOGIN_URL'),
+        getUri('${super.BASE_AUTH_UNCODED_PATH}$LOGIN_URL'),
         body: body
       );
       if(response.statusCode != 200)
@@ -40,7 +41,8 @@ class UserRemoteDataSourceImpl extends RemoteDataSource implements UserRemoteDat
   @override
   Future<String> refreshAccessToken(String oldAccessToken)async{
     final response = await client.post(
-      Uri.http(super.BASE_URL, '${super.BASE_AUTH_UNCODED_PATH}$REFRESH_ACCESS_TOKEN_URL'),
+      getUri('${super.BASE_AUTH_UNCODED_PATH}$REFRESH_ACCESS_TOKEN_URL'),
+      //Uri.http(super.BASE_URL, '${super.BASE_AUTH_UNCODED_PATH}$REFRESH_ACCESS_TOKEN_URL'),
       headers: createAuthorizationJsonHeaders(oldAccessToken)
     );
     return _getAccessTokenFromResponse(response);

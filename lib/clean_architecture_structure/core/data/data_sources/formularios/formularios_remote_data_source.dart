@@ -37,7 +37,8 @@ class FormulariosRemoteDataSourceImpl extends RemoteDataSourceWithMultiPartReque
   Future<List<FormularioModel>> getFormularios(int visitId, String accessToken)async{
     return await _executeService(()async{
       final response = await client.get(
-        Uri.http(super.BASE_URL, '${super.BASE_PANEL_UNCODED_PATH}$FORMULARIOS_URL$visitId'),
+        getUri('${super.BASE_PANEL_UNCODED_PATH}$FORMULARIOS_URL$visitId'),
+        //Uri.http(super.BASE_URL, '${super.BASE_PANEL_UNCODED_PATH}$FORMULARIOS_URL$visitId'),
         headers: createAuthorizationJsonHeaders(accessToken)
       );
       if(response.statusCode != 200)
@@ -51,7 +52,8 @@ class FormulariosRemoteDataSourceImpl extends RemoteDataSourceWithMultiPartReque
   Future<FormularioModel> getChosenFormulario(int formularioId, String accessToken)async{
     return await _executeService(()async{
       final response = await client.get(
-        Uri.http(super.BASE_URL, '${super.BASE_PANEL_UNCODED_PATH}$CHOSEN_FORMULARIO_URL$formularioId'),
+        getUri('${super.BASE_PANEL_UNCODED_PATH}$CHOSEN_FORMULARIO_URL$formularioId'),
+        //Uri.http(super.BASE_URL, '${super.BASE_PANEL_UNCODED_PATH}$CHOSEN_FORMULARIO_URL$formularioId'),
         headers: createAuthorizationJsonHeaders(accessToken)
       );
       if(response.statusCode != 200)
@@ -69,7 +71,8 @@ class FormulariosRemoteDataSourceImpl extends RemoteDataSourceWithMultiPartReque
         'longitud_inicio':position.longitude
       };
       final response = await client.post(
-        Uri.http(super.BASE_URL, '${super.BASE_PANEL_UNCODED_PATH}$INITIAL_POSITION_URL$formularioId'),
+        getUri('${super.BASE_PANEL_UNCODED_PATH}$INITIAL_POSITION_URL$formularioId'),
+        //Uri.http(super.BASE_URL, '${super.BASE_PANEL_UNCODED_PATH}$INITIAL_POSITION_URL$formularioId'),
         headers: createSingleAuthorizationHeaders(accessToken),
         body: jsonEncode(body)
       );
@@ -83,7 +86,8 @@ class FormulariosRemoteDataSourceImpl extends RemoteDataSourceWithMultiPartReque
     await _executeService(()async{
       final Map<String, dynamic> body = {'respuestas':_getFormattedFormCampos(formulario)};
       final response = await client.post(
-        Uri.http(super.BASE_URL, '${super.BASE_PANEL_UNCODED_PATH}$CAMPOS_URL$visitId'),
+        //Uri.http(super.BASE_URL, '${super.BASE_PANEL_UNCODED_PATH}$CAMPOS_URL$visitId'),
+        getUri('${super.BASE_PANEL_UNCODED_PATH}$CAMPOS_URL$visitId'),
         headers: createAuthorizationJsonHeaders(accessToken),
         body: jsonEncode(body)
       );
@@ -131,7 +135,8 @@ class FormulariosRemoteDataSourceImpl extends RemoteDataSourceWithMultiPartReque
         'longitud_final':position.longitude
       };
       final response = await client.post(
-        Uri.http(super.BASE_URL, '${super.BASE_PANEL_UNCODED_PATH}$FINAL_POSITION_URL$formularioId'),
+        getUri('${super.BASE_PANEL_UNCODED_PATH}$FINAL_POSITION_URL$formularioId'),
+        //Uri.http(super.BASE_URL, '${super.BASE_PANEL_UNCODED_PATH}$FINAL_POSITION_URL$formularioId'),
         headers: createSingleAuthorizationHeaders(accessToken),
         body: jsonEncode(body)
       );
@@ -143,7 +148,7 @@ class FormulariosRemoteDataSourceImpl extends RemoteDataSourceWithMultiPartReque
   @override
   Future<void> setFirmer(FirmerModel firmer, int formularioId, int visitId, String accessToken)async{
     _executeService(()async{
-      final String requestUrl = 'http://${super.BASE_URL}/${super.BASE_PANEL_UNCODED_PATH}$FIRMER_URL$visitId';
+      final String requestUrl = '${super.BASE_HOST}${super.BASE_URL}/${super.BASE_PANEL_UNCODED_PATH}$FIRMER_URL$visitId';
       final Map<String, String> headers = {'Authorization':'Bearer $accessToken', 'Content-Type':'application/x-www-form-urlencoded'};
       final Map<String, String> fields = firmer.toServiceJson();
       fields['formulario_visita_id'] = formularioId.toString();

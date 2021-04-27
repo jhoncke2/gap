@@ -1,12 +1,10 @@
 import 'package:gap/old_architecture/data/enums/enums.dart';
 import 'package:gap/old_architecture/data/models/entities/entities.dart';
 import 'package:gap/old_architecture/logic/bloc/entities/formularios/formularios_bloc.dart';
-import 'package:gap/old_architecture/logic/bloc/entities/projects/projects_bloc.dart';
 import 'package:gap/old_architecture/logic/bloc/entities/user/user_bloc.dart';
 import 'package:gap/old_architecture/logic/bloc/entities/visits/visits_bloc.dart';
 import 'package:gap/old_architecture/logic/central_managers/data_distributor/data_distributor.dart';
 import 'package:gap/old_architecture/logic/storage_managers/forms/preloaded_forms_storage_manager.dart';
-import 'package:gap/old_architecture/logic/storage_managers/projects/projects_storage_manager.dart';
 import 'package:gap/old_architecture/logic/storage_managers/user/user_storage_manager.dart';
 import 'package:gap/old_architecture/logic/storage_managers/visits/preloaded_visits_storage_manager.dart';
 
@@ -86,9 +84,9 @@ class SourceDataToBlocWithoutConnection extends DataDistributor{
   @override
   Future endAllFormProcess()async{
     await super.endAllFormProcess();
-    final FormularioOld chosenForm = formsB.state.chosenForm;
-    final VisitOld chosenVisit = visitsB.state.chosenVisit;
-    await PreloadedFormsStorageManager.setPreloadedForm(chosenForm, chosenVisit.id);
+    //final FormularioOld chosenForm = formsB.state.chosenForm;
+    //final VisitOld chosenVisit = visitsB.state.chosenVisit;
+    //await PreloadedFormsStorageManager.setPreloadedForm(chosenForm, chosenVisit.id);
   }
 
   @override

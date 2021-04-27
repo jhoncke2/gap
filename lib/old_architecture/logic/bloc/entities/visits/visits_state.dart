@@ -15,7 +15,8 @@ class VisitsState {
   final bool chosenVisitIsBlocked;
 
   VisitsState({
-    this.visitsAreLoaded = true,
+    this.visitsAreLoaded = false,
+    bool visitsAreLocked,
     List<VisitOld> visits,
     ProcessStage selectedStepInNav,
     List<VisitOld> pendientesVisits,    

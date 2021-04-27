@@ -50,7 +50,8 @@ class VisitsBloc extends Bloc<VisitsEvent, VisitsState> {
       visits: visits, 
       pendientesVisits: pendientesVisits,
       realizadasVisits: realizadasVisits,
-      backing: false
+      backing: false,
+      
     );
   }
 
@@ -102,7 +103,7 @@ class VisitsBloc extends Bloc<VisitsEvent, VisitsState> {
     final VisitOld chosenOne = event.chosenOne;
     final List<VisitOld> visits = state.visits;
     _addChosenVisit(chosenOne, visits);
-    _currentYieldedState = state.copyWith(chosenVisit: chosenOne, visits: visits);
+    _currentYieldedState = state.copyWith(chosenVisit: chosenOne, visits: visits, chosenVisitIsBlocked: false, visitsAreLoaded: false);
   }
 
   void _addChosenVisit(VisitOld chosenOne, List<VisitOld> visits){

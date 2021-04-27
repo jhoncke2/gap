@@ -1,16 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:gap/old_architecture/data/enums/enums.dart';
 import 'package:gap/old_architecture/data/models/entities/entities.dart';
-import 'package:gap/old_architecture/errors/storage/unfound_storage_element_err.dart';
-import 'package:gap/old_architecture/logic/bloc/entities/formularios/formularios_bloc.dart';
-import 'package:gap/old_architecture/logic/bloc/entities/projects/projects_bloc.dart';
 import 'package:gap/old_architecture/logic/bloc/entities/user/user_bloc.dart';
 import 'package:gap/old_architecture/logic/bloc/entities/visits/visits_bloc.dart';
 import 'package:gap/old_architecture/logic/bloc/nav_routes/custom_navigator.dart';
-import 'package:gap/old_architecture/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/old_architecture/logic/bloc/widgets/commented_images/commented_images_bloc.dart';
 import 'package:gap/old_architecture/logic/central_managers/data_distributor/data_distributor.dart';
-import 'package:gap/old_architecture/logic/central_managers/preloaded_storage_to_services.dart';
 import 'package:gap/old_architecture/logic/services_manager/projects_services_manager.dart';
 import 'package:gap/old_architecture/logic/services_manager/user_services_manager.dart';
 import 'package:gap/old_architecture/logic/storage_managers/forms/formularios_storage_manager.dart';
@@ -97,7 +92,8 @@ class DataDistributorWithConnection extends DataDistributor{
     await _loadFormsByChosenVisit(realVisit);
     */
   }
-
+  //TODO: Borrar en su desuso
+  /*
   Future _addPreloadedDataRelatedToChosenProjectIfVisitIsntCompleted(VisitOld visit)async{
     if(!visit.completo)
       await _addPreloadedDataRelatedToChosenProject(visit);
@@ -115,7 +111,6 @@ class DataDistributorWithConnection extends DataDistributor{
     formsB.add(SetForms(forms: forms));
     await _addFormsToPreloadedStorageIfVisitIsntCompleted(forms, visit);
   }
-
   Future _addFormsToPreloadedStorageIfVisitIsntCompleted(List<FormularioOld> forms, VisitOld visit)async{
     if(!visit.completo)
       await _addFormsToPreloadedStorage(forms, visit.id);
@@ -132,6 +127,7 @@ class DataDistributorWithConnection extends DataDistributor{
       await PreloadedFormsStorageManager.setPreloadedForm(form, visitId);
     }
   }
+  */
 
   @override
   Future updateChosenForm(FormularioOld form)async{
@@ -199,8 +195,8 @@ class DataDistributorWithConnection extends DataDistributor{
   @override
   Future endAllFormProcess()async{
     await super.endAllFormProcess();
-    await sendFirmerToService();
-    await _updatePreloadedDataAfterFormProcessEnd();
+    //await sendFirmerToService();
+    //await _updatePreloadedDataAfterFormProcessEnd();
   }
 
   Future _updatePreloadedDataAfterFormProcessEnd()async{
@@ -230,6 +226,8 @@ class DataDistributorWithConnection extends DataDistributor{
 
   @override
   Future updateCommentedImages()async{
+    await super.updateCommentedImages();
+    /*
     visitsB.add(ChangeChosenVisitBlocking(isBlocked: true));
     final String accessToken = await UserStorageManager.getAccessToken();
     final VisitOld chosenVisit = UploadedBlocsData.dataContainer[NavigationRoute.VisitDetail];
@@ -239,6 +237,7 @@ class DataDistributorWithConnection extends DataDistributor{
     }else{
       commImgsB.add(InitSentCommImgsWatching(sentCommentedImages: cmmImages, onEnd: changeNPagesToIndex));
     }
+    */
   }
 
   @override
@@ -264,12 +263,15 @@ class DataDistributorWithConnection extends DataDistributor{
   }
 
   Future endCommentedImagesProcess()async{
+    await super.endCommentedImagesProcess();
+    /*
     visitsB.add(ChangeChosenVisitBlocking(isBlocked: false));
     if(commImgsB.state.dataType == CmmImgDataType.UNSENT)
       await _postUnsetCommentedImages();
     else
       commImgsB.add(ResetCommentedImages());
     await super.endCommentedImagesProcess();
+    */
   }
 
   Future _postUnsetCommentedImages()async{

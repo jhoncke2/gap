@@ -122,7 +122,7 @@ class PagesNavigationManager{
     await routesManager.popNTimes(2);
   }
 
-  static Future<void> navToAdjuntarImages()async{
+  static Future<void> navToCommentedImages()async{ 
     await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_COMMENTED_IMAGES);
     await _goToPageByHavingOrNotError(NavigationRoute.AdjuntarFotosVisita, false);
   }

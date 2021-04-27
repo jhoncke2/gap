@@ -46,10 +46,19 @@ class __CustomSelectState extends State<_CustomSelect> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 15),
+      padding: EdgeInsets.symmetric(horizontal: 10),
       decoration: _createMainContainerDecoration(),
       child: DropdownButton<String>(
         items: _createItems(),
+        selectedItemBuilder: (_)=>widget.selectFormField.values.map((e) => Container(
+          width: MediaQuery.of(context).size.width * 0.7,
+          child: Center(
+            child: Text(
+              e.label.replaceAll(r' ', ''), 
+              textAlign: TextAlign.center,
+            ),
+          ),
+        )).toList(),
         value: _currentSelectedValue,
         onChanged: (widget.avaible)? _onChanged : null,
       ),

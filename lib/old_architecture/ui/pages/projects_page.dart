@@ -8,7 +8,6 @@ import 'package:gap/old_architecture/ui/widgets/header/header.dart';
 import 'package:gap/old_architecture/ui/widgets/native_back_button_locker.dart';
 import 'package:gap/old_architecture/ui/widgets/navigation_list/navigation_list.dart';
 import 'package:gap/old_architecture/ui/widgets/page_title.dart';
-import 'package:gap/old_architecture/ui/widgets/unloaded_elements/unloaded_nav_items.dart';
 
 // ignore: must_be_immutable
 class ProjectsPage extends StatelessWidget {
@@ -65,14 +64,14 @@ class ProjectsPage extends StatelessWidget {
     return BlocBuilder<ProjectsBloc, ProjectsState>(
       builder: (context, state) {
         if(state.projectsAreLoaded){
-          final List<ProjectOld> projects = state.projects;
+          final List<ProjectOld> projects = state.projects??[];
           final Map<String, List<dynamic>> namesAndFunctions =_createProjectsItemsNamesAndFunctions(projects);
           return NavigationList(itemsNames: namesAndFunctions['names'],
             itemsFunctions: namesAndFunctions['functions'],
             horizontalPadding: 0.075,
           );
         }else{
-          return UnloadedNavItems();
+          return Container();
         }
       },
     );

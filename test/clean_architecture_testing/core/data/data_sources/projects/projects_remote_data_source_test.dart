@@ -1,12 +1,10 @@
 import 'dart:convert';
-
+import 'package:mockito/mockito.dart';
+import 'package:test/test.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/projects/projects_remote_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/models/project_model.dart';
 import 'package:gap/clean_architecture_structure/core/error/exceptions.dart';
 import 'package:http/http.dart' as http;
-import 'package:mockito/mockito.dart';
-import 'package:test/test.dart';
-
 import '../../../../fixtures/fixture_reader.dart';
 
 class MockHttpClient extends Mock implements http.Client{}
@@ -42,7 +40,7 @@ void main(){
       when(client.get(any, headers: anyNamed('headers'))).thenAnswer((realInvocation) async => http.Response(tStringProjects, 200));
       await remoteDataSource.getProjects(tAccessToken);
       verify(client.get(
-        Uri.http(remoteDataSource.BASE_URL, '${remoteDataSource.BASE_PANEL_UNCODED_PATH}${ProjectsRemoteDataSourceImpl.PROJECTS_API_URL}'),
+        Uri.https(remoteDataSource.BASE_URL, '${remoteDataSource.BASE_PANEL_UNCODED_PATH}${ProjectsRemoteDataSourceImpl.PROJECTS_API_URL}'),
         headers: tHeaders
       ));
     });

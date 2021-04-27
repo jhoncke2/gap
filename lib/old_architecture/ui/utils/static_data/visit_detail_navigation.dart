@@ -11,7 +11,7 @@ final List<Map<String, dynamic>> navigationItemsParts = [
   {
     'icon': Icons.attach_file,
     'name':'Adjuntar fotos',
-    'nav_function':PagesNavigationManager.navToAdjuntarImages,
+    'nav_function':PagesNavigationManager.navToCommentedImages,
   },
   {
     'icon': Icons.remove_red_eye,

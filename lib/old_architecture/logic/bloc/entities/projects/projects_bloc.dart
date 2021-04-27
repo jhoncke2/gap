@@ -55,7 +55,7 @@ class ProjectsBloc extends Bloc<ProjectsEvent, ProjectsState> {
 
   void _chooseProject(ChooseProject event){
     final ProjectOld chosenOne = event.chosenOne;
-    _currentYieldedState = state.copyWith(chosenProject: chosenOne);
+    _currentYieldedState = state.copyWith(chosenProject: chosenOne, projectsAreLoaded: true, loadingProjects: false);
   }
 
   void removeChosenProject(){

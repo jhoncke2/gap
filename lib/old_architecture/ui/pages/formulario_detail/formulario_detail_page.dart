@@ -24,7 +24,7 @@ class FormularioDetailPage extends StatelessWidget {
         child: SingleChildScrollView(
           child: GestureDetector(
             child: Container(
-              height: MediaQuery.of(context).size.height,
+              height: MediaQuery.of(context).size.height ,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -106,11 +106,11 @@ class _LoadedFormularioDetail extends StatelessWidget {
   void _defineConfigByBlocsStates(KeyboardListenerState keyboardState, IndexState indexState, BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
     if(keyboardState.isActive){
-      containerHeight = screenHeight * 0.965;
+      containerHeight = screenHeight * 0.9625;
       header = Container();
       separer = SizedBox(height: _sizeUtils.littleSizedBoxHeigh * 0.0);
     }else{
-      containerHeight = screenHeight * 0.955;
+      containerHeight = screenHeight * 0.94;
       header = _createLoadedFormHead();
       separer = SizedBox(height: _sizeUtils.littleSizedBoxHeigh);
     }
