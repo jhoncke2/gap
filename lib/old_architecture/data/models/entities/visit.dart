@@ -70,6 +70,15 @@ class VisitOld extends EntityWithStageOld{
     name: (sede == null)? null : sede.nombre
   );
 
+  factory VisitOld.fromNewVisit(Visit v)=>VisitOld(
+    id: v.id, 
+    completo: 
+    v.completo, 
+    date: v.date, 
+    sede: SedeOld(id: v.sede.id, nombre: v.sede.nombre),
+    formularios: []
+  );
+
   factory VisitOld.fromJson(Map<String, dynamic> json)=>VisitOld(
     id: json['id'],
     completo: json['completo']??false,

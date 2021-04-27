@@ -36,7 +36,7 @@ class FormularioModel extends Formulario{
     id: json["formulario_pivot_id"],
     completo: json["completo"],
     nombre: json["nombre"],
-    campos: customFormFieldsFromJson(json['campos']),
+    campos: customFormFieldsFromJson(json['campos']??[]),
     formStepIndex: _getStepIndexFromJson(json),
     initialDate: DateTime.now(),
     firmers: firmersFromJson((json['firmers']??[]).cast<Map<String, dynamic>>()),

@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:gap/clean_architecture_structure/core/domain/entities/formulario/formulario.dart';
+import 'package:gap/clean_architecture_structure/core/domain/entities/visit.dart';
 import 'package:gap/old_architecture/data/enums/enums.dart';
 import 'package:gap/old_architecture/data/models/entities/custom_form_field/static/static_form_field.dart';
 import 'package:gap/old_architecture/data/models/entities/custom_form_field/variable/multi_value/select.dart';

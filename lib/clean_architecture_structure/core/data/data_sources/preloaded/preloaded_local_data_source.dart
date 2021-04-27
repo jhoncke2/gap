@@ -23,7 +23,7 @@ class PreloadedLocalDataSourceImpl implements PreloadedLocalDataSource{
   Future<void> setPreloadedFamily(int projectId, int visitId, List<FormularioModel> formularios)async{
     Map<String, dynamic> preloadedData = (await storageConnector.getMap(preloadedDataStorageKey) )??{};
     Map<String, dynamic> preloadedProject = preloadedData['$projectId']??{};
-    List<Map<String, dynamic>> previousFormularios = preloadedProject['$visitId']??[];
+    List<Map<String, dynamic>> previousFormularios = (preloadedProject['$visitId']??[]).cast<Map<String, dynamic>>();
     preloadedProject['$visitId'] = _updatePreloadedFormularios(previousFormularios, formularios);
     preloadedProject = _getprojectDataWithoutEmptyVisits(preloadedProject);
     preloadedData['$projectId'] = preloadedProject;

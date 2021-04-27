@@ -25,15 +25,33 @@ class UserRepositoryImpl implements UserRepository{
   Future<Either<Failure, void>> login(User user)async{
     return await _executeFunction(()async{
       if( await networkInfo.isConnected() ){
-        final String accessToken = await remoteDataSource.login(user);
-        await localDataSource.setUserInformation(user);
+        UserModel userModel = UserModel(email: user.email, password: user.password);
+        final String accessToken = await remoteDataSource.login(userModel);
+        await localDataSource.setUserInformation(userModel);
         await localDataSource.setAccessToken(accessToken);
         return Right(null);
       }else{
         return Left(ServerFailure(message: 'No hay conexión', type: ServerFailureType.LOGIN));
       }
     });
-    
+  }
+
+  @override
+  Future<Either<Failure, void>> reLogin()async{
+    return await _executeFunction(()async{
+      if( await networkInfo.isConnected() ){
+        final UserModel user = await localDataSource.getUserInformation();
+        if(_userFieldIsNotCorrect(user.email) || _userFieldIsNotCorrect(user.password))
+          return Left(StorageFailure(excType: StorageExceptionType.NORMAL));
+        final String accessToken = await remoteDataSource.login(user);
+        await localDataSource.setAccessToken(accessToken);
+      }
+      return Right(null);
+    });
+  }
+
+  bool _userFieldIsNotCorrect(String field){
+    return [null, ''].contains(field);
   }
 
   @override
@@ -43,18 +61,6 @@ class UserRepositoryImpl implements UserRepository{
         final String oldAccessToken = await localDataSource.getAccessToken();
         final String newAccessToken = await remoteDataSource.refreshAccessToken(oldAccessToken);
         await localDataSource.setAccessToken(newAccessToken);
-      }
-      return Right(null);
-    });
-  }
-
-  @override
-  Future<Either<Failure, void>> reLogin()async{
-    return await _executeFunction(()async{
-      if( await networkInfo.isConnected() ){
-        final UserModel user = await localDataSource.getUserInformation();
-        final String accessToken = await remoteDataSource.login(user);
-        await localDataSource.setAccessToken(accessToken);
       }
       return Right(null);
     });

@@ -123,7 +123,7 @@ void main(){
     test('''should neither login in the remoteDataSource, nor save the userInfo and the accessToken on the storage if all goes good, 
     and there is not connectivity''', ()async{
       when(networkInfo.isConnected()).thenAnswer((_) async => false);
-      await repository.login(tUser);
+      await repository.reLogin();
       verifyNever(localDataSource.getUserInformation());
       verifyNever(remoteDataSource.login(any));
       verifyNever(localDataSource.setAccessToken(any));
@@ -131,25 +131,36 @@ void main(){
 
     test('''should return Right(null) when all goes good and there is not connectivity.''', ()async{
       when(networkInfo.isConnected()).thenAnswer((_)async=>false);
+      when(localDataSource.getUserInformation()).thenAnswer((_) async => tUser);
       final result = await repository.reLogin();
       expect(result, Right(null));
     });
 
     test('''should return Left(ServerFailure(Login)) when there is connectivity and remoteDataSource throws ServerException(Login)''', ()async{
       when(networkInfo.isConnected()).thenAnswer((_) async => true);
+      when(localDataSource.getUserInformation()).thenAnswer((_) async => tUser);
       when(remoteDataSource.login(any)).thenThrow(ServerException(message: 'Credenciales inválidas', type: ServerExceptionType.LOGIN));
-      final result = await repository.login(tUser);
+      final result = await repository.reLogin();
       expect(result, Left(ServerFailure(message: 'Credenciales inválidas', servExcType: ServerExceptionType.LOGIN)));
     });
     
     test('''Should return Left(StorageFailure(X)) when there is connectivity 
     and localDataSource throws a StorageException(X)''', ()async{
       when(networkInfo.isConnected()).thenAnswer((_) async => true);
+      when(localDataSource.getUserInformation()).thenAnswer((_) async => tUser);
       when(remoteDataSource.login(any)).thenAnswer((_) async => tAccessToken);
-      when(localDataSource.setUserInformation(any)).thenThrow(StorageException(type: StorageExceptionType.PLATFORM));
+      when(localDataSource.setAccessToken(any)).thenThrow(StorageException(type: StorageExceptionType.PLATFORM));
 
-      final result = await repository.login(tUser);
+      final result = await repository.reLogin();
       expect(result, Left(StorageFailure(excType: StorageExceptionType.PLATFORM)));
+    });
+
+    test('''should return Left(StorageFailure(X)) when there is connectivity and user info is uncompleted''', ()async{
+      when(networkInfo.isConnected()).thenAnswer((_) async => true);
+      when(localDataSource.getUserInformation()).thenAnswer((_) async => UserModel(email:null, password: ''));
+      when(remoteDataSource.login(any)).thenAnswer((_) async => tAccessToken);
+      final result = await repository.reLogin();
+      expect(result, Left(StorageFailure(excType: StorageExceptionType.NORMAL)));
     });
   });
 

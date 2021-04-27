@@ -2,8 +2,8 @@ import 'package:gap/old_architecture/data/models/entities/entities.dart';
 import 'package:gap/old_architecture/native_connectors/storage_connector.dart';
 
 class VisitsStorageManager{
-  static final String _visitsKey = 'visits';
-  static final String _chosenVisitKey = 'chosen_visit';
+  static final String _visitsKey = 'visits_old';
+  static final String _chosenVisitKey = 'chosen_visit_old';
 
   static Future<void> setVisits(List<VisitOld> visits)async{
     final List<Map<String, dynamic>> visitsAsJson = _convertVisitsToJson(visits);

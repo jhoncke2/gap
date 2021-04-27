@@ -41,7 +41,7 @@ class UserRemoteDataSourceImpl extends RemoteDataSource implements UserRemoteDat
   Future<String> refreshAccessToken(String oldAccessToken)async{
     final response = await client.post(
       Uri.http(super.BASE_URL, '${super.BASE_AUTH_UNCODED_PATH}$REFRESH_ACCESS_TOKEN_URL'),
-      headers: createAuthorizationHeaders(oldAccessToken)
+      headers: createAuthorizationJsonHeaders(oldAccessToken)
     );
     return _getAccessTokenFromResponse(response);
   }

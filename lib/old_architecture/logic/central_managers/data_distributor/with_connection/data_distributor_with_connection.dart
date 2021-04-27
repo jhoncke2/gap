@@ -27,11 +27,14 @@ class DataDistributorWithConnection extends DataDistributor{
 
   @override
   Future doInitialConfig()async{
+    await super.doInitialConfig();
+    /*
     final accessToken = await UserStorageManager.getAccessToken();
     if(accessToken == null)
       throw UnfoundStorageElementErr(elementType: StorageElementType.AUTH_TOKEN);
     await updateAccessToken(accessToken);
     await PreloadedStorageToServices.sendPreloadedStorageDataToServices();
+    */
   }
 
   @override
@@ -75,18 +78,24 @@ class DataDistributorWithConnection extends DataDistributor{
 
   @override
   Future<void> updateVisits()async{
+    await super.updateVisits();
+    /*
     final ProjectOld chosenProject = UploadedBlocsData.dataContainer[NavigationRoute.ProjectDetail];
     final List<VisitOld> visits = chosenProject.visits;
     visitsB.add(SetVisits(visits: visits));
     UploadedBlocsData.dataContainer[NavigationRoute.Visits] = visits;
+    */
   }
 
   @override
   Future<void> updateChosenVisit(VisitOld visit)async{
+    await super.updateChosenVisit(visit);
+    /*
     final VisitOld realVisit = getUpdatedChosenVisit(visit);
     await super.updateChosenVisit(realVisit);
     await _addPreloadedDataRelatedToChosenProjectIfVisitIsntCompleted(realVisit);
     await _loadFormsByChosenVisit(realVisit);
+    */
   }
 
   Future _addPreloadedDataRelatedToChosenProjectIfVisitIsntCompleted(VisitOld visit)async{
@@ -126,12 +135,15 @@ class DataDistributorWithConnection extends DataDistributor{
 
   @override
   Future updateChosenForm(FormularioOld form)async{
+    await super.updateChosenForm(form);
+    /*
     formsB.add(ChangeFormsAreBlocked(areBlocked: true));
     FormularioOld realForm = await getUpdatedChosenForm(form);
     await addInitialPosition(realForm);
     final String accessToken = await UserStorageManager.getAccessToken();
     await ProjectsServicesManager.updateFormInitialization(accessToken, realForm.initialPosition, realForm.id);
     await super.updateChosenForm(realForm);
+    */
   }
 
   @override
@@ -140,12 +152,15 @@ class DataDistributorWithConnection extends DataDistributor{
   }
 
   Future endFormFillingOut()async{
+    await super.endFormFillingOut();
+    /*
     chosenFormB.add(ChangeFormIsLocked(isLocked: true));
     await super.endFormFillingOut();
     final FormularioOld chosenForm = formsB.state.chosenForm;
     await _sendFormToService(chosenForm);
     await _sendFormFinalPosition(chosenForm);
     chosenFormB.add(ChangeFormIsLocked(isLocked: false));
+    */
   }
 
   Future _sendFormToService(FormularioOld form)async{
@@ -165,7 +180,7 @@ class DataDistributorWithConnection extends DataDistributor{
   @override
   Future updateFirmers()async{
     await super.updateFirmers();
-    await sendFirmerToService();
+    //await sendFirmerToService();
   }
 
   @protected

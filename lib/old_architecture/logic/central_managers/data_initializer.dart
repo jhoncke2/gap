@@ -1,3 +1,8 @@
+import 'package:gap/clean_architecture_structure/core/data/models/project_model.dart';
+import 'package:gap/clean_architecture_structure/core/domain/repositories/formularios_repository.dart';
+import 'package:gap/clean_architecture_structure/core/domain/repositories/projects_repository.dart';
+import 'package:gap/clean_architecture_structure/core/domain/repositories/visits_repository.dart';
+import 'package:gap/clean_architecture_structure/injection_container.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:gap/old_architecture/logic/bloc/nav_routes/custom_navigator.dart';
@@ -16,6 +21,10 @@ import 'package:gap/old_architecture/logic/storage_managers/visits/visits_storag
 import 'package:gap/old_architecture/ui/utils/dialogs.dart' as dialogs;
 
 class DataInitializer{
+  static final ProjectsRepository projectsRepository = GetItContainer.sl();
+  static final VisitsRepository visitsRepository = GetItContainer.sl();
+  static final FormulariosRepository formulariosRepository = GetItContainer.sl();
+
   static final RoutesManager _routesManager = RoutesManager();
   bool _continueInitialization;
 
@@ -144,8 +153,15 @@ class DataInitializer{
   }
 
   Future _doProjectDetailUpdating()async{
-    final ProjectOld chosenOne = await ProjectsStorageManager.getChosenProject();
-    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_CHOSEN_PROJECT, chosenOne);
+    //final ProjectOld chosenOne = await ProjectsStorageManager.getChosenProject();
+    final eitherChosenProject = await projectsRepository.getChosenProject();
+    await eitherChosenProject.fold((l)async{
+      _continueInitialization = false;
+    }, (chosenProject)async{
+      final ProjectOld chosenProjectOld = ProjectOld(id: chosenProject.id, nombre: chosenProject.nombre, visits: []);
+      await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_CHOSEN_PROJECT, chosenProjectOld);
+    });
+    
   }
 
   Future _doVisitsUpdating()async{
@@ -153,8 +169,15 @@ class DataInitializer{
   }
 
   Future _doVisitDetailUpdating()async{
-    final VisitOld chosenOne = await VisitsStorageManager.getChosenVisit();
-    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_CHOSEN_VISIT, chosenOne);
+    final eitherChosenVisit = await visitsRepository.getChosenVisit();
+    await eitherChosenVisit.fold((l)async{
+      _continueInitialization = false;
+    }, (chosenVisit)async{
+      final VisitOld chosenVisitOld = VisitOld.fromNewVisit(chosenVisit);
+      await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_CHOSEN_VISIT, chosenVisitOld);
+    });
+    //final VisitOld chosenOne = await VisitsStorageManager.getChosenVisit();
+    
   }
 
   Future _doFormsUpdating()async{

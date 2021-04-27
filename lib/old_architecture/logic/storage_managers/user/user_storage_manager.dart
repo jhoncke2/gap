@@ -4,10 +4,10 @@ import 'package:gap/old_architecture/native_connectors/storage_connector.dart';
 
 class UserStorageManager{
   @protected
-  static final String _authTokenKey = 'auth_token';
+  static final String _authTokenKey = 'auth_token_old';
   @protected
-  static final String _userInformationKey = 'user_information';
-  static final String _firstRunningKey = 'first_time_runned';
+  static final String _userInformationKey = 'user_information_old';
+  static final String _firstRunningKey = 'first_time_runned_old';
 
   static Future<void> setAccessToken(String authToken)async{
     await StorageConnectorOldSingleton.storageConnector.setStringResource(_authTokenKey, authToken);

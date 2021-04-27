@@ -30,7 +30,7 @@ class StorageConnectorImpl implements StorageConnector{
 
   @override
   Future<String> getString(String key)async{
-    return await _read(key);
+    return await _read(key)??'';
   }
 
   @override
@@ -42,7 +42,7 @@ class StorageConnectorImpl implements StorageConnector{
   @override
   Future<Map<String, dynamic>> getMap(String key)async{
     final String jsonString = await _read(key);
-    return jsonDecode(jsonString);
+    return jsonDecode(jsonString??'{}');
   }
 
   @override

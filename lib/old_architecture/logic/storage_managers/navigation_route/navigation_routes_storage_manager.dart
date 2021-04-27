@@ -2,7 +2,7 @@ import 'package:gap/old_architecture/data/enums/enums.dart';
 import 'package:gap/old_architecture/native_connectors/storage_connector.dart';
 
 class NavigationRoutesStorageManager{
-  static final String _navigationRoutesKey = 'navigation_routes';
+  static final String _navigationRoutesKey = 'navigation_routes_old';
 
   static Future<void> setNavigationRoute(NavigationRoute newRoute)async{
     final List<Map<String, dynamic>> routes = await _obtainNavigationRoutesFromStorage();

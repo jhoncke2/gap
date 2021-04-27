@@ -3,7 +3,7 @@ import 'package:gap/old_architecture/data/models/entities/entities.dart';
 import 'package:gap/old_architecture/native_connectors/storage_connector.dart';
 
 class PreloadedFormsStorageManager{
-  static final String _preloadedFormsKey = 'preloaded_forms';
+  static final String _preloadedFormsKey = 'preloaded_forms_old';
   @protected
   static final _PreloadedFormsHolder currentPreloadedFormsHolder = _PreloadedFormsHolder();
 

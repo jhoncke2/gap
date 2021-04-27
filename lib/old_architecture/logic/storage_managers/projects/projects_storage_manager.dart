@@ -2,9 +2,9 @@ import 'package:gap/old_architecture/data/models/entities/entities.dart';
 import 'package:gap/old_architecture/native_connectors/storage_connector.dart';
 
 class ProjectsStorageManager{
-  static final String _projectsKey = 'projects';
-  static final String _chosenProjectKey = 'chosen_project';
-  static final String _projectsWithPreloadedVisitsKey = 'projects_with_preloaded_visits';
+  static final String _projectsKey = 'projects_old';
+  static final String _chosenProjectKey = 'chosen_project_old';
+  static final String _projectsWithPreloadedVisitsKey = 'projects_with_preloaded_visits_old';
   
   static Future<void> setProjects(List<ProjectOld> projects)async{
     final List<Map<String, dynamic>> projectsAsJson = projectsToJson(projects);

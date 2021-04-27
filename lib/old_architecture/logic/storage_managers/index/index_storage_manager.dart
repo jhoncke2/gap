@@ -3,7 +3,7 @@ import 'package:gap/old_architecture/native_connectors/storage_connector.dart';
 
 class IndexStorageManager{
 
-  static final String _indexConfigKey = 'index';
+  static final String _indexConfigKey = 'index_old';
 
   static Future<void> setIndex(IndexState indexConfig)async{
     final Map<String, dynamic> indexConfigAsJson = _convertIndexToJson(indexConfig);

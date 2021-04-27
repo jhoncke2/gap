@@ -32,6 +32,24 @@ class FormularioOld extends EntityWithStageOld {
     stage: (completo)? ProcessStage.Realizada : ProcessStage.Pendiente
   );
 
+  factory FormularioOld.fromFormularioNew(Formulario f)=>FormularioOld(
+    id: f.id,
+    completo: f.completo,
+    nombre: f.name,
+    campos: f.campos,
+    date: f.initialDate,
+    firmers: f.firmers.map((f) => PersonalInformationOld(
+      id: f.id, 
+      name: f.name, 
+      identifDocumentType: f.identifDocumentType,
+      identifDocumentNumber: f.identifDocumentNumber,
+      firm: f.firm
+    )).toList(),
+    formStepIndex: f.formStepIndex,
+    initialPosition: f.initialPosition==null? null :Position(latitude: f.initialPosition.latitude, longitude: f.initialPosition.longitude),
+    finalPosition: f.finalPosition==null? null : Position(latitude: f.finalPosition.latitude, longitude: f.finalPosition.longitude)
+  );
+
   factory FormularioOld.fromJson(Map<String, dynamic> json) => FormularioOld(
     id: json["formulario_pivot_id"],
     completo: json["completo"],

@@ -63,7 +63,137 @@ void main(){
   _testSetFormularioGroup();
   _testSetFinalPositionGroup();
   _testSetFirmerGroup();
-  
+  group('setChosenFormulario', (){
+    FormularioModel tFormulario;
+    setUp((){
+      tFormulario = _getFormulariosFromFixture()[0];
+    });
+
+    test('should set the formulario on the localDataSource', ()async{
+      await formulariosRepository.setChosenFormulario(tFormulario);
+      verify(localDataSource.setChosenFormulario(tFormulario));
+    });
+
+    test('should return Right(null) when all goes good', ()async{
+      final result = await formulariosRepository.setChosenFormulario(tFormulario);
+      expect(result, Right(null));
+    });
+
+    test('should return Left(StorageFailure(X)) when localDataSource throws a StorageException(X)', ()async{
+      when(localDataSource.setChosenFormulario(any)).thenThrow(StorageException(type: StorageExceptionType.PLATFORM));
+      final result = await formulariosRepository.setChosenFormulario(tFormulario);
+      expect(result, Left(StorageFailure(excType: StorageExceptionType.PLATFORM)));
+    });
+
+  });
+
+  group('getChosenFormulario', (){
+    String tAccessToken;
+    ProjectModel tProject;
+    VisitModel tVisit;
+    FormularioModel tFormulario;
+    setUp((){
+      tProject = ProjectModel(id: 1, nombre: '');
+      tVisit = VisitModel(id: 1, completo: false);
+      tFormulario = _getFormulariosFromFixture()[0];
+      tAccessToken = 'access_token';
+    });
+
+    test('''should get the formulario id from the localDataSource and get the updated formulario from the remoteDataSource
+    when there is connectivity. Obtaining the projectId, visitId, accessToken from its localDataSources.''', ()async{
+      when(networkInfo.isConnected()).thenAnswer((_) async => true);
+      when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tProject);
+      when(visitsLocalDataSource.getChosenVisit(any)).thenAnswer((_) async => tVisit);
+      when(localDataSource.getChosenFormulario(any)).thenAnswer((_) async => tFormulario);
+      when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
+      when(remoteDataSource.getChosenFormulario(any, any)).thenAnswer((_) async => tFormulario);
+      await formulariosRepository.getChosenFormulario();
+      verify(networkInfo.isConnected());
+      verify(projectsLocalDataSource.getChosenProject());      
+      verify(visitsLocalDataSource.getChosenVisit(tProject.id));
+      verify(localDataSource.getChosenFormulario(tVisit.id));
+      verify(userLocalDataSource.getAccessToken());
+      verify(remoteDataSource.getChosenFormulario(tFormulario.id, tAccessToken));
+    });
+
+    test('''should get the chosen formulario from preloadedDataSource when there is not connectivity. 
+    Obtaining the projectId, visitId, accessToken from its localDataSources.''', ()async{
+      final List<FormularioModel> tFormularios = _getFormulariosFromFixture();
+      final FormularioModel tChosenFormuario = tFormulario.copyWith(nombre: 'preloaded_formulario');
+      when(networkInfo.isConnected()).thenAnswer((_) async => false);
+      when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tProject);
+      when(visitsLocalDataSource.getChosenVisit(any)).thenAnswer((_) async => tVisit);
+      when(localDataSource.getChosenFormulario(any)).thenAnswer((_) async => tChosenFormuario);
+      when(preloadedDataSource.getPreloadedFormularios(any, any)).thenAnswer((_) async => tFormularios);
+      await formulariosRepository.getChosenFormulario();
+      verify(networkInfo.isConnected());
+      verify(projectsLocalDataSource.getChosenProject());      
+      verify(visitsLocalDataSource.getChosenVisit(tProject.id));
+      verify(localDataSource.getChosenFormulario(tVisit.id));
+      verify(preloadedDataSource.getPreloadedFormularios(tProject.id, tVisit.id));
+      verifyNever(userLocalDataSource.getAccessToken());
+      verifyNever(remoteDataSource.getChosenFormulario(tFormulario.id, tAccessToken));
+    });
+
+    test('''should return Right(tFormulario) when there is connectivity and all goes good''', ()async{
+      when(networkInfo.isConnected()).thenAnswer((_) async => true);
+      when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tProject);
+      when(visitsLocalDataSource.getChosenVisit(any)).thenAnswer((_) async => tVisit);
+      when(localDataSource.getChosenFormulario(any)).thenAnswer((_) async => tFormulario);
+      when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
+      when(remoteDataSource.getChosenFormulario(any, any)).thenAnswer((_) async => tFormulario);
+      final result = await formulariosRepository.getChosenFormulario();
+      expect(result, Right(tFormulario));
+    });
+
+    test('''should get the chosen formulario from preloadedDataSource when there is not connectivity. 
+    Obtaining the projectId, visitId, chosenFormulario from its localDataSources.''', ()async{
+      final List<FormularioModel> tFormularios = _getFormulariosFromFixture();
+      final FormularioModel tChosenFormuario = tFormulario.copyWith(nombre: 'preloaded_formulario');
+      when(networkInfo.isConnected()).thenAnswer((_) async => false);
+      when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tProject);
+      when(visitsLocalDataSource.getChosenVisit(any)).thenAnswer((_) async => tVisit);
+      when(localDataSource.getChosenFormulario(any)).thenAnswer((_) async => tChosenFormuario);
+      when(preloadedDataSource.getPreloadedFormularios(any, any)).thenAnswer((_) async => tFormularios);
+      final result = await formulariosRepository.getChosenFormulario();
+      expect(result, Right(tFormulario));
+    });
+
+    test('''should return Left(ServerFailure(X)) when there is connectivity
+    and RemoteDataSource throws a ServerException(X)''', ()async{
+      when(networkInfo.isConnected()).thenAnswer((_) async => true);
+      when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tProject);
+      when(visitsLocalDataSource.getChosenVisit(any)).thenAnswer((_) async => tVisit);
+      when(localDataSource.getChosenFormulario(any)).thenAnswer((_) async => tFormulario);
+      when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
+      when(remoteDataSource.getChosenFormulario(any, any)).thenThrow(ServerException(type: ServerExceptionType.NORMAL));
+      final result = await formulariosRepository.getChosenFormulario();
+      expect(result, Left(ServerFailure(servExcType: ServerExceptionType.NORMAL)));
+    });
+
+    test('''should return Left(StorageFailure(X)) when there is connectivity
+    and any localDataSource throws a StorageException(X)''', ()async{
+      when(networkInfo.isConnected()).thenAnswer((_) async => true);
+      when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tProject);
+      when(visitsLocalDataSource.getChosenVisit(any)).thenAnswer((_) async => tVisit);
+      when(localDataSource.getChosenFormulario(any)).thenThrow(StorageException(type: StorageExceptionType.NORMAL));
+      when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
+      when(remoteDataSource.getChosenFormulario(any, any)).thenAnswer((_) async => tFormulario);
+      final result = await formulariosRepository.getChosenFormulario();
+      expect(result, Left(StorageFailure(excType: StorageExceptionType.NORMAL)));
+    });
+
+    test('''should return Left(StorageFailure(X)) when there is not connectivity
+    and any localDataSource throws StorageException(X).''', ()async{
+      when(networkInfo.isConnected()).thenAnswer((_) async => false);
+      when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tProject);
+      when(visitsLocalDataSource.getChosenVisit(any)).thenAnswer((_) async => tVisit);
+      when(localDataSource.getChosenFormulario(any)).thenAnswer((_) async => tFormulario);
+      when(preloadedDataSource.getPreloadedFormularios(any, any)).thenThrow(StorageException(type: StorageExceptionType.PLATFORM));
+      final result = await formulariosRepository.getChosenFormulario();
+      expect(result, Left(StorageFailure(excType: StorageExceptionType.PLATFORM)));
+    });
+  });
 }
 
 void _testGetFormulariosGroup(){
@@ -255,7 +385,7 @@ void _testSetFormularioGroup(){
       when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
       when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tProject);
       when(visitsLocalDataSource.getChosenVisit(any)).thenAnswer((_) async => tVisit);
-      await formulariosRepository.setFormulario(tFormulario);
+      await formulariosRepository.setCampos(tFormulario);
       verify(networkInfo.isConnected());
       verify(userLocalDataSource.getAccessToken());
       verify(projectsLocalDataSource.getChosenProject());
@@ -267,7 +397,7 @@ void _testSetFormularioGroup(){
       when(networkInfo.isConnected()).thenAnswer((_) async => false);
       when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tProject);
       when(visitsLocalDataSource.getChosenVisit(any)).thenAnswer((_) async => tVisit);
-      await formulariosRepository.setFormulario(tFormulario);
+      await formulariosRepository.setCampos(tFormulario);
       verify(networkInfo.isConnected());
       verify(projectsLocalDataSource.getChosenProject());
       verify(visitsLocalDataSource.getChosenVisit(tProject.id));
@@ -279,7 +409,7 @@ void _testSetFormularioGroup(){
       when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
       when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tProject);
       when(visitsLocalDataSource.getChosenVisit(any)).thenAnswer((_) async => tVisit);
-      final result = await formulariosRepository.setFormulario(tFormulario);
+      final result = await formulariosRepository.setCampos(tFormulario);
       expect(result, Right(null));
     });
 
@@ -290,7 +420,7 @@ void _testSetFormularioGroup(){
       when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tProject);
       when(visitsLocalDataSource.getChosenVisit(any)).thenAnswer((_) async => tVisit);
       when(remoteDataSource.setCampos(any, any, any)).thenThrow(ServerException());
-      final result = await formulariosRepository.setFormulario(tFormulario);
+      final result = await formulariosRepository.setCampos(tFormulario);
       expect(result, Left(ServerFailure()));
     });
 
@@ -298,7 +428,7 @@ void _testSetFormularioGroup(){
       when(networkInfo.isConnected()).thenAnswer((_) async => false);
       when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tProject);
       when(visitsLocalDataSource.getChosenVisit(any)).thenAnswer((_) async => tVisit);
-      final result = await formulariosRepository.setFormulario(tFormulario);
+      final result = await formulariosRepository.setCampos(tFormulario);
       expect(result, Right(null));
     });
 
@@ -308,7 +438,7 @@ void _testSetFormularioGroup(){
       when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tProject);
       when(visitsLocalDataSource.getChosenVisit(any)).thenAnswer((_) async => tVisit);
       when(preloadedDataSource.updatePreloadedFormulario(any, any, any)).thenThrow(StorageException(type: StorageExceptionType.PLATFORM));
-      final result = await formulariosRepository.setFormulario(tFormulario);
+      final result = await formulariosRepository.setCampos(tFormulario);
       expect(result, Left(StorageFailure(excType: StorageExceptionType.PLATFORM)));
     });
   });

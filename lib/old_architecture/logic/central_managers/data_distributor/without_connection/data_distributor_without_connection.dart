@@ -25,30 +25,38 @@ class SourceDataToBlocWithoutConnection extends DataDistributor{
 
   @override
   Future<void> updateProjects()async{
-    //final ProjectsBloc projectsB = blocsAsMap[BlocName.Projects];
+    await super.updateProjects();
+    /*
     final List<ProjectOld> projectsWithPreloadedVisits = await ProjectsStorageManager.getProjectsWithPreloadedVisits();
     final SetProjects spEvent = SetProjects(projects: projectsWithPreloadedVisits);
     projectsB.add(spEvent);
     await ProjectsStorageManager.setProjects(projectsWithPreloadedVisits);
     UploadedBlocsData.dataContainer[NavigationRoute.Projects] = projectsWithPreloadedVisits;
+    */
   }
 
   @override
   Future<void> updateVisits()async{
+    await super.updateVisits();
+    /*
     final ProjectOld chosenProject = UploadedBlocsData.dataContainer[NavigationRoute.ProjectDetail];
     List<VisitOld> preloadedVisits = await PreloadedVisitsStorageManager.getVisitsByProjectId(chosenProject.id);
     preloadedVisits = preloadedVisits.where((element) => !element.completo).toList();
     final SetVisits svEvent = SetVisits(visits: preloadedVisits);
     visitsB.add(svEvent);
     UploadedBlocsData.dataContainer[NavigationRoute.Visits] = preloadedVisits;
+    */
   }
 
   @override
   Future updateChosenVisit(VisitOld visit)async{
+    await super.updateChosenVisit(visit);
+    /*
     final VisitOld realVisit = getUpdatedChosenVisit(visit);
     await super.updateChosenVisit(realVisit);
     await _updateFormularios(realVisit);
     UploadedBlocsData.dataContainer[NavigationRoute.Visits] = realVisit;
+    */
   }
 
   Future _updateFormularios(VisitOld chosenVisit)async{
@@ -70,9 +78,9 @@ class SourceDataToBlocWithoutConnection extends DataDistributor{
 
   @override
   Future updateChosenForm(FormularioOld form)async{
-    FormularioOld realForm = await getUpdatedChosenForm(form);
-    await addInitialPosition(realForm);
-    super.updateChosenForm(realForm);
+    //FormularioOld realForm = await getUpdatedChosenForm(form);
+    //await addInitialPosition(realForm);
+    await super.updateChosenForm(form);
   }
 
   @override

@@ -2,7 +2,7 @@ import 'package:gap/old_architecture/data/models/entities/entities.dart';
 import 'package:gap/old_architecture/native_connectors/storage_connector.dart';
 
 class ChosenFormStorageManager{
-  static final String _chosenFormKey = 'chosen_form';
+  static final String _chosenFormKey = 'chosen_form_old';
   final StorageConnectorOld storageConnector;
   ChosenFormStorageManager():
     this.storageConnector = StorageConnectorOldSingleton.storageConnector

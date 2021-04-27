@@ -74,7 +74,9 @@ void init()async{
     remoteDataSource: GetItContainer.sl(), 
     localDataSource: GetItContainer.sl(), 
     preloadedDataSource: GetItContainer.sl(), 
-    userLocalDataSource: GetItContainer.sl()
+    userLocalDataSource: GetItContainer.sl(), 
+    projectsLocalDataSource: GetItContainer.sl(), 
+    formulariosRemoteDataSource: GetItContainer.sl()
   ));
   GetItContainer.sl.registerLazySingleton<FormulariosRepository>(()=>FormulariosRepositoryImpl(
     networkInfo: GetItContainer.sl(), 

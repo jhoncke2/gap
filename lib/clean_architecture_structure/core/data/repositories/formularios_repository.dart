@@ -1,7 +1,6 @@
 import 'package:dartz/dartz.dart';
-import 'package:gap/clean_architecture_structure/core/domain/entities/formulario/custom_position.dart';
 import 'package:meta/meta.dart';
-import 'package:geolocator_platform_interface/src/models/position.dart';
+import 'package:gap/clean_architecture_structure/core/domain/entities/formulario/custom_position.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/projects/projects_local_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/user/user_local_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/visits/visits_local_data_source.dart';
@@ -42,14 +41,15 @@ class FormulariosRepositoryImpl implements FormulariosRepository{
     try{
       final ProjectModel chosenProject = await projectsLocalDataSource.getChosenProject();
       final VisitModel chosenVisit = await visitsLocalDataSource.getChosenVisit(chosenProject.id);
+      List<FormularioModel> formularios;
       if(await networkInfo.isConnected()){
         final String accessToken = await userLocalDataSource.getAccessToken();
-        final List<FormularioModel> formularios = await remoteDataSource.getFormularios(chosenVisit.id, accessToken);
-        return Right(formularios);
+        formularios = await remoteDataSource.getFormularios(chosenVisit.id, accessToken);
       }else{
-        final List<FormularioModel> formularios = await preloadedDataSource.getPreloadedFormularios(chosenProject.id, chosenVisit.id);
-        return Right(formularios);
+        formularios = await preloadedDataSource.getPreloadedFormularios(chosenProject.id, chosenVisit.id);
       }
+      await localDataSource.setFormularios(formularios, chosenVisit.id);
+      return Right(formularios);
     }on ServerException{
       return Left(ServerFailure());
     }on StorageException catch(exception){
@@ -66,29 +66,28 @@ class FormulariosRepositoryImpl implements FormulariosRepository{
       if(await networkInfo.isConnected()){
         final String accessToken = await userLocalDataSource.getAccessToken();
         await remoteDataSource.setInitialPosition((position ), chosenFormulario.id, accessToken);
-        return Right(null);
+        chosenFormulario = chosenFormulario.copyWith(initialPosition: null);
       }else{
         chosenFormulario = chosenFormulario.copyWith(initialPosition: position);
         await localDataSource.setChosenFormulario(chosenFormulario);
-        await preloadedDataSource.updatePreloadedFormulario(chosenProject.id, chosenVisit.id, chosenFormulario);
-        return Right(null);
       }
+      await preloadedDataSource.updatePreloadedFormulario(chosenProject.id, chosenVisit.id, chosenFormulario);
+      return Right(null);
     });
   }
 
   @override
-  Future<Either<Failure, void>> setFormulario(Formulario formulario)async{
+  Future<Either<Failure, void>> setCampos(Formulario formulario)async{
     return await _executeGeneralVoidFunction(()async{
       final ProjectModel chosenProject = await projectsLocalDataSource.getChosenProject();
       final VisitModel chosenVisit = await visitsLocalDataSource.getChosenVisit(chosenProject.id);
       if(await networkInfo.isConnected()){
         final String accessToken = await userLocalDataSource.getAccessToken();
         await remoteDataSource.setCampos(formulario, chosenVisit.id, accessToken);
-        return Right(null);
-      }else{
-        await preloadedDataSource.updatePreloadedFormulario(chosenProject.id, chosenVisit.id, formulario);
-        return Right(null);
+        formulario = (formulario as FormularioModel).copyWith(campos: []);
       }
+      await preloadedDataSource.updatePreloadedFormulario(chosenProject.id, chosenVisit.id, formulario);
+      return Right(null);
     });
   }
 
@@ -101,13 +100,13 @@ class FormulariosRepositoryImpl implements FormulariosRepository{
       if(await networkInfo.isConnected()){
         final String accessToken = await userLocalDataSource.getAccessToken();
         await remoteDataSource.setFinalPosition(position, chosenFormulario.id, accessToken);
-        return Right(null);
+        chosenFormulario = chosenFormulario.copyWith(finalPosition: null);  
       }else{
         chosenFormulario = chosenFormulario.copyWith(finalPosition: position);
         await localDataSource.setChosenFormulario(chosenFormulario);
-        await preloadedDataSource.updatePreloadedFormulario(chosenProject.id, chosenVisit.id, chosenFormulario);
-        return Right(null);
       }
+      await preloadedDataSource.updatePreloadedFormulario(chosenProject.id, chosenVisit.id, chosenFormulario);
+      return Right(null);
     });
   }
 
@@ -116,16 +115,18 @@ class FormulariosRepositoryImpl implements FormulariosRepository{
     return await _executeGeneralVoidFunction(()async{
       final ProjectModel chosenProject = await projectsLocalDataSource.getChosenProject();
       final VisitModel chosenVisit = await visitsLocalDataSource.getChosenVisit(chosenProject.id);
-      final FormularioModel chosenFormulario = await localDataSource.getChosenFormulario(chosenVisit.id);
+      FormularioModel chosenFormulario = await localDataSource.getChosenFormulario(chosenVisit.id);
       if(await networkInfo.isConnected()){     
         final String accessToken = await userLocalDataSource.getAccessToken();
         await remoteDataSource.setFirmer(firmer, chosenFormulario.id, chosenVisit.id, accessToken);
-        return Right(null);
+        chosenFormulario = chosenFormulario.copyWith(
+          firmers: chosenFormulario.firmers.where((f) => f.id != firmer.id).toList()
+        );
       }else{
         chosenFormulario.firmers.add(firmer);
-        await preloadedDataSource.updatePreloadedFormulario(chosenProject.id, chosenVisit.id, chosenFormulario);
-        return Right(null);
       }
+      await preloadedDataSource.updatePreloadedFormulario(chosenProject.id, chosenVisit.id, chosenFormulario);
+      return Right(null);
     });
   }
 
@@ -140,5 +141,36 @@ class FormulariosRepositoryImpl implements FormulariosRepository{
     }on StorageException catch(exception){
       return Left(StorageFailure(excType: exception.type));
     }
+  }
+
+  @override
+  Future<Either<Failure, void>> setChosenFormulario(Formulario formulario)async{
+    return await _executeGeneralVoidFunction(()async{
+      await localDataSource.setChosenFormulario(formulario);
+      return Right(null);
+    });
+  }
+
+  @override
+  Future<Either<Failure, Formulario>> getChosenFormulario()async{
+    try{
+      final ProjectModel chosenProject = await projectsLocalDataSource.getChosenProject();
+      final VisitModel chosenVisit = await visitsLocalDataSource.getChosenVisit(chosenProject.id);
+      final FormularioModel chosenFormulario = await localDataSource.getChosenFormulario(chosenVisit.id);
+      if( await networkInfo.isConnected() ){
+        final String accessToken = await userLocalDataSource.getAccessToken();
+        final FormularioModel updatedChosenFormulario = await remoteDataSource.getChosenFormulario(chosenFormulario.id, accessToken);
+        return Right(updatedChosenFormulario);
+      }else{
+        final List<FormularioModel> preloadedFormularios = await preloadedDataSource.getPreloadedFormularios(chosenProject.id, chosenVisit.id);
+        final FormularioModel preloadedChosenFormulario = preloadedFormularios.singleWhere((f) => f.id == chosenFormulario.id);
+        return Right(preloadedChosenFormulario);
+      }
+    }on ServerException catch(exception){
+      return Left(ServerFailure(message: exception.message, servExcType: exception.type));
+    }on StorageException catch(exception){
+      return Left(StorageFailure(excType: exception.type));
+    }
+    
   }
 }

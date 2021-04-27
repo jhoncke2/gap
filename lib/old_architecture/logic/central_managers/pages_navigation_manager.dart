@@ -1,9 +1,8 @@
+import 'package:geolocator/geolocator.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:gap/old_architecture/logic/bloc/nav_routes/custom_navigator.dart';
 import 'package:gap/old_architecture/logic/central_managers/data_distributor/data_distributor_error_handler_manager.dart';
 import 'package:gap/old_architecture/native_connectors/gps.dart';
-import 'package:gap/old_architecture/native_connectors/storage_connector.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:gap/old_architecture/data/enums/enums.dart';
 import 'package:gap/old_architecture/data/models/entities/entities.dart';
 import 'package:gap/old_architecture/logic/bloc/nav_routes/routes_manager.dart';
@@ -74,10 +73,11 @@ class PagesNavigationManager{
 
   static Future<bool> _formularioSePuedeAbrir(FormularioOld formulario)async{
     bool isEmpty = formulario.campos.isEmpty;
-    if(isEmpty)
-      await dialogs.showTemporalDialog('Formulario sin campos');
+    //if(isEmpty)
+      //await dialogs.showTemporalDialog('Formulario sin campos');
     //return !formulario.completo && !isEmpty;
-    return !isEmpty;
+    //return !isEmpty;
+    return true;
   }
 
   static Future _updateForm(FormularioOld formulario)async{

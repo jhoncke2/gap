@@ -2,7 +2,7 @@ import 'package:gap/old_architecture/data/models/entities/entities.dart';
 import 'package:gap/old_architecture/native_connectors/storage_connector.dart';
 
 class FormulariosStorageManager{
-  static final String _formsKey = 'formularios';
+  static final String _formsKey = 'formularios_old';
 
   static Future<void> setForms(List<FormularioOld> forms)async{
     final List<Map<String, dynamic>> formsAsJson = _convertFormsToJson(forms);

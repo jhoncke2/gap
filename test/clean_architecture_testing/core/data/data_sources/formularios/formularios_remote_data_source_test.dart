@@ -97,6 +97,9 @@ void _testGetChosenFormularioGroup(){
       tAccessToken = 'access_token';
       tFormulario = _getFormularioFromFixture();
       tStringFormulario = jsonEncode( tFormulario.toJson() );
+      final Map<String, dynamic> tJsonFormularioResponse = {};
+      tJsonFormularioResponse['data'] = jsonDecode(tStringFormulario);
+      tStringFormulario = jsonEncode(tJsonFormularioResponse);
     });
 
     test('should get the chosenFormulario from the client, using the specified uri and the tHeaders', ()async{
@@ -149,14 +152,14 @@ void _testSetInitialPositionGroup(){
     });
 
     test('should set the initial position to the client, using the tHeaders and the tFormularioId in the uri', ()async{
-      final Map<String, String> tHeaders = {'Authorization':'Bearer $tAccessToken', 'Content-Type':'application/json'};
+      final Map<String, String> tHeaders = {'Authorization':'Bearer $tAccessToken'};
       final Map<String, dynamic> tBody = {'latitud_inicio':tPosition.latitude, 'longitud_inicio':tPosition.longitude};
       when(client.post(any, headers: anyNamed('headers'), body: anyNamed('body'))).thenAnswer((_) async => http.Response('{}', 200));
       await remoteDataSource.setInitialPosition(tPosition, tFormularioId, tAccessToken);
       verify(client.post(
         Uri.http(remoteDataSource.BASE_URL, '${remoteDataSource.BASE_PANEL_UNCODED_PATH}${FormulariosRemoteDataSourceImpl.INITIAL_POSITION_URL}$tFormularioId'),
         headers: tHeaders,
-        body: tBody
+        body: jsonEncode(tBody)
       ));
     });
 
@@ -182,7 +185,6 @@ void _testSetCamposGroup(){
     FormularioModel tFormulario;
     //TODO: Cambiar por nueva versión de CustomFormField
     List<CustomFormFieldOld> tFormFields;
-    List<Map<String, dynamic>> tSentData;
     setUp((){
       tAccessToken = 'access_token';
       tVisitId = 1;
@@ -196,28 +198,28 @@ void _testSetCamposGroup(){
       Map<String, dynamic> tBody = {
         'respuestas':[
           {
-            "name":(tFormFields[0] as NumberFormFieldOld).name,
             "formulario_visita_id":tFormulario.id,
-            "res":[(tFormFields[0] as NumberFormFieldOld).uniqueValue]
+            "name":(tFormFields[0] as NumberFormFieldOld).name,
+            "res":[(tFormFields[0] as NumberFormFieldOld).uniqueValue.toString()]
           },
           {
-            "name":(tFormFields[1] as DateFieldOld).name,
             "formulario_visita_id":tFormulario.id,
+            "name":(tFormFields[1] as DateFieldOld).name,
             "res":[(tFormFields[1] as DateFieldOld).uniqueValue]
           },
           {
-            "name":(tFormFields[2] as SelectFormFieldOld).name,
             "formulario_visita_id":tFormulario.id,
+            "name":(tFormFields[2] as SelectFormFieldOld).name,
             "res":[1,0,0,0]
           },
           {
-            "name":(tFormFields[3] as RawTextFormFieldOld).name,
             "formulario_visita_id":tFormulario.id,
+            "name":(tFormFields[3] as RawTextFormFieldOld).name,
             "res":[(tFormFields[3] as RawTextFormFieldOld).uniqueValue]
           },
           {
-            "name":(tFormFields[4] as CheckBoxGroupOld).name,
             "formulario_visita_id":tFormulario.id,
+            "name":(tFormFields[4] as CheckBoxGroupOld).name,
             "res":[1,1,1,0,0]
           }
         ]
@@ -227,7 +229,7 @@ void _testSetCamposGroup(){
       verify(client.post(
         Uri.http(remoteDataSource.BASE_URL, '${remoteDataSource.BASE_PANEL_UNCODED_PATH}${FormulariosRemoteDataSourceImpl.CAMPOS_URL}$tVisitId'),
         headers: tHeaders,
-        body: tBody
+        body: jsonEncode(tBody)
       ));
     });
 
@@ -258,14 +260,14 @@ void _testSetFinalPositionGroup(){
     });
 
     test('should set the final position to the client, using the tHeaders and the tFormularioId in the uri', ()async{
-      final Map<String, String> tHeaders = {'Authorization':'Bearer $tAccessToken', 'Content-Type':'application/json'};
+      final Map<String, String> tHeaders = {'Authorization':'Bearer $tAccessToken'};
       final Map<String, dynamic> tBody = {'latitud_final':tPosition.latitude, 'longitud_final':tPosition.longitude};
       when(client.post(any, headers: anyNamed('headers'), body: anyNamed('body'))).thenAnswer((_) async => http.Response('{}', 200));
       await remoteDataSource.setFinalPosition(tPosition, tFormularioId, tAccessToken);
       verify(client.post(
         Uri.http(remoteDataSource.BASE_URL, '${remoteDataSource.BASE_PANEL_UNCODED_PATH}${FormulariosRemoteDataSourceImpl.FINAL_POSITION_URL}$tFormularioId'),
         headers: tHeaders,
-        body: tBody
+        body: jsonEncode(tBody)
       ));
     });
 

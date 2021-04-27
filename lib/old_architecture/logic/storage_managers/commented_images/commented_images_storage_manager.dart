@@ -4,7 +4,7 @@ import 'package:gap/old_architecture/native_connectors/storage_connector.dart';
 
 class CommentedImagesStorageManager{
   
-  static final String _commentedImagesKey = 'commented_images';
+  static final String _commentedImagesKey = 'commented_images_old';
   final StorageConnectorOld storageConnector;
   
   CommentedImagesStorageManager():

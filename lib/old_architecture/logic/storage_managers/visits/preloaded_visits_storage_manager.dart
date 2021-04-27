@@ -3,7 +3,7 @@ import 'package:gap/old_architecture/data/models/entities/entities.dart';
 import 'package:gap/old_architecture/native_connectors/storage_connector.dart';
 
 class PreloadedVisitsStorageManager{
-  static final String _preloadedVisitsKey = 'preloaded_visits';
+  static final String _preloadedVisitsKey = 'preloaded_visits_old';
   @protected
   static final _PreloadedVisitsHolder currentPreloadedVisitsHolder = _PreloadedVisitsHolder();
 
