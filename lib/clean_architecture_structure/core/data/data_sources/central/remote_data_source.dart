@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:gap/clean_architecture_structure/core/error/exceptions.dart';
 import 'package:http/http.dart' as http;
 
 abstract class RemoteDataSource{
@@ -28,6 +29,23 @@ abstract class RemoteDataSource{
       'Authorization':'Bearer $accessToken',
       'Content-Type':'application/json'
     };
+  }
+
+  Future<http.Response> executeGeneralService(
+    Future<http.Response> Function() service
+  )async{
+    try{
+      final http.Response response = await service();
+      final int statusCode = response.statusCode;
+      if(statusCode == 200)
+        return response;
+      else if(statusCode == 401)
+        throw ServerException(type: ServerExceptionType.UNHAUTORAIZED);
+      else
+        throw Exception();
+    }catch(exception){
+      throw ServerException(type: ServerExceptionType.NORMAL);
+    }
   }
 }
 

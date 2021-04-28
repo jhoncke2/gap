@@ -64,14 +64,22 @@ void main(){
   _testSetFinalPositionGroup();
   _testSetFirmerGroup();
   group('setChosenFormulario', (){
+    ProjectModel tChosenProject;
+    VisitModel tChosenVisit;
     FormularioModel tFormulario;
     setUp((){
+      tChosenProject = ProjectModel(id: 1, nombre: 'p');
+      tChosenVisit = VisitModel(id: 2, completo: false);
       tFormulario = _getFormulariosFromFixture()[0];
+      when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tChosenProject);
+      when(visitsLocalDataSource.getChosenVisit(any)).thenAnswer((_) async => tChosenVisit);
     });
 
     test('should set the formulario on the localDataSource', ()async{
       await formulariosRepository.setChosenFormulario(tFormulario);
-      verify(localDataSource.setChosenFormulario(tFormulario));
+      verify(projectsLocalDataSource.getChosenProject());
+      verify(visitsLocalDataSource.getChosenVisit(tChosenProject.id));
+      verify(localDataSource.setChosenFormulario(tFormulario, tChosenVisit.id));
     });
 
     test('should return Right(null) when all goes good', ()async{
@@ -80,7 +88,7 @@ void main(){
     });
 
     test('should return Left(StorageFailure(X)) when localDataSource throws a StorageException(X)', ()async{
-      when(localDataSource.setChosenFormulario(any)).thenThrow(StorageException(type: StorageExceptionType.PLATFORM));
+      when(localDataSource.setChosenFormulario(any, any)).thenThrow(StorageException(type: StorageExceptionType.PLATFORM));
       final result = await formulariosRepository.setChosenFormulario(tFormulario);
       expect(result, Left(StorageFailure(excType: StorageExceptionType.PLATFORM)));
     });
@@ -202,13 +210,15 @@ void _testGetFormulariosGroup(){
     ProjectModel tProject;
     VisitModel tVisit;
     List<Formulario> tFormularios;
+    FormularioModel tChosenFormulario;
 
     setUp((){
       tAccessToken = 'access_token';
       tProject = ProjectModel(id: 1, nombre: '');
       tVisit = VisitModel(id: 2, date: null, completo: false, sede: null, formularios: []);
       tFormularios = _getFormulariosFromFixture();
-
+      tChosenFormulario = _getFormulariosFromFixture()[0];
+      tChosenFormulario = tChosenFormulario.copyWith(completo: !tChosenFormulario.completo);
       when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tProject);
       when(visitsLocalDataSource.getChosenVisit(any)).thenAnswer((_) async => tVisit);
     });
@@ -217,14 +227,16 @@ void _testGetFormulariosGroup(){
       when(networkInfo.isConnected()).thenAnswer((_) async => true);
       when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
       when(remoteDataSource.getFormularios(any, any)).thenAnswer((_) async => tFormularios);
+      when(localDataSource.getChosenFormulario(any)).thenAnswer((_) async => tChosenFormulario);
       await formulariosRepository.getFormularios();
       verify(networkInfo.isConnected());
       verify(userLocalDataSource.getAccessToken());
       verify(remoteDataSource.getFormularios(tVisit.id, tAccessToken));
+      verify(localDataSource.getChosenFormulario(tVisit.id));
     });
 
     test('''should get the formularios from preloadedDataSource obtaining the visitId, projectId from their respective dataSources 
-      when there is not connectivity''', 
+      and neither the chosenFormulario nor the accessToken, when there is not connectivity''', 
       ()async{
         when(networkInfo.isConnected()).thenAnswer((_) async => false);
         when(preloadedDataSource.getPreloadedFormularios(any, any)).thenAnswer((_) async => tFormularios);
@@ -232,15 +244,24 @@ void _testGetFormulariosGroup(){
         verify(projectsLocalDataSource.getChosenProject());
         verify(visitsLocalDataSource.getChosenVisit(tProject.id));
         verify(preloadedDataSource.getPreloadedFormularios(tProject.id, tVisit.id));
+        verifyNever(userLocalDataSource.getAccessToken());
+        verifyNever(localDataSource.getChosenFormulario(any));
       }
     );
 
     test('should return Right(tFormularios) when there is connection and all goes good', ()async{
+      List<Formulario> tUpdatedFormularios = List.of(tFormularios);
+      tUpdatedFormularios[0] = tChosenFormulario;
       when(networkInfo.isConnected()).thenAnswer((_) async => true);
       when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
       when(remoteDataSource.getFormularios(any, any)).thenAnswer((_) async => tFormularios);
+      when(localDataSource.getChosenFormulario(any)).thenAnswer((_) async => tChosenFormulario);
       final result = await formulariosRepository.getFormularios();
-      expect(result, Right(tFormularios));
+      result.fold((l){
+        fail('No debería retornar Left(...)');
+      }, (fs){
+        expect(fs, equals(tUpdatedFormularios));
+      });
     });
 
     test('should return Left(ServerFailure) when there is connection and the remoteDataSource throws a ServerException', ()async{
@@ -294,12 +315,10 @@ void _testSetInitialPositionGroup(){
       tVisit = VisitModel(id: 2, completo: false);
       tInitialPosition = CustomPositionModel(latitude: 1.1, longitude: 2.2);
       tFormulario = FormularioModel(id: 3, completo: false);
-
       when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tProject);
       when(visitsLocalDataSource.getChosenVisit(any)).thenAnswer((_) async => tVisit);
       when(localDataSource.getChosenFormulario(any)).thenAnswer((_) async => tFormulario);
     });
-
     
     test('''should set the initial position in remoteDataSource, obtaining the
         projectId from projectsLocalDataSource, visitId from visitsLocalDataSource,
@@ -314,6 +333,7 @@ void _testSetInitialPositionGroup(){
       verify(localDataSource.getChosenFormulario(tVisit.id));
       verify(userLocalDataSource.getAccessToken());
       verify(remoteDataSource.setInitialPosition(tInitialPosition, tFormulario.id, tAccessToken));
+      verify(localDataSource.setChosenFormulario(tFormulario, tVisit.id));
     });
 
     test('''should set the initial position in localDataSource, obtaining the
@@ -330,7 +350,7 @@ void _testSetInitialPositionGroup(){
       verify(projectsLocalDataSource.getChosenProject());
       verify(visitsLocalDataSource.getChosenVisit(tProject.id));
       verify(localDataSource.getChosenFormulario(tVisit.id));
-      verify(localDataSource.setChosenFormulario(tFormularioWithInitialPosition));
+      verify(localDataSource.setChosenFormulario(tFormularioWithInitialPosition, tVisit.id));
       verify(preloadedDataSource.updatePreloadedFormulario(tProject.id, tVisit.id, tFormularioWithInitialPosition));
     });
 
@@ -368,7 +388,7 @@ void _testSetInitialPositionGroup(){
 }
 
 void _testSetFormularioGroup(){
-  group('setFormulario', (){
+  group('setCampos', (){
     String tAccessToken;
     ProjectModel tProject;
     VisitModel tVisit;
@@ -391,6 +411,7 @@ void _testSetFormularioGroup(){
       verify(projectsLocalDataSource.getChosenProject());
       verify(visitsLocalDataSource.getChosenVisit(tProject.id));
       verify(remoteDataSource.setCampos(tFormulario, tVisit.id, tAccessToken));
+      verify(localDataSource.setChosenFormulario(tFormulario, tVisit.id));
     });
 
     test('should update the Formulario in preloadedDataSource and localDataSource when there is not connectivity', ()async{
@@ -480,6 +501,7 @@ void _testSetFinalPositionGroup(){
       verify(localDataSource.getChosenFormulario(tVisit.id));
       verify(userLocalDataSource.getAccessToken());
       verify(remoteDataSource.setFinalPosition(tFinalPosition, tFormulario.id, tAccessToken));
+      verify(localDataSource.setChosenFormulario(tFormulario, tVisit.id));
     });
     
     test('''should set the final position in localDataSource, obtaining the
@@ -497,7 +519,7 @@ void _testSetFinalPositionGroup(){
       verify(projectsLocalDataSource.getChosenProject());
       verify(visitsLocalDataSource.getChosenVisit(tProject.id));
       verify(localDataSource.getChosenFormulario(tVisit.id));
-      verify(localDataSource.setChosenFormulario(tFormularioWithFinalPosition));
+      verify(localDataSource.setChosenFormulario(tFormularioWithFinalPosition, tVisit.id));
       verify(preloadedDataSource.updatePreloadedFormulario(tProject.id, tVisit.id, tFormularioWithFinalPosition));
     });
 
@@ -565,6 +587,7 @@ void _testSetFirmerGroup(){
       verify(projectsLocalDataSource.getChosenProject());
       verify(visitsLocalDataSource.getChosenVisit(tProject.id));
       verify(remoteDataSource.setFirmer(tFirmer1, tFormulario1.id, tVisit.id, tAccessToken));
+      verify(localDataSource.setChosenFormulario(tFormulario1, tVisit.id));
     });
 
     test('''should update the formulario with the new firmer in preloadedDataSource, obtaining the chosenProject from projectsLocalDataSource, 

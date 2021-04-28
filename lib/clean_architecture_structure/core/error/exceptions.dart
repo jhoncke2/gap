@@ -14,6 +14,7 @@ class StorageException implements Exception{
 enum ServerExceptionType{
   LOGIN,
   REFRESH_ACCESS_TOKEN,
+  UNHAUTORAIZED,
   NORMAL
 }
 

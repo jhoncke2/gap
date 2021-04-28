@@ -4,6 +4,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/clean_architecture_structure/core/data/models/commented_image_model.dart';
 import 'package:gap/clean_architecture_structure/core/domain/entities/commented_image.dart';
+import 'package:gap/old_architecture/errors/logic/nav_obstruction_error.dart';
 import 'package:gap/old_architecture/errors/services/service_status_err.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:gap/clean_architecture_structure/core/data/models/formulario/custom_position.dart';
@@ -229,6 +230,7 @@ abstract class DataDistributor{
     indexB.add(ResetAllOfIndex());
     await eitherChoose.fold((l)async{
       formsB.add(ChangeFormsAreBlocked(areBlocked: false));
+      throw NavObstructionErr(message: 'Ocurrió un error con el formulario');
       //TODO: Implementar manejo de errores
     }, (_)async{
       await _updateChosenFormFromRepository(formOld);
@@ -239,6 +241,7 @@ abstract class DataDistributor{
     final eitherUpdatedChosenForm = await formulariosRepository.getChosenFormulario();
     await eitherUpdatedChosenForm.fold((l)async{
       formsB.add(ChangeFormsAreBlocked(areBlocked: false));
+      throw NavObstructionErr(message: 'Ocurrió un problema al cargar la información del formulario');
       //TODO: Implementar manejo de errores
     }, (updatedChosenForm)async{
       await _manageUpdatedChosenForm(updatedChosenForm);
@@ -256,6 +259,8 @@ abstract class DataDistributor{
       longitude: updatedChosenFormOld.initialPosition.longitude
     ));
     eitherSetInitialPosition.fold((l){
+      formsB.add(ChangeFormsAreBlocked(areBlocked: false));
+      throw NavObstructionErr(message: 'Ocurrión un problema al enviar la posición geográfica.');
       //TODO: Implementar manejo de errores
     }, (_){
       //TODO: Implementar método

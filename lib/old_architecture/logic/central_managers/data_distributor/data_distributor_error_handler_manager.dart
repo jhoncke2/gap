@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:gap/old_architecture/central_config/bloc_providers_creator.dart';
 import 'package:gap/old_architecture/data/enums/enums.dart';
+import 'package:gap/old_architecture/errors/logic/nav_obstruction_error.dart';
 import 'package:gap/old_architecture/errors/services/service_status_err.dart';
 import 'package:gap/old_architecture/errors/storage/app_never_runned.dart';
 import 'package:gap/old_architecture/errors/storage/unfound_storage_element_err.dart';
@@ -30,6 +31,8 @@ class DataDisributorErrorHandlingManager{
       await _manageUnfoundStorageElementErr(err);
     }on PlatformException catch(exception){
       await _managePlatformException(exception, functionName, value);
+    }on NavObstructionErr catch(err){
+      await _manageNavObstructionErr(err);
     }catch(err){
       await _manageGeneralErr(err);
     }
@@ -138,6 +141,12 @@ class DataDisributorErrorHandlingManager{
       navigationTodoByError = NavigationRoute.Login;
       await StorageConnectorOldSingleton.storageConnector.deleteAll();
     }
+  }
+
+  Future _manageNavObstructionErr(NavObstructionErr err)async{
+    happendError = true;
+    navigationTodoByError = null;
+    await dialogs.showTemporalDialog(err.message);
   }
 
   Future _manageGeneralErr(err)async{

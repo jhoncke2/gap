@@ -5,13 +5,13 @@ import 'package:gap/clean_architecture_structure/core/platform/storage_connector
 abstract class FormulariosLocalDataSource{
   Future<void> setFormularios(List<FormularioModel> formularios, int visitId);
   Future<List<FormularioModel>> getFormularios(int visitId);
-  Future<void> setChosenFormulario(FormularioModel formulario);
+  Future<void> setChosenFormulario(FormularioModel formulario, int visitId);
   Future<FormularioModel> getChosenFormulario(int visitId);
 }
 
 class FormulariosLocalDataSourceImpl implements FormulariosLocalDataSource{
-  static const baseFormulariosStorageKey = 'formularios_of';
-  static const chosenFormularioStorageKey = 'chosen_formulario';
+  static const FORMULARIOS_STORAGE_KEY = 'formularios_of';
+  static const CHOSEN_FORMULARIO_STORAGE_KEY = 'chosen_formulario';
   final StorageConnector storageConnector;
 
   FormulariosLocalDataSourceImpl({
@@ -25,27 +25,38 @@ class FormulariosLocalDataSourceImpl implements FormulariosLocalDataSource{
   }
 
   String _getFormulariosByVisitStorageKey(int visitId){
-    return '${baseFormulariosStorageKey}_$visitId';
+    return '${FORMULARIOS_STORAGE_KEY}_$visitId';
   }
 
   @override
   Future<List<FormularioModel>> getFormularios(int visitId)async{
-    final List<Map<String, dynamic>> jsonFormularios = await storageConnector.getList('${baseFormulariosStorageKey}_$visitId');
+    final List<Map<String, dynamic>> jsonFormularios = await storageConnector.getList('${FORMULARIOS_STORAGE_KEY}_$visitId');
     return formulariosFromJson(jsonFormularios);
   }
 
   @override
-  Future<void> setChosenFormulario(FormularioModel formulario)async{
-    await storageConnector.setString('${formulario.id}', chosenFormularioStorageKey);
+  Future<void> setChosenFormulario(FormularioModel formulario, int visitId)async{
+    await storageConnector.setString('${formulario.id}', CHOSEN_FORMULARIO_STORAGE_KEY);
+    List<FormularioModel> formularios = await getFormularios(visitId);
+    formularios = formularios.map((f) => (f.id == formulario.id)? formulario : f).toList();
+    await setFormularios(formularios, visitId);
   }
 
   @override
   Future<FormularioModel> getChosenFormulario(int visitId)async{
-    final String stringChosenFormularioId = await storageConnector.getString(chosenFormularioStorageKey);
+    final String stringChosenFormularioId = await storageConnector.getString(CHOSEN_FORMULARIO_STORAGE_KEY);
     final int chosenFormularioId = int.parse(stringChosenFormularioId);
     final List<Map<String, dynamic>> jsonFormulariosOfVisit = await storageConnector.getList(_getFormulariosByVisitStorageKey(visitId));
-    final Map<String, dynamic> jsonChosenFormulario = jsonFormulariosOfVisit.firstWhere((f) => f['formulario_pivot_id']  == chosenFormularioId);
-    final FormularioModel chosenFormulario = FormularioModel.fromJson(jsonChosenFormulario);
-    return chosenFormulario;
+    return _tryGetFormularioFromStorage(jsonFormulariosOfVisit, chosenFormularioId);
+  }
+
+  Future<FormularioModel> _tryGetFormularioFromStorage(List<Map<String, dynamic>> jsonFormulariosOfVisit, int chosenFormularioId)async{
+    try{
+      final Map<String, dynamic> jsonChosenFormulario = jsonFormulariosOfVisit.firstWhere((f) => f['formulario_pivot_id']  == chosenFormularioId);
+      final FormularioModel chosenFormulario = FormularioModel.fromJson(jsonChosenFormulario);
+      return chosenFormulario;
+    }catch(err){
+      return FormularioModel(id: null, completo: false);
+    }
   }
 }

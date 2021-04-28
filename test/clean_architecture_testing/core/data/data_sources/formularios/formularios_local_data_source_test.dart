@@ -31,7 +31,7 @@ void main(){
     final int chosenVisitId = 1;
     test('should set the formularios succesfuly', ()async{
       await formulariosLocalDataSource.setFormularios(tFormularios, chosenVisitId);
-      verify(storageConnector.setList(tJsonFormularios, '${FormulariosLocalDataSourceImpl.baseFormulariosStorageKey}_$chosenVisitId'));
+      verify(storageConnector.setList(tJsonFormularios, '${FormulariosLocalDataSourceImpl.FORMULARIOS_STORAGE_KEY}_$chosenVisitId'));
     });
   });
   
@@ -40,20 +40,28 @@ void main(){
     test('should get the formularios successfuly', ()async{
       when(storageConnector.getList(any)).thenAnswer((_) async => tJsonFormularios);
       final List<FormularioModel> formularios = await formulariosLocalDataSource.getFormularios(chosenVisitId);
-      verify(storageConnector.getList('${FormulariosLocalDataSourceImpl.baseFormulariosStorageKey}_$chosenVisitId'));
+      verify(storageConnector.getList('${FormulariosLocalDataSourceImpl.FORMULARIOS_STORAGE_KEY}_$chosenVisitId'));
       expect(formularios, tFormularios);
     });
   });
 
   group('setChosenFormulario', (){
+    int tChosenVisitId;
     FormularioModel tChosenFormulario;
     setUp((){
-      tChosenFormulario = tFormularios[0];
+      tChosenVisitId = 1;
+      tChosenFormulario = FormularioModel.fromJson(tFormularios[0].toJson());
+      tChosenFormulario.completo = !tChosenFormulario.completo;
     });
 
     test('should set the chosen formulario successfuly', ()async{
-      await formulariosLocalDataSource.setChosenFormulario(tChosenFormulario);
-      verify(storageConnector.setString('${tChosenFormulario.id}', '${FormulariosLocalDataSourceImpl.chosenFormularioStorageKey}'));
+      final List<FormularioModel> tUpdatedFormularios = List.of(tFormularios);
+      tUpdatedFormularios[0] = tChosenFormulario;
+      when(storageConnector.getList(any)).thenAnswer((_) async => tJsonFormularios);
+      await formulariosLocalDataSource.setChosenFormulario(tChosenFormulario, tChosenVisitId);
+      verify(storageConnector.setString('${tChosenFormulario.id}', '${FormulariosLocalDataSourceImpl.CHOSEN_FORMULARIO_STORAGE_KEY}'));
+      verify(storageConnector.getList('${FormulariosLocalDataSourceImpl.FORMULARIOS_STORAGE_KEY}_$tChosenVisitId'));
+      verify(storageConnector.setList(formulariosToJson(tUpdatedFormularios), '${FormulariosLocalDataSourceImpl.FORMULARIOS_STORAGE_KEY}_$tChosenVisitId'));
     });
   });
 
@@ -67,11 +75,9 @@ void main(){
     test('should get the chosen formulario successfuly', ()async{
       when(storageConnector.getString(any)).thenAnswer((_) async => '${tChosenFormulario.id}');
       when(storageConnector.getList(any)).thenAnswer((_) async => tJsonFormularios);
-
       final FormularioModel chosenFormulario = await formulariosLocalDataSource.getChosenFormulario(tChosenVisitId);
-
-      verify(storageConnector.getString(FormulariosLocalDataSourceImpl.chosenFormularioStorageKey));
-      verify(storageConnector.getList('${FormulariosLocalDataSourceImpl.baseFormulariosStorageKey}_$tChosenVisitId'));
+      verify(storageConnector.getString(FormulariosLocalDataSourceImpl.CHOSEN_FORMULARIO_STORAGE_KEY));
+      verify(storageConnector.getList('${FormulariosLocalDataSourceImpl.FORMULARIOS_STORAGE_KEY}_$tChosenVisitId'));
       expect(chosenFormulario, equals(tChosenFormulario));
     });
   });

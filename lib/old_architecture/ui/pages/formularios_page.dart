@@ -19,14 +19,20 @@ class FormulariosPage extends StatelessWidget {
     return Scaffold(
       body: NativeBackButtonLocker(
         child: SafeArea(
-          child: BlocBuilder<FormulariosBloc, FormulariosState>(
-            builder: (_, state) {
-              if(state.formsAreLoaded && !state.backing && !state.formsAreBlocked){
-                return _createContent(state);
-              }else{
-                return CustomProgressIndicator();
-              }
-            },
+          child: Column(
+            children: [
+              SizedBox(height:_sizeUtils.normalSizedBoxHeigh),
+              Header(),
+              BlocBuilder<FormulariosBloc, FormulariosState>(
+                builder: (_, state) {
+                  if(state.formsAreLoaded && !state.backing && !state.formsAreBlocked){
+                    return _createContent(state);
+                  }else{
+                    return CustomProgressIndicator(heightScreenPercentage: 0.75);
+                  }
+                },
+              ),
+            ],
           ),
         ),
       ),
@@ -49,8 +55,6 @@ class FormulariosPage extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(height:_sizeUtils.normalSizedBoxHeigh),
-        Header(),
         SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
         _FormulariosComponents(visitForms: state.forms)
       ],

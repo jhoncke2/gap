@@ -1,6 +1,8 @@
-import 'dart:convert';
 import 'dart:io';
-
+import 'dart:convert';
+import 'package:mockito/mockito.dart';
+import 'package:test/test.dart';
+import 'package:dartz/dartz.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/commented_images/commented_images_remote_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/projects/projects_local_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/user/user_local_data_source.dart';
@@ -10,10 +12,9 @@ import 'package:gap/clean_architecture_structure/core/data/models/project_model.
 import 'package:gap/clean_architecture_structure/core/data/models/visit_model.dart';
 import 'package:gap/clean_architecture_structure/core/data/repositories/commented_images_repository.dart';
 import 'package:gap/clean_architecture_structure/core/domain/entities/commented_image.dart';
+import 'package:gap/clean_architecture_structure/core/error/exceptions.dart';
+import 'package:gap/clean_architecture_structure/core/error/failures.dart';
 import 'package:gap/clean_architecture_structure/core/network/network_info.dart';
-import 'package:mockito/mockito.dart';
-import 'package:test/test.dart';
-
 import '../../../fixtures/fixture_reader.dart';
 
 class MockNetworkInfo extends Mock implements NetworkInfo{}
@@ -81,6 +82,25 @@ void main() {
       verifyNever(projectsLocalDataSource.getChosenProject());
       verifyNever(visitsLocalDataSource.getChosenVisit(tChosenProject.id));
       verifyNever(remoteDataSource.setCommentedImages(tCommentedImages, tChosenVisit.id, tAccessToken));    
+    });
+
+    test('should return Right(null) when there is connectivity and all goes good', ()async{
+      when(networkInfo.isConnected()).thenAnswer((_) async => true);
+      when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
+      when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tChosenProject);
+      when(visitsLocalDataSource.getChosenVisit(any)).thenAnswer((_) async => tChosenVisit);
+      final result = await repository.setCommentedImages(tCommentedImages);
+      expect(result, Right(null));
+    });
+
+    test('should return Left(ServerFailure) when there is connectivity and remoteDataSource throws a ServerException', ()async{
+      when(networkInfo.isConnected()).thenAnswer((_) async => true);
+      when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
+      when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tChosenProject);
+      when(visitsLocalDataSource.getChosenVisit(any)).thenAnswer((_) async => tChosenVisit);
+      when(remoteDataSource.setCommentedImages(any, any, any)).thenThrow(ServerException(type: ServerExceptionType.NORMAL));
+      final result = await repository.setCommentedImages(tCommentedImages);
+      expect(result, Left(ServerFailure(servExcType: ServerExceptionType.NORMAL)));
     });
   });
 

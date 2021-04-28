@@ -45,6 +45,9 @@ class FormulariosRepositoryImpl implements FormulariosRepository{
       if(await networkInfo.isConnected()){
         final String accessToken = await userLocalDataSource.getAccessToken();
         formularios = await remoteDataSource.getFormularios(chosenVisit.id, accessToken);
+        final FormularioModel chosenFormulario = await localDataSource.getChosenFormulario(chosenVisit.id);
+        if(chosenFormulario != null)
+          formularios = formularios.map((f) => (f.id == chosenFormulario.id)? chosenFormulario : f).toList();
       }else{
         formularios = await preloadedDataSource.getPreloadedFormularios(chosenProject.id, chosenVisit.id);
       }
@@ -67,9 +70,10 @@ class FormulariosRepositoryImpl implements FormulariosRepository{
         final String accessToken = await userLocalDataSource.getAccessToken();
         await remoteDataSource.setInitialPosition((position ), chosenFormulario.id, accessToken);
         chosenFormulario = chosenFormulario.copyWith(initialPosition: null);
+        await localDataSource.setChosenFormulario(chosenFormulario, chosenVisit.id);
       }else{
         chosenFormulario = chosenFormulario.copyWith(initialPosition: position);
-        await localDataSource.setChosenFormulario(chosenFormulario);
+        await localDataSource.setChosenFormulario(chosenFormulario, chosenVisit.id);
       }
       await preloadedDataSource.updatePreloadedFormulario(chosenProject.id, chosenVisit.id, chosenFormulario);
       return Right(null);
@@ -85,6 +89,7 @@ class FormulariosRepositoryImpl implements FormulariosRepository{
         final String accessToken = await userLocalDataSource.getAccessToken();
         await remoteDataSource.setCampos(formulario, chosenVisit.id, accessToken);
         formulario = (formulario as FormularioModel).copyWith(campos: []);
+        await localDataSource.setChosenFormulario(formulario, chosenVisit.id);
       }
       await preloadedDataSource.updatePreloadedFormulario(chosenProject.id, chosenVisit.id, formulario);
       return Right(null);
@@ -100,10 +105,11 @@ class FormulariosRepositoryImpl implements FormulariosRepository{
       if(await networkInfo.isConnected()){
         final String accessToken = await userLocalDataSource.getAccessToken();
         await remoteDataSource.setFinalPosition(position, chosenFormulario.id, accessToken);
-        chosenFormulario = chosenFormulario.copyWith(finalPosition: null);  
+        chosenFormulario = chosenFormulario.copyWith(finalPosition: null);
+        await localDataSource.setChosenFormulario(chosenFormulario, chosenVisit.id);
       }else{
         chosenFormulario = chosenFormulario.copyWith(finalPosition: position);
-        await localDataSource.setChosenFormulario(chosenFormulario);
+        await localDataSource.setChosenFormulario(chosenFormulario, chosenVisit.id);
       }
       await preloadedDataSource.updatePreloadedFormulario(chosenProject.id, chosenVisit.id, chosenFormulario);
       return Right(null);
@@ -122,6 +128,7 @@ class FormulariosRepositoryImpl implements FormulariosRepository{
         chosenFormulario = chosenFormulario.copyWith(
           firmers: chosenFormulario.firmers.where((f) => f.id != firmer.id).toList()
         );
+        await localDataSource.setChosenFormulario(chosenFormulario, chosenVisit.id);
       }else{
         chosenFormulario.firmers.add(firmer);
       }
@@ -146,7 +153,9 @@ class FormulariosRepositoryImpl implements FormulariosRepository{
   @override
   Future<Either<Failure, void>> setChosenFormulario(Formulario formulario)async{
     return await _executeGeneralVoidFunction(()async{
-      await localDataSource.setChosenFormulario(formulario);
+      final ProjectModel chosenProject = await projectsLocalDataSource.getChosenProject();
+      final VisitModel chosenVisit = await visitsLocalDataSource.getChosenVisit(chosenProject.id);
+      await localDataSource.setChosenFormulario(formulario, chosenVisit.id);
       return Right(null);
     });
   }
@@ -171,6 +180,5 @@ class FormulariosRepositoryImpl implements FormulariosRepository{
     }on StorageException catch(exception){
       return Left(StorageFailure(excType: exception.type));
     }
-    
   }
 }
