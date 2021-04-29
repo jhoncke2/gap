@@ -4,6 +4,7 @@ import 'package:gap/old_architecture/logic/bloc/entities/formularios/formularios
 import 'package:gap/old_architecture/logic/bloc/entities/visits/visits_bloc.dart';
 import 'package:gap/old_architecture/data/models/entities/entities.dart';
 import 'package:gap/old_architecture/ui/widgets/header/app_back_button.dart';
+import 'package:gap/old_architecture/ui/widgets/header/logount.dart';
 import 'package:gap/old_architecture/ui/widgets/page_title.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
 // ignore: must_be_immutable
@@ -31,10 +32,24 @@ class LoadedFormHead extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _createBackButton(),
+          _createTop(),
           PageTitle(title: chosenVisitName, underlined: false),
           SizedBox(height: _sizeUtils.veryLittleSizedBoxHeigh),
           _createInitFullDate(),
+        ],
+      ),
+    );
+  }
+
+  Widget _createTop(){
+    return Container(
+      width: double.infinity,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          _createBackButton(),
+          Logout()
         ],
       ),
     );

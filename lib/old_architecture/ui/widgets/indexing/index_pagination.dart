@@ -206,15 +206,34 @@ class _LoadedIndexPagination extends StatelessWidget {
       return true;
   }
 
+  Color _getButtonColor(Set<MaterialState> states, bool isActive) {
+    const Set<MaterialState> interactiveStates = <MaterialState>{
+      MaterialState.pressed,
+      MaterialState.hovered,
+      MaterialState.focused,
+    };
+    if(!isActive)
+      return Colors.grey.withOpacity(0.5); 
+    if (states.any(interactiveStates.contains))
+      return Theme.of(_context).primaryColor.withOpacity(0.4);
+    return Theme.of(_context).primaryColor.withOpacity(0.75);
+  }
+
   Widget _createIndexTextButton(String buttonName){
     final Map<String, dynamic> onTapConfiguration = _definirTextButtonOnTapConfiguration(buttonName);
     Function onTap = _definirOnTextButtonTapFunction(onTapConfiguration['esta_activo'], onTapConfiguration['btn_index_navigation']);
-    return FlatButton(
-      padding: EdgeInsets.zero,
+    return ElevatedButton(
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.resolveWith((state)=>_getButtonColor(state, onTapConfiguration['esta_activo'])),
+        padding: MaterialStateProperty.resolveWith((_) => EdgeInsets.symmetric(horizontal: 10)),
+        shape: MaterialStateProperty.resolveWith((states) => RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20)
+        ))
+      ),
       child: Container(
         padding: EdgeInsets.zero,
-        decoration: _createButtonDecoration(),
-        child: _createSingleText(buttonName.toString(), onTapConfiguration['esta_activo']),
+        //decoration: _createButtonDecoration(),
+        child: _createSingleText(buttonName.toString(), onTapConfiguration['esta_activo'], Colors.white, 14),
       ),
       onPressed: onTap,
     );

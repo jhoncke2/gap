@@ -116,9 +116,9 @@ class _FormInputsFractionState extends State<FormInputsFraction> {
         child: ListView.separated(
           controller: widget.elementsScrollController,
           itemCount: formFIeldsByPage.length,
-          separatorBuilder: (_, __)=>SizedBox(height: _sizeUtils.xasisSobreYasis * 0.1),
+          separatorBuilder: (_, __)=>SizedBox(height: _sizeUtils.xasisSobreYasis * 0.05),
           itemBuilder: (_, int i)=>FormFieldWidgetFactory.createFormFieldWidget(formFIeldsByPage[i], i, widget.onTextFieldChangeController, widget.formFieldsAreEnabled),
-          padding: EdgeInsets.only(top: 0, bottom: 75),
+          padding: EdgeInsets.only(top: 0, bottom: 50),
         ),
       ),
       height: screenHeight * widget.screenHeightPercent,

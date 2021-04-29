@@ -14,7 +14,6 @@ class GapApp extends StatefulWidget {
 }
 
 class _GapAppState extends State<GapApp> with WidgetsBindingObserver{
-
   Function didChangeAppLifecycleStateMethod;
   Function didChangeDependenciesMethod;
   MaterialApp app;
@@ -31,13 +30,12 @@ class _GapAppState extends State<GapApp> with WidgetsBindingObserver{
   }
 
   Future<bool> _onBackButton()async{
-    print('backing');
     return false;
   }
 
   MaterialApp _createMaterialApp(BuildContext context){
     return MaterialApp(
-      title: 'GAPP',
+      title: 'GAP',
       debugShowCheckedModeBanner: false,
       navigatorKey: CustomNavigator.navigatorKey,
       theme: ThemeData(

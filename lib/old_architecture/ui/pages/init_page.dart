@@ -17,12 +17,15 @@ class InitPage extends StatelessWidget{
   Widget build(BuildContext context){
     _doInitialConfig(context);
     return Scaffold(
+      //backgroundColor: Colors.white,
       body: NativeBackButtonLocker(
         child: Container(
           child: Center(
-            child: CircularProgressIndicator(
-              backgroundColor: Colors.cyan[600],
-              strokeWidth: 7.5,
+            child: Image.asset(
+              'assets/logos/logo_con_nombre.png',
+              height: 200,
+              width: 200,
+              fit: BoxFit.fill
             ),
           ),
         ),

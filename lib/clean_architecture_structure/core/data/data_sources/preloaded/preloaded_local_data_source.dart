@@ -107,9 +107,9 @@ class PreloadedLocalDataSourceImpl implements PreloadedLocalDataSource{
     Map<String, dynamic> preloadedData = (await storageConnector.getMap(preloadedDataStorageKey) )??{};
     Map<String, dynamic> projectData = preloadedData['$projectId'];
     if(projectData != null){
-      List<Map<String, dynamic>> visitData = projectData['$visitId'].cast<Map<String, dynamic>>();
-      if(visitData != null)
-        _updateFormInVisitForms(visitData, formulario);
+      List<Map<String, dynamic>> visitData = (projectData['$visitId']??[]).cast<Map<String, dynamic>>();
+      //if(visitData!=null)
+      _updateFormInVisitForms(visitData, formulario);
     }
     projectData = _getprojectDataWithoutEmptyVisits(projectData);
     preloadedData['$projectId'] = projectData;

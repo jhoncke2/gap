@@ -29,13 +29,22 @@ class SingleTextFormFieldWidget extends TextFormFieldWidget {
     return Container(
       child: Column(
         children: [
-          Text(uniqueLineText.label),
+          Text(uniqueLineText.label,
+            style: TextStyle(
+              fontSize: sizeUtils.subtitleSize,
+              color: Theme.of(context).primaryColor,
+              fontWeight: FontWeight.w400
+            ),
+          ),
           SizedBox(height: sizeUtils.xasisSobreYasis * 0.02),
           TextFormField(
             enabled: this.avaible,
             initialValue: uniqueLineText.uniqueValue??uniqueLineText.placeholder,
             decoration: InputDecoration(
               helperText: uniqueLineText.description??'',
+              helperStyle: TextStyle(
+                fontSize: sizeUtils.normalTextSize * 0.9
+              ),
               isDense: true,
               border: _createInputBorder(context),
               enabledBorder: _createInputBorder(context)
@@ -52,7 +61,7 @@ class SingleTextFormFieldWidget extends TextFormFieldWidget {
       borderRadius: BorderRadius.circular(sizeUtils.xasisSobreYasis * 0.065),
       borderSide: BorderSide(
         color: Theme.of(context).primaryColor.withOpacity(0.525),
-        width: 3.5
+        width: 2.5
       )
     );
   }

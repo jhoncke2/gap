@@ -168,7 +168,9 @@ class FormulariosRepositoryImpl implements FormulariosRepository{
       final FormularioModel chosenFormulario = await localDataSource.getChosenFormulario(chosenVisit.id);
       if( await networkInfo.isConnected() ){
         final String accessToken = await userLocalDataSource.getAccessToken();
-        final FormularioModel updatedChosenFormulario = await remoteDataSource.getChosenFormulario(chosenFormulario.id, accessToken);
+         FormularioModel updatedChosenFormulario = await remoteDataSource.getChosenFormulario(chosenFormulario.id, accessToken);
+        updatedChosenFormulario.formStepIndex = chosenFormulario.formStepIndex;
+        updatedChosenFormulario = updatedChosenFormulario.copyWith(firmers: chosenFormulario.firmers);
         return Right(updatedChosenFormulario);
       }else{
         final List<FormularioModel> preloadedFormularios = await preloadedDataSource.getPreloadedFormularios(chosenProject.id, chosenVisit.id);

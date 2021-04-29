@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
 import 'package:gap/old_architecture/ui/widgets/header/app_back_button.dart';
+import 'package:gap/old_architecture/ui/widgets/header/logount.dart';
 // ignore: must_be_immutable
 class Header extends StatelessWidget {
   final bool showBackNavButton;
@@ -25,7 +26,7 @@ class Header extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _elegirTopElement(),
+          _createTopElement(),
           _createDividerLine(Colors.black87),
           _createDividerLine(Colors.pink),
           //SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
@@ -40,7 +41,20 @@ class Header extends StatelessWidget {
     _sizeUtils = SizeUtils();
   }
 
-  Widget _elegirTopElement(){
+  Widget _createTopElement(){
+    return Container(
+      width: double.infinity,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          _elegirTopLeftElement(),
+          Logout()
+        ],
+      ),
+    );
+  }
+
+  Widget _elegirTopLeftElement(){
     if(showBackNavButton)
       return AppBackButton();
     else

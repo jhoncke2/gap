@@ -233,11 +233,11 @@ abstract class DataDistributor{
       throw NavObstructionErr(message: 'Ocurrió un error con el formulario');
       //TODO: Implementar manejo de errores
     }, (_)async{
-      await _updateChosenFormFromRepository(formOld);
+      await _updateChosenFormFromRepository();
     });
   }
 
-  Future<void> _updateChosenFormFromRepository(FormularioOld formOld)async{
+  Future<void> _updateChosenFormFromRepository()async{
     final eitherUpdatedChosenForm = await formulariosRepository.getChosenFormulario();
     await eitherUpdatedChosenForm.fold((l)async{
       formsB.add(ChangeFormsAreBlocked(areBlocked: false));
