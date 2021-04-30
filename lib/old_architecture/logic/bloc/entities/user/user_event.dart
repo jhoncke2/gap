@@ -1,16 +1,16 @@
 part of 'user_bloc.dart';
 
 @immutable
-abstract class UserEvent {}
+abstract class UserOldEvent {}
 
-class SetAccessToken extends UserEvent{
+class SetAccessToken extends UserOldEvent{
   final String accessToken;
   SetAccessToken({
     @required this.accessToken
   });
 }
 
-class ChangeLoginButtopnAvaibleless extends UserEvent{
+class ChangeLoginButtopnAvaibleless extends UserOldEvent{
   final bool isAvaible;
   ChangeLoginButtopnAvaibleless({
     @required this.isAvaible

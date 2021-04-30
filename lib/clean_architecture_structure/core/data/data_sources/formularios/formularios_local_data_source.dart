@@ -7,6 +7,7 @@ abstract class FormulariosLocalDataSource{
   Future<List<FormularioModel>> getFormularios(int visitId);
   Future<void> setChosenFormulario(FormularioModel formulario, int visitId);
   Future<FormularioModel> getChosenFormulario(int visitId);
+  Future<void> deleteAll();
 }
 
 class FormulariosLocalDataSourceImpl implements FormulariosLocalDataSource{
@@ -45,18 +46,23 @@ class FormulariosLocalDataSourceImpl implements FormulariosLocalDataSource{
   @override
   Future<FormularioModel> getChosenFormulario(int visitId)async{
     final String stringChosenFormularioId = await storageConnector.getString(CHOSEN_FORMULARIO_STORAGE_KEY);
-    final int chosenFormularioId = int.parse(stringChosenFormularioId);
-    final List<Map<String, dynamic>> jsonFormulariosOfVisit = await storageConnector.getList(_getFormulariosByVisitStorageKey(visitId));
-    return _tryGetFormularioFromStorage(jsonFormulariosOfVisit, chosenFormularioId);
+    return _tryGetFormularioFromStorage(stringChosenFormularioId, visitId);
   }
 
-  Future<FormularioModel> _tryGetFormularioFromStorage(List<Map<String, dynamic>> jsonFormulariosOfVisit, int chosenFormularioId)async{
+  Future<FormularioModel> _tryGetFormularioFromStorage(String stringChosenFormularioId, int visitId)async{
     try{
+      final int chosenFormularioId = int.parse(stringChosenFormularioId);
+      final List<Map<String, dynamic>> jsonFormulariosOfVisit = await storageConnector.getList(_getFormulariosByVisitStorageKey(visitId));
       final Map<String, dynamic> jsonChosenFormulario = jsonFormulariosOfVisit.firstWhere((f) => f['formulario_pivot_id']  == chosenFormularioId);
       final FormularioModel chosenFormulario = FormularioModel.fromJson(jsonChosenFormulario);
       return chosenFormulario;
     }catch(err){
       return FormularioModel(id: null, completo: false);
     }
+  }
+
+  Future<void> deleteAll()async{
+    await storageConnector.remove(CHOSEN_FORMULARIO_STORAGE_KEY);
+    await storageConnector.remove(FORMULARIOS_STORAGE_KEY);
   }
 }

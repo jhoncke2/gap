@@ -31,7 +31,7 @@ void main(){
     final int tProjectId = 1;
     test('should set visits successfuly', ()async{
       await visitsLocalDataSource.setVisits(tVisits, tProjectId);
-      verify(storageConnector.setList(tJsonVisits, '${VisitsLocalDataSourceImpl.baseVisitsStorageKey}_$tProjectId'));
+      verify(storageConnector.setList(tJsonVisits, '${VisitsLocalDataSourceImpl.BASE_VISITS_STORAGE_KEY}_$tProjectId'));
     });
   });
 
@@ -40,7 +40,7 @@ void main(){
     test('should set visits successfuly', ()async{
       when(storageConnector.getList(any)).thenAnswer((_)async => tJsonVisits);
       final List<VisitModel> visits = await visitsLocalDataSource.getVisits(tProjectId);
-      verify(storageConnector.getList('${VisitsLocalDataSourceImpl.baseVisitsStorageKey}_$tProjectId'));
+      verify(storageConnector.getList('${VisitsLocalDataSourceImpl.BASE_VISITS_STORAGE_KEY}_$tProjectId'));
       expect(visits, equals(tVisits));
     });
   });
@@ -56,7 +56,7 @@ void main(){
 
     test('should get the chosen visit successfuly', ()async{
       await visitsLocalDataSource.setChosenVisit(tChosenVisit);
-      verify(storageConnector.setString('$tChosenVisitId', VisitsLocalDataSourceImpl.chosenVisitStorageKey));
+      verify(storageConnector.setString('$tChosenVisitId', VisitsLocalDataSourceImpl.CHOSEN_VISIT_STORAGE_KEY));
     });
   });
 
@@ -76,9 +76,17 @@ void main(){
 
       final VisitModel chosenVisit = await visitsLocalDataSource.getChosenVisit(tChosenProjectId);
 
-      verify(storageConnector.getString(VisitsLocalDataSourceImpl.chosenVisitStorageKey));
-      verify(storageConnector.getList('${VisitsLocalDataSourceImpl.baseVisitsStorageKey}_$tChosenProjectId'));
+      verify(storageConnector.getString(VisitsLocalDataSourceImpl.CHOSEN_VISIT_STORAGE_KEY));
+      verify(storageConnector.getList('${VisitsLocalDataSourceImpl.BASE_VISITS_STORAGE_KEY}_$tChosenProjectId'));
       expect(chosenVisit, equals(tChosenVisit));
+    });
+  });
+
+  group('deleteAll', (){
+    test('should delete all successfuly', ()async{
+      await visitsLocalDataSource.deleteAll();
+      verify(storageConnector.remove(VisitsLocalDataSourceImpl.CHOSEN_VISIT_STORAGE_KEY));
+      verify(storageConnector.remove(VisitsLocalDataSourceImpl.BASE_VISITS_STORAGE_KEY));
     });
   });
 }

@@ -81,5 +81,13 @@ void main(){
       expect(chosenFormulario, equals(tChosenFormulario));
     });
   });
+
+  group('deleteAll', (){
+    test('should delete all successfuly', ()async{
+      await formulariosLocalDataSource.deleteAll();
+      verify(storageConnector.remove(FormulariosLocalDataSourceImpl.CHOSEN_FORMULARIO_STORAGE_KEY));
+      verify(storageConnector.remove(FormulariosLocalDataSourceImpl.FORMULARIOS_STORAGE_KEY));
+    });
+  });
 }
 

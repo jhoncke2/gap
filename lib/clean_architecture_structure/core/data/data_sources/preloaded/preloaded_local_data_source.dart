@@ -9,10 +9,11 @@ abstract class PreloadedLocalDataSource{
   Future<List<FormularioModel>> getPreloadedFormularios(int projectId, int visitId);
   Future<void> updatePreloadedFormulario(int projectId, int visitId, FormularioModel formulario);
   Future<void> removePreloadedFormulario(int formularioId);
+  Future<void> deleteAll();
 }
 
 class PreloadedLocalDataSourceImpl implements PreloadedLocalDataSource{
-  static const preloadedDataStorageKey = 'preloaded_data';
+  static const PRELOADED_DATA_STORAGE_KEY = 'preloaded_data';
   final StorageConnector storageConnector;
 
   PreloadedLocalDataSourceImpl({
@@ -21,13 +22,13 @@ class PreloadedLocalDataSourceImpl implements PreloadedLocalDataSource{
 
   @override
   Future<void> setPreloadedFamily(int projectId, int visitId, List<FormularioModel> formularios)async{
-    Map<String, dynamic> preloadedData = (await storageConnector.getMap(preloadedDataStorageKey) )??{};
+    Map<String, dynamic> preloadedData = (await storageConnector.getMap(PRELOADED_DATA_STORAGE_KEY) )??{};
     Map<String, dynamic> preloadedProject = preloadedData['$projectId']??{};
     List<Map<String, dynamic>> previousFormularios = (preloadedProject['$visitId']??[]).cast<Map<String, dynamic>>();
     preloadedProject['$visitId'] = _updatePreloadedFormularios(previousFormularios, formularios);
     preloadedProject = _getprojectDataWithoutEmptyVisits(preloadedProject);
     preloadedData['$projectId'] = preloadedProject;
-    await storageConnector.setMap(preloadedData, preloadedDataStorageKey);
+    await storageConnector.setMap(preloadedData, PRELOADED_DATA_STORAGE_KEY);
   }
 
   List<Map<String, dynamic>> _updatePreloadedFormularios(List<Map<String, dynamic>> previousFormularios, List<FormularioModel> newFormularios){
@@ -51,7 +52,7 @@ class PreloadedLocalDataSourceImpl implements PreloadedLocalDataSource{
 
   @override
   Future<List<int>> getPreloadedProjectsIds()async{
-    Map<String, dynamic> preloadedData = await storageConnector.getMap(preloadedDataStorageKey);
+    Map<String, dynamic> preloadedData = await storageConnector.getMap(PRELOADED_DATA_STORAGE_KEY);
     preloadedData = _getPreloadedDataWithEmptyProjects(preloadedData);
     List<int> projectsIds = [];
     preloadedData.forEach((key, _) {
@@ -72,7 +73,7 @@ class PreloadedLocalDataSourceImpl implements PreloadedLocalDataSource{
 
   @override
   Future<List<int>> getPreloadedVisitsIds(int projectId)async{
-    final Map<String, dynamic> preloadedData = await storageConnector.getMap(preloadedDataStorageKey);
+    final Map<String, dynamic> preloadedData = await storageConnector.getMap(PRELOADED_DATA_STORAGE_KEY);
     Map<String, dynamic> projectData = preloadedData['$projectId'];
     projectData = _getProjectDataWithEmptyVisitsRemoved(projectData);
     List<int> visitsIds = [];
@@ -95,7 +96,7 @@ class PreloadedLocalDataSourceImpl implements PreloadedLocalDataSource{
 
   @override
   Future<List<FormularioModel>> getPreloadedFormularios(int projectId, int visitId)async{
-    final Map<String, dynamic> preloadedData = await storageConnector.getMap(preloadedDataStorageKey);
+    final Map<String, dynamic> preloadedData = await storageConnector.getMap(PRELOADED_DATA_STORAGE_KEY);
     final Map<String, dynamic> projectData = preloadedData['$projectId']??{};
     final List<Map<String, dynamic>> visitData = (projectData['$visitId']??[] ).cast<Map<String, dynamic>>();
     List<FormularioModel> formularios = formulariosFromJson(visitData);
@@ -104,7 +105,7 @@ class PreloadedLocalDataSourceImpl implements PreloadedLocalDataSource{
 
   @override
   Future<void> updatePreloadedFormulario(int projectId, int visitId, FormularioModel formulario)async{
-    Map<String, dynamic> preloadedData = (await storageConnector.getMap(preloadedDataStorageKey) )??{};
+    Map<String, dynamic> preloadedData = (await storageConnector.getMap(PRELOADED_DATA_STORAGE_KEY) )??{};
     Map<String, dynamic> projectData = preloadedData['$projectId'];
     if(projectData != null){
       List<Map<String, dynamic>> visitData = (projectData['$visitId']??[]).cast<Map<String, dynamic>>();
@@ -113,7 +114,7 @@ class PreloadedLocalDataSourceImpl implements PreloadedLocalDataSource{
     }
     projectData = _getprojectDataWithoutEmptyVisits(projectData);
     preloadedData['$projectId'] = projectData;
-    await storageConnector.setMap(preloadedData, preloadedDataStorageKey);
+    await storageConnector.setMap(preloadedData, PRELOADED_DATA_STORAGE_KEY);
   }
 
   void _updateFormInVisitForms(List<Map<String, dynamic>> visitForms, FormularioModel formulario){
@@ -123,7 +124,7 @@ class PreloadedLocalDataSourceImpl implements PreloadedLocalDataSource{
 
   @override
   Future<void> removePreloadedFormulario(int formularioId)async{
-    Map<String, dynamic> preloadedData = (await storageConnector.getMap(preloadedDataStorageKey) )??{};
+    Map<String, dynamic> preloadedData = (await storageConnector.getMap(PRELOADED_DATA_STORAGE_KEY) )??{};
     preloadedData = preloadedData.map((projectId, projectData){
       return MapEntry(
         projectId,
@@ -133,6 +134,10 @@ class PreloadedLocalDataSourceImpl implements PreloadedLocalDataSource{
         })
       );
     });
-    await storageConnector.setMap(preloadedData, preloadedDataStorageKey);
+    await storageConnector.setMap(preloadedData, PRELOADED_DATA_STORAGE_KEY);
+  }
+
+  Future<void> deleteAll()async{
+    await storageConnector.remove(PRELOADED_DATA_STORAGE_KEY);
   }
 }

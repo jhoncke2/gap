@@ -25,6 +25,7 @@ void main(){
   _testGetPreloadedFormulariosGroup();
   _testUpdatePreloadedFormularioGroup();
   _testRemovePreloadedFormularioGroup();
+  _testDeleteAllGroup();
   
   
 }
@@ -70,14 +71,14 @@ void _testSetPreloadedFamilyGroup(){
 
     test('should set a preloaded family on a empty storage successfuly', ()async{
       await preloadedLocalDataSource.setPreloadedFamily(tPreloadedProjectId, tPreloadedVisitId1, tFormularios);
-      verify(storageConnector.getMap(PreloadedLocalDataSourceImpl.preloadedDataStorageKey));
-      verify(storageConnector.setMap(tPreloaded1Project1Visit1Form, PreloadedLocalDataSourceImpl.preloadedDataStorageKey));
+      verify(storageConnector.getMap(PreloadedLocalDataSourceImpl.PRELOADED_DATA_STORAGE_KEY));
+      verify(storageConnector.setMap(tPreloaded1Project1Visit1Form, PreloadedLocalDataSourceImpl.PRELOADED_DATA_STORAGE_KEY));
     });
 
     test('should delete 1 formulario because of it is completed, and leave alone the other one', ()async{
       when(storageConnector.getMap(any)).thenAnswer((realInvocation) async => tPreloaded1Project1VisitAllForms);
       await preloadedLocalDataSource.setPreloadedFamily(tPreloadedProjectId, tPreloadedVisitId1, tFormularios);
-      verify(storageConnector.setMap(tPreloaded1Project1Visit1Form, PreloadedLocalDataSourceImpl.preloadedDataStorageKey));
+      verify(storageConnector.setMap(tPreloaded1Project1Visit1Form, PreloadedLocalDataSourceImpl.PRELOADED_DATA_STORAGE_KEY));
     });
 
     test('should delete the visit that is empty because of its formularios are all completed and removed', ()async{
@@ -88,7 +89,7 @@ void _testSetPreloadedFamilyGroup(){
         return FormularioModel.fromJson(jsonF);
       }).toList();
       await preloadedLocalDataSource.setPreloadedFamily(tPreloadedProjectId, tPreloadedVisitId1, tCompletedFormularios);
-      verify(storageConnector.setMap(tPreloaded1ProjectAndThe2ndVisitWithForms, PreloadedLocalDataSourceImpl.preloadedDataStorageKey));
+      verify(storageConnector.setMap(tPreloaded1ProjectAndThe2ndVisitWithForms, PreloadedLocalDataSourceImpl.PRELOADED_DATA_STORAGE_KEY));
     });
   });
 }
@@ -119,7 +120,7 @@ void _testGetPreloadedProjectsIdsGroup(){
     test('should get the preloaded projects ids successfuly', ()async{
       when(storageConnector.getMap(any)).thenAnswer((realInvocation) async => tPreloaded4ProjectsData);
       final List<int> preloadedProjectsIds = await preloadedLocalDataSource.getPreloadedProjectsIds();
-      verify(storageConnector.getMap(PreloadedLocalDataSourceImpl.preloadedDataStorageKey));
+      verify(storageConnector.getMap(PreloadedLocalDataSourceImpl.PRELOADED_DATA_STORAGE_KEY));
       expect(preloadedProjectsIds, tCleanedProjectsIds);
     });
   });
@@ -153,7 +154,7 @@ void _testGetPreloadedVisitsIdsGroup(){
     test('should get the preloaded visits ids successfuly', ()async{
       when(storageConnector.getMap(any)).thenAnswer((realInvocation) async => tPreloaded2Projects3VisitsData );
       List<int> visitsIds = await preloadedLocalDataSource.getPreloadedVisitsIds(tProjectsIds[1]);
-      verify(storageConnector.getMap(PreloadedLocalDataSourceImpl.preloadedDataStorageKey));
+      verify(storageConnector.getMap(PreloadedLocalDataSourceImpl.PRELOADED_DATA_STORAGE_KEY));
       visitsIds = await preloadedLocalDataSource.getPreloadedVisitsIds(tProjectsIds[1]);
       expect(visitsIds, tCleanedVisitsIdsP2);
     });
@@ -188,7 +189,7 @@ void _testGetPreloadedFormulariosGroup(){
     test('should get the formularios of the visit of the project successfuly', ()async{
       when(storageConnector.getMap(any)).thenAnswer((realInvocation) async => tPreloaded2Projects3VisitsData2FormsData);
       List<FormularioModel> formularios = await preloadedLocalDataSource.getPreloadedFormularios(tProjectsIds[1], tVisitsIdsP2[1]);
-      verify(storageConnector.getMap(PreloadedLocalDataSourceImpl.preloadedDataStorageKey));
+      verify(storageConnector.getMap(PreloadedLocalDataSourceImpl.PRELOADED_DATA_STORAGE_KEY));
       expect(formularios, equals(tFormulariosP2V2));
 
       formularios = await preloadedLocalDataSource.getPreloadedFormularios(tProjectsIds[1], tVisitsIdsP2[2]);
@@ -232,7 +233,7 @@ void _testUpdatePreloadedFormularioGroup(){
       when(storageConnector.getMap(any)).thenAnswer((_) async => jsonDecode( jsonEncode(tPreloaded1Project1VisitAllForms)));
       FormularioModel tFormulario = FormularioModel.fromJson(tJsonUpdatedFormulario);
       await preloadedLocalDataSource.updatePreloadedFormulario(tPreloadedProjectId, tPreloadedVisitId1, tFormulario);
-      verify(storageConnector.setMap(tPreloaded1Project1VisitAllForms1Updated, PreloadedLocalDataSourceImpl.preloadedDataStorageKey));
+      verify(storageConnector.setMap(tPreloaded1Project1VisitAllForms1Updated, PreloadedLocalDataSourceImpl.PRELOADED_DATA_STORAGE_KEY));
     });
     
   });
@@ -278,12 +279,20 @@ void _testRemovePreloadedFormularioGroup(){
       when(storageConnector.getMap(any)).thenAnswer((realInvocation) async => tPreloaded2Projects3VisitsData3FormsData);
       await preloadedLocalDataSource.removePreloadedFormulario(tFormulariosP2V2[0].id);
       
-      verify(storageConnector.getMap(PreloadedLocalDataSourceImpl.preloadedDataStorageKey));
-      verify(storageConnector.setMap(tPreloaded2Projects3VisitsData2FormsData, PreloadedLocalDataSourceImpl.preloadedDataStorageKey));
+      verify(storageConnector.getMap(PreloadedLocalDataSourceImpl.PRELOADED_DATA_STORAGE_KEY));
+      verify(storageConnector.setMap(tPreloaded2Projects3VisitsData2FormsData, PreloadedLocalDataSourceImpl.PRELOADED_DATA_STORAGE_KEY));
     });
   });
 }
 
+void _testDeleteAllGroup(){
+  group('deleteAll', (){
+    test('should delete all successfuly', ()async{
+      await preloadedLocalDataSource.deleteAll();
+      verify(storageConnector.remove(PreloadedLocalDataSourceImpl.PRELOADED_DATA_STORAGE_KEY));
+    });
+  });
+}
 
 
 

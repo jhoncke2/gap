@@ -6,4 +6,5 @@ abstract class UserRepository{
   Future<Either<Failure, void>> login(User user);
   Future<Either<Failure, void>> reLogin();
   Future<Either<Failure, void>> refreshAccessToken();
+  Future<Either<Failure, void>> logout();
 }

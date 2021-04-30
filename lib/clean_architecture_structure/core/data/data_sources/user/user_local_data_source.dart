@@ -7,11 +7,13 @@ abstract class UserLocalDataSource{
   Future<UserModel> getUserInformation();
   Future<void> setAccessToken(String accessToken);
   Future<String> getAccessToken();
+  
 }
 
 class UserLocalDataSourceImpl implements UserLocalDataSource{
   static const String USER_STORAGE_KEY = 'user';
   static const String ACCESS_TOKEN_STORAGE_KEY = 'access_token';
+  static const String APP_HAS_RUNNED_BEFORE_STORAGE_KEY = 'app_has_runned_before';
   final StorageConnector storageConnector;
 
   UserLocalDataSourceImpl({
@@ -38,5 +40,4 @@ class UserLocalDataSourceImpl implements UserLocalDataSource{
   Future<String> getAccessToken()async{
     return await storageConnector.getString(ACCESS_TOKEN_STORAGE_KEY);
   }
-
 }

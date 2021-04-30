@@ -285,7 +285,7 @@ class DataDistributorWithConnection extends DataDistributor{
 }
 
 class _AuthTokenValidator{
-  UserBloc userBloc;
+  UserOldBloc userBloc;
   Future refreshAuthToken(String oldAuthToken)async{
     final Map<String, dynamic> authTokenResponse = await authService.refreshAuthToken(oldAuthToken);
     String newAuthToken = authTokenResponse['data']['original']['access_token'];

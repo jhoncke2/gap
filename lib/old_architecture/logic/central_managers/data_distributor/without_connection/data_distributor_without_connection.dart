@@ -17,7 +17,7 @@ class SourceDataToBlocWithoutConnection extends DataDistributor{
   }
 
   void _updateAccessToken(String accessToken){
-    final UserBloc uBloc = DataDistributor.blocsAsMap[BlocName.User];
+    final UserOldBloc uBloc = DataDistributor.blocsAsMap[BlocName.User];
     uBloc.add(SetAccessToken(accessToken: accessToken));
   }
 

@@ -21,7 +21,7 @@ class NumberFormFieldWidget extends TextFormFieldWidget {
     }
   
   void _createTextFieldController(){
-    final String text = (number.placeholder ?? number.value ?? '').toString();
+    final String text = (number.value ?? '').toString();
     _textFieldController = TextEditingController(text: text);
     _textFieldController.selection = TextSelection.fromPosition(TextPosition(offset: _textFieldController.text.length));
   }
@@ -60,6 +60,7 @@ class NumberFormFieldWidget extends TextFormFieldWidget {
     return Container(
       width: _sizeUtils.xasisSobreYasis * 0.3,
       child: TextFormField(
+        
         enabled: super.avaible,
         key: Key('${number.name}_textfield'),
         controller: _textFieldController,
@@ -74,6 +75,7 @@ class NumberFormFieldWidget extends TextFormFieldWidget {
 
   InputDecoration _createInputDecoration(){
     return InputDecoration(
+      helperText: number.description??number.placeholder,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(20)
       )

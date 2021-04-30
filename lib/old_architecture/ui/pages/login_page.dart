@@ -158,7 +158,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _crearBotonLogin() {
-    return BlocBuilder<UserBloc, UserState>(
+    return BlocBuilder<UserOldBloc, UserOldState>(
       builder: (context, state) {
         return GeneralButton(
           key: ButtonsKeys.loginButtonKey,

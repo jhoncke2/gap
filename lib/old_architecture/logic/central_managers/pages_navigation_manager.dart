@@ -23,6 +23,7 @@ class PagesNavigationManager{
   }
 
   static Future<void> navToLogin()async{
+    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.LOGOUT);
     await _goToInitialPage(NavigationRoute.Login);
   }
   

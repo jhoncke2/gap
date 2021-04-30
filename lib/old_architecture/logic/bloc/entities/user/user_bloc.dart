@@ -4,12 +4,12 @@ import 'package:meta/meta.dart';
 part 'user_event.dart';
 part 'user_state.dart';
 
-class UserBloc extends Bloc<UserEvent, UserState> {
-  UserBloc() : super(UserState());
+class UserOldBloc extends Bloc<UserOldEvent, UserOldState> {
+  UserOldBloc() : super(UserOldState());
 
   @override
-  Stream<UserState> mapEventToState(
-    UserEvent event,
+  Stream<UserOldState> mapEventToState(
+    UserOldEvent event,
   ) async* {
     if(event is SetAccessToken){
       yield state.copyWith(authTokenIsLoaded: true, authToken: event.accessToken);

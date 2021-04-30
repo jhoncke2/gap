@@ -1,18 +1,17 @@
 
 import 'dart:convert';
+import 'package:mockito/mockito.dart';
+import 'package:test/test.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/projects/projects_local_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/models/project_model.dart';
 import 'package:gap/clean_architecture_structure/core/platform/storage_connector.dart';
-import 'package:mockito/mockito.dart';
-import 'package:test/test.dart';
-
 import '../../../../fixtures/fixture_reader.dart';
 
 class MockStorageConnector extends Mock implements StorageConnector{
 
 }
 
-ProjectsLocalDataSourceImpl projectsLocalDataSource;
+ProjectsLocalDataSourceImpl localDataSource;
 MockStorageConnector storageConnector;
 
 String tStringProjects;
@@ -22,7 +21,7 @@ List<ProjectModel> tProjects;
 void main(){
   setUp((){
     storageConnector = MockStorageConnector();
-    projectsLocalDataSource = ProjectsLocalDataSourceImpl(storageConnector: storageConnector);
+    localDataSource = ProjectsLocalDataSourceImpl(storageConnector: storageConnector);
 
     tStringProjects = callFixture('projects.json');
     tJsonProjects = jsonDecode(tStringProjects).cast<Map<String, dynamic>>();
@@ -32,8 +31,8 @@ void main(){
   group('get projects', (){
     test('should get the projects successfuly', ()async{
       when(storageConnector.getList(any)).thenAnswer((realInvocation) async => tJsonProjects);
-      final List<ProjectModel> projects = await projectsLocalDataSource.getProjects();
-      verify(storageConnector.getList(ProjectsLocalDataSourceImpl.projectsStorageKey));
+      final List<ProjectModel> projects = await localDataSource.getProjects();
+      verify(storageConnector.getList(ProjectsLocalDataSourceImpl.PROJECTS_STORAGE_KEY));
       expect(projects, tProjects);
     });
   });
@@ -41,8 +40,8 @@ void main(){
   group('set projects', (){
 
     test('should set the projects successfuly', ()async{
-      await projectsLocalDataSource.setProjects(tProjects);
-      verify(storageConnector.setList(tJsonProjects, ProjectsLocalDataSourceImpl.projectsStorageKey));
+      await localDataSource.setProjects(tProjects);
+      verify(storageConnector.setList(tJsonProjects, ProjectsLocalDataSourceImpl.PROJECTS_STORAGE_KEY));
     });
   });
 
@@ -55,8 +54,8 @@ void main(){
     });
     test('should set the chosen project succesfuly', ()async{
       
-      await projectsLocalDataSource.setChosenProject(tChosenProject);
-      verify(storageConnector.setString('$tChosenProjectId', ProjectsLocalDataSourceImpl.chosenProjectStorageKey));
+      await localDataSource.setChosenProject(tChosenProject);
+      verify(storageConnector.setString('$tChosenProjectId', ProjectsLocalDataSourceImpl.CHOSEN_PROJECT_STORAGE_KEY));
     });
   });
 
@@ -71,11 +70,19 @@ void main(){
       when(storageConnector.getString(any)).thenAnswer((realInvocation)async => '$tChosenProjectId');
       when(storageConnector.getList(any)).thenAnswer((_)async => tJsonProjects);
       
-      final ProjectModel chosenProject = await projectsLocalDataSource.getChosenProject();
+      final ProjectModel chosenProject = await localDataSource.getChosenProject();
       
-      verify(storageConnector.getString(ProjectsLocalDataSourceImpl.chosenProjectStorageKey));
-      verify(storageConnector.getList(ProjectsLocalDataSourceImpl.projectsStorageKey));
+      verify(storageConnector.getString(ProjectsLocalDataSourceImpl.CHOSEN_PROJECT_STORAGE_KEY));
+      verify(storageConnector.getList(ProjectsLocalDataSourceImpl.PROJECTS_STORAGE_KEY));
       expect(chosenProject, equals(tChosenProject));
+    });
+  });
+  
+  group('deleteAll', (){
+    test('should delete all successfuly', ()async{
+      await localDataSource.deleteAll();
+      verify(storageConnector.remove(ProjectsLocalDataSourceImpl.CHOSEN_PROJECT_STORAGE_KEY));
+      verify(storageConnector.remove(ProjectsLocalDataSourceImpl.PROJECTS_STORAGE_KEY));
     });
   });
 }

@@ -28,7 +28,12 @@ class LoadedFormHead extends StatelessWidget {
     _context = context;
     final String chosenVisitName = _getChosenVisitName();
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: _sizeUtils.xasisSobreYasis * 0.05),
+      color: Colors.grey.withOpacity(0.2),
+      padding: EdgeInsets.only(
+        left: _sizeUtils.xasisSobreYasis * 0.05,
+        right: _sizeUtils.xasisSobreYasis * 0.05,
+        bottom: _sizeUtils.xasisSobreYasis * 0.025
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

@@ -14,7 +14,7 @@ import 'package:gap/old_architecture/logic/bloc/widgets/index/index_bloc.dart';
 import 'package:gap/old_architecture/logic/bloc/widgets/keyboard_listener/keyboard_listener_bloc.dart';
 
 class BlocProvidersCreator{
-  static final UserBloc userBloc = UserBloc();
+  static final UserOldBloc userBloc = UserOldBloc();
   static final ProjectsBloc projectsBloc = ProjectsBloc();
   static final VisitsBloc visitsBloc = VisitsBloc();
   static final FormulariosBloc formulariosBloc = FormulariosBloc();
@@ -35,7 +35,7 @@ class BlocProvidersCreator{
     BlocProvider<ImagesBloc>(create: (_)=>imagesBloc),
     BlocProvider<CommentedImagesBloc>(create: (_)=>commentedImagesBloc),
     BlocProvider<FirmPaintBloc>(create: (_)=>firmPaintBloc),
-    BlocProvider<UserBloc>(create: (_)=>userBloc),
+    BlocProvider<UserOldBloc>(create: (_)=>userBloc),
     BlocProvider<KeyboardListenerBloc>(create: (_)=>keyboardListenerBloc)
   ];
 

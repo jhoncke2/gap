@@ -12,8 +12,8 @@ class NumberFormFieldOld extends SingleValueFormFieldOld{
     min = json['min'],
     step = json['step']??defaultStep,
     super.fromJson(json){
-      if(this.value == null && this.placeholder != null)
-        this.value = int.parse(this.placeholder);
+      //if(this.value == null && this.placeholder != null)
+        //this.value = int.parse(this.placeholder);
     }
 
   Map<String, dynamic> toJson(){

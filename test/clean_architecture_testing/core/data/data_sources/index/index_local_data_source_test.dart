@@ -32,7 +32,7 @@ void main(){
   group('setStorageConnector', (){
     test('should set the index successfuly', ()async{
       await dataSource.setIndex(tIndex);
-      verify(storageConnector.setMap(tJsonIndex, IndexLocalDataSourceImpl.indexStorageKey));
+      verify(storageConnector.setMap(tJsonIndex, IndexLocalDataSourceImpl.INDEX_STORAGE_KEY));
     });
   });
 
@@ -40,13 +40,20 @@ void main(){
     test('should obtain the jsonIndex from the storageConnector', ()async{
       when(storageConnector.getMap(any)).thenAnswer((_) async => tJsonIndex);
       await dataSource.getIndex();
-      verify(storageConnector.getMap(IndexLocalDataSourceImpl.indexStorageKey));
+      verify(storageConnector.getMap(IndexLocalDataSourceImpl.INDEX_STORAGE_KEY));
     });
 
     test('should return the index', ()async{
       when(storageConnector.getMap(any)).thenAnswer((_) async => tJsonIndex);
       final IndexModel index = await dataSource.getIndex();
       expect(index, tIndex);
+    });
+  });
+
+  group('deleteAll', (){
+    test('should deleteAll successfuly', ()async{
+      await dataSource.deleteAll();
+      verify(storageConnector.remove(IndexLocalDataSourceImpl.INDEX_STORAGE_KEY));
     });
   });
 }

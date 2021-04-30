@@ -43,7 +43,6 @@ import 'package:gap/old_architecture/logic/helpers/painter_to_image_converter.da
 import 'package:gap/old_architecture/logic/storage_managers/commented_images/commented_images_storage_manager.dart';
 import 'package:gap/old_architecture/logic/storage_managers/forms/chosen_form_storage_manager.dart';
 import 'package:gap/old_architecture/logic/storage_managers/forms/preloaded_forms_storage_manager.dart';
-import 'package:gap/old_architecture/logic/storage_managers/index/index_storage_manager.dart';
 import 'package:gap/old_architecture/logic/storage_managers/user/user_storage_manager.dart';
 import 'package:gap/old_architecture/native_connectors/gps.dart';
 import 'package:gap/old_architecture/native_connectors/storage_connector.dart';
@@ -65,7 +64,7 @@ abstract class DataDistributor{
   final Map<BlocName, ChangeNotifier> singletonesAsMap = BlocProvidersCreator.singletonesAsMap;
   Map<NavigationRoute, dynamic> dataAddedToBlocsByExistingNavs = {};
 
-  final UserBloc userB = blocsAsMap[BlocName.User];
+  final UserOldBloc userB = blocsAsMap[BlocName.User];
   final ProjectsBloc projectsB =  blocsAsMap[BlocName.Projects];
   final VisitsBloc visitsB = blocsAsMap[BlocName.Visits];
   final FormulariosBloc formsB = blocsAsMap[BlocName.Formularios];
@@ -74,13 +73,21 @@ abstract class DataDistributor{
   final IndexBloc indexB = blocsAsMap[BlocName.Index];
   final CommentedImagesBloc commImgsB = blocsAsMap[BlocName.CommentedImages];
 
+  Future<void> logout()async{
+    await _setFirstTimeRunned();
+  }
+
   Future updateFirstInitialization()async{
     final bool alreadyRunned = await UserStorageManager.alreadyRunnedApp();
     if(!alreadyRunned){
-      await StorageConnectorOldSingleton.storageConnector.deleteAll();
-      await UserStorageManager.setFirstTimeRunned();
+      await _setFirstTimeRunned();
       throw AppNeverRunnedErr();
     }
+  }
+
+  Future<void> _setFirstTimeRunned()async{
+    await StorageConnectorOldSingleton.storageConnector.deleteAll();
+    await UserStorageManager.setFirstTimeRunned();
   }
 
   Future doInitialConfig()async{
@@ -112,14 +119,14 @@ abstract class DataDistributor{
           message = failure.message;
         throw ServiceStatusErr(extraInformation: 'login', message: message);
       }, (_){
-        //TODO: Implementar algo
+        userB.add(ChangeLoginButtopnAvaibleless(isAvaible: true));
       });
     }else{
       final eitherRelogin = await userRepository.reLogin();
       eitherRelogin.fold((_){
         throw ServiceStatusErr(extraInformation: 'login');
       }, (_){
-        //TODO: Implementar algo
+        userB.add(ChangeLoginButtopnAvaibleless(isAvaible: true));
       });
     }
   }

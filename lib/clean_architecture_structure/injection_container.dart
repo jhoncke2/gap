@@ -1,4 +1,5 @@
 //sl: service locator
+import 'package:gap/clean_architecture_structure/core/data/data_sources/central_system/central_system_local_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/repositories/commented_images_repository.dart';
 import 'package:gap/clean_architecture_structure/core/data/repositories/formularios_repository.dart';
 import 'package:gap/clean_architecture_structure/core/data/repositories/projects_repository.dart';
@@ -53,7 +54,7 @@ void init()async{
   GetItContainer.sl.registerLazySingleton<UserLocalDataSource>(()=>UserLocalDataSourceImpl(storageConnector: GetItContainer.sl()));
   GetItContainer.sl.registerLazySingleton<VisitsRemoteDataSource>(()=>VisitsRemoteDataSourceImpl(client: GetItContainer.sl()));
   GetItContainer.sl.registerLazySingleton<VisitsLocalDataSource>(()=>VisitsLocalDataSourceImpl(storageConnector: GetItContainer.sl()));
-
+  GetItContainer.sl.registerLazySingleton<CentralSystemLocalDataSource>(() => CentralSystemLocalDataSourceImpl(storageConnector: GetItContainer.sl()));
   //repositories
   GetItContainer.sl.registerLazySingleton<CommentedImagesRepository>(()=>CommentedImagesRepositoryImpl(
     networkInfo: GetItContainer.sl(), 
@@ -100,7 +101,8 @@ void init()async{
   GetItContainer.sl.registerLazySingleton<UserRepository>(()=>UserRepositoryImpl(
     networkInfo: GetItContainer.sl(),
     remoteDataSource: GetItContainer.sl(),
-    localDataSource: GetItContainer.sl(),    
+    localDataSource: GetItContainer.sl(), 
+    centralSystemLocalDataSource: GetItContainer.sl(),    
   ));
 
 

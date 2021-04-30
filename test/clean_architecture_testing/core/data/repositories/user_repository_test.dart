@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:dartz/dartz.dart';
+import 'package:gap/clean_architecture_structure/core/data/data_sources/central_system/central_system_local_data_source.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/user/user_local_data_source.dart';
@@ -14,21 +15,25 @@ import '../../../fixtures/fixture_reader.dart';
 class MockNetworkInfo extends Mock implements NetworkInfo{}
 class MockUserRemoteDataSource extends Mock implements UserRemoteDataSource{}
 class MockUserLocalDataSource extends Mock implements UserLocalDataSource{}
+class MockCentralSystemDataSource extends Mock implements CentralSystemLocalDataSource{}
 
 UserRepositoryImpl repository;
 MockNetworkInfo networkInfo;
 MockUserRemoteDataSource remoteDataSource;
 MockUserLocalDataSource localDataSource;
+MockCentralSystemDataSource centralSystemLocalDataSource;
 
 void main(){
   setUp((){
     localDataSource = MockUserLocalDataSource();
     remoteDataSource = MockUserRemoteDataSource();
+    centralSystemLocalDataSource = MockCentralSystemDataSource();
     networkInfo = MockNetworkInfo();
     repository = UserRepositoryImpl(
       networkInfo: networkInfo,
       remoteDataSource: remoteDataSource,
-      localDataSource: localDataSource,      
+      localDataSource: localDataSource,
+      centralSystemLocalDataSource: centralSystemLocalDataSource  
     );
   });
 
@@ -226,7 +231,26 @@ void main(){
       final result = await repository.refreshAccessToken();
       expect(result, Left(StorageFailure(excType: StorageExceptionType.PLATFORM)));
     });
-    
+  });
+
+  group('logout', (){
+    test('should logout successfuly', ()async{
+      await repository.logout();
+      verify(centralSystemLocalDataSource.removeAll());
+      verify(centralSystemLocalDataSource.setAppRunnedAnyTime());
+    });
+
+    test('should return Right(null) when all goes good', ()async{
+      final result = await repository.logout();
+      expect(result, Right(null));
+    });
+
+    test('''shuld return Left(StorageFailure(X)) 
+    when centralSystemLocalDataSource throws a StorageException(X)''', ()async{
+      when(centralSystemLocalDataSource.removeAll()).thenThrow(StorageException(type: StorageExceptionType.NORMAL));
+      final result = await repository.logout();
+      expect(result, Left(StorageFailure(excType: StorageExceptionType.NORMAL)));
+    });
   });
 }
 

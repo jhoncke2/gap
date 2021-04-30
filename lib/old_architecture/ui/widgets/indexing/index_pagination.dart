@@ -5,7 +5,7 @@ import 'package:gap/old_architecture/logic/blocs_manager/commented_images_index_
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
 import 'package:gap/old_architecture/ui/widgets/unloaded_elements/unloaded_form_inputs_index.dart';
 
-class IndexPagination extends StatelessWidget {
+class IndexPagination extends StatelessWidget{
   IndexPagination();
 
   @override
@@ -77,8 +77,20 @@ class _LoadedIndexPagination extends StatelessWidget {
     return Container(
       width: _sizeUtils.xasisSobreYasis * 0.2,
       child: Row(
-        children: _centralItems,
-        mainAxisAlignment: _centralItemsMainAxisAlignment,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [_createCentralPagination()],
+        //hildren: _centralItems,
+        //mainAxisAlignment: _centralItemsMainAxisAlignment,
+      ),
+    );
+  }
+
+  Widget _createCentralPagination(){
+    return Text(
+      '${_currentIndex + 1} / $_nPages',
+      style: TextStyle(
+        color: Theme.of(_context).primaryColor,
+        fontSize: _sizeUtils.normalTextSize
       ),
     );
   }
@@ -213,10 +225,10 @@ class _LoadedIndexPagination extends StatelessWidget {
       MaterialState.focused,
     };
     if(!isActive)
-      return Colors.grey.withOpacity(0.5); 
+      return Colors.grey.withOpacity(0.65); 
     if (states.any(interactiveStates.contains))
-      return Theme.of(_context).primaryColor.withOpacity(0.4);
-    return Theme.of(_context).primaryColor.withOpacity(0.75);
+      return Colors.blueAccent.withOpacity(0.6);
+    return Colors.blueAccent;
   }
 
   Widget _createIndexTextButton(String buttonName){

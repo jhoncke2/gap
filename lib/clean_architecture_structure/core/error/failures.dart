@@ -51,3 +51,5 @@ class ServerFailure extends Failure{
     )
   ;
 }
+
+class InvalidInputFailure extends Failure{}

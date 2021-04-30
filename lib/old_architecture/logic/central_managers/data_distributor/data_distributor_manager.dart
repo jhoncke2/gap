@@ -45,6 +45,7 @@ class DataDistributorManager{
       DataDistrFunctionName.DO_FIRST_APP_INITIALIZATION: dataDistributor.updateFirstInitialization,
       DataDistrFunctionName.DO_INITIAL_CONFIG:  dataDistributor.doInitialConfig,
       DataDistrFunctionName.LOGIN: dataDistributor.login,
+      DataDistrFunctionName.LOGOUT: dataDistributor.logout,
       DataDistrFunctionName.UPDATE_ACCESS_TOKEN: dataDistributor.updateAccessToken,
       DataDistrFunctionName.UPDATE_PROJECTS: dataDistributor.updateProjects,
       DataDistrFunctionName.UPDATE_CHOSEN_PROJECT: dataDistributor.updateChosenProject,

@@ -1,3 +1,4 @@
+import 'package:gap/clean_architecture_structure/core/data/data_sources/central_system/central_system_local_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/models/user_model.dart';
 import 'package:gap/clean_architecture_structure/core/error/exceptions.dart';
 import 'package:meta/meta.dart';
@@ -14,11 +15,13 @@ class UserRepositoryImpl implements UserRepository{
   final NetworkInfo networkInfo;
   final UserRemoteDataSource remoteDataSource;
   final UserLocalDataSource localDataSource;
+  final CentralSystemLocalDataSource centralSystemLocalDataSource;
 
   UserRepositoryImpl({
     @required this.networkInfo, 
     @required this.remoteDataSource, 
-    @required this.localDataSource
+    @required this.localDataSource,
+    @required this.centralSystemLocalDataSource
   });
 
   @override
@@ -73,6 +76,17 @@ class UserRepositoryImpl implements UserRepository{
       return await function();
     }on ServerException catch(exception){
       return Left(ServerFailure(message: exception.message, servExcType: exception.type));
+    }on StorageException catch(exception){
+      return Left(StorageFailure(excType: exception.type));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> logout()async{
+    try{
+      await centralSystemLocalDataSource.removeAll();
+      await centralSystemLocalDataSource.setAppRunnedAnyTime();
+      return Right(null);
     }on StorageException catch(exception){
       return Left(StorageFailure(excType: exception.type));
     }
