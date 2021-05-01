@@ -15,8 +15,6 @@ class FormProcessMainContainer extends StatelessWidget {
       child: Container(
         width: MediaQuery.of(context).size.width,
         padding: _createGeneralPadding(),
-        //color: Colors.grey.withOpacity(0.2),
-        //color: Colors.white,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: this.mainAxisAlignment,

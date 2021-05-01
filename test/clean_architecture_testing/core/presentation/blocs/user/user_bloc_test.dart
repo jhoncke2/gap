@@ -1,17 +1,20 @@
 import 'package:dartz/dartz.dart';
+import 'package:gap/clean_architecture_structure/core/domain/repositories/navigation_repository.dart';
+import 'package:gap/clean_architecture_structure/core/domain/use_cases/use_case.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/blocs/user/user_bloc.dart';
+import 'package:mockito/mockito.dart';
+import 'package:test/test.dart';
 import 'package:gap/clean_architecture_structure/core/domain/entities/user.dart';
 import 'package:gap/clean_architecture_structure/core/domain/use_cases/user/login.dart';
 import 'package:gap/clean_architecture_structure/core/domain/use_cases/user/logout.dart';
 import 'package:gap/clean_architecture_structure/core/error/exceptions.dart';
 import 'package:gap/clean_architecture_structure/core/error/failures.dart';
-import 'package:gap/clean_architecture_structure/core/presentation/blocs/user/user_bloc.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/utils/input_validator.dart';
-import 'package:mockito/mockito.dart';
-import 'package:test/test.dart';
 
 class MockLogin extends Mock implements Login{}
 class MockLogout extends Mock implements Logout{}
 class MockInputValidator extends Mock implements InputValidator{}
+class MockNavigationRepository extends Mock implements NavigationRepository{}
 
 UserBloc bloc;
 MockLogin loginUseCase;
@@ -46,7 +49,7 @@ void main(){
       await untilCalled(inputValidator.validateInputValue(any));
       verify(inputValidator.validateInputValue(tUser.email));
       //await untilCalled(inputValidator.validateInputValue(any));
-      //verify(inputValidator.validateInputValue(any));
+      //verify(inputValidator.validateInputValue(tUser.password));
     });
 
     test('should emmit the specified states in order when email is empty or null', ()async{
@@ -99,6 +102,35 @@ void main(){
       ];
       expectLater(bloc.asBroadcastStream(), emitsInOrder(expectedOrderedStates));
       bloc.add(LoginEvent(email: tUser.email, password: tUser.password));
+    });
+  });
+
+  group('logout', (){
+    test('should call the logout usecase', ()async{
+      when(logoutUseCase.call(any)).thenAnswer((_) async => Right(null));
+      bloc.add(LogoutEvent());
+      await untilCalled(logoutUseCase.call(any));
+      verify(logoutUseCase.call(NoParams()));
+    });
+
+    test('should yield the specified ordered states when the logoutUseCase return Left(X)', ()async{
+      when(logoutUseCase.call(any)).thenAnswer((_) async => Left(StorageFailure(excType: StorageExceptionType.PLATFORM)));
+      final expectedOrderedStates = [
+        UserLoading(),
+        UserError(message: GENERAL_ERROR_MESSAGE)
+      ];
+      expectLater(bloc.asBroadcastStream(), emitsInOrder(expectedOrderedStates));
+      bloc.add(LogoutEvent());
+    });
+
+    test('should yield the specified ordered states when all goes good)', ()async{
+      when(logoutUseCase.call(any)).thenAnswer((_) async => Right(null));
+      final expectedOrderedStates = [
+        UserLoading(),
+        UserQuiet()
+      ];
+      expectLater(bloc.asBroadcastStream(), emitsInOrder(expectedOrderedStates));
+      bloc.add(LogoutEvent());
     });
   });
 }

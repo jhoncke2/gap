@@ -216,10 +216,10 @@ class _GPSValidator{
         await methodIfGps();
         break;
       case LocationPermission.denied:
-        await methodIfNotGps(CustomNavigator.navigatorKey.currentContext, errMessage);
+        await methodIfNotGps(CustomNavigatorOld.navigatorKey.currentContext, errMessage);
         break;
       case LocationPermission.deniedForever:
-        await methodIfNotGps(CustomNavigator.navigatorKey.currentContext, errMessage);
+        await methodIfNotGps(CustomNavigatorOld.navigatorKey.currentContext, errMessage);
         break;
     }
   }

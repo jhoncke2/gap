@@ -6,7 +6,7 @@ import 'package:gap/old_architecture/data/models/entities/custom_form_field/vari
 import 'package:gap/old_architecture/data/models/entities/custom_form_field/variable/single_value/single_value_form_field.dart';
 import 'package:gap/old_architecture/data/models/entities/custom_form_field/variable/variable_form_field.dart';
 import 'package:gap/old_architecture/data/models/entities/entities.dart';
-import 'package:gap/clean_architecture_structure/core/data/data_sources/central/remote_data_source.dart';
+import 'package:gap/clean_architecture_structure/core/data/data_sources/general/remote_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/models/formulario/custom_position.dart';
 import 'package:gap/clean_architecture_structure/core/data/models/formulario/firmer_model.dart';
 import 'package:gap/clean_architecture_structure/core/data/models/formulario/formulario_model.dart';

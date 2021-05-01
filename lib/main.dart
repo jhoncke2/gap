@@ -36,7 +36,7 @@ Future _onStartingApp()async{
 }
 
 void _onResumeApp(AppLifecycleState state)async{
-  print(CustomNavigator.navigatorKey.currentState.widget.initialRoute);
+  print(CustomNavigatorOld.navigatorKey.currentState.widget.initialRoute);
   //CustomNavigator.navigatorKey.currentState.popUntil((route) => route.isCurrent);
   /*
   if(state == AppLifecycleState.resumed){
@@ -72,7 +72,7 @@ Future _onConnectionChanged(NetConnectionState newConnState, BuildContext contex
 }
 
 Future _requestStorageActivation()async{
-  await dialogs.showErrDialog(CustomNavigator.navigatorKey.currentContext, 'Por favor activa el servicio de almacenamiento para esta app en configuración del dispositivo');
+  await dialogs.showErrDialog(CustomNavigatorOld.navigatorKey.currentContext, 'Por favor activa el servicio de almacenamiento para esta app en configuración del dispositivo');
   await NativeServicesPermissions.openSettings();
 }
 

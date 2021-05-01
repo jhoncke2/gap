@@ -39,9 +39,9 @@ RoundedRectangleBorder _createGeneralDialogBorder(BuildContext context){
 }
 
 Future showTemporalDialog(String message)async{
-  showBlockedDialog(CustomNavigator.navigatorKey.currentContext, message);
+  showBlockedDialog(CustomNavigatorOld.navigatorKey.currentContext, message);
   await Future.delayed(Duration(milliseconds: 1500), (){
-    CustomNavigator.navigatorKey.currentState.pop();
+    CustomNavigatorOld.navigatorKey.currentState.pop();
   });
 }
 

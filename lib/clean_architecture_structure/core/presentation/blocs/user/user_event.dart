@@ -15,4 +15,11 @@ class LoginEvent extends UserEvent{
     @required this.email, 
     @required this.password
   });
+
+  @override
+  List<Object> get props => [this.email, this.password];
+}
+
+class LogoutEvent extends UserEvent{
+
 }

@@ -136,7 +136,7 @@ abstract class DataDistributor{
     final Either<Failure, List<Project>> eitherProjects = await projectsRepository.getProjects();
     eitherProjects.fold((l)async{
       //TODO: Implementar manejo de error de conexión
-      dialogs.showBlockedDialog(CustomNavigator.navigatorKey.currentContext, 'Ocurrió un error con los datos de los proyectos');
+      dialogs.showBlockedDialog(CustomNavigatorOld.navigatorKey.currentContext, 'Ocurrió un error con los datos de los proyectos');
     }, (projects){
       List<ProjectOld> oldProjects = projects.map((p) => ProjectOld(id: p.id, nombre: p.nombre, visits: [])).toList();
       projectsB.add(SetProjects(projects: oldProjects));  
@@ -251,6 +251,11 @@ abstract class DataDistributor{
       throw NavObstructionErr(message: 'Ocurrió un problema al cargar la información del formulario');
       //TODO: Implementar manejo de errores
     }, (updatedChosenForm)async{
+      if(updatedChosenForm.campos.isEmpty){
+        formsB.add(ChangeFormsAreBlocked(areBlocked: false));
+        throw NavObstructionErr(message: 'El formulario no tiene campos');
+      }
+        
       await _manageUpdatedChosenForm(updatedChosenForm);
     });
   }

@@ -37,7 +37,7 @@ class _GapAppState extends State<GapApp> with WidgetsBindingObserver{
     return MaterialApp(
       title: 'GAP',
       debugShowCheckedModeBanner: false,
-      navigatorKey: CustomNavigator.navigatorKey,
+      navigatorKey: CustomNavigatorOld.navigatorKey,
       theme: ThemeData(
         primaryColor: Color.fromRGBO(93, 92, 92, 1),
         secondaryHeaderColor: Colors.brown.withOpacity(0.35)

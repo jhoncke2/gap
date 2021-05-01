@@ -32,10 +32,10 @@ class DataInitializer{
     await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.DO_FIRST_APP_INITIALIZATION);
     if(!dataDisrtibutorErrorHandlingManager.happendError){
       final PermissionStatus storagePermissionStatus = await NativeServicesPermissions.storageServiceStatus;
-      await _doFunctionByStoragePermissionStatus(storagePermissionStatus, CustomNavigator.navigatorKey.currentContext, netConnState);
+      await _doFunctionByStoragePermissionStatus(storagePermissionStatus, CustomNavigatorOld.navigatorKey.currentContext, netConnState);
     }else{
       await UserStorageManager.setFirstTimeRunned();
-      _navigateToLogin(CustomNavigator.navigatorKey.currentContext, netConnState);
+      _navigateToLogin(CustomNavigatorOld.navigatorKey.currentContext, netConnState);
     }
   }
 

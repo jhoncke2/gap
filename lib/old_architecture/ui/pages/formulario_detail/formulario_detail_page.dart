@@ -70,14 +70,52 @@ class _LoadedFormularioDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return BlocBuilder<KeyboardListenerBloc, KeyboardListenerState>(
+      builder: (context, keyboardState) {
+        _defineConfigByBlocsStates(keyboardState, context);
+        return Container(
+          height: containerHeight,
+          margin: EdgeInsets.all(0),
+          child: Column(
+            children:[
+              header,
+              separer,
+              _createIndexBuilder()
+            ],
+          )
+        );
+        return FormProcessMainContainer(
+          formName: formsState.chosenForm.name,
+          bottomChild: ChosenFormCurrentComponent()
+        );
+      },
+    );
+    
+    
+  }
+
+  Widget _createWidgetWithBlocBuilderConfigDefined(){
+    
+    return Container(
+      height: containerHeight,
+      margin: EdgeInsets.all(0),
+      child: Column(
+        children:[
+          header,
+          separer,
+          _createIndexBuilder()
+        ],
+      )
+    );
+  }
+
+  Widget _createIndexBuilder(){
     return BlocBuilder<IndexBloc, IndexState>(
       builder: (context, indexState) {
         if(indexState.nPages > 0){
-          return BlocBuilder<KeyboardListenerBloc, KeyboardListenerState>(
-            builder: (context, keyboardState) {
-              _defineConfigByBlocsStates(keyboardState, indexState, context);
-              return _createWidgetWithBlocBuilderConfigDefined();
-            },
+          return FormProcessMainContainer(
+            formName: formsState.chosenForm.name,
+            bottomChild: ChosenFormCurrentComponent()
           );
         }else{
           return CustomProgressIndicator(heightScreenPercentage: 0.6,);
@@ -86,24 +124,7 @@ class _LoadedFormularioDetail extends StatelessWidget {
     );
   }
 
-  Widget _createWidgetWithBlocBuilderConfigDefined(){
-    return Container(
-      height: containerHeight,
-      margin: EdgeInsets.all(0),
-      child: Column(
-        children:[
-          header,
-          separer,
-          FormProcessMainContainer(
-            formName: formsState.chosenForm.name,
-            bottomChild: ChosenFormCurrentComponent()
-          )
-        ],
-      )
-    );
-  }
-
-  void _defineConfigByBlocsStates(KeyboardListenerState keyboardState, IndexState indexState, BuildContext context) {
+  void _defineConfigByBlocsStates(KeyboardListenerState keyboardState, BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
     if(keyboardState.isActive){
       containerHeight = screenHeight * 0.9625;

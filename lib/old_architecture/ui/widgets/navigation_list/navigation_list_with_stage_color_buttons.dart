@@ -3,7 +3,7 @@ import 'package:gap/old_architecture/data/models/entities/entities.dart';
 import 'package:gap/old_architecture/ui/widgets/navigation_list/button/button_with_stage_color.dart';
 import 'package:gap/old_architecture/ui/widgets/navigation_list/navigation_list.dart';
 // ignore: must_be_immutable
-class NavigationListWithStageButtons extends NavigationList{
+class NavigationListWithStageButtons extends NavigationList with WidgetsBindingObserver{
   final List<EntityWithStageOld> entitiesWithStages;
   final Function(EntityWithStageOld entity) itemsFunction;
   final Widget Function(EntityWithStageOld entity) itemTileFunction;
@@ -36,4 +36,11 @@ class NavigationListWithStageButtons extends NavigationList{
     }).toList();
     return items;
   }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    print('change lufecycle state');
+    super.didChangeAppLifecycleState(state);
+  }
+
 }

@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/old_architecture/data/models/entities/entities.dart';
 import 'package:gap/old_architecture/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/old_architecture/logic/bloc/widgets/index/index_bloc.dart';
+import 'package:gap/old_architecture/logic/bloc/widgets/keyboard_listener/keyboard_listener_bloc.dart';
 import 'package:gap/old_architecture/logic/blocs_manager/chosen_form_manager.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
 import 'form_fields/form_field_widget_factory.dart';
@@ -17,9 +18,10 @@ class FormInputsFraction extends StatefulWidget {
   final StreamController<int> onTextFieldChangeController = StreamController.broadcast();
   Stream<int> onTextFieldTapStream;
   final ScrollController elementsScrollController = ScrollController();
-  int currentTappedTextFormField;
   double screenHeightPercent;
   final bool formFieldsAreEnabled;
+  int lastIndexPage;
+  bool widgetAlreadyBuilder = false;
 
   FormInputsFraction({Key key, @required this.screenHeightPercent, @required this.formFieldsAreEnabled}) : super(key: key){
     onTextFieldTapStream = onTextFieldChangeController.stream;
@@ -31,15 +33,14 @@ class FormInputsFraction extends StatefulWidget {
 
 class _FormInputsFractionState extends State<FormInputsFraction> {
   final SizeUtils _sizeUtils = SizeUtils();
+  int latIndexPage;
   IndexState _indexState;
   bool _isReBuilding;
 
   @override
   void initState() {
-    _initOnTextFieldTapStream();
-    _isReBuilding = false;
     super.initState();
-    
+    _isReBuilding = false;
   }
 
   @override
@@ -63,9 +64,16 @@ class _FormInputsFractionState extends State<FormInputsFraction> {
 
   void _doPostFrameBack(){
     WidgetsBinding.instance.addPostFrameCallback((_){
-      if(!_isReBuilding)
-        _animateScrollToInitialOffset();
-      _isReBuilding = false;
+      //if(!_isReBuilding)
+       // _animateScrollToInitialOffset();
+      //_isReBuilding = false;
+
+      //final keyboardState = BlocProvider.of<KeyboardListenerBloc>(context).state;
+      int currentIndexPage = _indexState.currentIndexPage;
+      if(latIndexPage != currentIndexPage){
+        latIndexPage = currentIndexPage;
+        widget.elementsScrollController.jumpTo(0.0);
+      }  
     });
   }
 
@@ -107,6 +115,7 @@ class _FormInputsFractionState extends State<FormInputsFraction> {
   }
 
   Widget _createFormFieldsWithIndex(){
+    
     List<CustomFormFieldOld> formFIeldsByPage = _getFormFIeldsByCurrentPage();
     final double screenHeight = MediaQuery.of(context).size.height;
     return Container(

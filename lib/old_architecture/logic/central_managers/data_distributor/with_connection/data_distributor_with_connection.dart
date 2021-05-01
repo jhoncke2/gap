@@ -51,13 +51,13 @@ class DataDistributorWithConnection extends DataDistributor{
 
   Future _doFirstLogin(String email, String password)async{
     userB.add(ChangeLoginButtopnAvaibleless(isAvaible: false));
-    await UserServicesManager.login(email, password, CustomNavigator.navigatorKey.currentContext);
+    await UserServicesManager.login(email, password, CustomNavigatorOld.navigatorKey.currentContext);
     await UserStorageManager.setUserInformation(email, password);
   }
 
   Future _doReloadingLogin()async{
     final Map<String, dynamic> userInformation = await UserStorageManager.getUserInformation();
-    await UserServicesManager.login(userInformation['email'], userInformation['password'], CustomNavigator.navigatorKey.currentContext);
+    await UserServicesManager.login(userInformation['email'], userInformation['password'], CustomNavigatorOld.navigatorKey.currentContext);
   }
 
   @override

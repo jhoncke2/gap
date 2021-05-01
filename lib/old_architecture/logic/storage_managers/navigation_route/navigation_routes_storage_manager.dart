@@ -10,10 +10,12 @@ class NavigationRoutesStorageManager{
     await _updateStorageWithNewRoutes(routes);
   }
 
+  /*
   static Future replaceAllNavigationTree(List<NavigationRoute> navRoutes)async{
     final List<Map<String, dynamic>> jsonNavRoutes = navRoutes.map((r) => {'route':r.value, 'step':r.step}).toList();
     await _updateStorageWithNewRoutes(jsonNavRoutes);
   }
+  */
   
   static Future<List<NavigationRoute>> getNavigationRoutes()async{
     final List<Map<String, dynamic>> routesAsJson = await _obtainNavigationRoutesFromStorage();
@@ -32,6 +34,7 @@ class NavigationRoutesStorageManager{
     await _updateStorageWithNewRoutes(routes);
   }
 
+  
   static Future<void> resetRoutes()async{
     await _updateStorageWithNewRoutes([]);
   }

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:gap/clean_architecture_structure/core/domain/entities/user.dart';
+import 'package:gap/clean_architecture_structure/core/domain/use_cases/use_case.dart';
 import 'package:gap/clean_architecture_structure/core/error/failures.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/utils/input_validator.dart';
 import 'package:meta/meta.dart';
@@ -41,6 +42,14 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       }, (_)async*{
         yield * _loginUntilPasswordValidation(event);
       });
+    }else if(event is LogoutEvent){
+      yield UserLoading();
+      final eitherLogout = await logout(NoParams());
+      yield * eitherLogout.fold((_)async*{
+        yield UserError(message: GENERAL_ERROR_MESSAGE);
+      }, (_)async*{
+        yield UserQuiet();
+      });
     }
   }
 
@@ -64,7 +73,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         message = GENERAL_ERROR_MESSAGE;
       yield UserError(message: message);
     }, (r)async*{
-
     });
   }
 }

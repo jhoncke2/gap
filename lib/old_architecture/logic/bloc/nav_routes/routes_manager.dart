@@ -13,22 +13,22 @@ class RoutesManager{
 
   Future updateLastRoute()async{
     final List<NavigationRoute> routesTree = await NavigationRoutesStorageManager.getNavigationRoutes();
-    await CustomNavigator.navigateReplacingTo(routesTree.last);
+    await CustomNavigatorOld.navigateReplacingTo(routesTree.last);
   }
 
   Future replaceAllRoutesForNew(NavigationRoute initialRoute)async{
     await NavigationRoutesStorageManager.resetRoutes();
     await NavigationRoutesStorageManager.setNavigationRoute(initialRoute);
     _currentRoute = initialRoute;
-    await CustomNavigator.navigateReplacingTo(initialRoute);
+    await CustomNavigatorOld.navigateReplacingTo(initialRoute);
   }
 
   Future setRoute(NavigationRoute newRoute)async{
     await NavigationRoutesStorageManager.setNavigationRoute(newRoute);
-    await CustomNavigator.navigateReplacingTo(newRoute);
+    await CustomNavigatorOld.navigateReplacingTo(newRoute);
     await loadRoute();
   }
-
+/*
   Future setRouteAfterPopping(NavigationRoute newRoute, int nPoppings)async{
     await NavigationRoutesStorageManager.removeNRoutes(nPoppings);
     await NavigationRoutesStorageManager.setNavigationRoute(newRoute);
@@ -36,17 +36,19 @@ class RoutesManager{
     await CustomNavigator.navigateReplacingTo(newRoute);
     await loadRoute();
   }
+*/
+
 
   Future pop()async{
     await NavigationRoutesStorageManager.removeNRoutes(1);
     await loadRoute();
-    await CustomNavigator.navigateReplacingTo(_currentRoute);
+    await CustomNavigatorOld.navigateReplacingTo(_currentRoute);
   }
 
   Future popNTimes(int n)async{
     await NavigationRoutesStorageManager.removeNRoutes(n);
     await loadRoute();
-    await CustomNavigator.navigateReplacingTo(_currentRoute);
+    await CustomNavigatorOld.navigateReplacingTo(_currentRoute);
   }
 
   NavigationRoute get currentRoute => _currentRoute;
@@ -56,10 +58,12 @@ class RoutesManager{
     final List<NavigationRoute> navRoutesTree = await routesTree;
     return navRoutesTree.length > 1;
   }
+  
   Future<NavigationRoute> get lastNavRoute async{
     final List<NavigationRoute> navRoutesTree = await routesTree;
     return navRoutesTree[navRoutesTree.length - 2];
   }
+  
 }
 
 final RoutesManager routesManager = RoutesManager();
