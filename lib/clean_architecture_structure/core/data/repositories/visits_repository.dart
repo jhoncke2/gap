@@ -65,13 +65,26 @@ class VisitsRepositoryImpl implements VisitsRepository{
       if(await networkInfo.isConnected()){
         final ProjectModel chosenProject = await projectsLocalDataSource.getChosenProject();
         final String accessToken = await userLocalDataSource.getAccessToken();
-        final List<FormularioModel> visitFormularios = await formulariosRemoteDataSource.getFormularios(visit.id, accessToken);
+        final List<FormularioModel> emptyVisitFormularios = await formulariosRemoteDataSource.getFormularios(visit.id, accessToken);
+        final List<FormularioModel> visitFormularios = await _getNotEmptyFormulariosFromRemoteDataSource(emptyVisitFormularios, accessToken);
         await preloadedDataSource.setPreloadedFamily(chosenProject.id, visit.id, visitFormularios);
       }
       return Right(null);
     }on StorageException catch(exception){
       return Left(StorageFailure(excType: exception.type));
     }
+  }
+
+  Future<List<FormularioModel>> _getNotEmptyFormulariosFromRemoteDataSource(List<FormularioModel> emptyFormularios, String accessToken)async{
+    final List<FormularioModel> visitFormularios = [];
+    for(FormularioModel eF in emptyFormularios){
+      try{
+        final FormularioModel formulario = await formulariosRemoteDataSource.getChosenFormulario(eF.id, accessToken);
+        if(!formulario.completo && formulario.campos.isNotEmpty)
+          visitFormularios.add(formulario);
+      }catch(exception){}
+    }
+    return visitFormularios;
   }
   
   @override

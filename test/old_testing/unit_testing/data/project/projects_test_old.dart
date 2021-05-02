@@ -17,7 +17,7 @@ void main(){
 Future _testFromJson()async{
   test('probando método fromJson', ()async{
     final List<Map<String, dynamic>> data = await getDataAsJson();
-    projects = projectsFromJson(data);
+    projects = projectsFromJsonOld(data);
   });
 }
 

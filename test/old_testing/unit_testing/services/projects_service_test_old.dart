@@ -83,7 +83,7 @@ Future _tryGetProjects()async{
   //fin de prueba
   expect(projectsResponse, isNotNull);
   expect(projectsResponse.length, isNot(0));
-  final List<ProjectOld> projects = projectsFromJson(projectsResponse);
+  final List<ProjectOld> projects = projectsFromJsonOld(projectsResponse);
   expect(projects, isNotNull);
   expect(projects.length, isNot(0));
 }
@@ -114,7 +114,7 @@ Future _tryUpdateForm()async{
 }
 
 Map<String, dynamic> _getFormWithFormFieldsAndItsVisitId(){
-  final List<ProjectOld> projects = projectsFromJson(projectsResponse);
+  final List<ProjectOld> projects = projectsFromJsonOld(projectsResponse);
   for(ProjectOld p in projects)
     for(VisitOld v in p.visits)
       for(FormularioOld f in v.formularios)

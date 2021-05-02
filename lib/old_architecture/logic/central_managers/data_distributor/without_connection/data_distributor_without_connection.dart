@@ -91,12 +91,14 @@ class SourceDataToBlocWithoutConnection extends DataDistributor{
 
   @override
   Future resetChosenVisit()async{
+    /*
     final List<FormularioOld> forms = formsB.state.forms;
     final bool chosenVisitIsCompleted = _chosenVisitIsCompleted(forms);
     if(chosenVisitIsCompleted){
       await _changeDataOfVisitRecentlyCompleted();
     }
     await super.resetChosenVisit();
+    */
   }
 
   bool _chosenVisitIsCompleted(List<FormularioOld> forms){

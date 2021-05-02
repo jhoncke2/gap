@@ -10,5 +10,5 @@ class CustomPosition extends Equatable{
   });
 
   @override
-  List<Object> get props => [latitude, longitude];
+  List<Object> get props => [this.latitude, this.longitude];
 }

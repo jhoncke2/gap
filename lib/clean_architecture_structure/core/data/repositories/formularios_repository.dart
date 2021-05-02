@@ -122,7 +122,7 @@ class FormulariosRepositoryImpl implements FormulariosRepository{
       final ProjectModel chosenProject = await projectsLocalDataSource.getChosenProject();
       final VisitModel chosenVisit = await visitsLocalDataSource.getChosenVisit(chosenProject.id);
       FormularioModel chosenFormulario = await localDataSource.getChosenFormulario(chosenVisit.id);
-      if(await networkInfo.isConnected()){     
+      if(await networkInfo.isConnected()){
         final String accessToken = await userLocalDataSource.getAccessToken();
         await remoteDataSource.setFirmer(firmer, chosenFormulario.id, chosenVisit.id, accessToken);
         chosenFormulario = chosenFormulario.copyWith(
@@ -130,6 +130,8 @@ class FormulariosRepositoryImpl implements FormulariosRepository{
         );
         await localDataSource.setChosenFormulario(chosenFormulario, chosenVisit.id);
       }else{
+        List<FormularioModel> preloadedFormularios = await preloadedDataSource.getPreloadedFormularios(chosenProject.id, chosenVisit.id);
+        chosenFormulario = preloadedFormularios.singleWhere((f) => f.id == chosenFormulario.id);
         chosenFormulario.firmers.add(firmer);
       }
       await preloadedDataSource.updatePreloadedFormulario(chosenProject.id, chosenVisit.id, chosenFormulario);
@@ -179,6 +181,23 @@ class FormulariosRepositoryImpl implements FormulariosRepository{
       }
     }on ServerException catch(exception){
       return Left(ServerFailure(message: exception.message, servExcType: exception.type));
+    }on StorageException catch(exception){
+      return Left(StorageFailure(excType: exception.type));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> endChosenFormulario()async{
+    try{
+      final ProjectModel chosenProject = await projectsLocalDataSource.getChosenProject();
+      final VisitModel chosenVisit = await visitsLocalDataSource.getChosenVisit(chosenProject.id);
+      final FormularioModel chosenFormulario = await localDataSource.getChosenFormulario(chosenVisit.id);
+      if(await networkInfo.isConnected()){ 
+        await preloadedDataSource.removePreloadedFormulario(chosenFormulario.id);
+      }else{
+        await preloadedDataSource.updatePreloadedFormulario(chosenProject.id, chosenVisit.id, chosenFormulario.copyWith(completo: true));
+      }
+      return Right(null);
     }on StorageException catch(exception){
       return Left(StorageFailure(excType: exception.type));
     }

@@ -31,8 +31,8 @@ class Formulario extends EntityWithStage{
   final List<Firmer> firmers;
   final List<CustomFormFieldOld> campos;
   int formStepIndex;
-  final CustomPosition initialPosition;
-  final CustomPosition finalPosition;
+  CustomPosition initialPosition;
+  CustomPosition finalPosition;
 
   Formulario({
     this.id,

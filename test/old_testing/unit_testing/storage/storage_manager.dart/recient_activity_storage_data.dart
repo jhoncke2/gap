@@ -11,7 +11,7 @@ final Map<String, String> data = {
   'commented_images':commentedImagesAsString
 };
 final String chosenProjectAsString = jsonEncode(fakeData.oldProjects[0].toJson());
-final String visitsAsString = jsonEncode(  visitsToJson(fakeData.visits) );
+final String visitsAsString = jsonEncode(  visitsToJsonOld(fakeData.visits) );
 final String chosenVisitAsString = jsonEncode(fakeData.visits[0].toJson());
 final String formsAsString = jsonEncode(formulariosToJsonOld(fakeData.formularios));
 final String chosenFormAsString = jsonEncode(fakeData.formularios[0].toJson());

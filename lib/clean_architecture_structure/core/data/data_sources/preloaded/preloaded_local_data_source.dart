@@ -53,7 +53,7 @@ class PreloadedLocalDataSourceImpl implements PreloadedLocalDataSource{
   @override
   Future<List<int>> getPreloadedProjectsIds()async{
     Map<String, dynamic> preloadedData = await storageConnector.getMap(PRELOADED_DATA_STORAGE_KEY);
-    preloadedData = _getPreloadedDataWithEmptyProjects(preloadedData);
+    preloadedData = _getPreloadedDataWithoutEmptyProjects(preloadedData);
     List<int> projectsIds = [];
     preloadedData.forEach((key, _) {
       projectsIds.add(int.parse(key));
@@ -62,7 +62,7 @@ class PreloadedLocalDataSourceImpl implements PreloadedLocalDataSource{
   }
 
   @protected
-  Map<String, dynamic> _getPreloadedDataWithEmptyProjects(Map<String, dynamic> preloadedData){
+  Map<String, dynamic> _getPreloadedDataWithoutEmptyProjects(Map<String, dynamic> preloadedData){
     Map<String, dynamic> cleanedPreloadedData = {};
     preloadedData.forEach((key, value) {
       if((value as Map).isNotEmpty)
@@ -75,7 +75,7 @@ class PreloadedLocalDataSourceImpl implements PreloadedLocalDataSource{
   Future<List<int>> getPreloadedVisitsIds(int projectId)async{
     final Map<String, dynamic> preloadedData = await storageConnector.getMap(PRELOADED_DATA_STORAGE_KEY);
     Map<String, dynamic> projectData = preloadedData['$projectId'];
-    projectData = _getProjectDataWithEmptyVisitsRemoved(projectData);
+    projectData = _getProjectDataWithoutEmptyVisits(projectData);
     List<int> visitsIds = [];
     if(projectData != null){
       projectData.forEach((key, _) {
@@ -85,7 +85,7 @@ class PreloadedLocalDataSourceImpl implements PreloadedLocalDataSource{
     return visitsIds;
   }
 
-  Map<String, dynamic> _getProjectDataWithEmptyVisitsRemoved(Map<String, dynamic> projectData){
+  Map<String, dynamic> _getProjectDataWithoutEmptyVisits(Map<String, dynamic> projectData){
     Map<String, dynamic> cleanedProjectData = {};
     projectData.forEach((key, value) {
       if(value!=null && (value as List).isNotEmpty)

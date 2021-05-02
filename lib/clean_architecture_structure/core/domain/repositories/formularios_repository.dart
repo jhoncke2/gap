@@ -12,4 +12,5 @@ abstract class FormulariosRepository{
   Future<Either<Failure, void>> setCampos(Formulario formulario);
   Future<Either<Failure, void>> setFinalPosition(CustomPosition position);
   Future<Either<Failure, void>> setFirmer(Firmer firmer);
+  Future<Either<Failure, void>> endChosenFormulario();
 }

@@ -1,16 +1,15 @@
 import 'dart:convert';
-import 'package:gap/clean_architecture_structure/core/data/data_sources/formularios/formularios_local_data_source.dart';
+import 'package:gap/old_architecture/data/models/entities/entities.dart';
+import 'package:test/test.dart';
+import 'package:mockito/mockito.dart';
+import 'package:dartz/dartz.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/formularios/formularios_remote_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/projects/projects_local_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/models/formulario/formulario_model.dart';
 import 'package:gap/clean_architecture_structure/core/data/models/project_model.dart';
-import 'package:test/test.dart';
-import 'package:mockito/mockito.dart';
-import 'package:dartz/dartz.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/user/user_local_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/error/exceptions.dart';
 import 'package:gap/clean_architecture_structure/core/error/failures.dart';
-
 import 'package:gap/clean_architecture_structure/core/data/data_sources/preloaded/preloaded_local_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/visits/visits_local_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/visits/visits_remote_data_source.dart';
@@ -57,6 +56,12 @@ void main(){
     );
   });
 
+  _testGetVisitsGroup();
+  _testSetChosenVisitGroup();
+  _testGetChosenVisitsGroup();
+}
+
+void _testGetVisitsGroup(){
   group('getVisits', (){
     String tAccessToken;
     ProjectModel tProject;
@@ -137,49 +142,154 @@ void main(){
       final response = await visitsRepository.getVisits();
       expect(response, Left(StorageFailure(excType: StorageExceptionType.NORMAL)));
     });
-    
   });
+}
 
+ProjectModel _getProjectFromFixture(){
+  final String stringProjects = callFixture('projects.json');
+  final List<Map<String, dynamic>> jsonProjects = jsonDecode(stringProjects).cast<Map<String, dynamic>>();
+  final List<ProjectModel> projects = projectsFromJson(jsonProjects);
+  return projects[0];
+}
+
+List<VisitModel> _getVisitsFromFixture(){
+  final String stringVisits = callFixture('visits.json');
+  final List<Map<String, dynamic>> jsonVisits = jsonDecode(stringVisits).cast<Map<String, dynamic>>();
+  final List<VisitModel> visits = visitsFromStorageJson(jsonVisits);
+  return visits;
+} 
+
+List<FormularioModel> _getFormulariosFromFixture(){
+  final String stringFormularios = callFixture('formularios.json');
+  final List<Map<String, dynamic>> jsonFormularios = jsonDecode(stringFormularios).cast<Map<String, dynamic>>();
+  final List<FormularioModel> formularios = formulariosFromJson(jsonFormularios);
+  return formularios;
+}
+
+void _testSetChosenVisitGroup(){
   group('setChosenVisit', (){
     String tAccessToken;
     Visit tChosenVisit;
     ProjectModel tChosenProject;
-    List<FormularioModel> tFormularios;
+    List<FormularioModel> tEmptyFormularios;
     setUp((){
       tAccessToken = 'a_t';
       tChosenVisit = _getVisitsFromFixture()[0];
       tChosenProject = _getProjectFromFixture();
-      tFormularios = _getFormulariosFromFixture();
+      tEmptyFormularios = _getFormulariosFromFixture();
     });
 
-    test('should set the chosen visit from localDataSource when there is connectivity', ()async{
+    test('''should set the chosen visit on localDataSource when there is connectivity''', ()async{
       when(networkInfo.isConnected()).thenAnswer((_) async => true);
       when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tChosenProject);
-      when(formulariosRemoteDataSource.getFormularios(any, any)).thenAnswer((_) async => tFormularios);
-      when(userLocalDataSource.getAccessToken()).thenAnswer((realInvocation) async => tAccessToken);
+      when(formulariosRemoteDataSource.getFormularios(any, any)).thenAnswer((_) async => tEmptyFormularios);
+      tEmptyFormularios.forEach((f) {
+        when(formulariosRemoteDataSource.getChosenFormulario(f.id, any)).thenAnswer((_) async => f);
+      });
+      when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
       await visitsRepository.setChosenVisit(tChosenVisit);
       verify(networkInfo.isConnected());
       verify(localDataSource.setChosenVisit(tChosenVisit));
       verify(projectsLocalDataSource.getChosenProject());
       verify(formulariosRemoteDataSource.getFormularios(tChosenVisit.id, tAccessToken));
+    });
+
+    test('''should set the chosen visit obtaining every single formularioModel from remoteDataSource.getChosenFormulario()
+     and saving all formularios on the preloadedDataSource when there is connectivity''', ()async{
+      final List<FormularioModel> tFormularios = tEmptyFormularios.map(
+        (f) => FormularioModel.fromJson(f.toJson()).copyWith(campos: _getFormFieldsFromFixture(), completo: false)
+      ).toList();
+      when(networkInfo.isConnected()).thenAnswer((_) async => true);
+      when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tChosenProject);
+      when(formulariosRemoteDataSource.getFormularios(any, any)).thenAnswer((_) async => tEmptyFormularios);
+      tFormularios.forEach((f) {
+        when(formulariosRemoteDataSource.getChosenFormulario(f.id, any)).thenAnswer((_) async => f);
+      });
+      when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
+      await visitsRepository.setChosenVisit(tChosenVisit);
+      tEmptyFormularios.forEach((f) {
+        verify(formulariosRemoteDataSource.getChosenFormulario(f.id, any));
+      });
       verify(preloadedDataSource.setPreloadedFamily(tChosenProject.id, tChosenVisit.id, tFormularios));
     });
 
-    test('should set the chosen visit from localDataSource when there is not connectivity', ()async{
-      when(networkInfo.isConnected()).thenAnswer((_) async => false);
+    test('''should save on the preloadedDataSource only the formularios
+     that have not empty campos, when there is connectivity''', ()async{
+      final List<FormularioModel> tFormularios = tEmptyFormularios.map(
+        (f) => FormularioModel.fromJson(f.toJson()).copyWith(campos: _getFormFieldsFromFixture())
+      ).toList();
+      final List<FormularioModel> tUncompletedFormularios = tFormularios.where((f) => !f.completo).toList();
+
+      when(networkInfo.isConnected()).thenAnswer((_) async => true);
+      when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tChosenProject);
+      when(formulariosRemoteDataSource.getFormularios(any, any)).thenAnswer((_) async => tEmptyFormularios);
+      tFormularios.forEach((f) {
+        when(formulariosRemoteDataSource.getChosenFormulario(f.id, any)).thenAnswer((_) async => f);
+      });
+      when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
       await visitsRepository.setChosenVisit(tChosenVisit);
-      verify(networkInfo.isConnected());
-      verify(localDataSource.setChosenVisit(tChosenVisit));
-      verifyNever(projectsLocalDataSource.getChosenProject());
-      verifyNever(formulariosRemoteDataSource.getFormularios(any, any));
-      verifyNever(preloadedDataSource.setPreloadedFamily(any, any, any));
+      tEmptyFormularios.forEach((f) {
+        verify(formulariosRemoteDataSource.getChosenFormulario(f.id, any));
+      });
+      verify(preloadedDataSource.setPreloadedFamily(tChosenProject.id, tChosenVisit.id, tUncompletedFormularios));
+    });
+
+    test('''should save on the preloadedDataSource only the formularios
+     that are not completed, when there is connectivity''', ()async{
+      final List<FormularioModel> tFormularios = tEmptyFormularios.map(
+        (f) => FormularioModel.fromJson(f.toJson()).copyWith(campos: _getFormFieldsFromFixture())
+      ).toList();
+      final List<FormularioModel> tUncompletedFormularios = tFormularios.where((f) => !f.completo).toList();
+
+      when(networkInfo.isConnected()).thenAnswer((_) async => true);
+      when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tChosenProject);
+      when(formulariosRemoteDataSource.getFormularios(any, any)).thenAnswer((_) async => tEmptyFormularios);
+      tFormularios.forEach((f) {
+        when(formulariosRemoteDataSource.getChosenFormulario(f.id, any)).thenAnswer((_) async => f);
+      });
+      when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
+      await visitsRepository.setChosenVisit(tChosenVisit);
+      tEmptyFormularios.forEach((f) {
+        verify(formulariosRemoteDataSource.getChosenFormulario(f.id, any));
+      });
+      verify(preloadedDataSource.setPreloadedFamily(tChosenProject.id, tChosenVisit.id, tUncompletedFormularios));
+    });
+
+    test('''should save on the preloadedDataSource only when the remoteDataSource desn't throw an exception
+    when there is not connectivity''', ()async{
+      final List<FormularioModel> tFormularios = tEmptyFormularios.map(
+        (f) => FormularioModel.fromJson(f.toJson()).copyWith(campos: _getFormFieldsFromFixture(), completo: false)
+      ).toList();
+      final List<FormularioModel> tFormulariosWithoutExceptions = List.from(tFormularios)..removeLast();
+      for(int i = 0; i < tFormularios.length; i++){
+        FormularioModel f = tFormularios[i];
+        if(i < tFormularios.length-1)
+          when(formulariosRemoteDataSource.getChosenFormulario(f.id, any)).thenAnswer((_) async => f);
+        else{
+          when(formulariosRemoteDataSource.getChosenFormulario(f.id, any)).thenThrow(ServerException(type: ServerExceptionType.NORMAL));
+        }
+      }
+      when(networkInfo.isConnected()).thenAnswer((_) async => true);
+      when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tChosenProject);
+      when(formulariosRemoteDataSource.getFormularios(any, any)).thenAnswer((_) async => tEmptyFormularios);
+      when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
+
+      await visitsRepository.setChosenVisit(tChosenVisit);
+      tEmptyFormularios.forEach((f) {
+        verify(formulariosRemoteDataSource.getChosenFormulario(f.id, any));
+      });
+
+      verify(preloadedDataSource.setPreloadedFamily(tChosenProject.id, tChosenVisit.id, tFormulariosWithoutExceptions));
     });
 
     test('should return Right(null) when all goes good', ()async{
       when(networkInfo.isConnected()).thenAnswer((_) async => true);
       when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tChosenProject);
-      when(formulariosRemoteDataSource.getFormularios(any, any)).thenAnswer((_) async => tFormularios);
+      when(formulariosRemoteDataSource.getFormularios(any, any)).thenAnswer((_) async => tEmptyFormularios);
       when(userLocalDataSource.getAccessToken()).thenAnswer((realInvocation) async => tAccessToken);
+      tEmptyFormularios.forEach((f) {
+        when(formulariosRemoteDataSource.getChosenFormulario(f.id, any)).thenAnswer((realInvocation) async => f);
+      });
       final response = await visitsRepository.setChosenVisit(tChosenVisit);
       expect(response, Right(null));
     });
@@ -187,22 +297,25 @@ void main(){
     test('should return Left(StorageFailure()) when localDataSource throws a StorageException()', ()async{
       when(networkInfo.isConnected()).thenAnswer((_) async => true);
       when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tChosenProject);
-      when(formulariosRemoteDataSource.getFormularios(any, any)).thenAnswer((_) async => tFormularios);
+      when(formulariosRemoteDataSource.getFormularios(any, any)).thenAnswer((_) async => tEmptyFormularios);
       when(userLocalDataSource.getAccessToken()).thenAnswer((realInvocation) async => tAccessToken);
+      tEmptyFormularios.forEach((f) {
+        when(formulariosRemoteDataSource.getChosenFormulario(f.id, any)).thenAnswer((realInvocation) async => f);
+      });
       when(localDataSource.setChosenVisit(any)).thenThrow(StorageException(type: StorageExceptionType.PLATFORM));
       final response = await visitsRepository.setChosenVisit(tChosenVisit);
       expect(response, Left(StorageFailure(excType: StorageExceptionType.PLATFORM)));
     });
   });
+}
 
+void _testGetChosenVisitsGroup(){
   group('getChosenVisit', (){
     ProjectModel tProject;
-    int tProjectId;
     Visit tChosenVisit;
 
     setUp((){
       tProject = _getProjectFromFixture();
-      tProjectId = 1;
       tChosenVisit = _getVisitsFromFixture()[0];
     });
 
@@ -241,23 +354,8 @@ void main(){
   });
 }
 
-ProjectModel _getProjectFromFixture(){
-  final String stringProjects = callFixture('projects.json');
-  final List<Map<String, dynamic>> jsonProjects = jsonDecode(stringProjects).cast<Map<String, dynamic>>();
-  final List<ProjectModel> projects = projectsFromJson(jsonProjects);
-  return projects[0];
-}
-
-List<VisitModel> _getVisitsFromFixture(){
-  final String stringVisits = callFixture('visits.json');
-  final List<Map<String, dynamic>> jsonVisits = jsonDecode(stringVisits).cast<Map<String, dynamic>>();
-  final List<VisitModel> visits = visitsFromStorageJson(jsonVisits);
-  return visits;
-} 
-
-List<FormularioModel> _getFormulariosFromFixture(){
-  final String stringFormularios = callFixture('visits.json');
-  final List<Map<String, dynamic>> jsonFormularios = jsonDecode(stringFormularios).cast<Map<String, dynamic>>();
-  final List<FormularioModel> formularios = formulariosFromJson(jsonFormularios);
-  return formularios;
+List<CustomFormFieldOld> _getFormFieldsFromFixture(){
+  final String stringFormFields = callFixture('formulario_campos.json');
+  final List<Map<String, dynamic>> jsonFormFields = jsonDecode(stringFormFields).cast<Map<String, dynamic>>();
+  return customFormFieldsFromJson(jsonFormFields);
 }

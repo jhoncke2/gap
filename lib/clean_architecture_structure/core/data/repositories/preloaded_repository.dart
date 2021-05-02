@@ -1,4 +1,6 @@
 import 'package:dartz/dartz.dart';
+import 'package:gap/clean_architecture_structure/core/domain/entities/formulario/firmer.dart';
+import 'package:gap/clean_architecture_structure/core/domain/entities/formulario/formulario.dart';
 import 'package:meta/meta.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/user/user_local_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/models/formulario/firmer_model.dart';
@@ -17,6 +19,7 @@ class PreloadedRepositoryImpl implements PreloadedRepository{
   final PreloadedLocalDataSource localDataSource;
   final FormulariosRemoteDataSource formulariosRemoteDataSource;
   final FormulariosLocalDataSource formulariosLocalDataSource;
+  bool _sentAnyData;
 
   PreloadedRepositoryImpl({
     @required this.networkInfo,
@@ -47,37 +50,67 @@ class PreloadedRepositoryImpl implements PreloadedRepository{
   }
 
   Future<bool> _sentDataInProjects(List<int> projectsIds, String accessToken)async{
-    bool sentAnyData = false;
+    _sentAnyData = false;
     for(int projectId in projectsIds){
       final List<int> visitsIds = await localDataSource.getPreloadedVisitsIds(projectId);
       for(int visitId in visitsIds){
         final List<FormularioModel> formularios = await localDataSource.getPreloadedFormularios(projectId, visitId);
         for(FormularioModel formulario in formularios){
-          if(formulario.initialPosition != null){
-            await formulariosRemoteDataSource.setInitialPosition(formulario.initialPosition, formulario.id, accessToken);
-            sentAnyData = true;
-          }
-          if(_canSendCampos(formulario)){
-            await formulariosRemoteDataSource.setCampos(formulario, visitId, accessToken);
-            sentAnyData = true;
-          }
-          if(formulario.finalPosition != null){
-            await formulariosRemoteDataSource.setFinalPosition(formulario.finalPosition, formulario.id, accessToken);
-            sentAnyData = true;
-          }    
-          if(![null, []].contains(formulario.firmers)){
-            for(FirmerModel firmer in formulario.firmers)
-              await formulariosRemoteDataSource.setFirmer(firmer, formulario.id, visitId, accessToken);
-            //Por fuera del ciclo: si no pudo enviar todas las firmas, mejor tomarlo como que no se pudo enviar data.
-            sentAnyData = true;
-          }
+          await _sendFormularioData(formulario, projectId, visitId, accessToken);
         }
       }
     }
-    return sentAnyData;
+    return _sentAnyData;
+  }
+
+  Future<void> _sendFormularioData(FormularioModel formulario, int projectId, int visitId, String accessToken)async{
+    //print('******************');
+    //print('${formulario.toJson()}');
+    if(formulario.initialPosition != null){
+      await formulariosRemoteDataSource.setInitialPosition(formulario.initialPosition, formulario.id, accessToken);
+      formulario.initialPosition = null;
+      await localDataSource.updatePreloadedFormulario(projectId, visitId, formulario);
+      _sentAnyData = true;
+    }
+    if(_canSendCampos(formulario)){
+      await formulariosRemoteDataSource.setCampos(formulario, visitId, accessToken);
+      formulario = formulario.copyWith(campos: []);
+      await localDataSource.updatePreloadedFormulario(projectId, visitId, formulario);
+      _sentAnyData = true;
+    }
+    if(formulario.finalPosition != null){
+      await formulariosRemoteDataSource.setFinalPosition(formulario.finalPosition, formulario.id, accessToken);
+      formulario.finalPosition = null;
+      await localDataSource.updatePreloadedFormulario(projectId, visitId, formulario);
+      _sentAnyData = true;
+    }
+    if(_hasFirmers(formulario)){
+      for(int i = 0; i < formulario.firmers.length; i++){
+        await formulariosRemoteDataSource.setFirmer(formulario.firmers[i], formulario.id, visitId, accessToken);
+        FormularioModel formularioWithoutFirmer = formulario.copyWith(
+          firmers: List.from(formulario.firmers)..removeRange(0, i+1)
+        );
+        await localDataSource.updatePreloadedFormulario(projectId, visitId, formularioWithoutFirmer);
+      }
+      //Por fuera del ciclo: si no pudo enviar todas las firmas, mejor tomarlo como que no se pudo enviar data.
+      _sentAnyData = true;
+    }
+    if(_formularioSentAllItsData(formulario))
+      await localDataSource.removePreloadedFormulario(formulario.id);
   }
 
   bool _canSendCampos(FormularioModel formulario){
-    return formulario.completo && ![null, []].contains(formulario.campos);
+    return formulario.completo && formulario.campos != null && formulario.campos.isNotEmpty;
+  }
+
+  bool _hasFirmers(FormularioModel formulario){
+    return ![null, []].contains(formulario.firmers);
+  }
+
+  bool _formularioSentAllItsData(Formulario formulario){
+    return formulario.initialPosition == null 
+      && formulario.campos.isEmpty
+      && formulario.finalPosition == null
+      && formulario.firmers.isEmpty;
   }
 }

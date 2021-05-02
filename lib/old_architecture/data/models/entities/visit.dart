@@ -1,6 +1,6 @@
 part of 'entities.dart';
 
-List<VisitOld> visitsFromJson(dynamic jsonVisits){
+List<VisitOld> visitsFromJsonOld(dynamic jsonVisits){
   List<VisitOld> visitsList;
   if(jsonVisits is List){
     visitsList = jsonVisits.map((jsonV) => VisitOld.fromJson(jsonV)).toList();
@@ -22,7 +22,7 @@ List<VisitOld> visitsFromJson(dynamic jsonVisits){
   de la app.
 */
 
-Map<String, dynamic> visitsToJson(List<VisitOld> visits){
+Map<String, dynamic> visitsToJsonOld(List<VisitOld> visits){
   final Map<String, dynamic> json = {};
   for(int i = 0; i < visits.length; i++)
     json['$i'] = visits[i].toJson();
@@ -30,7 +30,7 @@ Map<String, dynamic> visitsToJson(List<VisitOld> visits){
 }
 
 
-List<VisitOld> visitsFromStorageJson(List<Map<String, dynamic>> jsonVisits){
+List<VisitOld> visitsFromStorageJsonOld(List<Map<String, dynamic>> jsonVisits){
   if(jsonVisits == null)
     return [];
   final List<VisitOld> visits = jsonVisits.map(
@@ -41,7 +41,7 @@ List<VisitOld> visitsFromStorageJson(List<Map<String, dynamic>> jsonVisits){
 
 
 
-List<Map<String, dynamic>> visitsToStorageJson(List<VisitOld> visits){
+List<Map<String, dynamic>> visitsToStorageJsonOld(List<VisitOld> visits){
   final List<Map<String, dynamic>> jsonVisits = visits.map(
     (VisitOld v)=>v.toJson()
   ).toList();

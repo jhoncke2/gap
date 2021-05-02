@@ -1,7 +1,7 @@
 part of 'entities.dart';
 
 
-List<ProjectOld> projectsFromJson(dynamic jsonData){
+List<ProjectOld> projectsFromJsonOld(dynamic jsonData){
   List<ProjectOld> projects = [];
   if(jsonData is Map){
     (jsonData.cast<String, Map>()).forEach((key, value){
@@ -12,7 +12,7 @@ List<ProjectOld> projectsFromJson(dynamic jsonData){
   return projects;
 } 
 
-List<Map<String, dynamic>> projectsToJson(List<ProjectOld> data) => List<Map<String, dynamic>>.from(data.map((x) => x.toJson()));
+List<Map<String, dynamic>> projectsToJsonOld(List<ProjectOld> data) => List<Map<String, dynamic>>.from(data.map((x) => x.toJson()));
 
 class ProjectOld extends Entity{
   int id;
@@ -28,13 +28,13 @@ class ProjectOld extends Entity{
   factory ProjectOld.fromJson(Map<String, dynamic> json) => ProjectOld(
     id: json["id"],
     nombre: json["nombre"],
-    visits: json["visitas"] != [] ? visitsFromJson(json["visitas"]) : [],
+    visits: json["visitas"] != [] ? visitsFromJsonOld(json["visitas"]) : [],
   );
     
   Map<String, dynamic> toJson() => {
     'id':this.id,
     'nombre':this.nombre,
-    'visitas':visitsToJson(visits)
+    'visitas':visitsToJsonOld(visits)
   };
 
 }

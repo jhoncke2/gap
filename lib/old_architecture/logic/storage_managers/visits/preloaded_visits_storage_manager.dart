@@ -34,7 +34,7 @@ class PreloadedVisitsStorageManager{
   }
   
   static void _updateProjectIdMapWithoutRemovedVisit(List<VisitOld> restantPreloadedVisitsByProjectId, int projectId){
-    final List<Map<String, dynamic>> restantPrelVisitsByProjIdAsJson =  visitsToStorageJson(restantPreloadedVisitsByProjectId);//   Visits(visits: restantPreloadedVisitsByProjectId).toJson();
+    final List<Map<String, dynamic>> restantPrelVisitsByProjIdAsJson =  visitsToStorageJsonOld(restantPreloadedVisitsByProjectId);//   Visits(visits: restantPreloadedVisitsByProjectId).toJson();
     currentPreloadedVisitsHolder.currentData[projectId.toString()] = restantPrelVisitsByProjIdAsJson;
   }  
 
@@ -42,7 +42,7 @@ class PreloadedVisitsStorageManager{
     await _updateCurrentVisitsHolderFromStorage();
     final List<VisitOld> preloadedVisitsByProjectId = await _getVisitsByProjectId(projectId);
     _addVisitToVisits(visit, preloadedVisitsByProjectId);
-    final List<Map<String, dynamic>> preloadedVisitsByProjectIdAsJson =  visitsToStorageJson(preloadedVisitsByProjectId); //   Visits(visits: preloadedVisitsByProjectId).toJson();
+    final List<Map<String, dynamic>> preloadedVisitsByProjectIdAsJson =  visitsToStorageJsonOld(preloadedVisitsByProjectId); //   Visits(visits: preloadedVisitsByProjectId).toJson();
     currentPreloadedVisitsHolder.currentData[projectId.toString()] = preloadedVisitsByProjectIdAsJson;
     await _updateStorageFromCurrentVisitsHolder();
   }
@@ -67,7 +67,7 @@ class PreloadedVisitsStorageManager{
   
   static Future<List<VisitOld>> _getVisitsByProjectId(int projectId)async{
     final List<Map<String, dynamic>> preloadedVisitsByProjectIdAsJson = currentPreloadedVisitsHolder.currentData[projectId.toString()];
-    final List<VisitOld> preloadedVisitsByProjectId =  visitsFromStorageJson(preloadedVisitsByProjectIdAsJson);  // Visits.fromJson( preloadedVisitsByProjectIdAsJson??[] ).visits;
+    final List<VisitOld> preloadedVisitsByProjectId =  visitsFromStorageJsonOld(preloadedVisitsByProjectIdAsJson);  // Visits.fromJson( preloadedVisitsByProjectIdAsJson??[] ).visits;
     return preloadedVisitsByProjectId;
   }
 

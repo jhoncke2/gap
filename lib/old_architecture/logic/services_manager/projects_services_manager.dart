@@ -12,7 +12,7 @@ class ProjectsServicesManager{
 
   Future<List<ProjectOld>> loadProjects(ProjectsBloc bloc, String accessToken)async{
     final dynamic projectsResponse = await projectsService.getProjects(accessToken);
-    final List<ProjectOld> projects = projectsFromJson(projectsResponse);
+    final List<ProjectOld> projects = projectsFromJsonOld(projectsResponse);
     return projects;
   }
 

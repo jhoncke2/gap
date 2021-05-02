@@ -1,10 +1,10 @@
-import 'package:gap/clean_architecture_structure/core/data/models/project_model.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:gap/clean_architecture_structure/core/domain/repositories/formularios_repository.dart';
+import 'package:gap/clean_architecture_structure/core/domain/repositories/preloaded_repository.dart';
 import 'package:gap/clean_architecture_structure/core/domain/repositories/projects_repository.dart';
 import 'package:gap/clean_architecture_structure/core/domain/repositories/visits_repository.dart';
 import 'package:gap/clean_architecture_structure/injection_container.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:gap/old_architecture/logic/bloc/nav_routes/custom_navigator.dart';
 import 'package:gap/old_architecture/logic/central_managers/data_distributor/data_distributor_error_handler_manager.dart';
 import 'package:gap/old_architecture/data/enums/enums.dart';
@@ -14,7 +14,6 @@ import 'package:gap/old_architecture/native_connectors/permissions.dart';
 import 'package:gap/old_architecture/logic/bloc/entities/user/user_bloc.dart';
 import 'package:gap/old_architecture/logic/bloc/nav_routes/routes_manager.dart';
 import 'package:gap/old_architecture/logic/central_managers/pages_navigation_manager.dart';
-import 'package:gap/old_architecture/logic/storage_managers/forms/chosen_form_storage_manager.dart';
 import 'package:gap/old_architecture/logic/storage_managers/user/user_storage_manager.dart';
 import 'package:gap/old_architecture/ui/utils/dialogs.dart' as dialogs;
 
@@ -22,6 +21,7 @@ class DataInitializer{
   static final ProjectsRepository projectsRepository = GetItContainer.sl();
   static final VisitsRepository visitsRepository = GetItContainer.sl();
   static final FormulariosRepository formulariosRepository = GetItContainer.sl();
+  static final PreloadedRepository preloadedRepository = GetItContainer.sl();
 
   static final RoutesManager _routesManager = RoutesManager();
   bool _continueInitialization;
@@ -86,7 +86,18 @@ class DataInitializer{
 
   Future _continueInitializationAfterDoneInitialConfig(BuildContext context, NetConnectionState netConnState)async{
     await _routesManager.loadRoute();
+    await _sendPreloadedData();
     await _doAllNavigationByEvaluatingInitialConditions(context, netConnState);
+  }
+
+  Future<void> _sendPreloadedData()async{
+    final eitherSentLoadedData = await preloadedRepository.sendPreloadedData();
+    eitherSentLoadedData.fold((l){
+      dialogs.showTemporalDialog('Ocurrió un error con el envío de los datos precargados');
+    }, (seEnviaron){
+      if(seEnviaron)
+        dialogs.showTemporalDialog('Se han enviado los formularios precargados');
+    });
   }
 
   Future _doAllNavigationByEvaluatingInitialConditions(BuildContext context, NetConnectionState netConnState)async{
