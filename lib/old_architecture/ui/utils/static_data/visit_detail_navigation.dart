@@ -16,7 +16,7 @@ final List<Map<String, dynamic>> navigationItemsParts = [
   {
     'icon': Icons.remove_red_eye,
     'name':'Visualizar visita',
-    'navigation_route':FormulariosPage.route,
+    'navigation_route':FormulariosPageOld.route,
     'nav_function':PagesNavigationManager.navToForms,
   }
 ];

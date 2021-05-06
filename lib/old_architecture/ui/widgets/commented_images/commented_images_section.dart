@@ -13,7 +13,7 @@ class CommentedImagesPageOfIndex extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     _verificarActivacionIndex();
-    return BlocBuilder<IndexBloc, IndexState>(
+    return BlocBuilder<IndexOldBloc, IndexState>(
       builder: (context, indexState) {
         return BlocBuilder<CommentedImagesBloc, CommentedImagesState>(
           builder: (_, commImgsWidgtsState) {

@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/widgets/header/page_header.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/widgets/page_title.dart';
 import 'package:gap/old_architecture/logic/bloc/entities/visits/visits_bloc.dart';
 import 'package:gap/old_architecture/data/enums/enums.dart';
 import 'package:gap/old_architecture/data/models/entities/entities.dart';
 import 'package:gap/old_architecture/logic/central_managers/pages_navigation_manager.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
-import 'package:gap/old_architecture/ui/widgets/header/header.dart';
 import 'package:gap/old_architecture/ui/widgets/native_back_button_locker.dart';
 import 'package:gap/old_architecture/ui/widgets/navigation_list/navigation_list_with_stage_color_buttons.dart';
-import 'package:gap/old_architecture/ui/widgets/page_title.dart';
 import 'package:gap/old_architecture/ui/widgets/visits_date_filter.dart';
-class VisitsPage extends StatefulWidget {
+class VisitsPageOld extends StatefulWidget {
   static final String route = 'visits';
   @override
-  _VisitsPageState createState() => _VisitsPageState();
+  _VisitsPageOldState createState() => _VisitsPageOldState();
 }
 
-class _VisitsPageState extends State<VisitsPage>{
+class _VisitsPageOldState extends State<VisitsPageOld>{
   SizeUtils _sizeUtils;
 
   @override
@@ -42,7 +42,7 @@ class _VisitsPageState extends State<VisitsPage>{
     return Column(
       children: [
         SizedBox(height:_sizeUtils.normalSizedBoxHeigh),
-        Header(),
+        PageHeader(),
         SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
         _createVisitStateComponents()
       ],
@@ -52,7 +52,7 @@ class _VisitsPageState extends State<VisitsPage>{
   Widget _createVisitStateComponents(){
     return Container(
       height: _sizeUtils.xasisSobreYasis * 0.9,
-      child: BlocBuilder<VisitsBloc, VisitsState>(
+      child: BlocBuilder<VisitsOldBloc, VisitsState>(
         builder: (_, VisitsState state){
           if(state.visitsAreLoaded){
             return _VisitsComponents(state: state);
@@ -149,7 +149,7 @@ class _VisitsComponents extends StatelessWidget {
   }
 
   void _changeShowedVisitsState(ProcessStage newSelectedStage){
-    final VisitsBloc visitsBloc = BlocProvider.of<VisitsBloc>(_context);
+    final VisitsOldBloc visitsBloc = BlocProvider.of<VisitsOldBloc>(_context);
     final ChangeSelectedStepInNav changeShVisitsStepEVent = ChangeSelectedStepInNav(newSelectedMenuStage: newSelectedStage);
     visitsBloc.add(changeShVisitsStepEVent);
     final ResetDateFilter resetDateFilterEvent= ResetDateFilter();

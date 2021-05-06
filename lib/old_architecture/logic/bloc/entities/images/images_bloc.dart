@@ -7,9 +7,9 @@ import 'package:meta/meta.dart';
 part 'images_event.dart';
 part 'images_state.dart';
 
-class ImagesBloc extends Bloc<ImagesEvent, ImagesState> {
+class ImagesOldBloc extends Bloc<ImagesEvent, ImagesState> {
   ImagesState _currentStateToYield;
-  ImagesBloc() : super(ImagesState());
+  ImagesOldBloc() : super(ImagesState());
 
   @override
   Stream<ImagesState> mapEventToState(

@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/widgets/progress_indicator.dart';
 import 'package:gap/old_architecture/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/old_architecture/logic/bloc/widgets/index/index_bloc.dart';
 import 'package:gap/old_architecture/logic/bloc/widgets/keyboard_listener/keyboard_listener_bloc.dart';
-import 'package:gap/old_architecture/ui/widgets/progress_indicator.dart';
 import 'bottom_containers/bottom_formfilling_navigation.dart';
 import 'center_containers/form_fields_fraction.dart';
 
 // ignore: must_be_immutable
 class ChosenFormCurrentComponent extends StatelessWidget {
-
   BuildContext _context;
   ChosenFormState _chosenFormState;
   Widget _bottomComponents;
@@ -62,7 +61,7 @@ class ChosenFormCurrentComponent extends StatelessWidget {
   }
 
   void _defineColumnComponentsConfigByKeyboardState(bool keyBoardIsActive){
-    final IndexState indexState = BlocProvider.of<IndexBloc>(_context).state;
+    final IndexState indexState = BlocProvider.of<IndexOldBloc>(_context).state;
     double extraContainerHeightPercent = (indexState.currentIndexPage == indexState.nPages-1)? -0.015 : 0.075;
     if(keyBoardIsActive){
       columnMainAxisAlignment = MainAxisAlignment.start;

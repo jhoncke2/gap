@@ -48,7 +48,6 @@ class NavigationListButton extends StatelessWidget {
 
   @protected
   Widget createButtonChild([Widget buttonName]){
-    
     return (buttonName!=null)? buttonName : createButtonName();
   }
 

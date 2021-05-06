@@ -7,13 +7,13 @@ import 'package:meta/meta.dart';
 part 'projects_event.dart';
 part 'projects_state.dart';
 
-class ProjectsBloc extends Bloc<ProjectsEvent, ProjectsState> {
+class ProjectsOldBloc extends Bloc<ProjectsEvent, ProjectsState> {
   
   @protected
   ProjectsStorageManager projectsSM;
   ProjectsState _currentYieldedState;
 
-  ProjectsBloc() : 
+  ProjectsOldBloc() : 
     projectsSM = ProjectsStorageManager(),
     super(ProjectsState())
     ;

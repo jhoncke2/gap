@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/widgets/general_button.dart';
 import 'package:gap/old_architecture/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/old_architecture/logic/bloc/widgets/index/index_bloc.dart';
 import 'package:gap/old_architecture/logic/blocs_manager/chosen_form_manager.dart';
 import 'package:gap/old_architecture/logic/central_managers/pages_navigation_manager.dart';
+import 'package:gap/old_architecture/ui/pages/formulario_detail/forms/form_index.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
-import 'package:gap/old_architecture/ui/widgets/buttons/general_button.dart';
-import 'package:gap/old_architecture/ui/widgets/indexing/index_pagination.dart';
 // ignore: must_be_immutable
 class BottomFormFillingNavigation extends StatelessWidget {
   final SizeUtils _sizeUtils = SizeUtils();
@@ -37,7 +37,7 @@ class BottomFormFillingNavigation extends StatelessWidget {
 
   Widget _createIndexField(){
     if([FormStep.OnFormFillingOut, FormStep.OnFormReading, FormStep.Finished].contains( _chosenFormState.formStep )){
-      return IndexPagination();
+      return FormIndex();
     }else{
       return Container(
         height: _sizeUtils.xasisSobreYasis * 0.05,
@@ -66,7 +66,7 @@ class _ChangeFormStepButton extends StatelessWidget {
   }
 
   Widget _createButtonByIndexState(BuildContext context){
-    final IndexState indexState = BlocProvider.of<IndexBloc>(context).state;
+    final IndexState indexState = BlocProvider.of<IndexOldBloc>(context).state;
     if(chosenFormState.formStep == FormStep.Finished || indexState.currentIndexPage != indexState.nPages-1)
       return Container();
     else{

@@ -6,7 +6,7 @@ import 'package:gap/old_architecture/ui/utils/size_utils.dart';
 import 'package:gap/old_architecture/ui/widgets/native_back_button_locker.dart';
 
 // ignore: must_be_immutable
-class InitPage extends StatelessWidget{
+class InitPageOld extends StatelessWidget{
 
   static final String route = 'init';
   static StreamController<BuildContext> _contextStreamController = StreamController();

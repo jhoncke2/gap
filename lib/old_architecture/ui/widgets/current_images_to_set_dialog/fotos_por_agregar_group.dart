@@ -10,7 +10,7 @@ class FotosPorAgregarGroup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: BlocBuilder<ImagesBloc, ImagesState>(
+      child: BlocBuilder<ImagesOldBloc, ImagesState>(
         builder: (context, state) {
           return __LoadedFotosPorAgregar(images: state.currentPhotosToSet);
         },

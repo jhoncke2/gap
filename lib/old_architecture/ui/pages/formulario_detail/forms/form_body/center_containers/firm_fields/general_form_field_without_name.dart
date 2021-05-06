@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/widgets/general_button.dart';
 import 'package:gap/old_architecture/ui/pages/formulario_detail/forms/form_body/center_containers/form_fields/general_form_field.dart';
-import 'package:gap/old_architecture/ui/widgets/buttons/general_button.dart';
 
 // ignore: must_be_immutable
 class GeneralFormFieldWithoutName extends GeneralFormField{

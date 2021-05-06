@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/clean_architecture_structure/core/platform/custom_navigator.dart';
+import 'package:gap/clean_architecture_structure/core/utils/page_routes.dart';
+import 'package:gap/clean_architecture_structure/features/login/presentation/pages/login_page.dart';
+import 'package:gap/clean_architecture_structure/injection_container.dart';
 import 'package:gap/old_architecture/central_config/bloc_providers_creator.dart';
 import 'package:gap/old_architecture/central_config/page_routes_creator.dart';
 import 'package:gap/old_architecture/logic/bloc/nav_routes/custom_navigator.dart';
@@ -37,13 +41,16 @@ class _GapAppState extends State<GapApp> with WidgetsBindingObserver{
     return MaterialApp(
       title: 'GAP',
       debugShowCheckedModeBanner: false,
-      navigatorKey: CustomNavigatorOld.navigatorKey,
+      //navigatorKey: CustomNavigatorOld.navigatorKey,
+      navigatorKey: CustomNavigatorImpl.navigatorKey,
       theme: ThemeData(
         primaryColor: Color.fromRGBO(93, 92, 92, 1),
         secondaryHeaderColor: Colors.brown.withOpacity(0.35)
       ),
-      home: InitPage(),
-      routes: PageRoutesCreator.routes,
+      //home: InitPage(),
+      home: LoginPage(),
+      //routes: PageRoutesCreatorOld.routes,
+      routes: PageRoutes.routes,
     );
   }
 

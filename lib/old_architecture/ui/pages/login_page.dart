@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/widgets/general_button.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/widgets/logo.dart';
 import 'package:gap/old_architecture/logic/bloc/entities/user/user_bloc.dart';
 import 'package:gap/old_architecture/logic/central_managers/pages_navigation_manager.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
 import 'package:gap/old_architecture/ui/utils/static_data/buttons_keys.dart';
-import 'package:gap/old_architecture/ui/widgets/buttons/general_button.dart';
-import 'package:gap/old_architecture/ui/widgets/logo.dart';
 import 'package:gap/old_architecture/ui/widgets/native_back_button_locker.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginPageOld extends StatefulWidget {
   static final String route = 'login';
 
-  LoginPage({Key key}) : super(key: key);
+  LoginPageOld({Key key}) : super(key: key);
 
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _LoginPageOldState createState() => _LoginPageOldState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageOldState extends State<LoginPageOld> {
   BuildContext _context;
   SizeUtils _sizeUtils;
   bool _mantenermeEnElSistema = false;

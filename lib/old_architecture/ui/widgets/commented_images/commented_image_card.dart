@@ -42,7 +42,7 @@ class CommentedImageCard extends StatelessWidget {
   void _initInitialConfiguration(BuildContext appContext){
     _context = appContext;
     _commImgsBloc = BlocProvider.of<CommentedImagesBloc>(_context);
-    final IndexBloc indexBloc = BlocProvider.of<IndexBloc>(_context);
+    final IndexOldBloc indexBloc = BlocProvider.of<IndexOldBloc>(_context);
     _currentIndex = indexBloc.state.currentIndexPage;
     //Para que el cursor aparezca en la parte derecha del texto
     _commentaryController.selection = TextSelection.fromPosition(TextPosition(offset: _commentaryController.text.length));

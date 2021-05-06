@@ -5,15 +5,24 @@ import 'package:gap/old_architecture/logic/blocs_manager/commented_images_index_
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
 import 'package:gap/old_architecture/ui/widgets/unloaded_elements/unloaded_form_inputs_index.dart';
 
+// ignore: must_be_immutable
 class IndexPagination extends StatelessWidget{
-  IndexPagination();
+  
+  Function() onChangePage;
+
+  IndexPagination({
+    this.onChangePage
+  });
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<IndexBloc, IndexState>(
+    return BlocBuilder<IndexOldBloc, IndexState>(
       builder: (context, IndexState state) {
         if(state.nPages > 0){
-          return _LoadedIndexPagination(state: state);
+          return _LoadedIndexPagination(
+            state: state,
+            onChangePage: onChangePage
+          );
         }else{
           return UnloadedIndexPagination();
         }
@@ -31,13 +40,15 @@ class _LoadedIndexPagination extends StatelessWidget {
   final int _currentIndex;
   final bool _sePuedeAvanzar;
   final bool _sePuedeRetroceder;
+  final Function() onChangePage;
 
   BuildContext _context;
-  IndexBloc _indexBloc;
+  IndexOldBloc _indexBloc;
   MainAxisAlignment _centralItemsMainAxisAlignment;
   List<Widget> _centralItems;
 
   _LoadedIndexPagination({
+    @required this.onChangePage,
     @required this.state
   }):
     _nPages = state.nPages,
@@ -61,7 +72,7 @@ class _LoadedIndexPagination extends StatelessWidget {
 
   void _initInitialConfiguration(BuildContext appContext){
     _context = appContext;
-    _indexBloc = BlocProvider.of<IndexBloc>(_context);
+    _indexBloc = BlocProvider.of<IndexOldBloc>(_context);
   }
 
   List<Widget> _createButtonsItems(){
@@ -279,7 +290,10 @@ class _LoadedIndexPagination extends StatelessWidget {
   }
 
   void _changeIndex(int bttnIndexNavigation){
-    final ChangeIndexPage changeIndexEvent = ChangeIndexPage(newIndexPage: bttnIndexNavigation);
+    final ChangeIndexPage changeIndexEvent = ChangeIndexPage(
+      newIndexPage: bttnIndexNavigation,
+      onEnd: this.onChangePage
+    );
     _indexBloc.add(changeIndexEvent);
     CommentedImagesIndexManagerSingleton.commImgIndexManager.definirActivacionAvanzarSegunCommentedImages();
   }

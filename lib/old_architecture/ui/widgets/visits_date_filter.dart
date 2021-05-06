@@ -16,7 +16,7 @@ class VisitsDateFilter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _initInitialConfiguration(context);
-    return BlocBuilder<VisitsBloc, VisitsState>(
+    return BlocBuilder<VisitsOldBloc, VisitsState>(
       builder: (context, VisitsState state) {
         _currentVisitsState = state;
         _instanciarPopupItems();
@@ -121,7 +121,7 @@ class VisitsDateFilter extends StatelessWidget {
   }
 
   void _onPopUpSelected(int index) async {
-    final VisitsBloc visitsBloc = BlocProvider.of<VisitsBloc>(_context);
+    final VisitsOldBloc visitsBloc = BlocProvider.of<VisitsOldBloc>(_context);
     final DateTime selectedDate = await _hallarDateSegunItem(index);
     final ChangeDateFilterItem event = ChangeDateFilterItem(
       filterItemIndex: index, 

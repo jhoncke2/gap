@@ -15,24 +15,24 @@ import 'package:gap/old_architecture/logic/bloc/widgets/keyboard_listener/keyboa
 
 class BlocProvidersCreator{
   static final UserOldBloc userBloc = UserOldBloc();
-  static final ProjectsBloc projectsBloc = ProjectsBloc();
-  static final VisitsBloc visitsBloc = VisitsBloc();
-  static final FormulariosBloc formulariosBloc = FormulariosBloc();
-  static final IndexBloc indexBloc = IndexBloc();
+  static final ProjectsOldBloc projectsBloc = ProjectsOldBloc();
+  static final VisitsOldBloc visitsBloc = VisitsOldBloc();
+  static final FormulariosOldBloc formulariosBloc = FormulariosOldBloc();
+  static final IndexOldBloc indexBloc = IndexOldBloc();
   static final ChosenFormBloc chosenFormBloc = ChosenFormBloc();
-  static final ImagesBloc imagesBloc = ImagesBloc();
+  static final ImagesOldBloc imagesBloc = ImagesOldBloc();
   static final CommentedImagesBloc commentedImagesBloc = CommentedImagesBloc();
   static final FirmPaintBloc firmPaintBloc = FirmPaintBloc();
   static final VisitsSingleton visitsSingleton = VisitsSingleton();
   static final KeyboardListenerBloc keyboardListenerBloc = KeyboardListenerBloc();
 
   static final blocProviders = [
-    BlocProvider<ProjectsBloc>(create: (_)=>projectsBloc),
-    BlocProvider<VisitsBloc>(create: (_)=>visitsBloc),
-    BlocProvider<FormulariosBloc>(create: (_)=>formulariosBloc),
-    BlocProvider<IndexBloc>(create: (_)=>indexBloc),
+    BlocProvider<ProjectsOldBloc>(create: (_)=>projectsBloc),
+    BlocProvider<VisitsOldBloc>(create: (_)=>visitsBloc),
+    BlocProvider<FormulariosOldBloc>(create: (_)=>formulariosBloc),
+    BlocProvider<IndexOldBloc>(create: (_)=>indexBloc),
     BlocProvider<ChosenFormBloc>(create: (_)=>chosenFormBloc),
-    BlocProvider<ImagesBloc>(create: (_)=>imagesBloc),
+    BlocProvider<ImagesOldBloc>(create: (_)=>imagesBloc),
     BlocProvider<CommentedImagesBloc>(create: (_)=>commentedImagesBloc),
     BlocProvider<FirmPaintBloc>(create: (_)=>firmPaintBloc),
     BlocProvider<UserOldBloc>(create: (_)=>userBloc),

@@ -13,7 +13,7 @@ MockUserRepository repository;
 void main(){
   setUp((){
     repository = MockUserRepository();
-    useCase = Login(userRepository: repository);
+    useCase = Login(repository: repository);
   });
 
   group('login', (){

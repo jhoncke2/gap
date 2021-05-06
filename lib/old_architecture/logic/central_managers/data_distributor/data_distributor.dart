@@ -2,11 +2,10 @@ import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:gap/clean_architecture_structure/core/data/models/commented_image_model.dart';
-import 'package:gap/clean_architecture_structure/core/domain/entities/commented_image.dart';
 import 'package:gap/old_architecture/errors/logic/nav_obstruction_error.dart';
 import 'package:gap/old_architecture/errors/services/service_status_err.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:gap/clean_architecture_structure/core/data/models/formulario/custom_position.dart';
 import 'package:gap/clean_architecture_structure/core/data/models/formulario/firmer_model.dart';
 import 'package:gap/clean_architecture_structure/core/data/models/formulario/formulario_model.dart';
@@ -50,14 +49,14 @@ import 'package:gap/old_architecture/ui/utils/dialogs.dart' as dialogs;
 
 abstract class DataDistributor{
 
-  final UserRepository userRepository = GetItContainer.sl();
-  final ProjectsRepository projectsRepository = GetItContainer.sl();
-  final VisitsRepository visitsRepository = GetItContainer.sl();
-  final FormulariosRepository formulariosRepository = GetItContainer.sl();
-  final PreloadedRepository preloadedRepository = GetItContainer.sl();
-  final IndexRepository indexRepository = GetItContainer.sl();
+  final UserRepository userRepository = sl();
+  final ProjectsRepository projectsRepository = sl();
+  final VisitsRepository visitsRepository = sl();
+  final FormulariosRepository formulariosRepository = sl();
+  final PreloadedRepository preloadedRepository = sl();
+  final IndexRepository indexRepository = sl();
   //TODO: Testear/Crear
-  final CommentedImagesRepository commentedImagesRepository = GetItContainer.sl();
+  final CommentedImagesRepository commentedImagesRepository = sl();
 
 
   static final Map<BlocName, Bloc> blocsAsMap = BlocProvidersCreator.blocsAsMap;
@@ -65,12 +64,12 @@ abstract class DataDistributor{
   Map<NavigationRoute, dynamic> dataAddedToBlocsByExistingNavs = {};
 
   final UserOldBloc userB = blocsAsMap[BlocName.User];
-  final ProjectsBloc projectsB =  blocsAsMap[BlocName.Projects];
-  final VisitsBloc visitsB = blocsAsMap[BlocName.Visits];
-  final FormulariosBloc formsB = blocsAsMap[BlocName.Formularios];
+  final ProjectsOldBloc projectsB =  blocsAsMap[BlocName.Projects];
+  final VisitsOldBloc visitsB = blocsAsMap[BlocName.Visits];
+  final FormulariosOldBloc formsB = blocsAsMap[BlocName.Formularios];
   final ChosenFormBloc chosenFormB = blocsAsMap[BlocName.ChosenForm];
   final FirmPaintBloc firmPaintB = blocsAsMap[BlocName.FirmPaint];
-  final IndexBloc indexB = blocsAsMap[BlocName.Index];
+  final IndexOldBloc indexB = blocsAsMap[BlocName.Index];
   final CommentedImagesBloc commImgsB = blocsAsMap[BlocName.CommentedImages];
 
   Future<void> logout()async{
@@ -346,12 +345,11 @@ abstract class DataDistributor{
   }
 
   void _updateFormFieldsPage(int currentPage){
-    chosenFormB.add(UpdateFormField(pageOfFormField: 0, onEndFunction: _onUpdateFormFields));
+    chosenFormB.add(UpdateFormField(pageOfFormField: currentPage, onEndFunction: _onUpdateFormFields));
   }
 
   Future _onUpdateFormFields(bool pageOfFormFieldsIsFilled)async{
-    if(pageOfFormFieldsIsFilled)
-      _changeIndexActivation(pageOfFormFieldsIsFilled);
+    _changeIndexActivation(pageOfFormFieldsIsFilled);
   }
 
   void _changeIndexActivation(bool isActive)async{
@@ -494,6 +492,7 @@ abstract class DataDistributor{
     chosenForm.formStep = FormStep.Finished;
     await updateFirmers();
     await _updateFirmersInForm(chosenForm);
+    await formulariosRepository.endChosenFormulario();
     //await updateChosenFormInStorage(chosenForm);
     chosenFormB.add(ResetChosenForm());
     indexB.add(ResetAllOfIndex());  
@@ -536,13 +535,13 @@ abstract class DataDistributor{
 
   void addCurrentPhotosToCommentedImages(){
     final CommentedImagesBloc commImagesBloc = blocsAsMap[BlocName.CommentedImages];
-    final IndexBloc indexBloc = blocsAsMap[BlocName.Index];
-    final ImagesBloc imgsBloc = blocsAsMap[BlocName.Images];
+    final IndexOldBloc indexBloc = blocsAsMap[BlocName.Index];
+    final ImagesOldBloc imgsBloc = blocsAsMap[BlocName.Images];
     _addCurrentPhotosToCommentedImages(commImagesBloc, indexBloc, imgsBloc);
     _resetFotosPorAgregar(imgsBloc);
   }
 
-  void _addCurrentPhotosToCommentedImages(CommentedImagesBloc commImagesBloc, IndexBloc indexBloc, ImagesBloc imgsBloc){
+  void _addCurrentPhotosToCommentedImages(CommentedImagesBloc commImagesBloc, IndexOldBloc indexBloc, ImagesOldBloc imgsBloc){
     final AddImages addImagesEvent = AddImages(images: imgsBloc.state.currentPhotosToSet, onEnd: changeNPagesToIndex);
     commImagesBloc.add(addImagesEvent);
   }
@@ -555,7 +554,7 @@ abstract class DataDistributor{
     indexB.add(changesNPagesEvent);
   }
 
-  void _resetFotosPorAgregar(ImagesBloc imgsBloc){
+  void _resetFotosPorAgregar(ImagesOldBloc imgsBloc){
     final ResetImages resetAllEvent = ResetImages();
     imgsBloc.add(resetAllEvent);
   }

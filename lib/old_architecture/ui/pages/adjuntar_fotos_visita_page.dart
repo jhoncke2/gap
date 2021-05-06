@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/widgets/general_button.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/widgets/header/page_header.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/widgets/page_title.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/widgets/progress_indicator.dart';
 import 'package:gap/old_architecture/logic/bloc/entities/visits/visits_bloc.dart';
 import 'package:gap/old_architecture/logic/bloc/widgets/commented_images/commented_images_bloc.dart';
 import 'package:gap/old_architecture/logic/bloc/widgets/index/index_bloc.dart';
 import 'package:gap/old_architecture/logic/blocs_manager/commented_images_index_manager.dart';
 import 'package:gap/old_architecture/logic/central_managers/pages_navigation_manager.dart';
-import 'package:gap/old_architecture/ui/widgets/buttons/general_button.dart';
 import 'package:gap/old_architecture/ui/widgets/commented_images/commented_images_section.dart';
-import 'package:gap/old_architecture/ui/widgets/header/header.dart';
 import 'package:gap/old_architecture/ui/widgets/indexing/index_pagination.dart';
 import 'package:gap/old_architecture/ui/widgets/native_back_button_locker.dart';
-import 'package:gap/old_architecture/ui/widgets/page_title.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
 import 'package:gap/old_architecture/ui/utils/dialogs.dart' as dialogs;
-import 'package:gap/old_architecture/ui/widgets/progress_indicator.dart';
 
 // ignore: must_be_immutable
-class AdjuntarFotosVisitaPage extends StatelessWidget {
+class AdjuntarFotosVisitaPageOld extends StatelessWidget {
   static final String route = 'adjuntar_fotos_visit';
   final SizeUtils _sizeUtils = SizeUtils();
   BuildContext _context;
-  AdjuntarFotosVisitaPage();
+  AdjuntarFotosVisitaPageOld();
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +52,7 @@ class AdjuntarFotosVisitaPage extends StatelessWidget {
     return Column(
       children: [
         SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
-        Header(),
+        PageHeader(),
         SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
         _createBottomItems()
       ],
@@ -65,7 +65,7 @@ class AdjuntarFotosVisitaPage extends StatelessWidget {
       height: _sizeUtils.xasisSobreYasis * 1.0,
       padding: EdgeInsets.symmetric(
       horizontal: _sizeUtils.normalHorizontalScaffoldPadding),
-      child: BlocBuilder<VisitsBloc, VisitsState>(
+      child: BlocBuilder<VisitsOldBloc, VisitsState>(
         builder: (context, state) {
           return Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -131,7 +131,7 @@ class AdjuntarFotosVisitaPage extends StatelessWidget {
   }
 
   _createEndButton(){
-    return BlocBuilder<IndexBloc, IndexState>(
+    return BlocBuilder<IndexOldBloc, IndexState>(
       builder: (context, IndexState state) {
         final bool estaEnUltimoIndexPage = _estaEnUltimoIndexPage(state);
         if(estaEnUltimoIndexPage){
@@ -190,7 +190,7 @@ class _EndButton extends StatelessWidget {
   }
 
   void _resetIndexBloc(){
-    final IndexBloc indexBloc = BlocProvider.of<IndexBloc>(_context);
+    final IndexOldBloc indexBloc = BlocProvider.of<IndexOldBloc>(_context);
     indexBloc.add(ResetAllOfIndex());
   }
 }

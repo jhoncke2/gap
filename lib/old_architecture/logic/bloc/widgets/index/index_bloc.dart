@@ -7,9 +7,9 @@ import 'package:meta/meta.dart';
 part 'index_event.dart';
 part 'index_state.dart';
 
-class IndexBloc extends Bloc<IndexEvent, IndexState> {
+class IndexOldBloc extends Bloc<IndexEvent, IndexState> {
   IndexState _currentStateToYield;
-  IndexBloc() : super(IndexState());
+  IndexOldBloc() : super(IndexState());
 
   @override
   Stream<IndexState> mapEventToState(
@@ -31,6 +31,8 @@ class IndexBloc extends Bloc<IndexEvent, IndexState> {
   void _doPostFunctionEvent(IndexEvent event){
     if(event is ChangeNPages && event.onEnd != null)
       event.onEnd(0);
+    else if(event is ChangeIndexPage && event.onEnd != null)
+      event.onEnd();
   }
 
   void _changeSePuedeAvanzar(ChangeSePuedeAvanzar event){

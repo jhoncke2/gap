@@ -10,7 +10,7 @@ import 'package:gap/old_architecture/services/projects_service.dart';
 
 class ProjectsServicesManager{
 
-  Future<List<ProjectOld>> loadProjects(ProjectsBloc bloc, String accessToken)async{
+  Future<List<ProjectOld>> loadProjects(ProjectsOldBloc bloc, String accessToken)async{
     final dynamic projectsResponse = await projectsService.getProjects(accessToken);
     final List<ProjectOld> projects = projectsFromJsonOld(projectsResponse);
     return projects;

@@ -9,8 +9,8 @@ import 'package:gap/old_architecture/logic/storage_managers/visits/preloaded_vis
 
 class PreloadedDataUploader{
   static Future<void> setPreloadedVisitData(List<FormularioOld> forms, BuildContext context)async{
-    final ProjectOld chosenProject = BlocProvider.of<ProjectsBloc>(context).state.chosenProjectOld;
-    final VisitOld chosenVisit = BlocProvider.of<VisitsBloc>(context).state.chosenVisit;
+    final ProjectOld chosenProject = BlocProvider.of<ProjectsOldBloc>(context).state.chosenProjectOld;
+    final VisitOld chosenVisit = BlocProvider.of<VisitsOldBloc>(context).state.chosenVisit;
     await ProjectsStorageManager.setProjectWithPreloadedVisits(chosenProject);
     await PreloadedVisitsStorageManager.setVisit(chosenVisit, chosenProject.id);
     forms.forEach((FormularioOld form)async{

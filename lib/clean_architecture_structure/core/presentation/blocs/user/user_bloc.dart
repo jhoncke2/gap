@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'package:gap/clean_architecture_structure/core/domain/entities/user.dart';
+import 'package:gap/clean_architecture_structure/core/domain/use_cases/navigation/go_replacing_all_to.dart';
+import 'package:gap/clean_architecture_structure/core/domain/use_cases/navigation/go_to.dart';
 import 'package:gap/clean_architecture_structure/core/domain/use_cases/use_case.dart';
 import 'package:gap/clean_architecture_structure/core/error/failures.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/utils/input_validator.dart';
+import 'package:gap/old_architecture/data/enums/enums.dart';
 import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -20,11 +23,13 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   final Login login;
   final Logout logout;
   final InputValidator inputValidator;
+  final GoReplacingAllTo navigationUseCase;
 
   UserBloc({
     @required this.login,
     @required this.logout,
-    @required this.inputValidator
+    @required this.inputValidator,
+    @required this.navigationUseCase
   }) :
     assert(login != null),
     assert(logout != null),
@@ -38,7 +43,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       yield UserLoading();
       final eitherValidatedEmail = inputValidator.validateInputValue(event.email);
       yield * eitherValidatedEmail.fold((_)async*{
-        yield UserError(message: BAD_EMAIL_MESSAGE); 
+        yield UserError(message: BAD_EMAIL_MESSAGE);
+        yield * _yieldUserQuietAfterDuration();
       }, (_)async*{
         yield * _loginUntilPasswordValidation(event);
       });
@@ -47,16 +53,28 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       final eitherLogout = await logout(NoParams());
       yield * eitherLogout.fold((_)async*{
         yield UserError(message: GENERAL_ERROR_MESSAGE);
+        yield * _yieldUserQuietAfterDuration();
       }, (_)async*{
         yield UserQuiet();
+        await navigationUseCase(NavigationParams(navRoute: NavigationRoute.Login));
       });
     }
+  }
+
+  Stream<UserState> _yieldUserQuietAfterDuration()async*{    
+    yield await Future.delayed(
+      Duration(milliseconds: 1500),
+      (){
+        return UserQuiet();
+      }
+    );
   }
 
   Stream<UserState> _loginUntilPasswordValidation(LoginEvent event)async*{
     final eitherValidaterPassword = inputValidator.validateInputValue(event.password);
     yield * eitherValidaterPassword.fold((_)async*{
       yield UserError(message: BAD_PASSWORD_MESSAGE);
+      yield * _yieldUserQuietAfterDuration();
     }, (_)async*{
       yield * _loginUntilUseCase(event);
     });
@@ -72,7 +90,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       else
         message = GENERAL_ERROR_MESSAGE;
       yield UserError(message: message);
+      yield * _yieldUserQuietAfterDuration();
     }, (r)async*{
+      await navigationUseCase(NavigationParams(navRoute: NavigationRoute.Projects));
     });
   }
 }

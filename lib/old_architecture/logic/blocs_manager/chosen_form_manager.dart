@@ -27,8 +27,8 @@ class ChosenFormManagerSingleton{
     chosenFormManager..appContext = appContext
     ..chosenFormBloc = BlocProvider.of<ChosenFormBloc>(appContext)
     ..firmPaintBloc = BlocProvider.of<FirmPaintBloc>(appContext)
-    ..formsBloc = BlocProvider.of<FormulariosBloc>(appContext)
-    ..indexBloc = BlocProvider.of<IndexBloc>(appContext)
+    ..formsBloc = BlocProvider.of<FormulariosOldBloc>(appContext)
+    ..indexBloc = BlocProvider.of<IndexOldBloc>(appContext)
       ;
   }
 
@@ -56,9 +56,9 @@ class ChosenFormManager{
   ChosenFormBloc chosenFormBloc;
   ChosenFormState chosenFormState;
   FirmPaintBloc firmPaintBloc;
-  FormulariosBloc formsBloc;
+  FormulariosOldBloc formsBloc;
   FormulariosState formsState;
-  IndexBloc indexBloc;
+  IndexOldBloc indexBloc;
 
   void updateIndexByFormFieldsChange(){
     _updateStates();

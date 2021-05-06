@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/widgets/general_button.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/widgets/progress_indicator.dart';
 import 'package:gap/old_architecture/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/old_architecture/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/old_architecture/logic/bloc/widgets/keyboard_listener/keyboard_listener_bloc.dart';
@@ -11,13 +13,11 @@ import 'package:gap/old_architecture/ui/pages/formulario_detail/forms/form_body/
 import 'package:gap/old_architecture/ui/pages/formulario_detail/forms/form_body/center_containers/secondary_firmer_firm.dart';
 import 'package:gap/old_architecture/ui/pages/formulario_detail/forms/loaded_form_head.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
-import 'package:gap/old_architecture/ui/widgets/buttons/general_button.dart';
 import 'package:gap/old_architecture/ui/widgets/form_process_container.dart';
 import 'package:gap/old_architecture/ui/widgets/native_back_button_locker.dart';
-import 'package:gap/old_architecture/ui/widgets/progress_indicator.dart';
 
 // ignore: must_be_immutable
-class FirmersPage extends StatelessWidget {
+class FirmersPageOld extends StatelessWidget {
   static final String route = 'firmers';
   static final SizeUtils _sizeUtils = SizeUtils();
   BuildContext _context;
@@ -25,7 +25,7 @@ class FirmersPage extends StatelessWidget {
   Widget separer;
   Widget body;
   
-  FirmersPage({Key key}) : super(key: key);
+  FirmersPageOld({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +48,7 @@ class FirmersPage extends StatelessWidget {
   Widget _createAlignedComponents(){
     return BlocBuilder<KeyboardListenerBloc, KeyboardListenerState>(
       builder: (context, keyboardState) {
-        final FormulariosState formsState = BlocProvider.of<FormulariosBloc>(_context).state;
+        final FormulariosState formsState = BlocProvider.of<FormulariosOldBloc>(_context).state;
         _defineConfigByKeyboardState(keyboardState, formsState);
         return Column(
           children: [

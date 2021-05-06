@@ -2,14 +2,26 @@
 import 'package:gap/clean_architecture_structure/core/data/data_sources/central_system/central_system_local_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/repositories/commented_images_repository.dart';
 import 'package:gap/clean_architecture_structure/core/data/repositories/formularios_repository.dart';
+import 'package:gap/clean_architecture_structure/core/data/repositories/navigation_repository.dart';
 import 'package:gap/clean_architecture_structure/core/data/repositories/projects_repository.dart';
 import 'package:gap/clean_architecture_structure/core/data/repositories/user_repository.dart';
 import 'package:gap/clean_architecture_structure/core/data/repositories/visits_repository.dart';
 import 'package:gap/clean_architecture_structure/core/domain/repositories/commented_images_repository.dart';
 import 'package:gap/clean_architecture_structure/core/domain/repositories/formularios_repository.dart';
+import 'package:gap/clean_architecture_structure/core/domain/repositories/navigation_repository.dart';
 import 'package:gap/clean_architecture_structure/core/domain/repositories/projects_repository.dart';
+import 'package:gap/clean_architecture_structure/core/domain/use_cases/navigation/go_replacing_all_to.dart';
+import 'package:gap/clean_architecture_structure/core/domain/use_cases/navigation/go_to.dart';
+import 'package:gap/clean_architecture_structure/core/domain/use_cases/navigation/go_to_last_route.dart';
+import 'package:gap/clean_architecture_structure/core/domain/use_cases/navigation/pop.dart';
+import 'package:gap/clean_architecture_structure/core/domain/use_cases/user/login.dart';
+import 'package:gap/clean_architecture_structure/core/platform/custom_navigator.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/utils/input_validator.dart';
+import 'package:gap/clean_architecture_structure/features/projects/domain/use_cases/get_projects.dart';
+import 'package:gap/clean_architecture_structure/features/projects/presentation/bloc/projects_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:get_it/get_it.dart';
+import 'core/data/data_sources/navigation/navigation_local_data_source.dart';
 import 'core/data/data_sources/user/user_local_data_source.dart';
 import 'core/data/data_sources/user/user_remote_data_source.dart';
 import 'core/data/data_sources/visits/visits_local_data_source.dart';
@@ -20,6 +32,7 @@ import 'core/domain/repositories/index_repository.dart';
 import 'core/domain/repositories/preloaded_repository.dart';
 import 'core/domain/repositories/user_repository.dart';
 import 'core/domain/repositories/visits_repository.dart';
+import 'core/domain/use_cases/user/logout.dart';
 import 'core/network/network_info.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -31,93 +44,118 @@ import 'package:gap/clean_architecture_structure/core/platform/storage_connector
 import 'core/data/data_sources/formularios/formularios_remote_data_source.dart';
 import 'core/data/data_sources/projects/projects_local_data_source.dart';
 import 'core/data/data_sources/projects/projects_remote_data_source.dart';
+import 'core/presentation/blocs/user/user_bloc.dart';
 
-
-
-//TODO: Borrar cuando haya arreglado la estructura completa de la app.
-class GetItContainer{
-  static final sl = GetIt.instance;
-}
+final sl = GetIt.instance;
 
 void init()async{
   //*********Core
   //*****data
   //data sources
-  GetItContainer.sl.registerLazySingleton<CommentedImagesRemoteDataSource>(()=>CommentedImagesRemoteDataSourceImpl(client: GetItContainer.sl()));
-  GetItContainer.sl.registerLazySingleton<FormulariosRemoteDataSource>(()=>FormulariosRemoteDataSourceImpl(client: GetItContainer.sl()));
-  GetItContainer.sl.registerLazySingleton<FormulariosLocalDataSource>(()=>FormulariosLocalDataSourceImpl(storageConnector: GetItContainer.sl()));
-  GetItContainer.sl.registerLazySingleton<IndexLocalDataSource>(()=>IndexLocalDataSourceImpl(storageConnector: GetItContainer.sl()));
-  GetItContainer.sl.registerLazySingleton<PreloadedLocalDataSource>(()=>PreloadedLocalDataSourceImpl(storageConnector: GetItContainer.sl()));
-  GetItContainer.sl.registerLazySingleton<ProjectsRemoteDataSource>(()=>ProjectsRemoteDataSourceImpl(client: GetItContainer.sl()));
-  GetItContainer.sl.registerLazySingleton<ProjectsLocalDataSource>(()=>ProjectsLocalDataSourceImpl(storageConnector: GetItContainer.sl()));
-  GetItContainer.sl.registerLazySingleton<UserRemoteDataSource>(()=>UserRemoteDataSourceImpl(client: GetItContainer.sl()));
-  GetItContainer.sl.registerLazySingleton<UserLocalDataSource>(()=>UserLocalDataSourceImpl(storageConnector: GetItContainer.sl()));
-  GetItContainer.sl.registerLazySingleton<VisitsRemoteDataSource>(()=>VisitsRemoteDataSourceImpl(client: GetItContainer.sl()));
-  GetItContainer.sl.registerLazySingleton<VisitsLocalDataSource>(()=>VisitsLocalDataSourceImpl(storageConnector: GetItContainer.sl()));
-  GetItContainer.sl.registerLazySingleton<CentralSystemLocalDataSource>(() => CentralSystemLocalDataSourceImpl(storageConnector: GetItContainer.sl()));
+  sl.registerLazySingleton<CommentedImagesRemoteDataSource>(()=>CommentedImagesRemoteDataSourceImpl(client: sl()));
+  sl.registerLazySingleton<FormulariosRemoteDataSource>(()=>FormulariosRemoteDataSourceImpl(client: sl()));
+  sl.registerLazySingleton<FormulariosLocalDataSource>(()=>FormulariosLocalDataSourceImpl(storageConnector: sl()));
+  sl.registerLazySingleton<IndexLocalDataSource>(()=>IndexLocalDataSourceImpl(storageConnector: sl()));
+  sl.registerLazySingleton<PreloadedLocalDataSource>(()=>PreloadedLocalDataSourceImpl(storageConnector: sl()));
+  sl.registerLazySingleton<ProjectsRemoteDataSource>(()=>ProjectsRemoteDataSourceImpl(client: sl()));
+  sl.registerLazySingleton<ProjectsLocalDataSource>(()=>ProjectsLocalDataSourceImpl(storageConnector: sl()));
+  sl.registerLazySingleton<UserRemoteDataSource>(()=>UserRemoteDataSourceImpl(client: sl()));
+  sl.registerLazySingleton<UserLocalDataSource>(()=>UserLocalDataSourceImpl(storageConnector: sl()));
+  sl.registerLazySingleton<VisitsRemoteDataSource>(()=>VisitsRemoteDataSourceImpl(client: sl()));
+  sl.registerLazySingleton<VisitsLocalDataSource>(()=>VisitsLocalDataSourceImpl(storageConnector: sl()));
+  sl.registerLazySingleton<CentralSystemLocalDataSource>(() => CentralSystemLocalDataSourceImpl(storageConnector: sl()));
+  sl.registerLazySingleton<NavigationLocalDataSource>(()=> NavigationLocalDataSourceImpl(storageConnector: sl()));
+  
   //repositories
-  GetItContainer.sl.registerLazySingleton<CommentedImagesRepository>(()=>CommentedImagesRepositoryImpl(
-    networkInfo: GetItContainer.sl(), 
-    remoteDataSource: GetItContainer.sl(), 
-    userLocalDataSource: GetItContainer.sl(), 
-    projectsLocalDataSource: GetItContainer.sl(), 
-    visitsLocalDataSource: GetItContainer.sl()
+  sl.registerLazySingleton<CommentedImagesRepository>(()=>CommentedImagesRepositoryImpl(
+    networkInfo: sl(), 
+    remoteDataSource: sl(), 
+    userLocalDataSource: sl(), 
+    projectsLocalDataSource: sl(), 
+    visitsLocalDataSource: sl()
   ));
-  GetItContainer.sl.registerLazySingleton<ProjectsRepository>(()=>ProjectsRepositoryImpl(
-    networkInfo: GetItContainer.sl(), 
-    localDataSource: GetItContainer.sl(), 
-    remoteDataSource: GetItContainer.sl(), 
-    preloadedLocalDataSource: GetItContainer.sl(), 
-    userLocalDataSource: GetItContainer.sl()
+  sl.registerLazySingleton<ProjectsRepository>(()=>ProjectsRepositoryImpl(
+    networkInfo: sl(), 
+    localDataSource: sl(), 
+    remoteDataSource: sl(), 
+    preloadedLocalDataSource: sl(), 
+    userLocalDataSource: sl()
   ));
-  GetItContainer.sl.registerLazySingleton<VisitsRepository>(()=>VisitsRepositoryImpl(
-    networkInfo: GetItContainer.sl(), 
-    remoteDataSource: GetItContainer.sl(), 
-    localDataSource: GetItContainer.sl(), 
-    preloadedDataSource: GetItContainer.sl(), 
-    userLocalDataSource: GetItContainer.sl(), 
-    projectsLocalDataSource: GetItContainer.sl(), 
-    formulariosRemoteDataSource: GetItContainer.sl()
+  sl.registerLazySingleton<VisitsRepository>(()=>VisitsRepositoryImpl(
+    networkInfo: sl(), 
+    remoteDataSource: sl(), 
+    localDataSource: sl(), 
+    preloadedDataSource: sl(), 
+    userLocalDataSource: sl(), 
+    projectsLocalDataSource: sl(), 
+    formulariosRemoteDataSource: sl()
   ));
-  GetItContainer.sl.registerLazySingleton<FormulariosRepository>(()=>FormulariosRepositoryImpl(
-    networkInfo: GetItContainer.sl(), 
-    remoteDataSource: GetItContainer.sl(), 
-    localDataSource: GetItContainer.sl(), 
-    preloadedDataSource: GetItContainer.sl(), 
-    userLocalDataSource: GetItContainer.sl(), 
-    visitsLocalDataSource: GetItContainer.sl(), 
-    projectsLocalDataSource: GetItContainer.sl()
+  sl.registerLazySingleton<FormulariosRepository>(()=>FormulariosRepositoryImpl(
+    networkInfo: sl(), 
+    remoteDataSource: sl(), 
+    localDataSource: sl(), 
+    preloadedDataSource: sl(), 
+    userLocalDataSource: sl(), 
+    visitsLocalDataSource: sl(), 
+    projectsLocalDataSource: sl()
   ));
-  GetItContainer.sl.registerLazySingleton<PreloadedRepository>(()=>PreloadedRepositoryImpl(
-    networkInfo: GetItContainer.sl(),    
-    userLocalDataSource: GetItContainer.sl(), 
-    localDataSource: GetItContainer.sl(),
-    formulariosRemoteDataSource: GetItContainer.sl(),
-    formulariosLocalDataSource: GetItContainer.sl()    
+  sl.registerLazySingleton<PreloadedRepository>(()=>PreloadedRepositoryImpl(
+    networkInfo: sl(),    
+    userLocalDataSource: sl(), 
+    localDataSource: sl(),
+    formulariosRemoteDataSource: sl(),
+    formulariosLocalDataSource: sl()    
   ));
-  GetItContainer.sl.registerLazySingleton<IndexRepository>(()=>IndexRepositoryImpl(
-    localDataSource: GetItContainer.sl()
+  sl.registerLazySingleton<IndexRepository>(()=>IndexRepositoryImpl(
+    localDataSource: sl()
   ));
-  GetItContainer.sl.registerLazySingleton<UserRepository>(()=>UserRepositoryImpl(
-    networkInfo: GetItContainer.sl(),
-    remoteDataSource: GetItContainer.sl(),
-    localDataSource: GetItContainer.sl(), 
-    centralSystemLocalDataSource: GetItContainer.sl(),    
+  sl.registerLazySingleton<UserRepository>(()=>UserRepositoryImpl(
+    networkInfo: sl(),
+    remoteDataSource: sl(),
+    localDataSource: sl(), 
+    centralSystemLocalDataSource: sl(),    
+  ));
+  sl.registerLazySingleton<NavigationRepository>(()=>NavigationRepositoryImpl(
+    localDataSource: sl()
   ));
 
+  //useCases
+  sl.registerLazySingleton(()=>GoTo(navigator: sl(), navRepository: sl()));
+  sl.registerLazySingleton(()=>Pop(navigator: sl(), navRepository: sl()));
+  sl.registerLazySingleton(()=>GoReplacingAllTo(navigator: sl(), navRepository: sl()));
+  sl.registerLazySingleton(()=>GoToLastRoute(navigator: sl(), navRepository: sl()));
+  sl.registerLazySingleton(()=>Login(repository: sl()));
+  sl.registerLazySingleton(()=>Logout(repository: sl()));
+  sl.registerLazySingleton(()=>GetProjects(repository: sl()));
 
+  //blocs
+  sl.registerFactory(() => UserBloc(
+    login: sl(), 
+    logout: sl(), 
+    inputValidator: sl(), 
+    navigationUseCase: sl()
+  ));
+  sl.registerFactory(()=>ProjectsBloc(
+    getProjects: sl()
+  ));
+
+  //***** util components
+  sl.registerLazySingleton(()=>InputValidator());
 
   //***********External encapsulation
-  GetItContainer.sl.registerLazySingleton<NetworkInfo>(() => 
-    NetworkInfoImpl(connectivity: GetItContainer.sl())
+  sl.registerLazySingleton<NetworkInfo>(() => 
+    NetworkInfoImpl(connectivity: sl())
   );
-  GetItContainer.sl.registerLazySingleton<StorageConnector>(() => 
-    StorageConnectorImpl(fss: GetItContainer.sl())
+  sl.registerLazySingleton<StorageConnector>(() => 
+    StorageConnectorImpl(fss: sl())
+  );
+  sl.registerLazySingleton<CustomNavigator>(()=>
+    CustomNavigatorImpl()
   );
 
 
   //**********External
-  GetItContainer.sl.registerLazySingleton(() => Connectivity());
-  GetItContainer.sl.registerLazySingleton(() => http.Client());
-  GetItContainer.sl.registerLazySingleton(() => FlutterSecureStorage());
+  sl.registerLazySingleton(() => Connectivity());
+  sl.registerLazySingleton(() => http.Client());
+  sl.registerLazySingleton(() => FlutterSecureStorage());
 }

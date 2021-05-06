@@ -8,7 +8,7 @@ import '../../mock/storage/mock_flutter_secure_storage.dart';
 
 final FlutterSecureStorage fss = MockFlutterSecureStorage();
 
-final ProjectsBloc projectsBloc = ProjectsBloc();
+final ProjectsOldBloc projectsBloc = ProjectsOldBloc();
 
 main(){
   //StorageConnectorSingleton.storageConnector.fss = fss;

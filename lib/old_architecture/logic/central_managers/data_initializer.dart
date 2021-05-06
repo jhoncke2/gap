@@ -18,10 +18,10 @@ import 'package:gap/old_architecture/logic/storage_managers/user/user_storage_ma
 import 'package:gap/old_architecture/ui/utils/dialogs.dart' as dialogs;
 
 class DataInitializer{
-  static final ProjectsRepository projectsRepository = GetItContainer.sl();
-  static final VisitsRepository visitsRepository = GetItContainer.sl();
-  static final FormulariosRepository formulariosRepository = GetItContainer.sl();
-  static final PreloadedRepository preloadedRepository = GetItContainer.sl();
+  static final ProjectsRepository projectsRepository = sl();
+  static final VisitsRepository visitsRepository = sl();
+  static final FormulariosRepository formulariosRepository = sl();
+  static final PreloadedRepository preloadedRepository = sl();
 
   static final RoutesManager _routesManager = RoutesManager();
   bool _continueInitialization;

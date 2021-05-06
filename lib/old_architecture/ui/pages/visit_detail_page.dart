@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/widgets/header/page_header.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/widgets/page_title.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/widgets/progress_indicator.dart';
 import 'package:gap/old_architecture/logic/bloc/entities/visits/visits_bloc.dart';
 import 'package:gap/old_architecture/data/models/entities/entities.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
-import 'package:gap/old_architecture/ui/widgets/header/header.dart';
 import 'package:gap/old_architecture/ui/widgets/native_back_button_locker.dart';
 import 'package:gap/old_architecture/ui/widgets/navigation_list/navigation_list_with_icons.dart';
-import 'package:gap/old_architecture/ui/widgets/page_title.dart';
-import 'package:gap/old_architecture/ui/widgets/progress_indicator.dart';
-import 'package:gap/old_architecture/ui/widgets/unloaded_elements/unloaded_nav_items.dart';
 
 // ignore: must_be_immutable
-class VisitDetailPage extends StatelessWidget {
+class VisitDetailPageOld extends StatelessWidget {
   static final String route = 'visit_detail';
   final SizeUtils _sizeUtils = SizeUtils();
   BuildContext _context;
@@ -22,7 +21,7 @@ class VisitDetailPage extends StatelessWidget {
     return Scaffold(
       body: NativeBackButtonLocker(
         child: SafeArea(
-          child: BlocBuilder<VisitsBloc, VisitsState>(
+          child: BlocBuilder<VisitsOldBloc, VisitsState>(
             builder: (context, state) {
               if(state.chosenVisitIsBlocked)
                 return CustomProgressIndicator();
@@ -44,7 +43,7 @@ class VisitDetailPage extends StatelessWidget {
     return Column(
       children: [
         SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
-        Header(),
+        PageHeader(),
         SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
         _createBodyComponents(chosenVisit)
       ],

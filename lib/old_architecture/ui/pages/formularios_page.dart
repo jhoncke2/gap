@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/widgets/header/page_header.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/widgets/page_title.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/widgets/progress_indicator.dart';
 import 'package:gap/old_architecture/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/old_architecture/logic/bloc/entities/visits/visits_bloc.dart';
 import 'package:gap/old_architecture/data/models/entities/entities.dart';
 import 'package:gap/old_architecture/logic/central_managers/pages_navigation_manager.dart';
-import 'package:gap/old_architecture/ui/widgets/header/header.dart';
 import 'package:gap/old_architecture/ui/widgets/native_back_button_locker.dart';
 import 'package:gap/old_architecture/ui/widgets/navigation_list/navigation_list_with_stage_color_buttons.dart';
-import 'package:gap/old_architecture/ui/widgets/page_title.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
-import 'package:gap/old_architecture/ui/widgets/progress_indicator.dart';
+
 // ignore: must_be_immutable
-class FormulariosPage extends StatelessWidget {
+class FormulariosPageOld extends StatelessWidget {
   static final String route = 'formularios';
   final SizeUtils _sizeUtils = SizeUtils();
   @override
@@ -22,8 +23,8 @@ class FormulariosPage extends StatelessWidget {
           child: Column(
             children: [
               SizedBox(height:_sizeUtils.normalSizedBoxHeigh),
-              Header(),
-              BlocBuilder<FormulariosBloc, FormulariosState>(
+              PageHeader(),
+              BlocBuilder<FormulariosOldBloc, FormulariosState>(
                 builder: (_, state) {
                   if(state.formsAreLoaded && !state.backing && !state.formsAreBlocked){
                     return _createContent(state);
@@ -94,7 +95,7 @@ class _FormulariosComponents extends StatelessWidget {
 
   void _initInitialConfiguration(BuildContext appContext){
     _context = appContext;
-    final VisitsBloc vBloc = BlocProvider.of<VisitsBloc>(appContext);
+    final VisitsOldBloc vBloc = BlocProvider.of<VisitsOldBloc>(appContext);
     this.visit = vBloc.state.chosenVisit;
   }
 

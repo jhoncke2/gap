@@ -8,15 +8,15 @@ import 'package:equatable/equatable.dart';
 import '../use_case.dart';
 
 class Login implements UseCase<void, LoginParams>{
-  final UserRepository userRepository;
+  final UserRepository repository;
 
   Login({
-    @required this.userRepository
+    @required this.repository
   });
 
   @override
   Future<Either<Failure, void>> call(LoginParams params)async{
-    return await userRepository.login(params.user);
+    return await repository.login(params.user);
   }
 }
 

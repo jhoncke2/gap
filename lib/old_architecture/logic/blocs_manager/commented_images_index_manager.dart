@@ -18,7 +18,7 @@ class CommentedImagesIndexManagerSingleton{
   static void _initInitialElements(BuildContext appContext){
     commImgIndexManager..appContext = appContext
     ..commImgsBloc = BlocProvider.of<CommentedImagesBloc>(appContext)
-    ..indexBloc = BlocProvider.of<IndexBloc>(appContext);
+    ..indexBloc = BlocProvider.of<IndexOldBloc>(appContext);
     print(commImgIndexManager);
   }
 
@@ -26,13 +26,13 @@ class CommentedImagesIndexManagerSingleton{
   factory CommentedImagesIndexManagerSingleton.forTesting({
     @required BuildContext appContext,
     @required CommentedImagesBloc commImgsBloc, 
-    @required IndexBloc indexBloc,
+    @required IndexOldBloc indexBloc,
   }){
     _initInitialTestingElements(appContext, commImgsBloc, indexBloc);
     return _commImgsIndxManagerSingleton;
   }
 
-  static void _initInitialTestingElements(BuildContext appContext, CommentedImagesBloc commImgsBloc, IndexBloc indexBloc){
+  static void _initInitialTestingElements(BuildContext appContext, CommentedImagesBloc commImgsBloc, IndexOldBloc indexBloc){
     commImgIndexManager..appContext = appContext
     ..commImgsBloc = commImgsBloc
     ..indexBloc = indexBloc;
@@ -44,7 +44,7 @@ class CommentedImagesIndexManagerSingleton{
 class CommentedImagesIndexManager{
   BuildContext appContext;
   CommentedImagesBloc commImgsBloc;
-  IndexBloc indexBloc;
+  IndexOldBloc indexBloc;
 
   bool allCommentedImagesAreCompleted(){
     final int nPages = indexBloc.state.nPages;

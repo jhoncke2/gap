@@ -1,9 +1,12 @@
+import 'package:gap/clean_architecture_structure/core/domain/use_cases/navigation/go_replacing_all_to.dart';
+import 'package:gap/clean_architecture_structure/core/domain/use_cases/navigation/go_to.dart';
+import 'package:gap/old_architecture/data/enums/enums.dart';
+import 'package:test/test.dart';
 import 'package:dartz/dartz.dart';
+import 'package:mockito/mockito.dart';
 import 'package:gap/clean_architecture_structure/core/domain/repositories/navigation_repository.dart';
 import 'package:gap/clean_architecture_structure/core/domain/use_cases/use_case.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/blocs/user/user_bloc.dart';
-import 'package:mockito/mockito.dart';
-import 'package:test/test.dart';
 import 'package:gap/clean_architecture_structure/core/domain/entities/user.dart';
 import 'package:gap/clean_architecture_structure/core/domain/use_cases/user/login.dart';
 import 'package:gap/clean_architecture_structure/core/domain/use_cases/user/logout.dart';
@@ -15,20 +18,24 @@ class MockLogin extends Mock implements Login{}
 class MockLogout extends Mock implements Logout{}
 class MockInputValidator extends Mock implements InputValidator{}
 class MockNavigationRepository extends Mock implements NavigationRepository{}
+class MockGoReplacingAllTo extends Mock implements GoReplacingAllTo{}
 
 UserBloc bloc;
 MockLogin loginUseCase;
 MockLogout logoutUseCase;
 MockInputValidator inputValidator;
+MockGoReplacingAllTo navigationUseCase;
 void main(){
   setUp((){
     logoutUseCase = MockLogout();
     loginUseCase = MockLogin();
     inputValidator = MockInputValidator();
+    navigationUseCase = MockGoReplacingAllTo();
     bloc = UserBloc(
       login: loginUseCase, 
       logout: logoutUseCase,
-      inputValidator: inputValidator
+      inputValidator: inputValidator,
+      navigationUseCase: navigationUseCase
     );
   });
 
@@ -50,6 +57,8 @@ void main(){
       verify(inputValidator.validateInputValue(tUser.email));
       //await untilCalled(inputValidator.validateInputValue(any));
       //verify(inputValidator.validateInputValue(tUser.password));
+      await untilCalled(navigationUseCase.call(any));
+      verify(navigationUseCase.call(NavigationParams(navRoute: NavigationRoute.Projects)));
     });
 
     test('should emmit the specified states in order when email is empty or null', ()async{
@@ -58,7 +67,8 @@ void main(){
       when(loginUseCase.call(any)).thenAnswer((_) async => Right(null));
       final expectedOrderedStates = [
         UserLoading(),
-        UserError(message: BAD_EMAIL_MESSAGE)
+        UserError(message: BAD_EMAIL_MESSAGE),
+        UserQuiet()
       ];
       expectLater(bloc.asBroadcastStream(), emitsInOrder(expectedOrderedStates));
       bloc.add(LoginEvent(email: tUser.email, password: tUser.password));
@@ -70,7 +80,8 @@ void main(){
       when(loginUseCase.call(any)).thenAnswer((_) async => Right(null));
       final expectedOrderedStates = [
         UserLoading(),
-        UserError(message: BAD_PASSWORD_MESSAGE)
+        UserError(message: BAD_PASSWORD_MESSAGE),
+        UserQuiet()
       ];
       expectLater(bloc.asBroadcastStream(), emitsInOrder(expectedOrderedStates));
       bloc.add(LoginEvent(email: tUser.email, password: tUser.password));
@@ -85,7 +96,8 @@ void main(){
       ));
       final expectedOrderedStates = [
         UserLoading(),
-        UserError(message: 'Credenciales inválidas')
+        UserError(message: 'Credenciales inválidas'),
+        UserQuiet()
       ];
       expectLater(bloc.asBroadcastStream(), emitsInOrder(expectedOrderedStates));
       bloc.add(LoginEvent(email: tUser.email, password: tUser.password));
@@ -111,6 +123,8 @@ void main(){
       bloc.add(LogoutEvent());
       await untilCalled(logoutUseCase.call(any));
       verify(logoutUseCase.call(NoParams()));
+      await untilCalled(navigationUseCase.call(any));
+      verify(navigationUseCase.call(NavigationParams(navRoute: NavigationRoute.Login)));
     });
 
     test('should yield the specified ordered states when the logoutUseCase return Left(X)', ()async{

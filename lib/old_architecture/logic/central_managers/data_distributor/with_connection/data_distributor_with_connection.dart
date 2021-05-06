@@ -243,9 +243,11 @@ class DataDistributorWithConnection extends DataDistributor{
   @override
   Future resetForms()async{
     await super.resetForms();
+    /*
     final VisitOld chosenVisit = visitsB.state.chosenVisit;
     await _removeVisitFromPreloadedVisitsIfCompleted(chosenVisit);
     await _removeFormsFromStorage();
+    */
   }
 
   Future _removeVisitFromPreloadedVisitsIfCompleted(VisitOld visit)async{

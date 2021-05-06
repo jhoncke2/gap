@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/widgets/header/back_button.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/widgets/header/logout_button.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/widgets/page_title.dart';
 import 'package:gap/old_architecture/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/old_architecture/logic/bloc/entities/visits/visits_bloc.dart';
 import 'package:gap/old_architecture/data/models/entities/entities.dart';
-import 'package:gap/old_architecture/ui/widgets/header/app_back_button.dart';
-import 'package:gap/old_architecture/ui/widgets/header/logount.dart';
-import 'package:gap/old_architecture/ui/widgets/page_title.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
 // ignore: must_be_immutable
 class LoadedFormHead extends StatelessWidget {
@@ -54,14 +54,14 @@ class LoadedFormHead extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           _createBackButton(),
-          Logout()
+          LogoutButton()
         ],
       ),
     );
   }
 
   String _getChosenVisitName(){
-    final VisitsBloc vBloc = BlocProvider.of<VisitsBloc>(_context);
+    final VisitsOldBloc vBloc = BlocProvider.of<VisitsOldBloc>(_context);
     final String chosenVisitName = vBloc.state.chosenVisit.name;
     return chosenVisitName;
   }

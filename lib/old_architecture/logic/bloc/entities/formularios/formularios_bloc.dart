@@ -8,9 +8,9 @@ import 'package:gap/old_architecture/data/enums/enums.dart';
 part 'formularios_event.dart';
 part 'formularios_state.dart';
 
-class FormulariosBloc extends Bloc<FormulariosEvent, FormulariosState> {
+class FormulariosOldBloc extends Bloc<FormulariosEvent, FormulariosState> {
   FormulariosState _currentYieldedState;
-  FormulariosBloc() : super(FormulariosState());
+  FormulariosOldBloc() : super(FormulariosState());
 
   @override
   Stream<FormulariosState> mapEventToState(

@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/old_architecture/data/models/entities/entities.dart';
 import 'package:gap/old_architecture/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/old_architecture/logic/bloc/widgets/index/index_bloc.dart';
-import 'package:gap/old_architecture/logic/bloc/widgets/keyboard_listener/keyboard_listener_bloc.dart';
 import 'package:gap/old_architecture/logic/blocs_manager/chosen_form_manager.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
 import 'form_fields/form_field_widget_factory.dart';
@@ -46,7 +45,7 @@ class _FormInputsFractionState extends State<FormInputsFraction> {
   @override
   Widget build(BuildContext context) {
     _unlockIndexIfFormFieldsAreCompleted();
-    return BlocBuilder<IndexBloc, IndexState>(
+    return BlocBuilder<IndexOldBloc, IndexState>(
       builder: (_, IndexState state){
         _indexState = state;
         _doPostFrameBack();
@@ -69,11 +68,12 @@ class _FormInputsFractionState extends State<FormInputsFraction> {
       //_isReBuilding = false;
 
       //final keyboardState = BlocProvider.of<KeyboardListenerBloc>(context).state;
+      
       int currentIndexPage = _indexState.currentIndexPage;
       if(latIndexPage != currentIndexPage){
         latIndexPage = currentIndexPage;
         widget.elementsScrollController.jumpTo(0.0);
-      }  
+      }
     });
   }
 

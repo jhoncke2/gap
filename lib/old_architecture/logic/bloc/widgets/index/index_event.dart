@@ -20,9 +20,11 @@ class ChangeNPages extends IndexEvent{
 }
 
 class ChangeIndexPage extends IndexEvent{
+  final Function() onEnd;
   final int newIndexPage;
   ChangeIndexPage({
-    @required this.newIndexPage
+    @required this.newIndexPage,
+    this.onEnd
   });
 }
 

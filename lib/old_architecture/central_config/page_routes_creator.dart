@@ -11,18 +11,18 @@ import 'package:gap/old_architecture/ui/pages/projects_page.dart';
 import 'package:gap/old_architecture/ui/pages/visit_detail_page.dart';
 import 'package:gap/old_architecture/ui/pages/visits_page.dart';
 
-class PageRoutesCreator{
-  static final initialRoute = InitPage.route;
+class PageRoutesCreatorOld{
+  static final initialRoute = InitPageOld.route;
   static final Map<String, Widget Function(BuildContext)> routes = {
-    NavigationRoute.Init.value : (_)=>InitPage(),
-    NavigationRoute.Login.value: (_)=>LoginPage(),
-    NavigationRoute.Projects.value: (_)=>ProjectsPage(),
-    NavigationRoute.ProjectDetail.value: (_)=>ProjectDetailPage(),
-    NavigationRoute.Visits.value: (_)=>VisitsPage(),
-    NavigationRoute.VisitDetail.value: (_)=>VisitDetailPage(),
-    NavigationRoute.Formularios.value: (_)=>FormulariosPage(),
-    NavigationRoute.FormularioDetailForms.value: (_)=>FormularioDetailPage(),
-    NavigationRoute.Firmers.value: (_)=>FirmersPage(),
-    NavigationRoute.AdjuntarFotosVisita.value: (_)=>AdjuntarFotosVisitaPage(),
+    NavigationRoute.Init.value : (_)=>InitPageOld(),
+    NavigationRoute.Login.value: (_)=>LoginPageOld(),
+    NavigationRoute.Projects.value: (_)=>ProjectsPageOld(),
+    NavigationRoute.ProjectDetail.value: (_)=>ProjectDetailPageOld(),
+    NavigationRoute.Visits.value: (_)=>VisitsPageOld(),
+    NavigationRoute.VisitDetail.value: (_)=>VisitDetailPageOld(),
+    NavigationRoute.Formularios.value: (_)=>FormulariosPageOld(),
+    NavigationRoute.FormularioDetailForms.value: (_)=>FormularioDetailPageOld(),
+    NavigationRoute.Firmers.value: (_)=>FirmersPageOld(),
+    NavigationRoute.AdjuntarFotosVisita.value: (_)=>AdjuntarFotosVisitaPageOld(),
   };
 }

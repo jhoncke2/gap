@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/widgets/general_button.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
-import 'package:gap/old_architecture/ui/widgets/buttons/general_button.dart';
+
 // ignore: must_be_immutable
 class FirmSelectBox extends StatelessWidget{
   static final SizeUtils _sizeUtils = SizeUtils();

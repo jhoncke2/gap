@@ -8,9 +8,9 @@ import 'package:meta/meta.dart';
 part 'visits_event.dart';
 part 'visits_state.dart';
 
-class VisitsBloc extends Bloc<VisitsEvent, VisitsState> {
+class VisitsOldBloc extends Bloc<VisitsEvent, VisitsState> {
   VisitsState _currentYieldedState;
-  VisitsBloc() : super(VisitsState());
+  VisitsOldBloc() : super(VisitsState());
 
   @override
   Stream<VisitsState> mapEventToState(

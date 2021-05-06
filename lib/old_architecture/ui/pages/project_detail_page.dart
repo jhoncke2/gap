@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/widgets/header/page_header.dart';
 import 'package:gap/old_architecture/logic/bloc/entities/projects/projects_bloc.dart';
 import 'package:gap/old_architecture/logic/central_managers/pages_navigation_manager.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
-import 'package:gap/old_architecture/ui/widgets/header/header.dart';
 import 'package:gap/old_architecture/ui/widgets/native_back_button_locker.dart';
 import 'package:gap/old_architecture/ui/widgets/navigation_list/navigation_list.dart';
 
 // ignore: must_be_immutable
-class ProjectDetailPage extends StatelessWidget {
+class ProjectDetailPageOld extends StatelessWidget {
   static final route = 'project_detail';
   final List<String> itemsNames = ['Visitas', 'Viáticos'];
   List<Function> onTapFunctions;
@@ -20,7 +20,7 @@ class ProjectDetailPage extends StatelessWidget {
     return Scaffold(body: SafeArea(
       child: NativeBackButtonLocker(
         child: Container(
-          child: BlocBuilder<ProjectsBloc, ProjectsState>(
+          child: BlocBuilder<ProjectsOldBloc, ProjectsState>(
             builder: (context, state) {
               if(state.loadingProjects)
                 return _createLoadingProjectsWidget();
@@ -54,7 +54,7 @@ class ProjectDetailPage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
-        Header(),
+        PageHeader(),
         SizedBox(height: _sizeUtils.largeSizedBoxHeigh),
         _createNavigationList()
       ],

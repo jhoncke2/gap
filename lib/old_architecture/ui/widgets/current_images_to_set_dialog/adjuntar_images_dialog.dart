@@ -1,22 +1,22 @@
+import 'dart:io';
+import 'package:gap/clean_architecture_structure/core/presentation/widgets/general_button.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'dart:io';
 import 'package:gap/old_architecture/logic/central_managers/pages_navigation_manager.dart';
 import 'package:gap/old_architecture/logic/bloc/widgets/commented_images/commented_images_bloc.dart';
 import 'package:gap/old_architecture/logic/bloc/widgets/index/index_bloc.dart';
 import 'package:gap/old_architecture/logic/bloc/entities/images/images_bloc.dart';
 import 'package:gap/old_architecture/ui/widgets/current_images_to_set_dialog/fotos_por_agregar_group.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
-import 'package:gap/old_architecture/ui/widgets/buttons/general_button.dart';
 
 // ignore: must_be_immutable
 class AdjuntarFotosDialog extends StatelessWidget {
   final SizeUtils _sizeUtils = SizeUtils();
   final ImagePicker _imagePicker = ImagePicker();
-  ImagesBloc _imagesBloc;
+  ImagesOldBloc _imagesBloc;
   CommentedImagesBloc _commImagesWidgBloc;
-  IndexBloc _indexBloc;
+  IndexOldBloc _indexBloc;
   BuildContext _context;
   AdjuntarFotosDialog();
 
@@ -49,9 +49,9 @@ class AdjuntarFotosDialog extends StatelessWidget {
 
   void _initInitialConfiguration(BuildContext appContext){
     _context = appContext;
-    _imagesBloc = BlocProvider.of<ImagesBloc>(_context);
+    _imagesBloc = BlocProvider.of<ImagesOldBloc>(_context);
     _commImagesWidgBloc = BlocProvider.of<CommentedImagesBloc>(_context);
-    _indexBloc = BlocProvider.of<IndexBloc>(_context);    
+    _indexBloc = BlocProvider.of<IndexOldBloc>(_context);    
   }
 
   Widget _createHeadComponents(){
@@ -109,7 +109,7 @@ class AdjuntarFotosDialog extends StatelessWidget {
       source: ImageSource.gallery
     );
     final File photo = File(pickedFile.path);
-    final ImagesBloc imagesBloc = BlocProvider.of<ImagesBloc>(_context);
+    final ImagesOldBloc imagesBloc = BlocProvider.of<ImagesOldBloc>(_context);
     final LoadPhoto loadPhotoEvent = LoadPhoto(photo: photo);
     imagesBloc.add(loadPhotoEvent);
   }

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/widgets/header/logout_button.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
-import 'package:gap/old_architecture/ui/widgets/header/app_back_button.dart';
-import 'package:gap/old_architecture/ui/widgets/header/logount.dart';
 // ignore: must_be_immutable
-class Header extends StatelessWidget {
+class PageHeader extends StatelessWidget {
   final bool showBackNavButton;
   final bool withTitle;
   final String title;
@@ -12,7 +11,7 @@ class Header extends StatelessWidget {
   BuildContext _context;
   SizeUtils _sizeUtils;
 
-  Header({
+  PageHeader({
     this.showBackNavButton = true,
     this.withTitle = false,
     this.title,
@@ -48,7 +47,7 @@ class Header extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           _elegirTopLeftElement(),
-          Logout()
+          LogoutButton()
         ],
       ),
     );
@@ -56,7 +55,7 @@ class Header extends StatelessWidget {
 
   Widget _elegirTopLeftElement(){
     if(showBackNavButton)
-      return AppBackButton();
+      return BackButton();
     else
       return _createEmptyContainer();
   }

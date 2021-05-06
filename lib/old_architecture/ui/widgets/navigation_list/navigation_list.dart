@@ -11,7 +11,6 @@ class NavigationList extends StatelessWidget {
   final ScrollController scrollController = new ScrollController();
   BuildContext context;
 
-
   NavigationList({
     @required this.itemsNames,
     @required this.itemsFunctions,

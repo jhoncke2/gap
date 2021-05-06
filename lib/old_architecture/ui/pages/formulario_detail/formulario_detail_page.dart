@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/widgets/progress_indicator.dart';
 import 'package:gap/old_architecture/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/old_architecture/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/old_architecture/logic/bloc/widgets/index/index_bloc.dart';
@@ -7,14 +8,13 @@ import 'package:gap/old_architecture/logic/bloc/widgets/keyboard_listener/keyboa
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
 import 'package:gap/old_architecture/ui/widgets/form_process_container.dart';
 import 'package:gap/old_architecture/ui/widgets/native_back_button_locker.dart';
-import 'package:gap/old_architecture/ui/widgets/progress_indicator.dart';
 import 'forms/form_body/chosen_form_current_component.dart';
 import 'forms/loaded_form_head.dart';
 
 // ignore: must_be_immutable
-class FormularioDetailPage extends StatelessWidget {
+class FormularioDetailPageOld extends StatelessWidget {
   static final String route = 'formulario_detail';
-  FormularioDetailPage({Key key}) : super(key: key);
+  FormularioDetailPageOld({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +47,7 @@ class FormularioDetailPage extends StatelessWidget {
   }
 
   Widget _createFormBuilder() {
-    return BlocBuilder<FormulariosBloc, FormulariosState>(
+    return BlocBuilder<FormulariosOldBloc, FormulariosState>(
       builder: (context, state) {
         if (state.chosenForm != null) {
           return _LoadedFormularioDetail(formsState: state);
@@ -84,14 +84,8 @@ class _LoadedFormularioDetail extends StatelessWidget {
             ],
           )
         );
-        return FormProcessMainContainer(
-          formName: formsState.chosenForm.name,
-          bottomChild: ChosenFormCurrentComponent()
-        );
       },
     );
-    
-    
   }
 
   Widget _createWidgetWithBlocBuilderConfigDefined(){
@@ -110,7 +104,7 @@ class _LoadedFormularioDetail extends StatelessWidget {
   }
 
   Widget _createIndexBuilder(){
-    return BlocBuilder<IndexBloc, IndexState>(
+    return BlocBuilder<IndexOldBloc, IndexState>(
       builder: (context, indexState) {
         if(indexState.nPages > 0){
           return FormProcessMainContainer(
