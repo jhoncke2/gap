@@ -10,16 +10,17 @@ class Visit extends EntityWithStage{
   final bool completo;
   final Sede sede;
   final List<dynamic> formularios;
-
+  
   Visit({
     @required this.id,
-    @required this.date, 
-    @required this.completo, 
+    @required this.date,
+    @required this.completo,
     @required this.sede,
-    @required this.formularios
+    @required this.formularios,
+    ProcessStage stage
   }):super(
     name: (sede == null)? '' : sede.nombre,
-    stage: completo? ProcessStage.Realizada : ProcessStage.Pendiente
+    stage: stage?? completo? ProcessStage.Realizada : ProcessStage.Pendiente
   );
 
   @override

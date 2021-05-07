@@ -17,6 +17,11 @@ import 'package:gap/clean_architecture_structure/core/domain/use_cases/navigatio
 import 'package:gap/clean_architecture_structure/core/domain/use_cases/user/login.dart';
 import 'package:gap/clean_architecture_structure/core/platform/custom_navigator.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/utils/input_validator.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/data/repository/fake_impl/muestras_repository_fake.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/domain/repositories/muestras_repository.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/get_muestras.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/set_muestras.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/presentation/bloc/muestras_bloc.dart';
 import 'package:gap/clean_architecture_structure/features/projects/domain/use_cases/get_projects.dart';
 import 'package:gap/clean_architecture_structure/features/projects/presentation/bloc/projects_bloc.dart';
 import 'package:http/http.dart' as http;
@@ -118,6 +123,8 @@ void init()async{
   sl.registerLazySingleton<NavigationRepository>(()=>NavigationRepositoryImpl(
     localDataSource: sl()
   ));
+  //TODO: Cambiar por real
+  sl.registerLazySingleton<MuestrasRepository>(()=>MuestrasRepositoryFake());
 
   //useCases
   sl.registerLazySingleton(()=>GoTo(navigator: sl(), navRepository: sl()));
@@ -127,7 +134,8 @@ void init()async{
   sl.registerLazySingleton(()=>Login(repository: sl()));
   sl.registerLazySingleton(()=>Logout(repository: sl()));
   sl.registerLazySingleton(()=>GetProjects(repository: sl()));
-
+  sl.registerLazySingleton(()=>GetMuestras(repository: sl()));
+  sl.registerLazySingleton(()=>SetMuestra(repository: sl()));
   //blocs
   sl.registerFactory(() => UserBloc(
     login: sl(), 
@@ -137,6 +145,10 @@ void init()async{
   ));
   sl.registerFactory(()=>ProjectsBloc(
     getProjects: sl()
+  ));
+  sl.registerFactory(()=>MuestrasBloc(
+    getMuestras: sl(), 
+    setMuestra: sl()
   ));
 
   //***** util components

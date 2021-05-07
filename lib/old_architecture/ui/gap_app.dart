@@ -3,11 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/clean_architecture_structure/core/platform/custom_navigator.dart';
 import 'package:gap/clean_architecture_structure/core/utils/page_routes.dart';
 import 'package:gap/clean_architecture_structure/features/login/presentation/pages/login_page.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/presentation/pages/muestras_page.dart';
 import 'package:gap/clean_architecture_structure/injection_container.dart';
 import 'package:gap/old_architecture/central_config/bloc_providers_creator.dart';
 import 'package:gap/old_architecture/central_config/page_routes_creator.dart';
 import 'package:gap/old_architecture/logic/bloc/nav_routes/custom_navigator.dart';
 import 'package:gap/old_architecture/ui/pages/init_page.dart';
+import 'package:gap/old_architecture/ui/utils/size_utils.dart';
 
 // ignore: must_be_immutable
 class GapApp extends StatefulWidget {
@@ -48,7 +50,7 @@ class _GapAppState extends State<GapApp> with WidgetsBindingObserver{
         secondaryHeaderColor: Colors.brown.withOpacity(0.35)
       ),
       //home: InitPage(),
-      home: LoginPage(),
+      home: MuestrasPage(),
       //routes: PageRoutesCreatorOld.routes,
       routes: PageRoutes.routes,
     );

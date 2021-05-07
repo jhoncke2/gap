@@ -61,6 +61,7 @@ class NavigationRoute extends NavRouteEnum{
   static const NavigationRoute ProjectDetail = const NavigationRoute('project_detail');
   static const NavigationRoute Visits = const NavigationRoute('visits');
   static const NavigationRoute VisitDetail = const NavigationRoute('visit_detail');
+  static const NavigationRoute Muestras = const NavigationRoute('muestras');
   static const NavigationRoute Formularios = const NavigationRoute('formularios');
   static const NavigationRoute FormularioDetailForms = const NavigationRoute('formulario_detail', step: 'forms');
   static const NavigationRoute FormularioDetailFirmers = const NavigationRoute('formulario_detail', step: 'firmers');
@@ -79,6 +80,8 @@ class NavigationRoute extends NavRouteEnum{
       return Visits;
     }else if(jsonRoute == VisitDetail.value){
       return VisitDetail;
+    }else if(jsonRoute == Muestras.value){
+      return Muestras;
     }else if(jsonRoute == Formularios.value){
       return Formularios;
     }else if(jsonRoute == FormularioDetailForms.value){
