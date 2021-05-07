@@ -22,6 +22,7 @@ import 'package:gap/clean_architecture_structure/features/muestras/domain/reposi
 import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/get_muestras.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/set_muestras.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/bloc/muestras_bloc.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/presentation/utils/string_to_double_converter.dart';
 import 'package:gap/clean_architecture_structure/features/projects/domain/use_cases/get_projects.dart';
 import 'package:gap/clean_architecture_structure/features/projects/presentation/bloc/projects_bloc.dart';
 import 'package:http/http.dart' as http;
@@ -148,11 +149,13 @@ void init()async{
   ));
   sl.registerFactory(()=>MuestrasBloc(
     getMuestras: sl(), 
-    setMuestra: sl()
+    setMuestra: sl(),
+    pesosConverter: sl()
   ));
 
   //***** util components
   sl.registerLazySingleton(()=>InputValidator());
+  sl.registerLazySingleton(()=>StringToDoubleConverter());
 
   //***********External encapsulation
   sl.registerLazySingleton<NetworkInfo>(() => 

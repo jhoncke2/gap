@@ -1,12 +1,5 @@
 part of 'muestras_bloc.dart';
 
-enum MuestrasStep{
-  ON_PREPARACIONES,
-  ON_ELECCION_TOMA_O_FINALIZAR,
-  ON_ELEGIR_RANGO_TOMA,
-  ON_PESOS_TOMADOS
-}
-
 abstract class MuestrasState extends Equatable {
   const MuestrasState();
   
@@ -14,38 +7,49 @@ abstract class MuestrasState extends Equatable {
   List<Object> get props => [this.runtimeType];
 }
 
-class MuestrasEmpty extends MuestrasState {}
+class MuestraEmpty extends MuestrasState {}
 
 class LoadingMuestra extends MuestrasState{}
 
-class OnPreparacionMuestra extends MuestrasState{
-   final Muestra muestra;
+abstract class LoadedMuestra extends MuestrasState{
+  final Muestra muestra;
+  LoadedMuestra({
+    @required this.muestra
+  });
+}
+
+class OnPreparacionMuestra extends LoadedMuestra{
   OnPreparacionMuestra({
-    @required this.muestra
-  });
+    @required Muestra muestra
+  }):super(
+    muestra: muestra
+  );
 }
 
-class OnEleccionTomaOFinalizar extends MuestrasState{
-  final Muestra muestra;
+class OnEleccionTomaOFinalizar extends LoadedMuestra{
   OnEleccionTomaOFinalizar({
-    @required this.muestra
-  });
+    @required Muestra muestra
+  }):super(
+    muestra: muestra
+  );
 }
 
-class OnChosingRangoEdad{
-  final Muestra muestra;
+class OnChosingRangoEdad extends LoadedMuestra{
   OnChosingRangoEdad({
-    @required this.muestra
-  });
+    @required Muestra muestra
+  }):super(
+    muestra: muestra
+  );
 }
 
-class OnTomaPesos{
-  final Muestra muestra;
+class OnTomaPesos extends LoadedMuestra{
   final String rangoEdad;
   OnTomaPesos({
-    @required this.muestra,
-    @required this.rangoEdad
-  });
+    @required this.rangoEdad,
+    @required Muestra muestra
+  }):super(
+    muestra: muestra
+  );
 }
 
 class MuestraError extends MuestrasState{

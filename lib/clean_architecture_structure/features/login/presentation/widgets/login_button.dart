@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/blocs/user/user_bloc.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/general_button.dart';
-import 'package:gap/clean_architecture_structure/core/utils/dialogs.dart' as dialogs;
+import 'package:gap/clean_architecture_structure/core/presentation/utils/dialogs.dart' as dialogs;
 class LoginButton extends StatelessWidget {
   final TextEditingController emailController;
   final TextEditingController passwordController;

@@ -15,16 +15,17 @@ class SetMuestraPreparaciones extends MuestrasEvent{
   });
 }
 
-class AddNewMuestra extends MuestrasEvent{
-
-}
+class AddNewTomaDeMuestra extends MuestrasEvent{ }
 
 class ChooseRangoEdad extends MuestrasEvent{
-
+  final String rango;
+  ChooseRangoEdad({
+    @required this.rango
+  });
 }
 
 class AddTomaPesosMuestra extends MuestrasEvent{
-  final List<double> pesos;
+  final List<String> pesos;
   AddTomaPesosMuestra({
     @required this.pesos
   });
@@ -34,12 +35,5 @@ class SetMuestraEvent extends MuestrasEvent{
   final Muestra muestra;
   SetMuestraEvent({
     @required this.muestra
-  });
-}
-
-class ChangeMuestrasStep extends MuestrasEvent{
-  final MuestrasStep step;
-  ChangeMuestrasStep({
-    @required this.step
   });
 }

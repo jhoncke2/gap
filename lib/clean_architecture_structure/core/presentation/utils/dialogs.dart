@@ -1,8 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:gap/clean_architecture_structure/core/platform/custom_navigator.dart';
-import 'package:gap/old_architecture/logic/bloc/nav_routes/custom_navigator.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
+import 'package:gap/clean_architecture_structure/core/platform/custom_navigator.dart';
 import 'package:gap/old_architecture/ui/widgets/current_images_to_set_dialog/adjuntar_images_dialog.dart';
 final SizeUtils _sizeUtils = SizeUtils();
 
