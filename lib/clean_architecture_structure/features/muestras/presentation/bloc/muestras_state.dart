@@ -16,6 +16,8 @@ abstract class LoadedMuestra extends MuestrasState{
   LoadedMuestra({
     @required this.muestra
   });
+  @override
+  List<Object> get props => [...super.props, this.muestra];
 }
 
 class OnPreparacionMuestra extends LoadedMuestra{
@@ -32,6 +34,7 @@ class OnEleccionTomaOFinalizar extends LoadedMuestra{
   }):super(
     muestra: muestra
   );
+  
 }
 
 class OnChosingRangoEdad extends LoadedMuestra{
@@ -50,6 +53,8 @@ class OnTomaPesos extends LoadedMuestra{
   }):super(
     muestra: muestra
   );
+  @override
+  List<Object> get props => [...super.props, this.rangoEdad];
 }
 
 class MuestraError extends MuestrasState{

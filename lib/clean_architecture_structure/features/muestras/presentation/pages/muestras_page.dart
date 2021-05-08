@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gap/clean_architecture_structure/core/presentation/widgets/general_button.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/header/page_header.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/scaffold_keyboard_detector.dart';
-import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/muestra.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/bloc/muestras_bloc.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/presentation/widgets/eleccion_toma_o_finalizar.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/presentation/widgets/pesos_chooser.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/presentation/widgets/preparacion_componentes.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/presentation/widgets/rango_edad_chosing.dart';
 import 'package:gap/clean_architecture_structure/injection_container.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
 
@@ -20,6 +22,7 @@ class MuestrasPage extends StatelessWidget {
         child: BlocProvider<MuestrasBloc>(
           create: (context) => sl(),
           child: Container(
+            color: Colors.transparent,
             child: _createMuestrasBlocBuilder(),
           ),
         ),
@@ -35,7 +38,8 @@ class MuestrasPage extends StatelessWidget {
           children: [
             PageHeader(
               withTitle: (state is LoadedMuestra),
-              title: (state is LoadedMuestra)? 'Muestra ${state.muestra.tipo}': null
+              title: (state is LoadedMuestra)? 'Muestra ${state.muestra.tipo}': null,
+              titleIsUnderlined: false,
             ),
             SizedBox(height: sizeUtils.xasisSobreYasis * 0.05),
             Expanded(
@@ -59,67 +63,20 @@ class MuestrasPage extends StatelessWidget {
   }
 
   Widget _createBlocBuilderBottom(MuestrasState state){
-    if(state is LoadedMuestra)
-      return OnPreparacion(muestra: state.muestra);
+    if(state is OnPreparacionMuestra)
+      return PreparacionComponentes(muestra: state.muestra);
+    else if(state is OnEleccionTomaOFinalizar)
+      return EleccionTomaOFinalizar(muestra: state.muestra);
+    else if(state is OnChosingRangoEdad)
+      return RangoEdadChosing(muestra: state.muestra);
+    else if(state is OnTomaPesos)
+      return PesosChooser(muestra: state.muestra, rangoEdad: state.rangoEdad);
+    else if(state is MuestraError)
+      return Container(
+        child: Center(
+          child: Text(state.message),
+        ),
+      );
     return Container();
-  }
-}
-
-class OnPreparacion extends StatelessWidget {
-  final Muestra muestra;
-  OnPreparacion({
-    @required this.muestra,
-    Key key
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      //color: Colors.grey.withOpacity(0.25),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          _createComponenteAndPreparacionTable(),
-          _createContinueButton(context)
-        ],
-      ),
-    );
-  }
-
-  Widget _createComponenteAndPreparacionTable(){
-    return DataTable(
-      columns: [
-        DataColumn(label: Text('Componente')),
-        DataColumn(label: Text('Preparación'))
-      ],
-      rows: _createTableRows(),
-    );
-  }
-
-  List<DataRow> _createTableRows(){
-    return muestra.componentes.map(
-      (c)=>DataRow(
-        cells: [
-          DataCell(
-            Text(c.nombre)
-          ),
-          DataCell(
-            Text('Aquí va la respuesta')
-          )
-        ]
-      )
-    ).toList();
-  }
-
-  Widget _createContinueButton(BuildContext context){
-    return Container(
-      padding: EdgeInsets.only(bottom: 15),
-      child: GeneralButton(
-        text: 'Continuar',
-        backgroundColor: Theme.of(context).primaryColor,
-        onPressed: (){},
-      ),
-    );
   }
 }

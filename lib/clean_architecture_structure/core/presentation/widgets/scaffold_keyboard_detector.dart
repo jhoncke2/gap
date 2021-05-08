@@ -12,7 +12,7 @@ class ScaffoldKeyboardDetector extends StatelessWidget {
         child: this.child,
         onTap: () {
           FocusScope.of(context).requestFocus(new FocusNode());
-        },
+        }
       )
     );
   }

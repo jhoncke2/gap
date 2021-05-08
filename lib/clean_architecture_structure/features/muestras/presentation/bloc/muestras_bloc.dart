@@ -91,6 +91,7 @@ class MuestrasBloc extends Bloc<MuestrasEvent, MuestrasState>{
     yield * eitherPesos.fold((_)async*{
       yield MuestraError(message: FORMAT_PESOS_ERROR);
     }, (pesos)async*{
+      muestra.nMuestreos += 1;
       for(int i = 0; i < pesos.length; i++){
         final Componente componente = muestra.componentes[i];
         final RangoToma rangoToma = componente.valoresPorRango.singleWhere((rT) => rT.rango == rango);

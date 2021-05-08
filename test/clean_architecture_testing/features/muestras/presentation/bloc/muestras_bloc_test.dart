@@ -161,7 +161,7 @@ void main(){
       tRango = tMuestra.rangos[0];
       tStringPesos = [];
       tDoublePesos = [];
-      tMuestraConPesosTomados = _getMuestraFromFixture();
+      tMuestraConPesosTomados = _getMuestraFromFixture()..nMuestreos += 1;
       List<Componente> tComponentes = tMuestraConPesosTomados.componentes;
       for(int i = 0; i < tComponentes.length; i++){
         RangoToma tRangoToma = tComponentes[i].valoresPorRango.singleWhere((rT) => rT.rango == tRango);

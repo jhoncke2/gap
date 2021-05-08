@@ -5,7 +5,7 @@ class StringToDoubleConverter{
   Either<Failure, List<double>> convert(List<String> stringList){
     try{
       return Right(
-        stringList.map((s) => double.parse(s))
+        stringList.map((s) => double.parse(s)).toList()
       );
     }catch(err){
       return Left(FormatFailure());
