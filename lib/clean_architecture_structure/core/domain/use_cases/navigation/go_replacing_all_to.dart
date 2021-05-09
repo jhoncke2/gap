@@ -17,7 +17,8 @@ class GoReplacingAllTo implements UseCase<void, NavigationParams>{
 
   @override
   Future<Either<Failure, void>> call(params)async{
-    await navigator.navigateReplacingTo(params.navRoute);
-    return await navRepository.replaceAllNavRoutesForNew(params.navRoute);
+    final eitherRepository = await navRepository.replaceAllNavRoutesForNew(params.navRoute);
+    navigator.navigateReplacingTo(params.navRoute);
+    return eitherRepository;
   }
 }

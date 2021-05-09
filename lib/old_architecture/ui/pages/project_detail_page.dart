@@ -4,6 +4,7 @@ import 'package:gap/clean_architecture_structure/core/presentation/widgets/heade
 import 'package:gap/old_architecture/logic/bloc/entities/projects/projects_bloc.dart';
 import 'package:gap/old_architecture/logic/central_managers/pages_navigation_manager.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
+import 'package:gap/old_architecture/ui/widgets/header/page_header.dart';
 import 'package:gap/old_architecture/ui/widgets/native_back_button_locker.dart';
 import 'package:gap/old_architecture/ui/widgets/navigation_list/navigation_list.dart';
 
@@ -54,7 +55,7 @@ class ProjectDetailPageOld extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
-        PageHeader(),
+        PageHeaderOld(),
         SizedBox(height: _sizeUtils.largeSizedBoxHeigh),
         _createNavigationList()
       ],

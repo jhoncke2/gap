@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gap/clean_architecture_structure/core/presentation/widgets/header/page_header.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/page_title.dart';
 import 'package:gap/old_architecture/logic/bloc/entities/visits/visits_bloc.dart';
 import 'package:gap/old_architecture/data/enums/enums.dart';
 import 'package:gap/old_architecture/data/models/entities/entities.dart';
 import 'package:gap/old_architecture/logic/central_managers/pages_navigation_manager.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
+import 'package:gap/old_architecture/ui/widgets/header/page_header.dart';
 import 'package:gap/old_architecture/ui/widgets/native_back_button_locker.dart';
 import 'package:gap/old_architecture/ui/widgets/navigation_list/navigation_list_with_stage_color_buttons.dart';
 import 'package:gap/old_architecture/ui/widgets/visits_date_filter.dart';
@@ -42,7 +42,7 @@ class _VisitsPageOldState extends State<VisitsPageOld>{
     return Column(
       children: [
         SizedBox(height:_sizeUtils.normalSizedBoxHeigh),
-        PageHeader(),
+        PageHeaderOld(),
         SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
         _createVisitStateComponents()
       ],

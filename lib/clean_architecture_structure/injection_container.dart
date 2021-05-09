@@ -1,4 +1,11 @@
 //sl: service locator
+import 'package:gap/clean_architecture_structure/features/muestras/data/data_sources/muestras_remote_data_source.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/data/repository/muestras_repository.dart';
+import 'package:get_it/get_it.dart';
+import 'core/network/network_info.dart';
+import 'package:http/http.dart' as http;
+import 'package:connectivity/connectivity.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/central_system/central_system_local_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/repositories/commented_images_repository.dart';
 import 'package:gap/clean_architecture_structure/core/data/repositories/formularios_repository.dart';
@@ -25,8 +32,6 @@ import 'package:gap/clean_architecture_structure/features/muestras/presentation/
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/utils/string_to_double_converter.dart';
 import 'package:gap/clean_architecture_structure/features/projects/domain/use_cases/get_projects.dart';
 import 'package:gap/clean_architecture_structure/features/projects/presentation/bloc/projects_bloc.dart';
-import 'package:http/http.dart' as http;
-import 'package:get_it/get_it.dart';
 import 'core/data/data_sources/navigation/navigation_local_data_source.dart';
 import 'core/data/data_sources/user/user_local_data_source.dart';
 import 'core/data/data_sources/user/user_remote_data_source.dart';
@@ -39,9 +44,6 @@ import 'core/domain/repositories/preloaded_repository.dart';
 import 'core/domain/repositories/user_repository.dart';
 import 'core/domain/repositories/visits_repository.dart';
 import 'core/domain/use_cases/user/logout.dart';
-import 'core/network/network_info.dart';
-import 'package:connectivity/connectivity.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/commented_images/commented_images_remote_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/formularios/formularios_local_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/index/index_local_data_source.dart';
@@ -71,7 +73,8 @@ void init()async{
   sl.registerLazySingleton<VisitsLocalDataSource>(()=>VisitsLocalDataSourceImpl(storageConnector: sl()));
   sl.registerLazySingleton<CentralSystemLocalDataSource>(() => CentralSystemLocalDataSourceImpl(storageConnector: sl()));
   sl.registerLazySingleton<NavigationLocalDataSource>(()=> NavigationLocalDataSourceImpl(storageConnector: sl()));
-  
+  sl.registerLazySingleton<MuestrasRemoteDataSource>(()=> MuestrasRemoteDataSourceImpl(client: sl()));
+
   //repositories
   sl.registerLazySingleton<CommentedImagesRepository>(()=>CommentedImagesRepositoryImpl(
     networkInfo: sl(), 
@@ -124,8 +127,15 @@ void init()async{
   sl.registerLazySingleton<NavigationRepository>(()=>NavigationRepositoryImpl(
     localDataSource: sl()
   ));
-  //TODO: Cambiar por real
-  sl.registerLazySingleton<MuestrasRepository>(()=>MuestrasRepositoryFake());
+  //TODO: Quitar al confirmar funcionamiento correcto de MuestrasRepositoryImpl
+  //sl.registerLazySingleton<MuestrasRepository>(()=>MuestrasRepositoryFake());
+  sl.registerLazySingleton<MuestrasRepository>(()=>MuestrasRepositoryImpl(
+    networkInfo: sl(),
+    remoteDataSource: sl(),
+    userLocalDataSource: sl(), 
+    projectsLocalDataSource: sl(),
+    visitsLocalDataSource: sl()
+  ));
 
   //useCases
   sl.registerLazySingleton(()=>GoTo(navigator: sl(), navRepository: sl()));

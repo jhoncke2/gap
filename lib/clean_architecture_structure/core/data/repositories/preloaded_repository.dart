@@ -1,9 +1,7 @@
-import 'package:dartz/dartz.dart';
-import 'package:gap/clean_architecture_structure/core/domain/entities/formulario/firmer.dart';
-import 'package:gap/clean_architecture_structure/core/domain/entities/formulario/formulario.dart';
 import 'package:meta/meta.dart';
+import 'package:dartz/dartz.dart';
+import 'package:gap/clean_architecture_structure/core/domain/entities/formulario/formulario.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/user/user_local_data_source.dart';
-import 'package:gap/clean_architecture_structure/core/data/models/formulario/firmer_model.dart';
 import 'package:gap/clean_architecture_structure/core/data/models/formulario/formulario_model.dart';
 import 'package:gap/clean_architecture_structure/core/domain/repositories/preloaded_repository.dart';
 import 'package:gap/clean_architecture_structure/core/error/exceptions.dart';

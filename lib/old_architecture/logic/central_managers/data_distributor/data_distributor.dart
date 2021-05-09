@@ -80,7 +80,7 @@ abstract class DataDistributor{
     final bool alreadyRunned = await UserStorageManager.alreadyRunnedApp();
     if(!alreadyRunned){
       await _setFirstTimeRunned();
-      throw AppNeverRunnedErr();
+      //throw AppNeverRunnedErr();
     }
   }
 

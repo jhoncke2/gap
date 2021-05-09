@@ -3,7 +3,6 @@ import 'package:gap/clean_architecture_structure/features/muestras/domain/entiti
 import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/rango_toma.dart';
 
 final Muestra fakeMuestra = Muestra(
-  nMuestreos: 0,
   tipo: 'Almuerzo', 
   rangos: ['5-8 años', '9-12 años'], 
   componentes: [
@@ -31,5 +30,9 @@ final Muestra fakeMuestra = Muestra(
         RangoToma(rango: '9-12 años', pesoEsperado: 125.0, pesosTomados: [])
       ]
     ),
-  ]
+  ],
+  minMuestreos: 1,
+  maxMuestreos: 3,
+  nMuestreos: 0,
+  
 );

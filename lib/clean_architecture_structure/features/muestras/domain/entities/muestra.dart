@@ -7,12 +7,16 @@ class Muestra extends Equatable{
   final String tipo;
   final List<String> rangos;
   final List<Componente> componentes;
+  final int minMuestreos;
+  final int maxMuestreos;
   int nMuestreos;
 
   Muestra({
     @required this.tipo,
     @required this.rangos,
     @required this.componentes,
+    @required this.minMuestreos,
+    @required this.maxMuestreos,    
     @required this.nMuestreos
   });
 

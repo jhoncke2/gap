@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
+import 'package:gap/clean_architecture_structure/core/data/data_sources/navigation/navigation_local_data_source.dart';
+import 'package:gap/clean_architecture_structure/core/data/repositories/preloaded_repository.dart';
 import 'package:gap/clean_architecture_structure/core/domain/repositories/formularios_repository.dart';
 import 'package:gap/clean_architecture_structure/core/domain/repositories/preloaded_repository.dart';
 import 'package:gap/clean_architecture_structure/core/domain/repositories/projects_repository.dart';
 import 'package:gap/clean_architecture_structure/core/domain/repositories/visits_repository.dart';
+import 'package:gap/clean_architecture_structure/core/platform/custom_navigator.dart';
 import 'package:gap/clean_architecture_structure/injection_container.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:gap/old_architecture/logic/bloc/nav_routes/custom_navigator.dart';
@@ -12,7 +15,6 @@ import 'package:gap/old_architecture/data/models/entities/entities.dart';
 import 'package:gap/old_architecture/central_config/bloc_providers_creator.dart';
 import 'package:gap/old_architecture/native_connectors/permissions.dart';
 import 'package:gap/old_architecture/logic/bloc/entities/user/user_bloc.dart';
-import 'package:gap/old_architecture/logic/bloc/nav_routes/routes_manager.dart';
 import 'package:gap/old_architecture/logic/central_managers/pages_navigation_manager.dart';
 import 'package:gap/old_architecture/logic/storage_managers/user/user_storage_manager.dart';
 import 'package:gap/old_architecture/ui/utils/dialogs.dart' as dialogs;
@@ -23,7 +25,10 @@ class DataInitializer{
   static final FormulariosRepository formulariosRepository = sl();
   static final PreloadedRepository preloadedRepository = sl();
 
-  static final RoutesManager _routesManager = RoutesManager();
+  static final CustomNavigator customNavigator = sl();
+  static final NavigationLocalDataSource navLocalDataSource = sl();
+
+  //static final RoutesManager _routesManager = RoutesManager();
   bool _continueInitialization;
 
   Future init(BuildContext context, NetConnectionState netConnState)async{
@@ -78,25 +83,27 @@ class DataInitializer{
 
   Future _doInitialization(BuildContext context, NetConnectionState netConnState)async{
     await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.DO_INITIAL_CONFIG);
-    if(dataDisrtibutorErrorHandlingManager.happendError)
-      await _routesManager.replaceAllRoutesForNew(dataDisrtibutorErrorHandlingManager.navigationTodoByError??NavigationRoute.Login);
+    if(dataDisrtibutorErrorHandlingManager.happendError){
+      //await _routesManager.replaceAllRoutesForNew(dataDisrtibutorErrorHandlingManager.navigationTodoByError??NavigationRoute.Login);
+      await _replaceAllNavRoutesByHavingError();
+    }
     else
       await _continueInitializationAfterDoneInitialConfig(context, netConnState);
   }
 
   Future _continueInitializationAfterDoneInitialConfig(BuildContext context, NetConnectionState netConnState)async{
-    await _routesManager.loadRoute();
+    //await _routesManager.loadRoute();
     await _sendPreloadedData();
     await _doAllNavigationByEvaluatingInitialConditions(context, netConnState);
   }
 
   Future<void> _sendPreloadedData()async{
     final eitherSentLoadedData = await preloadedRepository.sendPreloadedData();
-    eitherSentLoadedData.fold((l){
-      dialogs.showTemporalDialog('Ocurrió un error con el envío de los datos precargados');
-    }, (seEnviaron){
+    await eitherSentLoadedData.fold((l)async{
+      await dialogs.showTemporalDialog('Ocurrió un error con el envío de los datos precargados');
+    }, (seEnviaron)async{
       if(seEnviaron)
-        dialogs.showTemporalDialog('Se han enviado los formularios precargados');
+        await dialogs.showTemporalDialog('Se han enviado los formularios precargados');
     });
   }
 
@@ -109,19 +116,32 @@ class DataInitializer{
   }
 
   Future<bool> _currentNavRouteIsLogin()async{
-    final NavigationRoute currentNavRoute = _routesManager.currentRoute;
+    //final NavigationRoute currentNavRoute = _routesManager.currentRoute;
+    final NavigationRoute currentNavRoute = (await navLocalDataSource.getNavRoutes()).last;
     return (currentNavRoute == NavigationRoute.Login);
   }
 
   Future _doAllNavigationTree(BuildContext context)async{
-    final List<NavigationRoute> navRoutes = await _routesManager.routesTree;
+    //final List<NavigationRoute> navRoutes = await _routesManager.routesTree;
+    final List<NavigationRoute> navRoutes = await navLocalDataSource.getNavRoutes();
     for(NavigationRoute nr in navRoutes){
       await _doUpdatingIfContinueInitialization(nr, context);
     }
-    if(_continueInitialization)
-      await _routesManager.updateLastRoute();
-    else
-      await _routesManager.replaceAllRoutesForNew(dataDisrtibutorErrorHandlingManager.navigationTodoByError??NavigationRoute.Login);
+    if(_continueInitialization){
+      //await _routesManager.updateLastRoute();
+      await customNavigator.navigateReplacingTo(navRoutes.last);
+    }
+    else{
+      //await _routesManager.replaceAllRoutesForNew(dataDisrtibutorErrorHandlingManager.navigationTodoByError??NavigationRoute.Login);
+      await _replaceAllNavRoutesByHavingError();
+    }
+      
+  }
+
+  Future _replaceAllNavRoutesByHavingError()async{
+    await navLocalDataSource.removeNavRoutes();
+    await navLocalDataSource.setNavRoute(dataDisrtibutorErrorHandlingManager.navigationTodoByError??NavigationRoute.Login);
+    await customNavigator.navigateReplacingTo((await navLocalDataSource.getNavRoutes()).last);
   }
 
   Future _doUpdatingIfContinueInitialization(NavigationRoute nr, BuildContext context)async{

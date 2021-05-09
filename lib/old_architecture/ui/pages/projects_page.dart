@@ -6,6 +6,7 @@ import 'package:gap/old_architecture/logic/bloc/entities/projects/projects_bloc.
 import 'package:gap/old_architecture/data/models/entities/entities.dart';
 import 'package:gap/old_architecture/logic/central_managers/pages_navigation_manager.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
+import 'package:gap/old_architecture/ui/widgets/header/page_header.dart';
 import 'package:gap/old_architecture/ui/widgets/native_back_button_locker.dart';
 import 'package:gap/old_architecture/ui/widgets/navigation_list/navigation_list.dart';
 
@@ -39,7 +40,7 @@ class ProjectsPageOld extends StatelessWidget {
     return Column(
       children: [
         SizedBox(height: _sizeUtils.veryMuchLargeSizedBoxHeigh),
-        PageHeader(showBackNavButton: false),
+        PageHeaderOld(showBackNavButton: false),
         SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
         _createBottomComponents()
       ],

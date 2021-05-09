@@ -1,14 +1,14 @@
 import 'dart:async';
+import 'package:meta/meta.dart';
+import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:gap/old_architecture/data/enums/enums.dart';
 import 'package:gap/clean_architecture_structure/core/domain/entities/user.dart';
 import 'package:gap/clean_architecture_structure/core/domain/use_cases/navigation/go_replacing_all_to.dart';
 import 'package:gap/clean_architecture_structure/core/domain/use_cases/navigation/go_to.dart';
 import 'package:gap/clean_architecture_structure/core/domain/use_cases/use_case.dart';
 import 'package:gap/clean_architecture_structure/core/error/failures.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/utils/input_validator.dart';
-import 'package:gap/old_architecture/data/enums/enums.dart';
-import 'package:meta/meta.dart';
-import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
 import 'package:gap/clean_architecture_structure/core/domain/use_cases/user/login.dart';
 import 'package:gap/clean_architecture_structure/core/domain/use_cases/user/logout.dart';
 

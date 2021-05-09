@@ -13,8 +13,8 @@ void main(){
     tJson['componente_index'] = 0;
     tJson['rango_index'] = 1;
     tExpectedRangoToma = RangoTomaModel(
-      rango: tJson['pesos_esperados'][1]['rango'],
-      pesoEsperado: (tJson['pesos_esperados'][1]['pesos'][0] as num).toDouble(),
+      rango: tJson['rangos'][1],
+      pesoEsperado: (tJson['pesos_esperados'][1][0] as num).toDouble(),
       pesosTomados: []
     );
     tRangoToma = RangoTomaModel.fromJson(tJson);

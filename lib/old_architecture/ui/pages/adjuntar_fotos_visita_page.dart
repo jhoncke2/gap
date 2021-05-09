@@ -10,6 +10,7 @@ import 'package:gap/old_architecture/logic/bloc/widgets/index/index_bloc.dart';
 import 'package:gap/old_architecture/logic/blocs_manager/commented_images_index_manager.dart';
 import 'package:gap/old_architecture/logic/central_managers/pages_navigation_manager.dart';
 import 'package:gap/old_architecture/ui/widgets/commented_images/commented_images_section.dart';
+import 'package:gap/old_architecture/ui/widgets/header/page_header.dart';
 import 'package:gap/old_architecture/ui/widgets/indexing/index_pagination.dart';
 import 'package:gap/old_architecture/ui/widgets/native_back_button_locker.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
@@ -52,7 +53,7 @@ class AdjuntarFotosVisitaPageOld extends StatelessWidget {
     return Column(
       children: [
         SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
-        PageHeader(),
+        PageHeaderOld(),
         SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
         _createBottomItems()
       ],

@@ -16,18 +16,19 @@ void main(){
       preparacion: null,
       valoresPorRango: [
         RangoTomaModel(
-          rango: tJson['pesos_esperados'][0]['rango'],
-          pesoEsperado: (tJson['pesos_esperados'][0]['pesos'][0] as num).toDouble(),
+          rango: tJson['rangos'][0],
+          //pesoEsperado: (tJson['pesos_esperados'][0]['pesos'][0] as num).toDouble(),
+          pesoEsperado: (tJson['pesos_esperados'][0][0] as num).toDouble(),
           pesosTomados: []
         ),
         RangoTomaModel(
-          rango: tJson['pesos_esperados'][1]['rango'],
-          pesoEsperado: (tJson['pesos_esperados'][1]['pesos'][0] as num).toDouble(),
+          rango: tJson['rangos'][1],
+          pesoEsperado: (tJson['pesos_esperados'][1][0] as num).toDouble(),
           pesosTomados: []
         ),
         RangoTomaModel(
-          rango: tJson['pesos_esperados'][2]['rango'],
-          pesoEsperado: (tJson['pesos_esperados'][2]['pesos'][0] as num).toDouble(),
+          rango: tJson['rangos'][2],
+          pesoEsperado: (tJson['pesos_esperados'][2][0] as num).toDouble(),
           pesosTomados: []
         )
       ]

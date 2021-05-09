@@ -25,10 +25,10 @@ Future<void> doInitialConfig()async{
   app = GapApp();
   WidgetsBinding.instance.addObserver(app.state);
   //TODO: Restaurar
-  //app.state.didChangeDependenciesMethod = _onStartingApp;
-  //app.state.didChangeAppLifecycleStateMethod = _onResumeApp;
-  app.state.didChangeDependenciesMethod = (){};
-app.state.didChangeAppLifecycleStateMethod = (_){};
+  app.state.didChangeDependenciesMethod = _onStartingApp;
+  app.state.didChangeAppLifecycleStateMethod = _onResumeApp;
+  //app.state.didChangeDependenciesMethod = (){};
+  //app.state.didChangeAppLifecycleStateMethod = (_){};
 }
 
 Future _onStartingApp()async{

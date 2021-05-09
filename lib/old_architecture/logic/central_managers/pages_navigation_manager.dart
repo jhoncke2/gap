@@ -1,3 +1,8 @@
+import 'package:gap/clean_architecture_structure/core/data/data_sources/navigation/navigation_local_data_source.dart';
+import 'package:gap/clean_architecture_structure/core/data/repositories/navigation_repository.dart';
+import 'package:gap/clean_architecture_structure/core/domain/repositories/navigation_repository.dart';
+import 'package:gap/clean_architecture_structure/core/platform/custom_navigator.dart';
+import 'package:gap/clean_architecture_structure/injection_container.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:gap/old_architecture/logic/bloc/nav_routes/custom_navigator.dart';
@@ -11,15 +16,28 @@ import 'package:gap/old_architecture/ui/utils/dialogs.dart' as dialogs;
 class PagesNavigationManager{
 
   static final gpsActivationRequestMessage = 'Por favor active el servicio ubicación para esta app en configuración del dispositivo para continuar';
+  static final CustomNavigator customNavigator = sl();
+  static final NavigationRepository navRepository = sl();
+  static final NavigationLocalDataSource navLocalDataSource = sl();
+
 
   static Future<void> pop()async{
+    final List<NavigationRoute> navRoutes = await navLocalDataSource.getNavRoutes();
+    if(navRoutes.length > 1){
+      await _chooseMethodByCurrentBackingRoute(navRoutes[navRoutes.length - 2]);
+      await _chooseMethodByDestinationRoute(navRoutes.last);
+      await navLocalDataSource.removeLast();
+      await customNavigator.navigateReplacingTo((await navLocalDataSource.getNavRoutes()).last);
+    }
+    /*
     if(await routesManager.hasPreviousRoute){
       await routesManager.loadRoute();
       final NavigationRoute previousRoute = await routesManager.lastNavRoute;
       await _chooseMethodByCurrentBackingRoute(routesManager.currentRoute);
       await _chooseMethodByDestinationRoute(previousRoute);   
       await routesManager.pop();
-    }   
+    }
+    */  
   }
 
   static Future<void> navToLogin()async{
@@ -59,6 +77,10 @@ class PagesNavigationManager{
   static Future<void> navToVisitDetail(VisitOld visit)async{
     await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_CHOSEN_VISIT, visit);
     await _goToPageByHavingOrNotError(NavigationRoute.VisitDetail, false);
+  }
+
+  static Future<void> navToMuestras()async{
+    await _goToPageByHavingOrNotError(NavigationRoute.Muestras, false);
   }
 
   static Future<void> navToForms()async{
@@ -120,7 +142,10 @@ class PagesNavigationManager{
   static Future<void> endFormFirmers()async{
     await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.END_ALL_FORM_PROCESS); 
     await _backToForms();
-    await routesManager.popNTimes(2);
+    //await routesManager.popNTimes(2);
+    await navLocalDataSource.removeLast();
+    await navLocalDataSource.removeLast();
+    await customNavigator.navigateReplacingTo((await navLocalDataSource.getNavRoutes()).last);
   }
 
   static Future<void> navToCommentedImages()async{ 
@@ -175,11 +200,15 @@ class PagesNavigationManager{
   }
 
   static Future<void> _goToNextPage(NavigationRoute route)async{
-    await routesManager.setRoute(route);
+    //await routesManager.setRoute(route);
+    await navRepository.setNavRoute(route);
+    await customNavigator.navigateReplacingTo(route);
   }
 
   static Future<void> _goToInitialPage(NavigationRoute targetRoute)async{
-    await routesManager.replaceAllRoutesForNew(targetRoute);
+    //await routesManager.replaceAllRoutesForNew(targetRoute);
+    await navRepository.replaceAllNavRoutesForNew(targetRoute);
+    await customNavigator.navigateReplacingTo(targetRoute);
   }
 
   static Future<void> _chooseMethodByDestinationRoute(NavigationRoute route)async{

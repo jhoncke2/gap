@@ -3,17 +3,9 @@
     "rangos":["rango1", "rango2", "rango3"],
     "componentes":["lácteos", "dulces", "principio"],
     "pesos_esperados":[
-        {
-            "rango":"rango1",
-            "pesos":[1, 2, 3]
-        },
-        {
-            "rango":"rango2",
-            "pesos":[4, 5, 6]
-        },
-        {
-            "rango":"rango3",
-            "pesos":[7, 8, 9]
-        }
-    ]
+        [1, 2, 3],
+        [4, 5, 6],
+        [7, 8, 9]
+    ],
+    "n_muestreos":[1,2,0]
 }

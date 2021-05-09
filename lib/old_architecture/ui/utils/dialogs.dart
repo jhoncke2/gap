@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/clean_architecture_structure/core/platform/custom_navigator.dart';
 import 'package:gap/old_architecture/logic/bloc/nav_routes/custom_navigator.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
 import 'package:gap/old_architecture/ui/widgets/current_images_to_set_dialog/adjuntar_images_dialog.dart';
@@ -39,9 +40,11 @@ RoundedRectangleBorder _createGeneralDialogBorder(BuildContext context){
 }
 
 Future showTemporalDialog(String message)async{
-  showBlockedDialog(CustomNavigatorOld.navigatorKey.currentContext, message);
+  //showBlockedDialog(CustomNavigatorOld.navigatorKey.currentContext, message);
+  showBlockedDialog(CustomNavigatorImpl.navigatorKey.currentContext, message);
   await Future.delayed(Duration(milliseconds: 1500), (){
-    CustomNavigatorOld.navigatorKey.currentState.pop();
+    //CustomNavigatorOld.navigatorKey.currentState.pop();
+    CustomNavigatorImpl.navigatorKey.currentState.pop();
   });
 }
 

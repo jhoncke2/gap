@@ -11,6 +11,7 @@ List<ComponenteModel> componentesFromJson(Map<String, dynamic> json){
   return componentes;
 }
 
+// ignore: must_be_immutable
 class ComponenteModel extends Componente{
   ComponenteModel({
     String nombre,
