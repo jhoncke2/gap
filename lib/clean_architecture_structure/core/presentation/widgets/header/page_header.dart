@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/widgets/header/back_button.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/header/logout_button.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
 
@@ -56,7 +57,7 @@ class PageHeader extends StatelessWidget {
 
   Widget _elegirTopLeftElement(){
     if(showBackNavButton)
-      return BackButton();
+      return AppBackButton();
     else
       return _createEmptyContainer();
   }

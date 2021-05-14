@@ -24,7 +24,6 @@ class Pop implements UseCase<void, NoParams>{
     return eitherCurrentRoute.fold((l){
       return Left(l);
     }, (navRoute){
-      navigator.navigateReplacingTo(navRoute);
       return Right(null);
     });
   }

@@ -3,6 +3,7 @@ import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:gap/clean_architecture_structure/core/domain/repositories/central_system_repository.dart';
 import 'package:gap/clean_architecture_structure/core/data/models/commented_image_model.dart';
 import 'package:gap/old_architecture/errors/logic/nav_obstruction_error.dart';
 import 'package:gap/old_architecture/errors/services/service_status_err.dart';
@@ -11,7 +12,7 @@ import 'package:gap/clean_architecture_structure/core/data/models/formulario/fir
 import 'package:gap/clean_architecture_structure/core/data/models/formulario/formulario_model.dart';
 import 'package:gap/clean_architecture_structure/core/data/models/project_model.dart';
 import 'package:gap/clean_architecture_structure/core/data/models/visit_model.dart';
-import 'package:gap/clean_architecture_structure/core/domain/entities/project.dart';
+import 'package:gap/clean_architecture_structure/features/projects/domain/entities/project.dart';
 import 'package:gap/clean_architecture_structure/core/domain/entities/user.dart';
 import 'package:gap/clean_architecture_structure/core/domain/entities/visit.dart';
 import 'package:gap/clean_architecture_structure/core/domain/repositories/commented_images_repository.dart';
@@ -49,13 +50,13 @@ import 'package:gap/old_architecture/ui/utils/dialogs.dart' as dialogs;
 
 abstract class DataDistributor{
 
+  final CentralSystemRepository centralSystemRepository = sl();
   final UserRepository userRepository = sl();
   final ProjectsRepository projectsRepository = sl();
   final VisitsRepository visitsRepository = sl();
   final FormulariosRepository formulariosRepository = sl();
   final PreloadedRepository preloadedRepository = sl();
   final IndexRepository indexRepository = sl();
-  //TODO: Testear/Crear
   final CommentedImagesRepository commentedImagesRepository = sl();
 
 
@@ -77,11 +78,15 @@ abstract class DataDistributor{
   }
 
   Future updateFirstInitialization()async{
-    final bool alreadyRunned = await UserStorageManager.alreadyRunnedApp();
-    if(!alreadyRunned){
-      await _setFirstTimeRunned();
-      //throw AppNeverRunnedErr();
-    }
+    final eitherAlreadyRunned = await centralSystemRepository.getAppRunnedAnyTime();
+    await eitherAlreadyRunned.fold((_){
+
+    }, (alreadyRunned)async{
+      if(!alreadyRunned){
+        await centralSystemRepository.setAppRunnedAnyTime();
+        throw AppNeverRunnedErr();
+      }
+    });
   }
 
   Future<void> _setFirstTimeRunned()async{
@@ -98,11 +103,6 @@ abstract class DataDistributor{
     }, (r){
       //TODO: Implementar preloadedData sending
     });
-    //final accessToken = await UserStorageManager.getAccessToken();
-    //if(accessToken == null)
-      //throw UnfoundStorageElementErr(elementType: StorageElementType.AUTH_TOKEN);
-    //await updateAccessToken(accessToken);
-    //await PreloadedStorageToServices.sendPreloadedStorageDataToServices();
   }
 
   Future<void> updateAccessToken(String accessToken)async{}
@@ -112,12 +112,14 @@ abstract class DataDistributor{
       userB.add(ChangeLoginButtopnAvaibleless(isAvaible: false));
       final User user = User(email: loginInfo['email'], password: loginInfo['password']);
       final eitherLogin = await userRepository.login(user);
-      eitherLogin.fold((failure){
+      await eitherLogin.fold((failure){
         String message;
         if(failure is ServerFailure)
           message = failure.message;
         throw ServiceStatusErr(extraInformation: 'login', message: message);
-      }, (_){
+      }, (_)async{
+        //TODO: Quitar cuando no se necesite más
+        await centralSystemRepository.setAppRunnedAnyTime();
         userB.add(ChangeLoginButtopnAvaibleless(isAvaible: true));
       });
     }else{
@@ -153,15 +155,6 @@ abstract class DataDistributor{
       final ProjectOld chosenProjectOld = ProjectOld(id: project.id, nombre: project.nombre, visits: []);
       projectsB.add(ChooseProject(chosenOne: chosenProjectOld));
     });
-    /*
-    final List<ProjectOld> projects = UploadedBlocsData.dataContainer[NavigationRoute.Projects] ?? projectsB.state.projects;
-    final List<ProjectOld> equalsUpdatedProjects = projects.where((element) => element.id == project.id).toList();
-    final ProjectOld realProject = equalsUpdatedProjects.length > 0? equalsUpdatedProjects[0] : project;
-    final ChooseProject cpEvent = ChooseProject(chosenOne: realProject);
-    projectsB.add(cpEvent);
-    UploadedBlocsData.dataContainer[NavigationRoute.ProjectDetail] = realProject;
-    await ProjectsStorageManager.setChosenProject(realProject);
-    */
   }
 
   Future<void> updateVisits()async{
@@ -194,20 +187,7 @@ abstract class DataDistributor{
       visitsB.add(ChooseVisit(chosenOne: visitOld));
       //UploadedBlocsData.dataContainer[NavigationRoute.VisitDetail] = visitOld;
     });
-    //await addChosenVisitToBloc(visit);
-    //await VisitsStorageManager.setChosenVisit(visit);
-    //UploadedBlocsData.dataContainer[NavigationRoute.VisitDetail] = visit;
   }
-
-  //TODO: Borrar en su desuso
-  /*
-  @protected
-  VisitOld getUpdatedChosenVisit(VisitOld newChosenVisit){
-    final List<VisitOld> visits = UploadedBlocsData.dataContainer[NavigationRoute.Visits];
-    final List<VisitOld> updatedEqualsVisits = visits.where((element) => element.id == newChosenVisit.id).toList();
-    return updatedEqualsVisits.length > 0? updatedEqualsVisits[0] : newChosenVisit;
-  }
-  */
 
   @protected
   Future addChosenVisitToBloc(VisitOld visit)async{
@@ -504,7 +484,6 @@ abstract class DataDistributor{
     final eitherCommentedImages = await commentedImagesRepository.getCommentedImages();
     eitherCommentedImages.fold((l){
       //TODO: Implementar manejo de errores
-      
     }, (commentedImages){
       final List<SentCommentedImageOld> commentedImagesOld = commentedImages.map((cI) => SentCommentedImageOld(
         url: cI.imgnUrl,
@@ -583,18 +562,6 @@ abstract class DataDistributor{
       await updateVisits();
     }
   }
-  /*
-  Future<void> addStorageDataToIndexBloc()async{
-    final IndexBloc indexBloc = blocsAsMap[BlocName.Index];
-    final IndexState indexConfig = await IndexStorageManager.getIndex();
-    final int nPages = indexConfig.nPages;
-    final ChangeNPages cnpEvent = ChangeNPages(nPages: nPages);
-    indexBloc.add(cnpEvent);
-    final int newIndexPage = indexConfig.currentIndexPage;
-    final ChangeIndexPage ciEvent = ChangeIndexPage(newIndexPage: newIndexPage);
-    indexBloc.add(ciEvent);
-  }
-  */
 
   Future resetChosenProject()async{
     projectsB.add(ResetProjects());
@@ -625,9 +592,6 @@ abstract class DataDistributor{
 
   Future resetForms()async{
     formsB.add(ResetForms());
-    //await updateProjects(); 
-    //final ProjectOld chosenProject = UploadedBlocsData.dataContainer[NavigationRoute.ProjectDetail];
-    //await updateChosenProject(chosenProject);
     await updateVisits();
     VisitOld chosenVisitOld = visitsB.state.chosenVisit;
     final eitherVisits = await visitsRepository.getVisits();
@@ -638,8 +602,6 @@ abstract class DataDistributor{
       chosenVisitOld = VisitOld.fromNewVisit(chosenVisit);
       updateChosenVisit(chosenVisitOld);
     });
-    //final VisitOld chosenVisit = UploadedBlocsData.dataContainer[NavigationRoute.VisitDetail];
-    //await updateChosenVisit(chosenVisit);
   }
 
   Future resetChosenForm()async{

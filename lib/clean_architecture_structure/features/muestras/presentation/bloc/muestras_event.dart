@@ -6,33 +6,33 @@ abstract class MuestrasEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class GetMuestraEvent extends MuestrasEvent{}
+class GetMuestreoEvent extends MuestrasEvent{}
 
-class SetMuestraPreparaciones extends MuestrasEvent{
+class SetMuestreoPreparaciones extends MuestrasEvent{
   final List<String> preparaciones;
-  SetMuestraPreparaciones({
+  SetMuestreoPreparaciones({
     @required this.preparaciones
   });
 }
 
-class AddNewTomaDeMuestra extends MuestrasEvent{ }
+class InitNewMuestra extends MuestrasEvent{ }
 
 class ChooseRangoEdad extends MuestrasEvent{
-  final String rango;
+  final int rangoIndex;
   ChooseRangoEdad({
-    @required this.rango
+    @required this.rangoIndex
   });
 }
 
-class AddTomaPesosMuestra extends MuestrasEvent{
+class AddMuestraPesos extends MuestrasEvent{
   final List<String> pesos;
-  AddTomaPesosMuestra({
+  AddMuestraPesos({
     @required this.pesos
   });
 }
 
 class SetMuestraEvent extends MuestrasEvent{
-  final Muestra muestra;
+  final Muestreo muestra;
   SetMuestraEvent({
     @required this.muestra
   });

@@ -133,13 +133,13 @@ class DataDisributorErrorHandlingManager{
 
   Future _managePlatformException(PlatformException exception, DataDistrFunctionName functionName, dynamic value)async{
     if(lastErrorType != exception.runtimeType){
-      await StorageConnectorOldSingleton.storageConnector.deleteAll();
+      //await StorageConnectorOldSingleton.storageConnector.deleteAll();
       await executeFunction(functionName, value);
     }else{
       happendError = true;
       lastErrorType = exception.runtimeType;
       navigationTodoByError = NavigationRoute.Login;
-      await StorageConnectorOldSingleton.storageConnector.deleteAll();
+      //await StorageConnectorOldSingleton.storageConnector.deleteAll();
     }
   }
 

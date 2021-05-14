@@ -1,5 +1,5 @@
 import 'package:meta/meta.dart';
-import 'package:gap/clean_architecture_structure/core/domain/entities/project.dart';
+import 'package:gap/clean_architecture_structure/features/projects/domain/entities/project.dart';
 
 
 List<Map<String, dynamic>> projectsToJson(List<ProjectModel> projects) => 

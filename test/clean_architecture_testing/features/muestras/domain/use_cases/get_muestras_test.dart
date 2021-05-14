@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:dartz/dartz.dart';
 import 'package:gap/clean_architecture_structure/core/domain/use_cases/use_case.dart';
 import 'package:gap/clean_architecture_structure/core/error/failures.dart';
-import 'package:gap/clean_architecture_structure/features/muestras/data/models/muestra_model.dart';
-import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/muestra.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/data/models/muestreo_model.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/muestreo.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/repositories/muestras_repository.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/get_muestras.dart';
 import 'package:mockito/mockito.dart';
@@ -24,34 +24,34 @@ void main(){
   });
 
   group('call', (){
-    Muestra tMuestra;
+    Muestreo tMuestra;
 
     setUp((){
       tMuestra = _getMuestraFromFixture();
     });
 
     test('should get the muestras from the repository', ()async{
-      when(repository.getMuestra()).thenAnswer((_) async => Right(tMuestra));
+      when(repository.getMuestreo()).thenAnswer((_) async => Right(tMuestra));
       await useCase.call(NoParams());
-      verify(repository.getMuestra());
+      verify(repository.getMuestreo());
     });
 
     test('should return the repository result', ()async{
-      when(repository.getMuestra()).thenAnswer((_) async => Right(tMuestra));
+      when(repository.getMuestreo()).thenAnswer((_) async => Right(tMuestra));
       final result = await useCase.call(NoParams());
       expect(result, Right(tMuestra));
     });
 
     test('should get the repository result', ()async{
-      when(repository.getMuestra()).thenAnswer((_) async => Left(ServerFailure(message: 'mensajito')));
+      when(repository.getMuestreo()).thenAnswer((_) async => Left(ServerFailure(message: 'mensajito')));
       final result = await useCase.call(NoParams());
       expect(result, Left(ServerFailure(message: 'mensajito')));
     });
   });
 }
 
-Muestra _getMuestraFromFixture(){
+Muestreo _getMuestraFromFixture(){
   String stringMuestra = callFixture('muestra.json');
   Map<String, dynamic> jsonMuestra = jsonDecode(stringMuestra);
-  return MuestraModel.fromJson(jsonMuestra);
+  return MuestreoModel.fromJson(jsonMuestra);
 }

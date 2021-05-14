@@ -1,5 +1,6 @@
 import 'package:gap/clean_architecture_structure/features/login/presentation/pages/login_page.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/pages/muestras_page.dart';
+import 'package:gap/clean_architecture_structure/features/projects/presentation/pages/project_detail_page.dart';
 import 'package:gap/clean_architecture_structure/features/projects/presentation/pages/projects_page.dart';
 import 'package:gap/old_architecture/data/enums/enums.dart';
 import 'package:gap/old_architecture/ui/pages/adjuntar_fotos_visita_page.dart';
@@ -17,7 +18,7 @@ class PageRoutes{
     NavigationRoute.Init.value : (_)=>InitPageOld(),
     NavigationRoute.Login.value : (_)=>LoginPage(),
     NavigationRoute.Projects.value : (_)=>ProjectsPage(),
-    NavigationRoute.ProjectDetail.value: (_)=>ProjectDetailPageOld(),
+    NavigationRoute.ProjectDetail.value: (_)=> ProjectDetailPage(),
     NavigationRoute.Visits.value: (_)=>VisitsPageOld(),
     NavigationRoute.VisitDetail.value: (_)=>VisitDetailPageOld(),
     NavigationRoute.Muestras.value : (_)=>MuestrasPage(),

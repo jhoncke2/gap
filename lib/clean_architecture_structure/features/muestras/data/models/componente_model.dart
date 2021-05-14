@@ -24,8 +24,8 @@ class ComponenteModel extends Componente{
   );
 
   factory ComponenteModel.fromJson(Map<String, dynamic> json)=>ComponenteModel(
-    nombre: json['componentes'][json['componente_index']],
-    valoresPorRango: rangoTomaModelsFromJson(json),
+    nombre: json['componentes'] == null ? [] : json['componentes'][json['componente_index']],
+    valoresPorRango: ([null, []].contains( json['componentes'] ))? [] : rangoTomaModelsFromJson(json),
     preparacion: null
   );
 

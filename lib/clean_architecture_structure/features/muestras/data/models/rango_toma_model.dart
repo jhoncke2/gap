@@ -23,8 +23,8 @@ class RangoTomaModel extends RangoToma{
 
   factory RangoTomaModel.fromJson(Map<String, dynamic> json)=>RangoTomaModel(
     rango: json['rangos'][json['rango_index']],
-    pesoEsperado: (json['pesos_esperados'][json['rango_index']][json['componente_index']] as num)
-                  .toDouble(),
+    pesoEsperado: ( json['pesos_esperados'] == null || (json['pesos_esperados'] as List).isEmpty)? null 
+        : (json['pesos_esperados'][json['rango_index']][json['componente_index']] as num).toDouble(),
     pesosTomados: []
   );
 }

@@ -8,6 +8,7 @@ class NavigationListButton extends StatelessWidget {
   final Widget child;
   final Function onTap;
   BuildContext _context;
+  
   NavigationListButton({
     Key key,
     @required this.textColor,

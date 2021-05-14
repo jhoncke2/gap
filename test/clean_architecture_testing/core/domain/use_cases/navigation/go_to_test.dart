@@ -31,7 +31,6 @@ void main(){
     test('should call the specified methods', ()async{
       when(repository.setNavRoute(any)).thenAnswer((_) async => Right(null));
       await useCase.call(NavigationParams(navRoute: tNavRoute));
-      verify(navigator.navigateReplacingTo(tNavRoute));
       verify(repository.setNavRoute(tNavRoute));
     });
   });

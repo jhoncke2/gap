@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/blocs/navigation/navigation_bloc.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/header/page_header.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/page_title.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/progress_indicator.dart';
@@ -15,8 +16,11 @@ class ProjectsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context){
     return ScaffoldNativeBackButtonLocker(
-      child: BlocProvider<ProjectsBloc>(
-        create: (context) => sl(),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider<ProjectsBloc>(create: (_)=>sl()),
+          BlocProvider<NavigationBloc>(create: (_)=>sl()),
+        ],
         child: SafeArea(
           child: Container(
             padding: EdgeInsets.symmetric(
@@ -59,7 +63,7 @@ class ProjectsPage extends StatelessWidget {
   Widget _createProjectsNavList() {
     return BlocBuilder<ProjectsBloc, ProjectsState>(
       builder: (context, state) {
-        _addPostFrameCall(context);
+        _addPostFrameCall(context, state);
         if (state is LoadedProjects) {
           return LoadedProjectsWidget(projects: state.projects);
         }else if (state is LoadingProjects) {
@@ -71,9 +75,11 @@ class ProjectsPage extends StatelessWidget {
     );
   }
 
-  void _addPostFrameCall(BuildContext context){
-    WidgetsBinding.instance.addPostFrameCallback((_){
-      BlocProvider.of<ProjectsBloc>(context).add( LoadProjects() );
-    });
+  void _addPostFrameCall(BuildContext context, ProjectsState state){
+    if(state is EmptyProjects){
+      WidgetsBinding.instance.addPostFrameCallback((_){
+        BlocProvider.of<ProjectsBloc>(context).add( LoadProjectsEvent() );
+      });
+    }
   }
 }

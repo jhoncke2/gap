@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/general_button.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/componente.dart';
-import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/muestra.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/muestreo.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/bloc/muestras_bloc.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
 
 // ignore: must_be_immutable
 class PreparacionComponentes extends StatefulWidget {
-  final Muestra muestra;
+  final Muestreo muestra;
 
   PreparacionComponentes({
     @required this.muestra,
@@ -138,7 +138,7 @@ class _PreparacionComponentesState extends State<PreparacionComponentes> {
         backgroundColor: Theme.of(context).primaryColor,
         onPressed: (){
           List<String> preparaciones = preparacionesControllers.map((c) => c.text).toList();
-          BlocProvider.of<MuestrasBloc>(context).add(SetMuestraPreparaciones(preparaciones: preparaciones));
+          BlocProvider.of<MuestrasBloc>(context).add(SetMuestreoPreparaciones(preparaciones: preparaciones));
         },
       ),
     );

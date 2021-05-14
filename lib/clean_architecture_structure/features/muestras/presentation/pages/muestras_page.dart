@@ -58,7 +58,7 @@ class MuestrasPage extends StatelessWidget {
 
   void _addInitialMuestrasBlocPostFrameCallIfMuestrasIsEmpty(BuildContext context){
     WidgetsBinding.instance.addPostFrameCallback((_){
-      BlocProvider.of<MuestrasBloc>(context).add( GetMuestraEvent() );
+      BlocProvider.of<MuestrasBloc>(context).add( GetMuestreoEvent() );
     });
   }
 
@@ -70,7 +70,7 @@ class MuestrasPage extends StatelessWidget {
     else if(state is OnChosingRangoEdad)
       return RangoEdadChosing(muestra: state.muestra);
     else if(state is OnTomaPesos)
-      return PesosChooser(muestra: state.muestra, rangoEdad: state.rangoEdad);
+      return PesosChooser(muestra: state.muestra, rangoEdadIndex: state.rangoEdadIndex);
     else if(state is MuestraError)
       return Container(
         child: Center(

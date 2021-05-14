@@ -8,7 +8,10 @@ abstract class UserState extends Equatable {
 }
 
 class UserQuiet extends UserState {}
+
 class UserLoading extends UserState {}
+
+class UserLogged extends UserState {}
 
 class UserError extends UserState {
   final String message;
@@ -20,3 +23,5 @@ class UserError extends UserState {
   @override
   List<Object> get props => [this.message];
 }
+
+class UserLogouted extends UserState {}

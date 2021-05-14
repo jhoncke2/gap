@@ -9,10 +9,10 @@ import 'package:gap/clean_architecture_structure/core/error/failures.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/projects/projects_local_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/projects/projects_remote_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/models/project_model.dart';
-import 'package:gap/clean_architecture_structure/core/data/repositories/projects_repository.dart';
-import 'package:gap/clean_architecture_structure/core/domain/entities/project.dart';
+import 'package:gap/clean_architecture_structure/features/projects/data/repository/projects_repository.dart';
+import 'package:gap/clean_architecture_structure/features/projects/domain/entities/project.dart';
 import 'package:gap/clean_architecture_structure/core/network/network_info.dart';
-import '../../../fixtures/fixture_reader.dart';
+import '../../../../fixtures/fixture_reader.dart';
 
 class MockNetworkInfo extends Mock implements NetworkInfo{}
 

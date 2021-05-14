@@ -1,22 +1,25 @@
+import 'package:gap/clean_architecture_structure/core/domain/repositories/central_system_repository.dart';
+import 'package:meta/meta.dart';
 import 'package:dartz/dartz.dart';
+import 'package:equatable/equatable.dart';
 import 'package:gap/clean_architecture_structure/core/domain/entities/user.dart';
 import 'package:gap/clean_architecture_structure/core/domain/repositories/user_repository.dart';
 import 'package:gap/clean_architecture_structure/core/error/failures.dart';
-import 'package:meta/meta.dart';
-import 'package:equatable/equatable.dart';
-
 import '../use_case.dart';
 
 class Login implements UseCase<void, LoginParams>{
-  final UserRepository repository;
+  final UserRepository userRepository;
+  final CentralSystemRepository centralSystemRepository;
 
   Login({
-    @required this.repository
+    @required this.userRepository,
+    @required this.centralSystemRepository
   });
 
   @override
   Future<Either<Failure, void>> call(LoginParams params)async{
-    return await repository.login(params.user);
+    await centralSystemRepository.setAppRunnedAnyTime();
+    return await userRepository.login(params.user);
   }
 }
 

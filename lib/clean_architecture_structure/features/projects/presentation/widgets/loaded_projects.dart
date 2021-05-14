@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:gap/clean_architecture_structure/core/domain/entities/project.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/blocs/navigation/navigation_bloc.dart';
+import 'package:gap/clean_architecture_structure/features/projects/domain/entities/project.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/navigation_list/buttons/navigation_list_button.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/navigation_list/navigation_list.dart';
+import 'package:gap/clean_architecture_structure/features/projects/presentation/bloc/projects_bloc.dart';
+import 'package:gap/old_architecture/data/enums/enums.dart';
 import 'package:gap/old_architecture/data/models/entities/entities.dart';
 import 'package:gap/old_architecture/logic/central_managers/pages_navigation_manager.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
@@ -18,10 +22,26 @@ class LoadedProjectsWidget extends StatelessWidget {
     this.context = context;
     _createProjectsItemsNamesAndFunctions(projects);
     return NavigationList(
-      itemsLength: namesAndFunctions.length,
+      itemsLength: projects.length,
       createSingleNavButton: _createSingleNavButton,
       horizontalPadding: 0.02,
     );
+  }
+
+  void _createProjectsItemsNamesAndFunctions(List<Project> projects) {
+    namesAndFunctions = {};
+    final List<Function> functions = [];
+    final List<String> names = [];
+    projects.forEach((Project project) {
+      names.add(project.nombre);
+      functions.add(() {
+        BlocProvider.of<ProjectsBloc>(context).add(SetChosenProjectEvent(project: project));
+        BlocProvider.of<NavigationBloc>(context).add(NavigateToEvent(navigationRoute: NavigationRoute.ProjectDetail));
+        Navigator.of(context).pushNamed(NavigationRoute.ProjectDetail.value, arguments: project);
+      });
+    });
+    namesAndFunctions['names'] = names;
+    namesAndFunctions['functions'] = functions;
   }
 
   Widget _createSingleNavButton(int index) {
@@ -37,24 +57,5 @@ class LoadedProjectsWidget extends StatelessWidget {
       hasBottomBorder: true,
       onTap: namesAndFunctions['functions'][index]
     );
-  }
-
-  void _createProjectsItemsNamesAndFunctions(List<Project> projects) {
-    namesAndFunctions = {};
-    final List<Function> functions = [];
-    final List<String> names = [];
-    projects.forEach((Project project) {
-      names.add(project.nombre);
-      functions.add(() {
-        //TODO: Quitar cuando esté la siguiente page (ProjectDetailPage)
-        PagesNavigationManager.navToProjectDetail(ProjectOld(
-          id: project.id,
-          nombre: project.nombre,
-          visits: []
-        ));
-      });
-    });
-    namesAndFunctions['names'] = names;
-    namesAndFunctions['functions'] = functions;
   }
 }

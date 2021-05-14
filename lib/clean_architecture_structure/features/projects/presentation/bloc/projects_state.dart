@@ -7,6 +7,8 @@ abstract class ProjectsState extends Equatable {
   List<Object> get props => [];
 }
 
+class EmptyProjects extends ProjectsState {}
+
 class LoadingProjects extends ProjectsState {}
 
 class LoadedProjects extends ProjectsState{
@@ -25,4 +27,13 @@ class ErrorProjects extends ProjectsState{
   });
   @override
   List<Object> get props => [this.message];
+}
+
+class LoadingChosenProject extends ProjectsState{}
+
+class LoadedChosenProject extends ProjectsState{
+  final Project project;
+  LoadedChosenProject({
+    @required this.project
+  });
 }

@@ -33,7 +33,6 @@ void main(){
       when(repository.replaceAllNavRoutesForNew(any)).thenAnswer((_) async => Right(null));
       await useCase.call(NavigationParams(navRoute: tNavRoute));
       verify(repository.replaceAllNavRoutesForNew(tNavRoute));
-      verify(navigator.navigateReplacingTo(tNavRoute));
     });
   });
 }

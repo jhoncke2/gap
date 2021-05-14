@@ -1,19 +1,26 @@
 import 'package:dartz/dartz.dart';
 import 'package:gap/clean_architecture_structure/core/domain/entities/user.dart';
+import 'package:gap/clean_architecture_structure/core/domain/repositories/central_system_repository.dart';
 import 'package:gap/clean_architecture_structure/core/domain/repositories/user_repository.dart';
 import 'package:gap/clean_architecture_structure/core/domain/use_cases/user/login.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
 class MockUserRepository extends Mock implements UserRepository{}
+class MockCentralSystemRepository extends Mock implements CentralSystemRepository{}
 
 Login useCase;
-MockUserRepository repository;
+MockUserRepository userRepository;
+MockCentralSystemRepository centralSystemRepository;
 
 void main(){
-  setUp((){
-    repository = MockUserRepository();
-    useCase = Login(repository: repository);
+  setUp((){ 
+    centralSystemRepository = MockCentralSystemRepository();
+    userRepository = MockUserRepository();
+    useCase = Login(
+      userRepository: userRepository,
+      centralSystemRepository: centralSystemRepository
+    );
   });
 
   group('login', (){
@@ -23,11 +30,12 @@ void main(){
       tUser = User(email: 'email', password: 'password');
     });
     test('should return Right(null) when all goes good', ()async{
-      when(repository.login(any)).thenAnswer((_) async => Right(null));
+      when(userRepository.login(any)).thenAnswer((_) async => Right(null));
       final result = await useCase(LoginParams(user: tUser));
-      verify(repository.login(tUser));
+      verify(centralSystemRepository.setAppRunnedAnyTime());
+      verify(userRepository.login(tUser));
       expect(result, Right(null));
-      verifyNoMoreInteractions(repository);
+      verifyNoMoreInteractions(userRepository);
     });
   });
 }

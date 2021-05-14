@@ -1,4 +1,4 @@
-import 'package:gap/clean_architecture_structure/core/domain/entities/project.dart';
+import 'package:gap/clean_architecture_structure/features/projects/domain/entities/project.dart';
 import 'package:meta/meta.dart';
 import 'package:dartz/dartz.dart';
 import 'package:gap/clean_architecture_structure/core/domain/repositories/projects_repository.dart';

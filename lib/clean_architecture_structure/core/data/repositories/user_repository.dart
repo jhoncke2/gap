@@ -69,18 +69,6 @@ class UserRepositoryImpl implements UserRepository{
     });
   }
 
-  Future<Either<Failure, void>> _executeFunction(
-    Future<Either<Failure, void>> Function() function
-  )async{
-    try{
-      return await function();
-    }on ServerException catch(exception){
-      return Left(ServerFailure(message: exception.message, servExcType: exception.type));
-    }on StorageException catch(exception){
-      return Left(StorageFailure(excType: exception.type));
-    }
-  }
-
   @override
   Future<Either<Failure, void>> logout()async{
     try{
@@ -92,5 +80,15 @@ class UserRepositoryImpl implements UserRepository{
     }
   }
 
-  
+  Future<Either<Failure, void>> _executeFunction(
+    Future<Either<Failure, void>> Function() function
+  )async{
+    try{
+      return await function();
+    }on ServerException catch(exception){
+      return Left(ServerFailure(message: exception.message, servExcType: exception.type));
+    }on StorageException catch(exception){
+      return Left(StorageFailure(excType: exception.type));
+    }
+  }
 }

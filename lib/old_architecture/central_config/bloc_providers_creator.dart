@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/blocs/navigation/navigation_bloc.dart';
+import 'package:gap/clean_architecture_structure/injection_container.dart';
 import 'package:gap/old_architecture/data/enums/enums.dart';
 import 'package:gap/old_architecture/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/old_architecture/logic/bloc/entities/images/images_bloc.dart';
@@ -37,6 +39,7 @@ class BlocProvidersCreator{
     BlocProvider<FirmPaintBloc>(create: (_)=>firmPaintBloc),
     BlocProvider<UserOldBloc>(create: (_)=>userBloc),
     BlocProvider<KeyboardListenerBloc>(create: (_)=>keyboardListenerBloc)
+    //BlocProvider<NavigationBloc>(create: (_)=>sl())
   ];
 
   static final singletones = [

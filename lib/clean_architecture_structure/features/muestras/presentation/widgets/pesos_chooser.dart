@@ -2,18 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/general_button.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/componente.dart';
-import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/muestra.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/muestreo.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/rango_toma.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/bloc/muestras_bloc.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
+
 class PesosChooser extends StatefulWidget {
-  final Muestra muestra;
+
+  final Muestreo muestra;
   final String rangoEdad;
   PesosChooser({
-    @required this.muestra,
-    @required this.rangoEdad,
+    @required Muestreo muestra,
+    @required int rangoEdadIndex,
     Key key
-  }) : super(key: key);
+  }) : 
+    this.muestra = muestra,
+    this.rangoEdad = muestra.rangos[rangoEdadIndex],
+    super(key: key);
 
   @override
   _PesosChooserState createState() => _PesosChooserState();
@@ -55,25 +60,24 @@ class _PesosChooserState extends State<PesosChooser> {
 
   Widget _createTable(){
     return Container(
+      height: MediaQuery.of(context).size.height * 0.5,
       padding: EdgeInsets.symmetric(horizontal: 25),
-      child: Table(
-        children: _createRows(),
-        border: TableBorder(
-          //verticalInside: BorderSide(color: Colors.grey.withOpacity(0.5)),
-          //horizontalInside: BorderSide(color: Colors.grey.withOpacity(0.5)),
-        )
+      child: SingleChildScrollView(
+        child: Table(
+          children: _createRows(),
+        ),
       ),
     );
   }
 
   List<TableRow> _createRows(){
-    List<TableRow> rows = [ 
+    List<TableRow> rows = [
       TableRow(
         children: [
           _createTopCell('Componente'),
           _createTopCell('Peso registrado'),
         ]
-      ) 
+      )
     ];
     for(int i = 0; i < widget.muestra.componentes.length; i++)
       rows.add(_createComponenteRow(i));
@@ -118,7 +122,7 @@ class _PesosChooserState extends State<PesosChooser> {
             controller: pesosControllers[index],
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
-              hintText: 'Esperado: $pesoEsperado',
+              hintText: ((pesoEsperado == null)? '' : 'Esperado: $pesoEsperado' ) ,
               hintStyle: TextStyle(
                 color: Theme.of(context).primaryColor.withOpacity(0.6)
               ),
@@ -150,14 +154,21 @@ class _PesosChooserState extends State<PesosChooser> {
       padding: const EdgeInsets.only(bottom: 35),
       child: GeneralButton(
         text: 'Continuar',
-        onPressed: ()=>_continue(context), 
-        backgroundColor: Theme.of(context).primaryColor
+        backgroundColor: Theme.of(context).primaryColor,
+        onPressed: _canContinue()? ()=>_continue(context) : null
       ),
     );
   }
 
+  bool _canContinue(){
+    for(TextEditingController pC in pesosControllers)
+      if([null, ''].contains(pC.text))
+        return false;
+    return true;
+  }
+
   void _continue(BuildContext context){
-    BlocProvider.of<MuestrasBloc>(context).add(AddTomaPesosMuestra(
+    BlocProvider.of<MuestrasBloc>(context).add(AddMuestraPesos(
       pesos: pesosControllers.map((p) => p.text).toList()
     ));
   }

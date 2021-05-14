@@ -20,7 +20,7 @@ void main()async{
 @protected
 Future<void> doInitialConfig()async{
   WidgetsFlutterBinding.ensureInitialized();
-  //await _testRemovePartOfStorage();
+  await _testRemovePartOfStorage();
   //await _testAddInitialUserInformation();
   app = GapApp();
   WidgetsBinding.instance.addObserver(app.state);

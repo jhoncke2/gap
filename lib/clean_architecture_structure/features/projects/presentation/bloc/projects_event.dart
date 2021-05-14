@@ -7,4 +7,13 @@ abstract class ProjectsEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class LoadProjects extends ProjectsEvent{}
+class LoadProjectsEvent extends ProjectsEvent{}
+
+class SetChosenProjectEvent extends ProjectsEvent{
+  final Project project;
+  SetChosenProjectEvent({
+    @required this.project
+  });
+}
+
+class LoadChosenProjectEvent extends ProjectsEvent{}

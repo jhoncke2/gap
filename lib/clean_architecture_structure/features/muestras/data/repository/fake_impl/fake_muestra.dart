@@ -1,9 +1,14 @@
 import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/componente.dart';
-import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/muestra.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/muestreo.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/rango_toma.dart';
 
-final Muestra fakeMuestra = Muestra(
+final Muestreo fakeMuestra = Muestreo(
   tipo: 'Almuerzo', 
+  obligatorio: true,
+  pesosEsperadosPorRango: [
+    [20.0, 40.0, 100.0],
+    [30.0, 65.0, 125.0]
+  ],
   rangos: ['5-8 años', '9-12 años'], 
   componentes: [
     Componente(
@@ -31,8 +36,11 @@ final Muestra fakeMuestra = Muestra(
       ]
     ),
   ],
-  minMuestreos: 1,
-  maxMuestreos: 3,
-  nMuestreos: 0,
+  muestrasTomadas: [
+    
+  ],
+  minMuestras: 1,
+  maxMuestras: 3,
+  nMuestras: 0,
   
 );

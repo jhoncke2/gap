@@ -22,7 +22,7 @@ class DataDistributorManager{
     DataDistrFunctionName.UPDATE_CHOSEN_VISIT, 
     DataDistrFunctionName.UPDATE_CHOSEN_FORM
   ];
-
+ 
   Future executeFunction(DataDistrFunctionName functionName, [dynamic value])async{
     await _updateConnectionState();
     happendError = false;

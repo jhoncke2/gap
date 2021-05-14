@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:dartz/dartz.dart';
 import 'package:gap/clean_architecture_structure/core/data/models/project_model.dart';
-import 'package:gap/clean_architecture_structure/core/domain/entities/project.dart';
+import 'package:gap/clean_architecture_structure/features/projects/domain/entities/project.dart';
 import 'package:gap/clean_architecture_structure/core/domain/repositories/projects_repository.dart';
 import 'package:gap/clean_architecture_structure/core/domain/use_cases/use_case.dart';
 import 'package:gap/clean_architecture_structure/features/projects/domain/use_cases/get_projects.dart';

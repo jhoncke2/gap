@@ -23,13 +23,6 @@ class DataDistributorWithConnection extends DataDistributor{
   @override
   Future doInitialConfig()async{
     await super.doInitialConfig();
-    /*
-    final accessToken = await UserStorageManager.getAccessToken();
-    if(accessToken == null)
-      throw UnfoundStorageElementErr(elementType: StorageElementType.AUTH_TOKEN);
-    await updateAccessToken(accessToken);
-    await PreloadedStorageToServices.sendPreloadedStorageDataToServices();
-    */
   }
 
   @override
@@ -41,12 +34,6 @@ class DataDistributorWithConnection extends DataDistributor{
   @override
   Future login(Map<String, dynamic> loginInfo)async{
     await super.login(loginInfo);
-    /*
-    if(loginInfo['type'] == 'first_login')
-      await _doFirstLogin(loginInfo['email'], loginInfo['password']);
-    else
-      await _doReloadingLogin();
-    */
   }
 
   Future _doFirstLogin(String email, String password)async{
@@ -63,83 +50,21 @@ class DataDistributorWithConnection extends DataDistributor{
   @override
   Future<void> updateProjects()async{
     await super.updateProjects();
-    /*
-    final String accessToken = await UserStorageManager.getAccessToken();
-    final List<ProjectOld> projects = await _projectsServicesManager.loadProjects(projectsB, accessToken);
-    projectsB.add(SetProjects(projects: projects));  
-    UploadedBlocsData.dataContainer[NavigationRoute.Projects] = projects;
-    */
   }
 
   @override
   Future<void> updateVisits()async{
     await super.updateVisits();
-    /*
-    final ProjectOld chosenProject = UploadedBlocsData.dataContainer[NavigationRoute.ProjectDetail];
-    final List<VisitOld> visits = chosenProject.visits;
-    visitsB.add(SetVisits(visits: visits));
-    UploadedBlocsData.dataContainer[NavigationRoute.Visits] = visits;
-    */
   }
 
   @override
   Future<void> updateChosenVisit(VisitOld visit)async{
     await super.updateChosenVisit(visit);
-    /*
-    final VisitOld realVisit = getUpdatedChosenVisit(visit);
-    await super.updateChosenVisit(realVisit);
-    await _addPreloadedDataRelatedToChosenProjectIfVisitIsntCompleted(realVisit);
-    await _loadFormsByChosenVisit(realVisit);
-    */
   }
-  //TODO: Borrar en su desuso
-  /*
-  Future _addPreloadedDataRelatedToChosenProjectIfVisitIsntCompleted(VisitOld visit)async{
-    if(!visit.completo)
-      await _addPreloadedDataRelatedToChosenProject(visit);
-  }
-
-  Future _addPreloadedDataRelatedToChosenProject(VisitOld visit)async{
-    final ProjectOld chosenProject = UploadedBlocsData.dataContainer[NavigationRoute.ProjectDetail];
-    await ProjectsStorageManager.setProjectWithPreloadedVisits(chosenProject);
-    await PreloadedVisitsStorageManager.setVisit(visit, chosenProject.id);
-  }
-
-  Future _loadFormsByChosenVisit(VisitOld visit)async{
-    final VisitOld chosenVisit = UploadedBlocsData.dataContainer[NavigationRoute.VisitDetail];
-    final List<FormularioOld> forms = chosenVisit.formularios;
-    formsB.add(SetForms(forms: forms));
-    await _addFormsToPreloadedStorageIfVisitIsntCompleted(forms, visit);
-  }
-  Future _addFormsToPreloadedStorageIfVisitIsntCompleted(List<FormularioOld> forms, VisitOld visit)async{
-    if(!visit.completo)
-      await _addFormsToPreloadedStorage(forms, visit.id);
-  }
-
-  Future _addFormsToPreloadedStorage(List<FormularioOld> forms, int visitId)async{
-    for(FormularioOld form in forms)
-        await _addFormToPreloadedStorageIfIsntCompleted(form, visitId);
-  }
-
-  Future _addFormToPreloadedStorageIfIsntCompleted(FormularioOld form, int visitId)async{
-    if(!form.completo){
-      deleteNullFirmersFromForm(form);
-      await PreloadedFormsStorageManager.setPreloadedForm(form, visitId);
-    }
-  }
-  */
 
   @override
   Future updateChosenForm(FormularioOld form)async{
     await super.updateChosenForm(form);
-    /*
-    formsB.add(ChangeFormsAreBlocked(areBlocked: true));
-    FormularioOld realForm = await getUpdatedChosenForm(form);
-    await addInitialPosition(realForm);
-    final String accessToken = await UserStorageManager.getAccessToken();
-    await ProjectsServicesManager.updateFormInitialization(accessToken, realForm.initialPosition, realForm.id);
-    await super.updateChosenForm(realForm);
-    */
   }
 
   @override
@@ -149,14 +74,6 @@ class DataDistributorWithConnection extends DataDistributor{
 
   Future endFormFillingOut()async{
     await super.endFormFillingOut();
-    /*
-    chosenFormB.add(ChangeFormIsLocked(isLocked: true));
-    await super.endFormFillingOut();
-    final FormularioOld chosenForm = formsB.state.chosenForm;
-    await _sendFormToService(chosenForm);
-    await _sendFormFinalPosition(chosenForm);
-    chosenFormB.add(ChangeFormIsLocked(isLocked: false));
-    */
   }
 
   Future _sendFormToService(FormularioOld form)async{
@@ -176,104 +93,27 @@ class DataDistributorWithConnection extends DataDistributor{
   @override
   Future updateFirmers()async{
     await super.updateFirmers();
-    //await sendFirmerToService();
   }
 
-  @protected
-  Future sendFirmerToService()async{
-    final FormularioOld chosenForm = formsB.state.chosenForm;
-    final PersonalInformationOld lastFirmer = chosenForm.firmers.last.clone();
-    final String accessToken = await UserStorageManager.getAccessToken();
-    final VisitOld chosenVisit = visitsB.state.chosenVisit;
-    await ProjectsServicesManager.saveFirmer(accessToken, lastFirmer, chosenForm.id, chosenVisit.id);
-    chosenForm.firmers.removeAt(0);
-    await updateChosenFormInStorage(chosenForm);
-    //await PreloadedFormsStorageManager.setPreloadedForm(chosenForm, chosenVisit.id);
-    //await ChosenFormStorageManager.setChosenForm(chosenForm);
-  }
 
   @override
   Future endAllFormProcess()async{
     await super.endAllFormProcess();
-    //await sendFirmerToService();
-    //await _updatePreloadedDataAfterFormProcessEnd();
-  }
-
-  Future _updatePreloadedDataAfterFormProcessEnd()async{
-    final VisitOld chosenVisit = visitsB.state.chosenVisit;
-    final FormularioOld chosenForm = formsB.state.chosenForm;
-    await _removeChosenFormFromPreloadedStorage(chosenVisit.id, chosenForm.id);
-    final ProjectOld chosenProject = projectsB.state.chosenProject;
-    await _removePreloadedVisitIfThereIsNoMoreForms(chosenVisit.id, chosenProject.id);
-    await _removePreloadedProjectIfThereIsNoMoreVisits(chosenProject.id);
-  }
-
-  Future _removeChosenFormFromPreloadedStorage(int chosenVisitId, int chosenFormId)async{
-    await PreloadedFormsStorageManager.removePreloadedForm(chosenVisitId, chosenFormId);
-  }
-
-  Future _removePreloadedVisitIfThereIsNoMoreForms(int chosenVisitId, int chosenProjectId)async{
-    final List<FormularioOld> preloadedForms = await PreloadedFormsStorageManager.getPreloadedFormsByVisitId(chosenVisitId);
-    if(preloadedForms.length == 0)
-      await PreloadedVisitsStorageManager.removeVisit(chosenVisitId, chosenProjectId);
-  }
-
-  Future _removePreloadedProjectIfThereIsNoMoreVisits(int chosenProjectId)async{
-    final List<VisitOld> preloadedVisits = await PreloadedVisitsStorageManager.getVisitsByProjectId(chosenProjectId);
-    if(preloadedVisits.length == 0)
-      await ProjectsStorageManager.removeProjectWithPreloadedVisits(chosenProjectId);
   }
 
   @override
   Future updateCommentedImages()async{
     await super.updateCommentedImages();
-    /*
-    visitsB.add(ChangeChosenVisitBlocking(isBlocked: true));
-    final String accessToken = await UserStorageManager.getAccessToken();
-    final VisitOld chosenVisit = UploadedBlocsData.dataContainer[NavigationRoute.VisitDetail];
-    final List<CommentedImageOld> cmmImages = await ProjectsServicesManager.getCommentedImages(accessToken, chosenVisit.id);
-    if(cmmImages.isEmpty){
-      commImgsB.add(InitImagesCommenting());
-    }else{
-      commImgsB.add(InitSentCommImgsWatching(sentCommentedImages: cmmImages, onEnd: changeNPagesToIndex));
-    }
-    */
   }
 
   @override
   Future resetForms()async{
     await super.resetForms();
-    /*
-    final VisitOld chosenVisit = visitsB.state.chosenVisit;
-    await _removeVisitFromPreloadedVisitsIfCompleted(chosenVisit);
-    await _removeFormsFromStorage();
-    */
   }
 
-  Future _removeVisitFromPreloadedVisitsIfCompleted(VisitOld visit)async{
-    if(visit.stage == ProcessStage.Realizada)
-      await _removeVisitFromPReloadedVisits(visit);
-  }
-
-  Future _removeVisitFromPReloadedVisits(VisitOld visit)async{
-    final ProjectOld chosenProject = projectsB.state.chosenProject;
-    await PreloadedVisitsStorageManager.removeVisit(visit.id, chosenProject.id);
-  }
-
-  Future _removeFormsFromStorage()async{
-    await FormulariosStorageManager.removeForms();
-  }
 
   Future endCommentedImagesProcess()async{
     await super.endCommentedImagesProcess();
-    /*
-    visitsB.add(ChangeChosenVisitBlocking(isBlocked: false));
-    if(commImgsB.state.dataType == CmmImgDataType.UNSENT)
-      await _postUnsetCommentedImages();
-    else
-      commImgsB.add(ResetCommentedImages());
-    await super.endCommentedImagesProcess();
-    */
   }
 
   Future _postUnsetCommentedImages()async{

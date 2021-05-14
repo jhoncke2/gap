@@ -1,9 +1,9 @@
-import 'package:gap/clean_architecture_structure/core/domain/use_cases/navigation/go_replacing_all_to.dart';
-import 'package:gap/clean_architecture_structure/core/domain/use_cases/navigation/go_to.dart';
-import 'package:gap/old_architecture/data/enums/enums.dart';
 import 'package:test/test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:mockito/mockito.dart';
+import 'package:gap/old_architecture/data/enums/enums.dart';
+import 'package:gap/clean_architecture_structure/core/domain/use_cases/navigation/go_replacing_all_to.dart';
+import 'package:gap/clean_architecture_structure/core/domain/use_cases/navigation/go_to.dart';
 import 'package:gap/clean_architecture_structure/core/domain/repositories/navigation_repository.dart';
 import 'package:gap/clean_architecture_structure/core/domain/use_cases/use_case.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/blocs/user/user_bloc.dart';
@@ -57,8 +57,8 @@ void main(){
       verify(inputValidator.validateInputValue(tUser.email));
       //await untilCalled(inputValidator.validateInputValue(any));
       //verify(inputValidator.validateInputValue(tUser.password));
-      await untilCalled(navigationUseCase.call(any));
-      verify(navigationUseCase.call(NavigationParams(navRoute: NavigationRoute.Projects)));
+      //await untilCalled(navigationUseCase.call(any));
+      //verify(navigationUseCase.call(NavigationParams(navRoute: NavigationRoute.Projects)));
     });
 
     test('should emmit the specified states in order when email is empty or null', ()async{
@@ -110,7 +110,8 @@ void main(){
       when(inputValidator.validateInputValue(tUser.password)).thenReturn(Right(null));
       when(loginUseCase.call(any)).thenAnswer((_) async => Right(null));
       final expectedOrderedStates = [
-        UserLoading()
+        UserLoading(),
+        UserLogged()
       ];
       expectLater(bloc.asBroadcastStream(), emitsInOrder(expectedOrderedStates));
       bloc.add(LoginEvent(email: tUser.email, password: tUser.password));
@@ -123,8 +124,8 @@ void main(){
       bloc.add(LogoutEvent());
       await untilCalled(logoutUseCase.call(any));
       verify(logoutUseCase.call(NoParams()));
-      await untilCalled(navigationUseCase.call(any));
-      verify(navigationUseCase.call(NavigationParams(navRoute: NavigationRoute.Login)));
+      //await untilCalled(navigationUseCase.call(any));
+      //verify(navigationUseCase.call(NavigationParams(navRoute: NavigationRoute.Login)));
     });
 
     test('should yield the specified ordered states when the logoutUseCase return Left(X)', ()async{
@@ -141,7 +142,7 @@ void main(){
       when(logoutUseCase.call(any)).thenAnswer((_) async => Right(null));
       final expectedOrderedStates = [
         UserLoading(),
-        UserQuiet()
+        UserLogouted()
       ];
       expectLater(bloc.asBroadcastStream(), emitsInOrder(expectedOrderedStates));
       bloc.add(LogoutEvent());

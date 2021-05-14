@@ -5,11 +5,11 @@ import 'package:gap/clean_architecture_structure/core/data/models/project_model.
 import 'package:gap/clean_architecture_structure/core/data/models/visit_model.dart';
 import 'package:gap/clean_architecture_structure/core/error/exceptions.dart';
 import 'package:gap/clean_architecture_structure/core/network/network_info.dart';
-import 'package:gap/clean_architecture_structure/features/muestras/data/models/muestra_model.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/data/models/muestreo_model.dart';
 import 'package:meta/meta.dart';
 import 'package:dartz/dartz.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/data/data_sources/muestras_remote_data_source.dart';
-import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/muestra.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/muestreo.dart';
 import 'package:gap/clean_architecture_structure/core/error/failures.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/repositories/muestras_repository.dart';
 
@@ -29,13 +29,13 @@ class MuestrasRepositoryImpl implements MuestrasRepository{
   });
 
   @override
-  Future<Either<Failure, Muestra>> getMuestra()async{
+  Future<Either<Failure, Muestreo>> getMuestreo()async{
     if( await networkInfo.isConnected() ){
       try{
         final ProjectModel chosenProject = await projectsLocalDataSource.getChosenProject();
         final VisitModel chosenVisit = await visitsLocalDataSource.getChosenVisit(chosenProject.id);
         final String accessToken = await userLocalDataSource.getAccessToken();
-        final MuestraModel muestra =  await remoteDataSource.getMuestra(accessToken, chosenVisit.id);
+        final MuestreoModel muestra =  await remoteDataSource.getMuestra(accessToken, chosenVisit.id);
         return Right(muestra);
       }on StorageException catch(exception){
         return Left(StorageFailure(excType: exception.type));
@@ -47,9 +47,21 @@ class MuestrasRepositoryImpl implements MuestrasRepository{
   }
 
   @override
-  Future<Either<Failure, void>> setMuestra(Muestra muestra)async{
-    // TODO: implement setMuestra
-    throw UnimplementedError();
+  Future<Either<Failure, void>> setMuestra(int selectedRangoIndex, List<double> pesosTomados)async{
+    try{
+      if( await networkInfo.isConnected() ){
+        final ProjectModel chosenProject = await projectsLocalDataSource.getChosenProject();
+        final VisitModel chosenVisit = await visitsLocalDataSource.getChosenVisit(chosenProject.id);
+        final String accessToken = await userLocalDataSource.getAccessToken();
+        await remoteDataSource.setMuestra(accessToken, chosenVisit.id, selectedRangoIndex, pesosTomados);
+      }
+      return Right(null);
+    }on StorageException catch(exception){
+      return Left(StorageFailure(excType: exception.type));
+    }on ServerException catch(exception){
+      return Left(ServerFailure(servExcType: exception.type, message: exception.message));
+    }
+    
   }
 
 }

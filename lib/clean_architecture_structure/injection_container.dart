@@ -1,16 +1,21 @@
 //sl: service locator
-import 'package:gap/clean_architecture_structure/features/muestras/data/data_sources/muestras_remote_data_source.dart';
-import 'package:gap/clean_architecture_structure/features/muestras/data/repository/muestras_repository.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/blocs/navigation/navigation_bloc.dart';
+import 'package:gap/clean_architecture_structure/features/projects/domain/use_cases/get_chosen_project.dart';
+import 'package:gap/clean_architecture_structure/features/projects/domain/use_cases/set_chosen_project.dart';
 import 'package:get_it/get_it.dart';
 import 'core/network/network_info.dart';
 import 'package:http/http.dart' as http;
 import 'package:connectivity/connectivity.dart';
+import 'package:gap/clean_architecture_structure/core/data/repositories/central_system_repository.dart';
+import 'package:gap/clean_architecture_structure/core/domain/repositories/central_system_repository.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/data/data_sources/muestras_remote_data_source.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/data/repository/muestras_repository.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/central_system/central_system_local_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/repositories/commented_images_repository.dart';
 import 'package:gap/clean_architecture_structure/core/data/repositories/formularios_repository.dart';
 import 'package:gap/clean_architecture_structure/core/data/repositories/navigation_repository.dart';
-import 'package:gap/clean_architecture_structure/core/data/repositories/projects_repository.dart';
+import 'package:gap/clean_architecture_structure/features/projects/data/repository/projects_repository.dart';
 import 'package:gap/clean_architecture_structure/core/data/repositories/user_repository.dart';
 import 'package:gap/clean_architecture_structure/core/data/repositories/visits_repository.dart';
 import 'package:gap/clean_architecture_structure/core/domain/repositories/commented_images_repository.dart';
@@ -24,7 +29,6 @@ import 'package:gap/clean_architecture_structure/core/domain/use_cases/navigatio
 import 'package:gap/clean_architecture_structure/core/domain/use_cases/user/login.dart';
 import 'package:gap/clean_architecture_structure/core/platform/custom_navigator.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/utils/input_validator.dart';
-import 'package:gap/clean_architecture_structure/features/muestras/data/repository/fake_impl/muestras_repository_fake.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/repositories/muestras_repository.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/get_muestras.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/set_muestras.dart';
@@ -60,6 +64,7 @@ void init()async{
   //*********Core
   //*****data
   //data sources
+  sl.registerLazySingleton<CentralSystemLocalDataSource>(() => CentralSystemLocalDataSourceImpl(storageConnector: sl()));
   sl.registerLazySingleton<CommentedImagesRemoteDataSource>(()=>CommentedImagesRemoteDataSourceImpl(client: sl()));
   sl.registerLazySingleton<FormulariosRemoteDataSource>(()=>FormulariosRemoteDataSourceImpl(client: sl()));
   sl.registerLazySingleton<FormulariosLocalDataSource>(()=>FormulariosLocalDataSourceImpl(storageConnector: sl()));
@@ -71,11 +76,13 @@ void init()async{
   sl.registerLazySingleton<UserLocalDataSource>(()=>UserLocalDataSourceImpl(storageConnector: sl()));
   sl.registerLazySingleton<VisitsRemoteDataSource>(()=>VisitsRemoteDataSourceImpl(client: sl()));
   sl.registerLazySingleton<VisitsLocalDataSource>(()=>VisitsLocalDataSourceImpl(storageConnector: sl()));
-  sl.registerLazySingleton<CentralSystemLocalDataSource>(() => CentralSystemLocalDataSourceImpl(storageConnector: sl()));
   sl.registerLazySingleton<NavigationLocalDataSource>(()=> NavigationLocalDataSourceImpl(storageConnector: sl()));
   sl.registerLazySingleton<MuestrasRemoteDataSource>(()=> MuestrasRemoteDataSourceImpl(client: sl()));
-
+  
   //repositories
+  sl.registerLazySingleton<CentralSystemRepository>(()=>CentralSystemRepositoryImpl(
+    localDataSource: sl()
+  ));
   sl.registerLazySingleton<CommentedImagesRepository>(()=>CommentedImagesRepositoryImpl(
     networkInfo: sl(), 
     remoteDataSource: sl(), 
@@ -142,9 +149,11 @@ void init()async{
   sl.registerLazySingleton(()=>Pop(navigator: sl(), navRepository: sl()));
   sl.registerLazySingleton(()=>GoReplacingAllTo(navigator: sl(), navRepository: sl()));
   sl.registerLazySingleton(()=>GoToLastRoute(navigator: sl(), navRepository: sl()));
-  sl.registerLazySingleton(()=>Login(repository: sl()));
+  sl.registerLazySingleton(()=>Login(userRepository: sl(), centralSystemRepository: sl()));
   sl.registerLazySingleton(()=>Logout(repository: sl()));
   sl.registerLazySingleton(()=>GetProjects(repository: sl()));
+  sl.registerLazySingleton(()=>GetChosenProject(repository: sl()));
+  sl.registerLazySingleton(()=>SetChosenProject(repository: sl()));
   sl.registerLazySingleton(()=>GetMuestras(repository: sl()));
   sl.registerLazySingleton(()=>SetMuestra(repository: sl()));
   //blocs
@@ -155,12 +164,19 @@ void init()async{
     navigationUseCase: sl()
   ));
   sl.registerFactory(()=>ProjectsBloc(
-    getProjects: sl()
+    getProjects: sl(),
+    getChosenProject: sl(),
+    setChosenProject: sl()
   ));
   sl.registerFactory(()=>MuestrasBloc(
     getMuestras: sl(), 
     setMuestra: sl(),
     pesosConverter: sl()
+  ));
+  sl.registerFactory(()=>NavigationBloc(
+    goTo: sl(), 
+    goReplacingAllTo: sl(), 
+    pop: sl()
   ));
 
   //***** util components

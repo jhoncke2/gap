@@ -41,7 +41,6 @@ void main(){
       await useCase.call(NoParams());
       verify(repository.pop());
       verify(repository.getCurrentRoute());
-      verify(navigator.navigateReplacingTo(tCurrentRouteAfterPop));
     });
 
     test('should return Right(null) when all goes good', ()async{

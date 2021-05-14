@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/blocs/navigation/navigation_bloc.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/blocs/user/user_bloc.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/general_button.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/logo.dart';
@@ -26,8 +27,11 @@ class _LoginPageState extends State<LoginPage> {
     return ScaffoldKeyboardDetector(
       child: SafeArea(
         child: SingleChildScrollView(
-          child: BlocProvider<UserBloc>(
-            create: (_)=>sl<UserBloc>(),
+          child: MultiBlocProvider(
+            providers: [
+              BlocProvider<UserBloc>(create: (_)=>sl()),
+              BlocProvider<NavigationBloc>(create: (_)=>sl())
+            ],
             child: Container(
               padding: EdgeInsets.symmetric(
                 horizontal: _sizeUtils.largeHorizontalScaffoldPadding
@@ -127,24 +131,6 @@ class _LoginPageState extends State<LoginPage> {
         color: Theme.of(context).primaryColor.withOpacity(0.525),
         width: 3.5
       )
-    );
-  }
-
-  Widget _crearBotonLogin() {
-    return BlocBuilder<UserBloc, UserState>(
-      builder: (blocContext, state){
-        return GeneralButton(
-          text: 'INGRESAR',
-          backgroundColor: Theme.of(context).primaryColor,
-          onPressed: (state is UserLoading)? null : ()=>_login(blocContext)//(state.loginButtonIsAvaible) ? _login : null,
-        );
-      },
-    );
-  }
-
-  void _login(BuildContext blocContext) async {    
-    BlocProvider.of<UserBloc>(blocContext).add(
-      LoginEvent(email: _emailController.text, password: _passwordController.text)
     );
   }
 }

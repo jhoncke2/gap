@@ -12,7 +12,7 @@ class MuestraEmpty extends MuestrasState {}
 class LoadingMuestra extends MuestrasState{}
 
 abstract class LoadedMuestra extends MuestrasState{
-  final Muestra muestra;
+  final Muestreo muestra;
   LoadedMuestra({
     @required this.muestra
   });
@@ -22,7 +22,7 @@ abstract class LoadedMuestra extends MuestrasState{
 
 class OnPreparacionMuestra extends LoadedMuestra{
   OnPreparacionMuestra({
-    @required Muestra muestra
+    @required Muestreo muestra
   }):super(
     muestra: muestra
   );
@@ -30,7 +30,7 @@ class OnPreparacionMuestra extends LoadedMuestra{
 
 class OnEleccionTomaOFinalizar extends LoadedMuestra{
   OnEleccionTomaOFinalizar({
-    @required Muestra muestra
+    @required Muestreo muestra
   }):super(
     muestra: muestra
   );
@@ -39,22 +39,22 @@ class OnEleccionTomaOFinalizar extends LoadedMuestra{
 
 class OnChosingRangoEdad extends LoadedMuestra{
   OnChosingRangoEdad({
-    @required Muestra muestra
+    @required Muestreo muestra
   }):super(
     muestra: muestra
   );
 }
 
 class OnTomaPesos extends LoadedMuestra{
-  final String rangoEdad;
+  final int rangoEdadIndex;
   OnTomaPesos({
-    @required this.rangoEdad,
-    @required Muestra muestra
+    @required this.rangoEdadIndex,
+    @required Muestreo muestra
   }):super(
     muestra: muestra
   );
   @override
-  List<Object> get props => [...super.props, this.rangoEdad];
+  List<Object> get props => [...super.props, this.rangoEdadIndex];
 }
 
 class MuestraError extends MuestrasState{

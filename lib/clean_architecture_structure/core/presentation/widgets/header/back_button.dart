@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gap/old_architecture/logic/central_managers/pages_navigation_manager.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
 class AppBackButton extends StatelessWidget {
   final SizeUtils _sizeUtils = SizeUtils();
@@ -16,7 +17,8 @@ class AppBackButton extends StatelessWidget {
           Icons.arrow_back_ios
         ),
         onPressed: (){
-          
+          //TODO: Cambiar por nueva funcionalidad con clean architecture
+          PagesNavigationManager.pop();
         },
       ),
     );
