@@ -31,9 +31,33 @@ class AddMuestraPesos extends MuestrasEvent{
   });
 }
 
-class SetMuestraEvent extends MuestrasEvent{
-  final Muestreo muestra;
-  SetMuestraEvent({
+class InitMuestraEditing extends MuestrasEvent{
+  final int indexMuestra;
+  final Muestra muestra;
+
+  InitMuestraEditing({
+    @required this.indexMuestra, 
     @required this.muestra
   });
 }
+
+class SaveMuestraEditing extends MuestrasEvent{
+  final int indexMuestra;
+  final List<double> nuevosPesosTomados;
+
+  SaveMuestraEditing({
+    @required this.indexMuestra, 
+    @required this.nuevosPesosTomados
+  });
+}
+
+class ChooseMuestra extends MuestrasEvent{
+  final Muestra muestra;
+
+  ChooseMuestra({
+    @required this.muestra
+  });
+}
+
+class RemoveMuestraEvent extends MuestrasEvent {}
+class BackFromMuestraDetail extends MuestrasEvent{}

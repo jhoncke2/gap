@@ -1,5 +1,7 @@
 //sl: service locator
 import 'package:gap/clean_architecture_structure/core/presentation/blocs/navigation/navigation_bloc.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/data/repository/fake_impl/muestras_repository_fake.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/update_muestra.dart';
 import 'package:gap/clean_architecture_structure/features/projects/domain/use_cases/get_chosen_project.dart';
 import 'package:gap/clean_architecture_structure/features/projects/domain/use_cases/set_chosen_project.dart';
 import 'package:get_it/get_it.dart';
@@ -57,6 +59,7 @@ import 'core/data/data_sources/formularios/formularios_remote_data_source.dart';
 import 'core/data/data_sources/projects/projects_local_data_source.dart';
 import 'core/data/data_sources/projects/projects_remote_data_source.dart';
 import 'core/presentation/blocs/user/user_bloc.dart';
+import 'features/muestras/domain/use_cases/remove_muestra.dart';
 
 final sl = GetIt.instance;
 
@@ -135,7 +138,8 @@ void init()async{
     localDataSource: sl()
   ));
   //TODO: Quitar al confirmar funcionamiento correcto de MuestrasRepositoryImpl
-  //sl.registerLazySingleton<MuestrasRepository>(()=>MuestrasRepositoryFake());
+  sl.registerLazySingleton<MuestrasRepository>(()=>MuestrasRepositoryFake());
+  /*
   sl.registerLazySingleton<MuestrasRepository>(()=>MuestrasRepositoryImpl(
     networkInfo: sl(),
     remoteDataSource: sl(),
@@ -143,6 +147,7 @@ void init()async{
     projectsLocalDataSource: sl(),
     visitsLocalDataSource: sl()
   ));
+  */
 
   //useCases
   sl.registerLazySingleton(()=>GoTo(navigator: sl(), navRepository: sl()));
@@ -156,6 +161,8 @@ void init()async{
   sl.registerLazySingleton(()=>SetChosenProject(repository: sl()));
   sl.registerLazySingleton(()=>GetMuestras(repository: sl()));
   sl.registerLazySingleton(()=>SetMuestra(repository: sl()));
+  sl.registerLazySingleton(()=>UpdateMuestra(repository: sl()));
+  sl.registerLazySingleton(()=>RemoveMuestra(repository: sl()));
   //blocs
   sl.registerFactory(() => UserBloc(
     login: sl(), 
@@ -171,7 +178,9 @@ void init()async{
   sl.registerFactory(()=>MuestrasBloc(
     getMuestras: sl(), 
     setMuestra: sl(),
-    pesosConverter: sl()
+    pesosConverter: sl(),
+    updateMuestra: sl(),
+    removeMuestra: sl()
   ));
   sl.registerFactory(()=>NavigationBloc(
     goTo: sl(), 

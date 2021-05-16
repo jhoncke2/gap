@@ -6,14 +6,12 @@ import 'package:equatable/equatable.dart';
 class Componente extends Equatable{
   final String nombre;
   String preparacion;
-  final List<RangoToma> valoresPorRango;
 
   Componente({
     @required this.nombre, 
     @required this.preparacion, 
-    @required this.valoresPorRango
   });
 
   @override
-  List<Object> get props => [this.nombre, this.preparacion, this.valoresPorRango];
+  List<Object> get props => [this.nombre, this.preparacion];
 }

@@ -4,6 +4,7 @@ import 'package:gap/clean_architecture_structure/core/presentation/widgets/heade
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/scaffold_keyboard_detector.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/bloc/muestras_bloc.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/widgets/eleccion_toma_o_finalizar.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/presentation/widgets/muestra_detail.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/widgets/pesos_chooser.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/widgets/preparacion_componentes.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/widgets/rango_edad_chosing.dart';
@@ -33,17 +34,17 @@ class MuestrasPage extends StatelessWidget {
   Widget _createMuestrasBlocBuilder(){
     return BlocBuilder<MuestrasBloc, MuestrasState>(
       builder: (context, state) {
-        _addInitialMuestrasBlocPostFrameCall(context, state);
+        //_addInitialMuestrasBlocPostFrameCall(context, state);
         return Column(
           children: [
             PageHeader(
-              withTitle: (state is LoadedMuestra),
-              title: (state is LoadedMuestra)? 'Muestra ${state.muestra.tipo}': null,
+              withTitle: (state is LoadedMuestreo),
+              title: (state is LoadedMuestreo)? 'Muestra ${state.muestreo.tipo}': null,
               titleIsUnderlined: false,
             ),
             SizedBox(height: sizeUtils.xasisSobreYasis * 0.05),
             Expanded(
-              child: _createBlocBuilderBottom(state)
+              child: _createBlocBuilderBottom(context, state)
             )
           ],
         );
@@ -52,7 +53,7 @@ class MuestrasPage extends StatelessWidget {
   }
 
   void _addInitialMuestrasBlocPostFrameCall(BuildContext context, MuestrasState state){
-    if(state is MuestraEmpty)
+    if(state is MuestreoEmpty)
       _addInitialMuestrasBlocPostFrameCallIfMuestrasIsEmpty(context);
   }
 
@@ -62,15 +63,21 @@ class MuestrasPage extends StatelessWidget {
     });
   }
 
-  Widget _createBlocBuilderBottom(MuestrasState state){
-    if(state is OnPreparacionMuestra)
-      return PreparacionComponentes(muestra: state.muestra);
+  Widget _createBlocBuilderBottom(BuildContext context, MuestrasState state){
+    if(state is MuestreoEmpty){
+      _addBlocEventPostFrameCallBack(context, GetMuestreoEvent());
+    }if(state is OnPreparacionMuestra)
+      return PreparacionComponentes(muestra: state.muestreo);
     else if(state is OnEleccionTomaOFinalizar)
-      return EleccionTomaOFinalizar(muestra: state.muestra);
+      return EleccionTomaOFinalizar(muestreo: state.muestreo);
     else if(state is OnChosingRangoEdad)
-      return RangoEdadChosing(muestra: state.muestra);
+      return RangoEdadChosing(muestra: state.muestreo);
     else if(state is OnTomaPesos)
-      return PesosChooser(muestra: state.muestra, rangoEdadIndex: state.rangoEdadIndex);
+      return PesosChooser(muestra: state.muestreo, rangoEdadIndex: state.rangoEdadIndex);
+    else if(state is OnMuestraDetail)
+      return MuestraDetail(muestra: state.muestra, muestreoComponentes: state.muestreo.componentes);
+    else if(state is MuestraRemoved)
+      _addBlocEventPostFrameCallBack(context, BackFromMuestraDetail());
     else if(state is MuestraError)
       return Container(
         child: Center(
@@ -78,5 +85,11 @@ class MuestrasPage extends StatelessWidget {
         ),
       );
     return Container();
+  }
+
+  void _addBlocEventPostFrameCallBack(BuildContext context, MuestrasEvent event){
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      BlocProvider.of<MuestrasBloc>(context).add( event );
+    });
   }
 }

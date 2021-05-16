@@ -61,7 +61,37 @@ class MuestrasRepositoryImpl implements MuestrasRepository{
     }on ServerException catch(exception){
       return Left(ServerFailure(servExcType: exception.type, message: exception.message));
     }
-    
   }
 
+  @override
+  Future<Either<Failure, void>> updateMuestra(int muestraIndexEnMuestreo, List<double> pesosTomados)async{
+    try{
+      if( await networkInfo.isConnected() ){
+        int chosenProjectId = (await projectsLocalDataSource.getChosenProject() ).id;
+        int chosenVisitId = (await visitsLocalDataSource.getChosenVisit(chosenProjectId) ).id;
+        String accessToken = await userLocalDataSource.getAccessToken();
+        await remoteDataSource.updateMuestra(accessToken, chosenVisitId, muestraIndexEnMuestreo, pesosTomados);
+      }
+      return Right(null);
+    }on StorageException catch(exception){
+      return Left(StorageFailure(excType: exception.type));
+    }on ServerException catch(exception){
+      return Left(ServerFailure(servExcType: exception.type, message: exception.message));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> removeMuestra(int muestraId)async{
+    try{
+      if( await networkInfo.isConnected() ){
+        String accessToken = await userLocalDataSource.getAccessToken();
+        await remoteDataSource.removeMuestra(accessToken, muestraId);
+      }
+      return Right(null);
+    }on StorageException catch(exception){
+      return Left(StorageFailure(excType: exception.type));
+    }on ServerException catch(exception){
+      return Left(ServerFailure(servExcType: exception.type, message: exception.message));
+    }
+  }
 }

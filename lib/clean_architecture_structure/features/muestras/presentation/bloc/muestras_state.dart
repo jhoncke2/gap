@@ -7,54 +7,89 @@ abstract class MuestrasState extends Equatable {
   List<Object> get props => [this.runtimeType];
 }
 
-class MuestraEmpty extends MuestrasState {}
+class MuestreoEmpty extends MuestrasState {}
 
-class LoadingMuestra extends MuestrasState{}
+class LoadingMuestreo extends MuestrasState {}
 
-abstract class LoadedMuestra extends MuestrasState{
-  final Muestreo muestra;
-  LoadedMuestra({
-    @required this.muestra
+abstract class LoadedMuestreo extends MuestrasState{
+  final Muestreo muestreo;
+  LoadedMuestreo({
+    @required this.muestreo
   });
+  @override
+  List<Object> get props => [...super.props, this.muestreo];
+}
+
+class OnPreparacionMuestra extends LoadedMuestreo{
+  OnPreparacionMuestra({
+    @required Muestreo muestra
+  }):super(
+    muestreo: muestra
+  );
+}
+
+class OnEleccionTomaOFinalizar extends LoadedMuestreo{
+  OnEleccionTomaOFinalizar({
+    @required Muestreo muestreo
+  }):super(
+    muestreo: muestreo
+  );
+}
+
+class OnChosingRangoEdad extends LoadedMuestreo{
+  OnChosingRangoEdad({
+    @required Muestreo muestreo
+  }):super(
+    muestreo: muestreo
+  );
+}
+
+class OnTomaPesos extends LoadedMuestreo{
+  final int rangoEdadIndex;
+  OnTomaPesos({
+    @required this.rangoEdadIndex,
+    @required Muestreo muestreo
+  }):super(
+    muestreo: muestreo
+  );
+  @override
+  List<Object> get props => [...super.props, this.rangoEdadIndex];
+}
+
+class OnEditingMuestra extends LoadedMuestreo{
+  final Muestra muestra;
+  final int indexMuestra;
+  final List<double> pesosEsperados;
+
+  OnEditingMuestra({
+    @required this.muestra,
+    @required this.indexMuestra,
+    @required this.pesosEsperados,
+    @required Muestreo muestreo
+  }):super(
+    muestreo: muestreo
+  );
+
+  @override
+  List<Object> get props => [...super.props, this.muestra, this.pesosEsperados];
+}
+
+class OnMuestraDetail extends LoadedMuestreo{
+  final Muestra muestra;
+
+  OnMuestraDetail({
+    @required this.muestra,
+    @required Muestreo muestreo
+  }):super(muestreo: muestreo);
+
   @override
   List<Object> get props => [...super.props, this.muestra];
 }
 
-class OnPreparacionMuestra extends LoadedMuestra{
-  OnPreparacionMuestra({
-    @required Muestreo muestra
-  }):super(
-    muestra: muestra
-  );
-}
-
-class OnEleccionTomaOFinalizar extends LoadedMuestra{
-  OnEleccionTomaOFinalizar({
-    @required Muestreo muestra
-  }):super(
-    muestra: muestra
-  );
-  
-}
-
-class OnChosingRangoEdad extends LoadedMuestra{
-  OnChosingRangoEdad({
-    @required Muestreo muestra
-  }):super(
-    muestra: muestra
-  );
-}
-
-class OnTomaPesos extends LoadedMuestra{
-  final int rangoEdadIndex;
-  OnTomaPesos({
-    @required this.rangoEdadIndex,
-    @required Muestreo muestra
-  }):super(
-    muestra: muestra
-  );
-  @override
-  List<Object> get props => [...super.props, this.rangoEdadIndex];
+class MuestraRemoved extends LoadedMuestreo{
+  MuestraRemoved({
+    @required Muestreo muestreo
+  }):super(muestreo: muestreo);
 }
 
 class MuestraError extends MuestrasState{

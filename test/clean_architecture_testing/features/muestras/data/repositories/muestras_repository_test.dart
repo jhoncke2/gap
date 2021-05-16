@@ -11,6 +11,7 @@ import 'package:gap/clean_architecture_structure/core/error/exceptions.dart';
 import 'package:gap/clean_architecture_structure/core/error/failures.dart';
 import 'package:gap/clean_architecture_structure/core/network/network_info.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/data/data_sources/muestras_remote_data_source.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/data/models/muestra_model.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/data/models/muestreo_model.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/data/repository/muestras_repository.dart';
 import 'package:mockito/mockito.dart';
@@ -57,7 +58,7 @@ void main(){
       tAccessToken = 'access_token';
       tChosenProject = _getProjectFromFixture();
       tChosenVisit = _getVisitFromFixture();
-      tMuestra = _getMuestraFromFixture();
+      tMuestra = _getMuestreoFromFixture();
     });
 
     test('''should call the methods from localUserDataSource, localProjectsDataSource,
@@ -141,7 +142,7 @@ void main(){
       tAccessToken = 'access_token';
       tChosenProject = _getProjectFromFixture();
       tChosenVisit = _getVisitFromFixture();
-      tMuestra = _getMuestraFromFixture();
+      tMuestra = _getMuestreoFromFixture();
       tSelectedRangoIndex = 0;
       tPesosTomados = [1, 2, 3];
     });
@@ -214,6 +215,147 @@ void main(){
       expect(result, Left(StorageFailure(excType: StorageExceptionType.NORMAL)));
     });
   });
+
+  group('updateMuestra', (){
+    ProjectModel tChosenProject;
+    VisitModel tChosenVisit;
+    String tAccessToken;
+    int tMuestraIndexEnMuestreo;
+    MuestraModel tMuestra;
+    List<double> tPesosTomados;
+
+    setUp((){
+      tChosenProject = _getProjectFromFixture();
+      tChosenVisit = _getVisitFromFixture();
+      tAccessToken = 'access_token';
+      tMuestraIndexEnMuestreo = 0;
+      tMuestra = _getMuestreoFromFixture().muestrasTomadas[tMuestraIndexEnMuestreo];
+      tPesosTomados = tMuestra.pesos.map((p) => 0.5).toList();
+    });
+
+    test('''should call the networkInfo, <user / project / visit> localDataSources and call the remoteDataSource update method, 
+    when there is connectivity and all goes good''', ()async{
+      when(networkInfo.isConnected()).thenAnswer((_) async => true);
+      when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tChosenProject);
+      when(visitsLocalDataSource.getChosenVisit(any)).thenAnswer((_) async => tChosenVisit);
+      when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
+      await repository.updateMuestra(tMuestraIndexEnMuestreo, tPesosTomados);
+      verify(networkInfo.isConnected());
+      verify(projectsLocalDataSource.getChosenProject());
+      verify(visitsLocalDataSource.getChosenVisit(tChosenProject.id));
+      verify(userLocalDataSource.getAccessToken());
+      verify(remoteDataSource.updateMuestra(tAccessToken, tChosenVisit.id, tMuestraIndexEnMuestreo, tPesosTomados));
+    });
+
+    test('should do nothing, when there is not connectivity', ()async{
+      when(networkInfo.isConnected()).thenAnswer((_) async => false);
+      await repository.updateMuestra(tMuestraIndexEnMuestreo, tPesosTomados);
+      verify(networkInfo.isConnected());
+      verifyNever(projectsLocalDataSource.getChosenProject());
+      verifyNever(visitsLocalDataSource.getChosenVisit(any));
+      verifyNever(userLocalDataSource.getAccessToken());
+      verifyNever(remoteDataSource.updateMuestra(any, any, any, any));
+    });
+
+    test('''should return Right(null), 
+    when there is connectivity and all goes good''', ()async{
+      when(networkInfo.isConnected()).thenAnswer((_) async => true);
+      when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tChosenProject);
+      when(visitsLocalDataSource.getChosenVisit(any)).thenAnswer((_) async => tChosenVisit);
+      when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
+      final result = await repository.updateMuestra(tMuestraIndexEnMuestreo, tPesosTomados);
+      expect(result, Right(null));
+    });
+
+    test('''should return Right(null), 
+    when there is not connectivity''', ()async{
+      when(networkInfo.isConnected()).thenAnswer((_) async => false);
+      final result = await repository.updateMuestra(tMuestraIndexEnMuestreo, tPesosTomados);
+      expect(result, Right(null));
+    });
+
+    test('''should return Left(ServerFailure(X)), 
+    when there is connectivity and remoteDataSource throws ServerException(X)''', ()async{
+      when(networkInfo.isConnected()).thenAnswer((_) async => true);
+      when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
+      when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tChosenProject);
+      when(visitsLocalDataSource.getChosenVisit(any)).thenAnswer((_) async => tChosenVisit);
+      when(remoteDataSource.updateMuestra(any, any, any, any)).thenThrow(ServerException(type: ServerExceptionType.REFRESH_ACCESS_TOKEN));
+      final result = await repository.updateMuestra(tMuestraIndexEnMuestreo, tPesosTomados);
+      expect(result, Left(ServerFailure(servExcType: ServerExceptionType.REFRESH_ACCESS_TOKEN)));
+    });
+
+    test('''should return Left(StorageFailure(X)), 
+    when there is connectivity and remoteDataSource throws ServerException(X)''', ()async{
+      when(networkInfo.isConnected()).thenAnswer((_) async => true);
+      when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
+      when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tChosenProject);
+      when(visitsLocalDataSource.getChosenVisit(any)).thenThrow(StorageException(type: StorageExceptionType.NORMAL));
+      final result = await repository.updateMuestra(tMuestraIndexEnMuestreo, tPesosTomados);
+      expect(result, Left(StorageFailure(excType: StorageExceptionType.NORMAL)));
+    });
+  });
+
+  group('removeMuestra', (){
+
+    String tAccessToken;
+    int tMuestraId;
+
+    setUp((){
+      tAccessToken = 'access_token';
+      tMuestraId = 15;
+    });
+
+    test('''should call the networkInfo, <user / project / visit> localDataSources and call the remoteDataSource update method, 
+    when there is connectivity and all goes good''', ()async{
+      when(networkInfo.isConnected()).thenAnswer((_) async => true);
+      when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
+      await repository.removeMuestra(tMuestraId);
+      verify(networkInfo.isConnected());
+      verify(userLocalDataSource.getAccessToken());
+      verify(remoteDataSource.removeMuestra(tAccessToken, tMuestraId));
+    });
+
+    test('should do nothing, when there is not connectivity', ()async{
+      when(networkInfo.isConnected()).thenAnswer((_) async => false);
+      await repository.removeMuestra(tMuestraId);
+      verify(networkInfo.isConnected());
+      verifyNever(userLocalDataSource.getAccessToken());
+      verifyNever(remoteDataSource.removeMuestra(any, any));
+    });
+
+    test('''should return Right(null), 
+    when there is connectivity and all goes good''', ()async{
+      when(networkInfo.isConnected()).thenAnswer((_) async => true);
+      when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
+      final result = await repository.removeMuestra(tMuestraId);
+      expect(result, Right(null));
+    });
+
+    test('''should return Right(null), 
+    when there is not connectivity''', ()async{
+      when(networkInfo.isConnected()).thenAnswer((_) async => false);
+      final result = await repository.removeMuestra(tMuestraId);
+      expect(result, Right(null));
+    });
+
+    test('''should return Left(ServerFailure(X)), 
+    when there is connectivity and remoteDataSource throws ServerException(X)''', ()async{
+      when(networkInfo.isConnected()).thenAnswer((_) async => true);
+      when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
+      when(remoteDataSource.removeMuestra(any, any)).thenThrow(ServerException(type: ServerExceptionType.REFRESH_ACCESS_TOKEN));
+      final result = await repository.removeMuestra(tMuestraId);
+      expect(result, Left(ServerFailure(servExcType: ServerExceptionType.REFRESH_ACCESS_TOKEN)));
+    });
+
+    test('''should return Left(StorageFailure(X)), 
+    when there is connectivity and remoteDataSource throws ServerException(X)''', ()async{
+      when(networkInfo.isConnected()).thenAnswer((_) async => true);
+      when(userLocalDataSource.getAccessToken()).thenThrow(StorageException(type: StorageExceptionType.NORMAL));
+      final result = await repository.removeMuestra(tMuestraId);
+      expect(result, Left(StorageFailure(excType: StorageExceptionType.NORMAL)));
+    });
+  });
 }
 
 ProjectModel _getProjectFromFixture(){
@@ -228,7 +370,7 @@ VisitModel _getVisitFromFixture(){
   return VisitModel.fromJson(jsonVs[0]);
 }
 
-MuestreoModel _getMuestraFromFixture(){
+MuestreoModel _getMuestreoFromFixture(){
   final String stringM = callFixture('muestra.json');
   final Map<String, dynamic> jsonM = jsonDecode(stringM);
   return MuestreoModel.fromJson(jsonM);

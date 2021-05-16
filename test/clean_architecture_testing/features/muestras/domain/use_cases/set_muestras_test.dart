@@ -32,19 +32,19 @@ void main(){
 
     test('should call the repository method', ()async{
       when(repository.setMuestra(any, any)).thenAnswer((_) async => Right(null));
-      await useCase.call(MuestrasParams(selectedRangoIndex: tSelectedRangoIndex, pesosTomados: tPesosTomados));
+      await useCase.call(SetMuestraParams(selectedRangoIndex: tSelectedRangoIndex, pesosTomados: tPesosTomados));
       verify(repository.setMuestra(tSelectedRangoIndex, tPesosTomados));
     });
 
     test('should return the repository returned value', ()async{
       when(repository.setMuestra(any, any)).thenAnswer((_) async => Right(null));
-      final result = await useCase.call(MuestrasParams(selectedRangoIndex: tSelectedRangoIndex, pesosTomados: tPesosTomados));
+      final result = await useCase.call(SetMuestraParams(selectedRangoIndex: tSelectedRangoIndex, pesosTomados: tPesosTomados));
       expect(result, Right(null));
     });
 
     test('should return the repository returned value', ()async{
       when(repository.setMuestra(any, any)).thenAnswer((_) async => Left(ServerFailure(message: 'mensaje')));
-      final result = await useCase.call(MuestrasParams(selectedRangoIndex: tSelectedRangoIndex, pesosTomados: tPesosTomados));
+      final result = await useCase.call(SetMuestraParams(selectedRangoIndex: tSelectedRangoIndex, pesosTomados: tPesosTomados));
       expect(result, Left(ServerFailure(message: 'mensaje')));
     });
   });

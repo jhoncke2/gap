@@ -8,5 +8,17 @@
         [7, 8, 9]
     ],
     "n_muestreos":[1,2,0],
-    "obligatorio":true
+    "obligatorio":true,
+    "muestras_tomadas":[
+        {
+            "id":1,
+            "rango":"rango1",
+            "pesos":[10, 11, 12]
+        },
+        {
+            "id":2,
+            "rango":"rango3",
+            "pesos":[19, 21, 22]
+        }
+    ]
 }

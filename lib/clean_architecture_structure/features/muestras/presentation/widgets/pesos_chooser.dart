@@ -99,7 +99,7 @@ class _PesosChooserState extends State<PesosChooser> {
 
   TableRow _createComponenteRow(int index){
     final Componente componente = widget.muestra.componentes[index];
-    final double pesoEsperado = _getPesoEsperadoFromComponente(componente);
+    final double pesoEsperado = _getPesoEsperadoFromComponenteIndex(index);
     return TableRow(
       children:[
         Container(
@@ -134,9 +134,9 @@ class _PesosChooserState extends State<PesosChooser> {
     );
   }
 
-  double _getPesoEsperadoFromComponente(Componente componente){
-    final List<RangoToma> rT = componente.valoresPorRango;
-    return rT.singleWhere((rT) => rT.rango == widget.rangoEdad).pesoEsperado;
+  double _getPesoEsperadoFromComponenteIndex(int componenteIndex){
+    int rangoIndex = widget.muestra.rangos.indexWhere((r) => r == widget.rangoEdad);
+    return widget.muestra.pesosEsperadosPorRango[rangoIndex][componenteIndex];
   }
 
   InputBorder _createInputBorder(){

@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/general_button.dart';
-import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/componente.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/muestra.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/muestreo.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/bloc/muestras_bloc.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/presentation/widgets/muestra_detail.dart';
 import 'package:gap/old_architecture/logic/central_managers/pages_navigation_manager.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
 
 class EleccionTomaOFinalizar extends StatelessWidget {
   final SizeUtils sizeUtils = SizeUtils();
-  final Muestreo muestra;
+  final Muestreo muestreo;
   EleccionTomaOFinalizar({
-    @required this.muestra,
+    @required this.muestreo,
     Key key
   }) : super(key: key);
 
@@ -23,11 +24,12 @@ class EleccionTomaOFinalizar extends StatelessWidget {
         children: [
           Container(),
           Text(
-            'Número de muestras: ${muestra.nMuestras}',
+            'Número de muestras: ${muestreo.nMuestras}',
             style: TextStyle(
               fontSize: sizeUtils.subtitleSize
             ),
           ),
+          MuestreosHechos(muestreo: muestreo),
           _createBottomButtons(context),
         ],
       ),
@@ -54,13 +56,13 @@ class EleccionTomaOFinalizar extends StatelessWidget {
     );
   }
 
-  bool _canAddMuestreo() => muestra.nMuestras < muestra.maxMuestras;
+  bool _canAddMuestreo() => muestreo.nMuestras < muestreo.maxMuestras;
 
   void _hacerMuestreo(BuildContext context){
     BlocProvider.of<MuestrasBloc>(context).add(InitNewMuestra());
   }
 
-  bool _muestraCanFinish() => !muestra.obligatorio || ( muestra.minMuestras <= muestra.nMuestras);
+  bool _muestraCanFinish() => !muestreo.obligatorio || ( muestreo.minMuestras <= muestreo.nMuestras);
 
   void _finalizar(){
     //TODO: Cambiar cuando se haya implementado el nuevo FormulariosPage
@@ -68,38 +70,99 @@ class EleccionTomaOFinalizar extends StatelessWidget {
   }
 }
 
+// ignore: must_be_immutable
 class MuestreosHechos extends StatelessWidget {
-  final Muestreo muestra;
-  final List<int> nComponentesPorRango;
+  static final SizeUtils sizeUtils = SizeUtils();
+  final Muestreo muestreo;
+  List<int> nComponentesPorRango;
   MuestreosHechos({
-    @required this.muestra, 
+    @required this.muestreo, 
     Key key
-  }) : 
-    this.nComponentesPorRango = [],
-    super(key: key);
+  }) :super(key: key){
+    this.nComponentesPorRango = this.muestreo.rangos.map(
+      (_)=>0
+    ).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
-    List<Componente> componentes = this.muestra.componentes;
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.4,
-      child: ListView(
-        children: componentes.map(
-          (c) =>  Container(
-            child: Row(
-              children: [
-                Text('')
-              ],
-            ),
-          )
-        ).toList(),
-      ),
+    return Column(
+      children: [
+        Text(
+          'Muestras hechas',
+          style: TextStyle(
+            color: Theme.of(context).primaryColor,
+            fontSize: sizeUtils.subtitleSize,
+            fontWeight: FontWeight.bold
+          ),
+        ),
+        SizedBox(height: 20),
+        Container(
+          height: MediaQuery.of(context).size.height * 0.4,
+          child: ListView(
+            padding: EdgeInsets.symmetric(horizontal: sizeUtils.size.width * 0.1),
+            children: _generateMuestreos(context)
+          ),
+        ),
+      ],
     );
   }
 
-  Widget _generateMuestreos(){
-    List<Componente> componentes = this.muestra.componentes;
-    for(int i = 0; i < muestra.nMuestras; i++){
-    }
+  List<Widget> _generateMuestreos(BuildContext context){
+    return muestreo.muestrasTomadas.map(
+      (mT){
+        int rangoIndex = muestreo.rangos.indexWhere((r) => r == mT.rango);
+        nComponentesPorRango[rangoIndex]++;
+        return _createCurrentMuestraButton(context, mT, nComponentesPorRango[rangoIndex]);
+      }
+    ).toList();
+  }
+
+  Widget _createCurrentMuestraButton(BuildContext context, Muestra muestra, int muestraRangoIndex){
+    return Container(
+      child: TextButton(
+        //width: MediaQuery.of(context).size.width * 0.5,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Text(
+              '$muestraRangoIndex',
+              style: TextStyle(
+                color: Theme.of(context).primaryColor,
+                fontSize: sizeUtils.subtitleSize
+              ),
+            ),
+            Text(
+              '${muestra.rango}',
+              style: TextStyle(
+                color: Theme.of(context).primaryColor,
+                fontSize: sizeUtils.normalTextSize
+              )
+            ),
+            Container(),
+          ],
+        ),
+        onPressed: (){
+          BlocProvider.of<MuestrasBloc>(context).add(ChooseMuestra(muestra: muestra));
+          /*
+          showDialog(
+            context: context, 
+            builder: (_)=>Dialog(
+              child: MuestraDetail(),
+            ),
+            useRootNavigator: false
+          );
+          */
+        },
+      ),
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color: Theme.of(context).primaryColor,
+            width: 0.5
+          )
+        )
+      ),
+    );
   }
 }

@@ -13,25 +13,7 @@ void main(){
     tJson = _getMuestraFromFixture();
     tExpectedComponente = ComponenteModel(
       nombre: tJson['componentes'][0],
-      preparacion: null,
-      valoresPorRango: [
-        RangoTomaModel(
-          rango: tJson['rangos'][0],
-          //pesoEsperado: (tJson['pesos_esperados'][0]['pesos'][0] as num).toDouble(),
-          pesoEsperado: (tJson['pesos_esperados'][0][0] as num).toDouble(),
-          pesosTomados: []
-        ),
-        RangoTomaModel(
-          rango: tJson['rangos'][1],
-          pesoEsperado: (tJson['pesos_esperados'][1][0] as num).toDouble(),
-          pesosTomados: []
-        ),
-        RangoTomaModel(
-          rango: tJson['rangos'][2],
-          pesoEsperado: (tJson['pesos_esperados'][2][0] as num).toDouble(),
-          pesosTomados: []
-        )
-      ]
+      preparacion: null
     );
     tJson['componente_index'] = 0;
     tComponente = ComponenteModel.fromJson(tJson);
