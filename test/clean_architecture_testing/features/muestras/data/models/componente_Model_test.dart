@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:gap/clean_architecture_structure/features/muestras/data/models/rango_toma_model.dart';
 import 'package:test/test.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/data/models/componente_model.dart';
 import '../../../../fixtures/fixture_reader.dart';

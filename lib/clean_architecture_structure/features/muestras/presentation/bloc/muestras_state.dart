@@ -9,6 +9,8 @@ abstract class MuestrasState extends Equatable {
 
 class MuestreoEmpty extends MuestrasState {}
 
+class ChosingIfDoMuestrasOrNot extends MuestrasState {}
+
 class LoadingMuestreo extends MuestrasState {}
 
 abstract class LoadedMuestreo extends MuestrasState{

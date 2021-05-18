@@ -3,20 +3,20 @@ import 'package:gap/clean_architecture_structure/core/error/exceptions.dart';
 import 'package:http/http.dart' as http;
 
 abstract class RemoteDataSource{
-  //TODO: Cambiar por la ruta definitiva
   // ignore: non_constant_identifier_names
-  //final BASE_URL = 'dev.gapfergon.com';
-  final BASE_URL = 'gapfergon.com';
+  final BASE_HOST = 'http://';
+  //final BASE_HOST = 'https://';
+  // ignore: non_constant_identifier_names
+  final BASE_URL = 'dev.gapfergon.com';
+  //final BASE_URL = 'gapfergon.com';
   static const BASE_API_UNCODED_PATH = 'api';
-  //final BASE_HOST = 'http://';
-  final BASE_HOST = 'https://';
   // ignore: non_constant_identifier_names
   final BASE_PANEL_UNCODED_PATH = '$BASE_API_UNCODED_PATH/panel/';
   // ignore: non_constant_identifier_names
   final BASE_AUTH_UNCODED_PATH = '$BASE_API_UNCODED_PATH/auth/';
 
-  //Uri getUri(String uncodedPath)=>Uri.http(BASE_URL, uncodedPath);
-  Uri getUri(String uncodedPath)=>Uri.https(BASE_URL, uncodedPath);
+  Uri getUri(String uncodedPath)=>Uri.http(BASE_URL, uncodedPath);
+  //Uri getUri(String uncodedPath)=>Uri.https(BASE_URL, uncodedPath);
 
   Map<String, String> createSingleAuthorizationHeaders(String accessToken){
     return {

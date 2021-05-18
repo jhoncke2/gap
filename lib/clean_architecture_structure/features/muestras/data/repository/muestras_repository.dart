@@ -64,13 +64,11 @@ class MuestrasRepositoryImpl implements MuestrasRepository{
   }
 
   @override
-  Future<Either<Failure, void>> updateMuestra(int muestraIndexEnMuestreo, List<double> pesosTomados)async{
+  Future<Either<Failure, void>> removeMuestra(int muestraId)async{
     try{
       if( await networkInfo.isConnected() ){
-        int chosenProjectId = (await projectsLocalDataSource.getChosenProject() ).id;
-        int chosenVisitId = (await visitsLocalDataSource.getChosenVisit(chosenProjectId) ).id;
         String accessToken = await userLocalDataSource.getAccessToken();
-        await remoteDataSource.updateMuestra(accessToken, chosenVisitId, muestraIndexEnMuestreo, pesosTomados);
+        await remoteDataSource.removeMuestra(accessToken, muestraId);
       }
       return Right(null);
     }on StorageException catch(exception){
@@ -81,11 +79,13 @@ class MuestrasRepositoryImpl implements MuestrasRepository{
   }
 
   @override
-  Future<Either<Failure, void>> removeMuestra(int muestraId)async{
+  Future<Either<Failure, void>> updatePreparaciones(List<String> preparaciones)async{
     try{
-      if( await networkInfo.isConnected() ){
+      if(await networkInfo.isConnected()){
+        int chosenProjectId = (await projectsLocalDataSource.getChosenProject()).id;
+        int chosenVisitId = (await visitsLocalDataSource.getChosenVisit(chosenProjectId)).id;
         String accessToken = await userLocalDataSource.getAccessToken();
-        await remoteDataSource.removeMuestra(accessToken, muestraId);
+        await remoteDataSource.updatePreparaciones(accessToken, chosenVisitId, preparaciones);
       }
       return Right(null);
     }on StorageException catch(exception){

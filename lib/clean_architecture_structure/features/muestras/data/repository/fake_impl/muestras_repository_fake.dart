@@ -1,6 +1,8 @@
 import 'package:dartz/dartz.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/data/models/componente_model.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/data/models/muestra_model.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/data/repository/fake_impl/fake_muestra.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/componente.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/muestreo.dart';
 import 'package:gap/clean_architecture_structure/core/error/failures.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/repositories/muestras_repository.dart';
@@ -30,9 +32,12 @@ class MuestrasRepositoryFake implements MuestrasRepository{
   }
 
   @override
-  Future<Either<Failure, void>> updateMuestra(int muestraIndexEnMuestreo, List<double> pesosTomados) {
-    // TODO: implement updateMuestra
-    throw UnimplementedError();
+  Future<Either<Failure, void>> updatePreparaciones(List<String> preparaciones)async{
+    List<Componente> componentes = fakeMuestreo.componentes;
+    for(int i = 0; i < componentes.length; i++){
+      componentes[i] = ComponenteModel(nombre: componentes[i].nombre, preparacion: preparaciones[i]);
+    }
+    return Right(null);
   }
 
   @override
@@ -41,5 +46,4 @@ class MuestrasRepositoryFake implements MuestrasRepository{
     fakeMuestreo.nMuestras--;
     return Right(null);
   }
-
 }

@@ -7,14 +7,14 @@ import 'package:gap/clean_architecture_structure/core/data/data_sources/general/
 abstract class MuestrasRemoteDataSource{
   Future<MuestreoModel> getMuestra(String accessToken, int visitId);
   Future<void> setMuestra(String accessToken, int visitId, int selectedRangoIndex, List<double> pesosTomados);
-  Future<void> updateMuestra(String accessToken, int visitId, int muestraIndexEnMuestreo, List<double> pesosTomados);
+  Future<void> updatePreparaciones(String accessToken, int visitId, List<String> preparaciones);
   Future<void> removeMuestra(String accessToken, int muestraId);
 }
 
 class MuestrasRemoteDataSourceImpl extends RemoteDataSource implements MuestrasRemoteDataSource{
   static const GET_MUESTREO_URL = 'getformatomuestra/visita/';
   static const SET_MUESTRA_URL = 'setformatomuestra/visita/';
-  static const UPDATE_MUESTRA_URL = 'updateformatomuestra/visita/';
+  static const UPDATE_PREPARACIONES_URL = 'updateformatomuestra/visita/';
   static const REMOVE_MUESTRA_URL = 'removemuestra/';
 
   final http.Client client;
@@ -53,26 +53,25 @@ class MuestrasRemoteDataSourceImpl extends RemoteDataSource implements MuestrasR
   }
 
   @override
-  Future<void> updateMuestra(String accessToken, int visitId, int muestraIndexEnMuestreo, List<double> pesosTomados)async{
-    Map<String, dynamic> body = {
-      'pesos': pesosTomados,
-      'index_muestra':muestraIndexEnMuestreo
-    };
-    await executeGeneralService(()async=>
-      await client.put(
-        super.getUri('${super.BASE_PANEL_UNCODED_PATH}$UPDATE_MUESTRA_URL$visitId'),
-        headers: super.createAuthorizationJsonHeaders(accessToken),
-        body: jsonEncode(body)
-      )
-    );
-  }
-
-  @override
   Future<void> removeMuestra(String accessToken, int muestraId)async{
     await executeGeneralService(()async=>
       await client.delete(
         super.getUri('${super.BASE_PANEL_UNCODED_PATH}$REMOVE_MUESTRA_URL$muestraId'),
         headers: super.createSingleAuthorizationHeaders(accessToken)
+      )
+    );
+  }
+
+  @override
+  Future<void> updatePreparaciones(String accessToken, int visitId, List<String> preparaciones)async{
+    final Map<String, dynamic> body = {
+      'preparaciones': preparaciones
+    };
+    await executeGeneralService(() async =>
+      await client.post(
+        super.getUri('${super.BASE_PANEL_UNCODED_PATH}$UPDATE_PREPARACIONES_URL$visitId'),
+        headers: super.createAuthorizationJsonHeaders(accessToken),
+        body: jsonEncode(body)
       )
     );
   }

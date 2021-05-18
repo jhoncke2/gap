@@ -1,17 +1,16 @@
 import 'dart:async';
-import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/muestra.dart';
-import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/remove_muestra.dart';
-import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/update_muestra.dart';
 import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/muestra.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/remove_muestra.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/update_preparaciones.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/componente.dart';
-import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/rango_toma.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/utils/string_to_double_converter.dart';
-import 'package:gap/clean_architecture_structure/core/domain/use_cases/use_case.dart';
 import 'package:gap/clean_architecture_structure/core/error/failures.dart';
+import 'package:gap/clean_architecture_structure/core/domain/use_cases/use_case.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/get_muestras.dart';
-import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/set_muestras.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/set_muestra.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/muestreo.dart';
 
 part 'muestras_event.dart';
@@ -23,14 +22,14 @@ class MuestrasBloc extends Bloc<MuestrasEvent, MuestrasState>{
 
   final GetMuestras getMuestras;
   final SetMuestra setMuestra;
-  final UpdateMuestra updateMuestra;
+  final UpdatePreparaciones updatePreparaciones;
   final RemoveMuestra removeMuestra;
   final StringToDoubleConverter pesosConverter;
 
   MuestrasBloc({
     @required this.getMuestras,
     @required this.setMuestra,
-    @required this.updateMuestra,
+    @required this.updatePreparaciones,
     @required this.removeMuestra,
     @required this.pesosConverter
   }) : super(MuestreoEmpty()){
@@ -44,7 +43,7 @@ class MuestrasBloc extends Bloc<MuestrasEvent, MuestrasState>{
     if(event is GetMuestreoEvent){
       yield * _getMuestra(event);
     }else if(event is SetMuestreoPreparaciones){
-      yield * _setMuestraPreparaciones(event);
+      yield * _setMuestreoPreparaciones(event);
     }else if(event is InitNewMuestra){
       yield * _addNewTomaDeMuestra(event);
     }else if(event is ChooseRangoEdad){
@@ -75,15 +74,21 @@ class MuestrasBloc extends Bloc<MuestrasEvent, MuestrasState>{
     });
   }
 
-  Stream<MuestrasState> _setMuestraPreparaciones(SetMuestreoPreparaciones event)async*{
-    final List<String> preparaciones = event.preparaciones;
+  Stream<MuestrasState> _setMuestreoPreparaciones(SetMuestreoPreparaciones event)async*{
     final Muestreo muestreo =  (state as OnPreparacionMuestra).muestreo;
     yield LoadingMuestreo();
-    final List<Componente> componentes = muestreo.componentes;
-    for(int i = 0; i < componentes.length; i++){
-      componentes[i].preparacion = preparaciones[i];
-    }
-    yield OnEleccionTomaOFinalizar(muestreo: muestreo);
+    final List<String> preparaciones = event.preparaciones;
+    final eitherUpdatePreparaciones = await updatePreparaciones(UpdatePreparacionesParams(preparaciones: preparaciones));
+    yield * eitherUpdatePreparaciones.fold((_)async*{
+      yield MuestraError(message: GENERAL_ERROR_MESSAGE);
+    }, (r)async*{
+      final List<Componente> componentes = muestreo.componentes;
+      for(int i = 0; i < componentes.length; i++){
+        componentes[i].preparacion = preparaciones[i];
+      }
+      yield OnEleccionTomaOFinalizar(muestreo: muestreo);
+    });
+    
   }
 
   Stream<MuestrasState> _addNewTomaDeMuestra(InitNewMuestra event)async*{

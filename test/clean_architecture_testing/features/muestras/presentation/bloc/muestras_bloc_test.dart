@@ -2,11 +2,10 @@ import 'dart:convert';
 import 'package:gap/clean_architecture_structure/features/muestras/data/models/muestra_model.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/muestra.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/remove_muestra.dart';
-import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/update_muestra.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/update_preparaciones.dart';
 import 'package:test/test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:mockito/mockito.dart';
-import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/rango_toma.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/utils/string_to_double_converter.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/componente.dart';
 import 'package:gap/clean_architecture_structure/core/domain/use_cases/use_case.dart';
@@ -14,20 +13,20 @@ import 'package:gap/clean_architecture_structure/core/error/failures.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/data/models/muestreo_model.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/muestreo.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/get_muestras.dart';
-import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/set_muestras.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/set_muestra.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/bloc/muestras_bloc.dart';
 import '../../../../fixtures/fixture_reader.dart';
 
 class MockGetMuestras extends Mock implements GetMuestras{}
 class MockSetMuestra extends Mock implements SetMuestra{}
-class MockUpdateMuestra extends Mock implements UpdateMuestra{}
+class MockUpdatePreparaciones extends Mock implements UpdatePreparaciones{}
 class MockStringToDoubleConverter extends Mock implements StringToDoubleConverter{}
 class MockRemoveMuestra extends Mock implements RemoveMuestra{}
 
 MuestrasBloc bloc;
 MockGetMuestras getMuestras;
 MockSetMuestra setMuestras;
-MockUpdateMuestra updateMuestra;
+MockUpdatePreparaciones updatePreparaciones;
 MockRemoveMuestra removeMuestra;
 MockStringToDoubleConverter pesosConverter;
 
@@ -35,13 +34,13 @@ void main(){
   setUp((){
     pesosConverter = MockStringToDoubleConverter();
     removeMuestra = MockRemoveMuestra();
-    updateMuestra = MockUpdateMuestra();
+    updatePreparaciones = MockUpdatePreparaciones();
     setMuestras = MockSetMuestra();
     getMuestras = MockGetMuestras(); 
     bloc = MuestrasBloc(
       getMuestras: getMuestras, 
       setMuestra: setMuestras,
-      updateMuestra: updateMuestra,
+      updatePreparaciones: updatePreparaciones,
       removeMuestra: removeMuestra,
       pesosConverter: pesosConverter
     );
@@ -108,11 +107,17 @@ void main(){
       for(int i = 0; i < tMuestraComponentes.length; i++){
         tMuestraComponentes[i].preparacion = tPreparaciones[i];
       }
+      bloc.emit(OnPreparacionMuestra(muestra: tMuestra));
+      when(updatePreparaciones.call(any)).thenAnswer((_) async => Right(null));
+    });
+
+    test('should call the specified useCases', ()async{
+      bloc.add(SetMuestreoPreparaciones(preparaciones: tPreparaciones));
+      await untilCalled(updatePreparaciones(any));
+      verify(updatePreparaciones(UpdatePreparacionesParams(preparaciones: tPreparaciones)));
     });
 
     test('shoul yield the specified states when all goes good from onPreparacionMuestra', ()async{
-      when(getMuestras.call(any)).thenAnswer((_) async => Right(tMuestra));
-      bloc.emit(OnPreparacionMuestra(muestra: tMuestra));
       final expectedOrderedStates = [
         LoadingMuestreo(),
         OnEleccionTomaOFinalizar(muestreo: tMuestraConPreparaciones)

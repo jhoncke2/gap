@@ -1,4 +1,3 @@
-import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/rango_toma.dart';
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
 

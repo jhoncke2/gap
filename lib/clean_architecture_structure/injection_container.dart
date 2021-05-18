@@ -1,7 +1,7 @@
 //sl: service locator
 import 'package:gap/clean_architecture_structure/core/presentation/blocs/navigation/navigation_bloc.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/data/repository/fake_impl/muestras_repository_fake.dart';
-import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/update_muestra.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/update_preparaciones.dart';
 import 'package:gap/clean_architecture_structure/features/projects/domain/use_cases/get_chosen_project.dart';
 import 'package:gap/clean_architecture_structure/features/projects/domain/use_cases/set_chosen_project.dart';
 import 'package:get_it/get_it.dart';
@@ -33,7 +33,7 @@ import 'package:gap/clean_architecture_structure/core/platform/custom_navigator.
 import 'package:gap/clean_architecture_structure/core/presentation/utils/input_validator.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/repositories/muestras_repository.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/get_muestras.dart';
-import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/set_muestras.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/set_muestra.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/bloc/muestras_bloc.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/utils/string_to_double_converter.dart';
 import 'package:gap/clean_architecture_structure/features/projects/domain/use_cases/get_projects.dart';
@@ -161,7 +161,7 @@ void init()async{
   sl.registerLazySingleton(()=>SetChosenProject(repository: sl()));
   sl.registerLazySingleton(()=>GetMuestras(repository: sl()));
   sl.registerLazySingleton(()=>SetMuestra(repository: sl()));
-  sl.registerLazySingleton(()=>UpdateMuestra(repository: sl()));
+  sl.registerLazySingleton(()=>UpdatePreparaciones(repository: sl()));
   sl.registerLazySingleton(()=>RemoveMuestra(repository: sl()));
   //blocs
   sl.registerFactory(() => UserBloc(
@@ -179,7 +179,7 @@ void init()async{
     getMuestras: sl(), 
     setMuestra: sl(),
     pesosConverter: sl(),
-    updateMuestra: sl(),
+    updatePreparaciones: sl(),
     removeMuestra: sl()
   ));
   sl.registerFactory(()=>NavigationBloc(

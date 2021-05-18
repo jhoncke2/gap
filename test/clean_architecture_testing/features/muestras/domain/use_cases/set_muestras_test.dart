@@ -6,7 +6,7 @@ import 'package:gap/clean_architecture_structure/core/error/failures.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/data/models/muestreo_model.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/muestreo.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/repositories/muestras_repository.dart';
-import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/set_muestras.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/set_muestra.dart';
 import '../../../../fixtures/fixture_reader.dart';
 
 class MockMuestrasRepository extends Mock implements MuestrasRepository{}
