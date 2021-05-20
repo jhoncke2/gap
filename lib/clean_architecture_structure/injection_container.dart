@@ -138,8 +138,8 @@ void init()async{
     localDataSource: sl()
   ));
   //TODO: Quitar al confirmar funcionamiento correcto de MuestrasRepositoryImpl
-  sl.registerLazySingleton<MuestrasRepository>(()=>MuestrasRepositoryFake());
-  /*
+  //sl.registerLazySingleton<MuestrasRepository>(()=>MuestrasRepositoryFake());
+  ///*
   sl.registerLazySingleton<MuestrasRepository>(()=>MuestrasRepositoryImpl(
     networkInfo: sl(),
     remoteDataSource: sl(),
@@ -147,7 +147,7 @@ void init()async{
     projectsLocalDataSource: sl(),
     visitsLocalDataSource: sl()
   ));
-  */
+  //*/
 
   //useCases
   sl.registerLazySingleton(()=>GoTo(navigator: sl(), navRepository: sl()));

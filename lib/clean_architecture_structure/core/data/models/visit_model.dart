@@ -1,3 +1,4 @@
+import 'package:meta/meta.dart';
 import 'package:gap/clean_architecture_structure/core/domain/entities/visit.dart';
 import 'package:gap/old_architecture/data/models/entities/entities.dart';
 
@@ -43,17 +44,19 @@ List<Map<String, dynamic>> visitsToStorageJson(List<VisitModel> visits){
 // ignore: must_be_immutable
 class VisitModel extends Visit{
   VisitModel({
-    int id,
-    DateTime date,
-    bool completo,
-    SedeModel sede,
-    List<dynamic> formularios
+    @required int id,
+    @required DateTime date,
+    @required bool completo,
+    @required SedeModel sede,
+    @required List<dynamic> formularios,
+    @required bool hasMuestreo
   }):super(
     id: id,
     date: date,
     completo: completo,
     sede: sede,
-    formularios: formularios
+    formularios: formularios,
+    hasMuestreo: hasMuestreo
   );
   
   factory VisitModel.fromJson(Map<String, dynamic> json)=>VisitModel(
@@ -61,6 +64,7 @@ class VisitModel extends Visit{
     completo: json['completo']??false,
     date: json['fecha_visita'] == null? DateTime.now() : transformStringInToDateOld(json['fecha_visita']),
     sede: SedeModel.fromJson(json['sede']),
+    hasMuestreo: json['muestra']??false,
     formularios: [],
   );
 

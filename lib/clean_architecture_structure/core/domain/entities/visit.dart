@@ -10,6 +10,7 @@ class Visit extends EntityWithStage{
   final bool completo;
   final Sede sede;
   final List<dynamic> formularios;
+  final bool hasMuestreo;
   
   Visit({
     @required this.id,
@@ -17,6 +18,7 @@ class Visit extends EntityWithStage{
     @required this.completo,
     @required this.sede,
     @required this.formularios,
+    @required this.hasMuestreo,
     ProcessStage stage
   }):super(
     name: (sede == null)? '' : sede.nombre,

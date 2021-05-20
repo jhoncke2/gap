@@ -21,30 +21,32 @@ void main(){
   });
 
   group('call', (){
-    Muestreo tMuestra;
-    int tSelectedRangoIndex;
+    Muestreo tMuestreo;
+    int tSelectedRangoId;
+    String tSelectedRango;
     List<double> tPesosTomados;
     setUp((){
-      tMuestra = _getMuestrasFromFixture();
-      tSelectedRangoIndex = 0;
+      tMuestreo = _getMuestrasFromFixture();
+      tSelectedRangoId = 1;
+      tSelectedRango = tMuestreo.stringRangos[0];
       tPesosTomados = [1, 2, 3];
     });
 
     test('should call the repository method', ()async{
-      when(repository.setMuestra(any, any)).thenAnswer((_) async => Right(null));
-      await useCase.call(SetMuestraParams(selectedRangoIndex: tSelectedRangoIndex, pesosTomados: tPesosTomados));
-      verify(repository.setMuestra(tSelectedRangoIndex, tPesosTomados));
+      when(repository.setMuestra(any, any, any)).thenAnswer((_) async => Right(null));
+      await useCase.call(SetMuestraParams(muestreoId: tMuestreo.id, selectedRangoId: tSelectedRangoId, pesosTomados: tPesosTomados));
+      verify(repository.setMuestra(tMuestreo.id, tSelectedRangoId, tPesosTomados));
     });
 
     test('should return the repository returned value', ()async{
-      when(repository.setMuestra(any, any)).thenAnswer((_) async => Right(null));
-      final result = await useCase.call(SetMuestraParams(selectedRangoIndex: tSelectedRangoIndex, pesosTomados: tPesosTomados));
+      when(repository.setMuestra(any, any, any)).thenAnswer((_) async => Right(null));
+      final result = await useCase.call(SetMuestraParams(selectedRangoId: tSelectedRangoId, muestreoId: tMuestreo.id, pesosTomados: tPesosTomados));
       expect(result, Right(null));
     });
 
     test('should return the repository returned value', ()async{
-      when(repository.setMuestra(any, any)).thenAnswer((_) async => Left(ServerFailure(message: 'mensaje')));
-      final result = await useCase.call(SetMuestraParams(selectedRangoIndex: tSelectedRangoIndex, pesosTomados: tPesosTomados));
+      when(repository.setMuestra(any, any, any)).thenAnswer((_) async => Left(ServerFailure(message: 'mensaje')));
+      final result = await useCase.call(SetMuestraParams(selectedRangoId: tSelectedRangoId, muestreoId: tMuestreo.id, pesosTomados: tPesosTomados));
       expect(result, Left(ServerFailure(message: 'mensaje')));
     });
   });

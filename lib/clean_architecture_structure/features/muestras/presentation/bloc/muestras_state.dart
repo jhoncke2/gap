@@ -47,15 +47,15 @@ class OnChosingRangoEdad extends LoadedMuestreo{
 }
 
 class OnTomaPesos extends LoadedMuestreo{
-  final int rangoEdadIndex;
+  final int rangoId;
   OnTomaPesos({
-    @required this.rangoEdadIndex,
+    @required this.rangoId,
     @required Muestreo muestreo
   }):super(
     muestreo: muestreo
   );
   @override
-  List<Object> get props => [...super.props, this.rangoEdadIndex];
+  List<Object> get props => [...super.props, this.rangoId];
 }
 
 class OnEditingMuestra extends LoadedMuestreo{

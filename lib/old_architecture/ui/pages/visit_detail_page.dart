@@ -9,7 +9,6 @@ import 'package:gap/old_architecture/ui/widgets/native_back_button_locker.dart';
 import 'package:gap/old_architecture/ui/widgets/navigation_list/navigation_list_with_icons.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
 
-
 // ignore: must_be_immutable
 class VisitDetailPageOld extends StatelessWidget {
   static final String route = 'visit_detail';
@@ -68,20 +67,23 @@ class _VisitDetailComponents extends StatelessWidget {
   Widget build(BuildContext context) {
     _context = context;
     return Container(
-        padding: EdgeInsets.symmetric(
-            horizontal: _sizeUtils.normalHorizontalScaffoldPadding),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            PageTitle(title: visit.name, underlined: false),
-            SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
-            _createDateText(),
-            SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
-            NavigationListWithIcons(
-              currentVisitProcessState: visit.stage,
-            )
-          ],
-        ));
+      padding: EdgeInsets.symmetric(
+        horizontal: _sizeUtils.normalHorizontalScaffoldPadding
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          PageTitle(title: visit.name, underlined: false),
+          SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
+          _createDateText(),
+          SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
+          NavigationListWithIcons(
+            currentVisitProcessState: visit.stage,
+            visitHasMuestreo: visit.hasMuestreo,
+          )
+        ],
+      )
+    );
   }
 
   Widget _createDateText() {

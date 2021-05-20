@@ -22,17 +22,17 @@ class MuestrasRepositoryFake implements MuestrasRepository{
   }
 
   @override
-  Future<Either<Failure, void>> setMuestra(int selectedRangoIndex, List<double> pesosTomados)async{
+  Future<Either<Failure, void>> setMuestra(int muestreoId, int selectedRangoId, List<double> pesosTomados)async{
     lastSettedMuestra = MuestraModel(
       id: ++nSavedMuestras,
-      rango: fakeMuestreo.rangos[selectedRangoIndex], 
+      rango: '', 
       pesos: pesosTomados
     );
     return Right(null);
   }
 
   @override
-  Future<Either<Failure, void>> updatePreparaciones(List<String> preparaciones)async{
+  Future<Either<Failure, void>> updatePreparaciones(int muestreoId, List<String> preparaciones)async{
     List<Componente> componentes = fakeMuestreo.componentes;
     for(int i = 0; i < componentes.length; i++){
       componentes[i] = ComponenteModel(nombre: componentes[i].nombre, preparacion: preparaciones[i]);

@@ -73,7 +73,7 @@ class MuestrasPage extends StatelessWidget {
     else if(state is OnChosingRangoEdad)
       return RangoEdadChosing(muestra: state.muestreo);
     else if(state is OnTomaPesos)
-      return PesosChooser(muestra: state.muestreo, rangoEdadIndex: state.rangoEdadIndex);
+      return PesosChooser(muestra: state.muestreo, rangoEdadIndex: state.rangoId);
     else if(state is OnMuestraDetail)
       return MuestraDetail(muestra: state.muestra, muestreoComponentes: state.muestreo.componentes);
     else if(state is MuestraRemoved)

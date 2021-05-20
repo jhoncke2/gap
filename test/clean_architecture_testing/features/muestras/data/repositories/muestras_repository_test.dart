@@ -68,13 +68,13 @@ void main(){
       when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
       when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tChosenProject);
       when(visitsLocalDataSource.getChosenVisit(any)).thenAnswer((_) async => tChosenVisit);
-      when(remoteDataSource.getMuestra(any, any)).thenAnswer((_) async => tMuestra);
+      when(remoteDataSource.getMuestreo(any, any)).thenAnswer((_) async => tMuestra);
       await repository.getMuestreo();
       verify(networkInfo.isConnected());
       verify(userLocalDataSource.getAccessToken());
       verify(projectsLocalDataSource.getChosenProject());
       verify(visitsLocalDataSource.getChosenVisit(tChosenProject.id));
-      verify(remoteDataSource.getMuestra(tAccessToken, tChosenVisit.id));      
+      verify(remoteDataSource.getMuestreo(tAccessToken, tChosenVisit.id));      
     });
 
     test('''should never call the methods from localUserDataSource, localProjectsDataSource,
@@ -86,7 +86,7 @@ void main(){
       verifyNever(userLocalDataSource.getAccessToken());
       verifyNever(projectsLocalDataSource.getChosenProject());
       verifyNever(visitsLocalDataSource.getChosenVisit(any));
-      verifyNever(remoteDataSource.getMuestra(any, any));      
+      verifyNever(remoteDataSource.getMuestreo(any, any));      
     });
 
     test('''should return Right(tMuestra), 
@@ -95,7 +95,7 @@ void main(){
       when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
       when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tChosenProject);
       when(visitsLocalDataSource.getChosenVisit(any)).thenAnswer((_) async => tChosenVisit);
-      when(remoteDataSource.getMuestra(any, any)).thenAnswer((_) async => tMuestra);
+      when(remoteDataSource.getMuestreo(any, any)).thenAnswer((_) async => tMuestra);
       final result = await repository.getMuestreo();
       expect(result, Right(tMuestra));
     });
@@ -113,7 +113,7 @@ void main(){
       when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
       when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tChosenProject);
       when(visitsLocalDataSource.getChosenVisit(any)).thenAnswer((_) async => tChosenVisit);
-      when(remoteDataSource.getMuestra(any, any)).thenThrow(ServerException(type: ServerExceptionType.REFRESH_ACCESS_TOKEN));
+      when(remoteDataSource.getMuestreo(any, any)).thenThrow(ServerException(type: ServerExceptionType.REFRESH_ACCESS_TOKEN));
       final result = await repository.getMuestreo();
       expect(result, Left(ServerFailure(servExcType: ServerExceptionType.REFRESH_ACCESS_TOKEN)));
     });
@@ -124,26 +124,90 @@ void main(){
       when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
       when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tChosenProject);
       when(visitsLocalDataSource.getChosenVisit(any)).thenThrow(StorageException(type: StorageExceptionType.NORMAL));
-      when(remoteDataSource.getMuestra(any, any)).thenAnswer((_) async => tMuestra);
+      when(remoteDataSource.getMuestreo(any, any)).thenAnswer((_) async => tMuestra);
       final result = await repository.getMuestreo();
+      expect(result, Left(StorageFailure(excType: StorageExceptionType.NORMAL)));
+    });
+  });
+
+  group('updatePreparaciones', (){
+    ProjectModel tChosenProject;
+    VisitModel tChosenVisit;
+    int tMuestreoId;
+    String tAccessToken;
+    List<String> tPreparaciones;
+
+    setUp((){
+      tChosenProject = _getProjectFromFixture();
+      tChosenVisit = _getVisitFromFixture();
+      tMuestreoId = 1;
+      tAccessToken = 'access_token';
+      tPreparaciones = ['prep1', 'prep2', 'prep3', 'prep4'];
+    });
+
+    test('''should call the networkInfo, <user / project / visit> localDataSources and call the remoteDataSource update method, 
+    when there is connectivity and all goes good''', ()async{
+      when(networkInfo.isConnected()).thenAnswer((_) async => true);
+      when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
+      await repository.updatePreparaciones(tMuestreoId, tPreparaciones);
+      verify(networkInfo.isConnected());
+      verify(userLocalDataSource.getAccessToken());
+      verify(remoteDataSource.updatePreparaciones(tAccessToken, tMuestreoId, tPreparaciones));
+    });
+
+    test('should do nothing, when there is not connectivity', ()async{
+      when(networkInfo.isConnected()).thenAnswer((_) async => false);
+      await repository.updatePreparaciones(tMuestreoId, tPreparaciones);
+      verify(networkInfo.isConnected());
+      verifyNever(userLocalDataSource.getAccessToken());
+      verifyNever(remoteDataSource.updatePreparaciones(any, any, any));
+    });
+
+    test('''should return Right(null), 
+    when there is connectivity and all goes good''', ()async{
+      when(networkInfo.isConnected()).thenAnswer((_) async => true);
+      when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
+      final result = await repository.updatePreparaciones(tMuestreoId, tPreparaciones);
+      expect(result, Right(null));
+    });
+
+    test('''should return Right(null), 
+    when there is not connectivity''', ()async{
+      when(networkInfo.isConnected()).thenAnswer((_) async => false);
+      final result = await repository.updatePreparaciones(tMuestreoId, tPreparaciones);
+      expect(result, Right(null));
+    });
+
+    test('''should return Left(ServerFailure(X)), 
+    when there is connectivity and remoteDataSource throws ServerException(X)''', ()async{
+      when(networkInfo.isConnected()).thenAnswer((_) async => true);
+      when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
+      when(remoteDataSource.updatePreparaciones(any, any, any)).thenThrow(ServerException(type: ServerExceptionType.REFRESH_ACCESS_TOKEN));
+      final result = await repository.updatePreparaciones(tMuestreoId, tPreparaciones);
+      expect(result, Left(ServerFailure(servExcType: ServerExceptionType.REFRESH_ACCESS_TOKEN)));
+    });
+
+    test('''should return Left(StorageFailure(X)), 
+    when there is connectivity and remoteDataSource throws ServerException(X)''', ()async{
+      when(networkInfo.isConnected()).thenAnswer((_) async => true);
+      when(userLocalDataSource.getAccessToken()).thenThrow(StorageException(type: StorageExceptionType.NORMAL));;
+      final result = await repository.updatePreparaciones(tMuestreoId, tPreparaciones);
       expect(result, Left(StorageFailure(excType: StorageExceptionType.NORMAL)));
     });
   });
 
   group('setMuestra', (){
     String tAccessToken;
-    ProjectModel tChosenProject;
-    VisitModel tChosenVisit;
-    MuestreoModel tMuestra;
-    int tSelectedRangoIndex;
+    MuestreoModel tMuestreo;
+    int tSelectedRangoId;
+    String tSelectedRango;
     List<double> tPesosTomados;
 
     setUp((){
       tAccessToken = 'access_token';
-      tChosenProject = _getProjectFromFixture();
-      tChosenVisit = _getVisitFromFixture();
-      tMuestra = _getMuestreoFromFixture();
-      tSelectedRangoIndex = 0;
+      tMuestreo = _getMuestreoFromFixture();
+      tSelectedRangoId = 1;
+      tSelectedRango = tMuestreo.stringRangos[0];
       tPesosTomados = [1, 2, 3];
     });
 
@@ -152,26 +216,20 @@ void main(){
     when there is connectivity and all goes good''', ()async{
       when(networkInfo.isConnected()).thenAnswer((_) async => true);
       when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
-      when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tChosenProject);
-      when(visitsLocalDataSource.getChosenVisit(any)).thenAnswer((_) async => tChosenVisit);
-      when(remoteDataSource.setMuestra(any, any, any, any)).thenAnswer((_) async => tMuestra);
-      await repository.setMuestra(tSelectedRangoIndex, tPesosTomados);
+      when(remoteDataSource.setMuestra(any, any, any, any)).thenAnswer((_) async => tMuestreo);
+      await repository.setMuestra(tMuestreo.id, tSelectedRangoId, tPesosTomados);
       verify(networkInfo.isConnected());
       verify(userLocalDataSource.getAccessToken());
-      verify(projectsLocalDataSource.getChosenProject());
-      verify(visitsLocalDataSource.getChosenVisit(tChosenProject.id));
-      verify(remoteDataSource.setMuestra(tAccessToken, tChosenVisit.id, tSelectedRangoIndex, tPesosTomados));      
+      verify(remoteDataSource.setMuestra(tAccessToken, tMuestreo.id, tSelectedRangoId, tPesosTomados));      
     });
 
     test('''should never call the methods from localUserDataSource, localProjectsDataSource,
     localVisitDataSource, and finally remoteDataSource, 
     when there is not connectivity and all goes good''', ()async{
       when(networkInfo.isConnected()).thenAnswer((_) async => false);
-      await repository.setMuestra(tSelectedRangoIndex, tPesosTomados);
+      await repository.setMuestra(tMuestreo.id, tSelectedRangoId, tPesosTomados);
       verify(networkInfo.isConnected());
       verifyNever(userLocalDataSource.getAccessToken());
-      verifyNever(projectsLocalDataSource.getChosenProject());
-      verifyNever(visitsLocalDataSource.getChosenVisit(any));
       verifyNever(remoteDataSource.setMuestra(any, any, any, any));      
     });
 
@@ -179,17 +237,15 @@ void main(){
     when there is connectivity and all goes good''', ()async{
       when(networkInfo.isConnected()).thenAnswer((_) async => true);
       when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
-      when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tChosenProject);
-      when(visitsLocalDataSource.getChosenVisit(any)).thenAnswer((_) async => tChosenVisit);
-      when(remoteDataSource.setMuestra(any, any, any, any)).thenAnswer((_) async => tMuestra);
-      final result = await repository.setMuestra(tSelectedRangoIndex, tPesosTomados);
+      when(remoteDataSource.setMuestra(any, any, any, any)).thenAnswer((_) async => tMuestreo);
+      final result = await repository.setMuestra(tMuestreo.id, tSelectedRangoId, tPesosTomados);
       expect(result, Right(null));
     });
 
     test('''should return Right(null), 
     when there is not connectivity and all goes good''', ()async{
       when(networkInfo.isConnected()).thenAnswer((_) async => false);
-      final result = await repository.setMuestra(tSelectedRangoIndex, tPesosTomados);
+      final result = await repository.setMuestra(tMuestreo.id, tSelectedRangoId, tPesosTomados);
       expect(result, Right(null));
     });
 
@@ -197,97 +253,17 @@ void main(){
     when there is connectivity and remoteDataSource throws ServerException(X)''', ()async{
       when(networkInfo.isConnected()).thenAnswer((_) async => true);
       when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
-      when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tChosenProject);
-      when(visitsLocalDataSource.getChosenVisit(any)).thenAnswer((_) async => tChosenVisit);
       when(remoteDataSource.setMuestra(any, any, any, any)).thenThrow(ServerException(type: ServerExceptionType.REFRESH_ACCESS_TOKEN));
-      final result = await repository.setMuestra(tSelectedRangoIndex, tPesosTomados);
+      final result = await repository.setMuestra(tMuestreo.id, tSelectedRangoId, tPesosTomados);
       expect(result, Left(ServerFailure(servExcType: ServerExceptionType.REFRESH_ACCESS_TOKEN)));
     });
 
     test('''should return Left(StorageFailure(X)), 
     when there is connectivity and remoteDataSource throws ServerException(X)''', ()async{
       when(networkInfo.isConnected()).thenAnswer((_) async => true);
-      when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
-      when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tChosenProject);
-      when(visitsLocalDataSource.getChosenVisit(any)).thenThrow(StorageException(type: StorageExceptionType.NORMAL));
-      when(remoteDataSource.setMuestra(any, any, any, any)).thenAnswer((_) async => tMuestra);
-      final result = await repository.setMuestra(tSelectedRangoIndex, tPesosTomados);
-      expect(result, Left(StorageFailure(excType: StorageExceptionType.NORMAL)));
-    });
-  });
-
-  group('updatePreparaciones', (){
-    ProjectModel tChosenProject;
-    VisitModel tChosenVisit;
-    String tAccessToken;
-    List<String> tPreparaciones;
-
-    setUp((){
-      tChosenProject = _getProjectFromFixture();
-      tChosenVisit = _getVisitFromFixture();
-      tAccessToken = 'access_token';
-      tPreparaciones = ['prep1', 'prep2', 'prep3', 'prep4'];
-    });
-
-    test('''should call the networkInfo, <user / project / visit> localDataSources and call the remoteDataSource update method, 
-    when there is connectivity and all goes good''', ()async{
-      when(networkInfo.isConnected()).thenAnswer((_) async => true);
-      when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tChosenProject);
-      when(visitsLocalDataSource.getChosenVisit(any)).thenAnswer((_) async => tChosenVisit);
-      when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
-      await repository.updatePreparaciones(tPreparaciones);
-      verify(networkInfo.isConnected());
-      verify(projectsLocalDataSource.getChosenProject());
-      verify(visitsLocalDataSource.getChosenVisit(tChosenProject.id));
-      verify(userLocalDataSource.getAccessToken());
-      verify(remoteDataSource.updatePreparaciones(tAccessToken, tChosenVisit.id, tPreparaciones));
-    });
-
-    test('should do nothing, when there is not connectivity', ()async{
-      when(networkInfo.isConnected()).thenAnswer((_) async => false);
-      await repository.updatePreparaciones(tPreparaciones);
-      verify(networkInfo.isConnected());
-      verifyNever(projectsLocalDataSource.getChosenProject());
-      verifyNever(visitsLocalDataSource.getChosenVisit(any));
-      verifyNever(userLocalDataSource.getAccessToken());
-      verifyNever(remoteDataSource.updatePreparaciones(any, any, any));
-    });
-
-    test('''should return Right(null), 
-    when there is connectivity and all goes good''', ()async{
-      when(networkInfo.isConnected()).thenAnswer((_) async => true);
-      when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tChosenProject);
-      when(visitsLocalDataSource.getChosenVisit(any)).thenAnswer((_) async => tChosenVisit);
-      when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
-      final result = await repository.updatePreparaciones(tPreparaciones);
-      expect(result, Right(null));
-    });
-
-    test('''should return Right(null), 
-    when there is not connectivity''', ()async{
-      when(networkInfo.isConnected()).thenAnswer((_) async => false);
-      final result = await repository.updatePreparaciones(tPreparaciones);
-      expect(result, Right(null));
-    });
-
-    test('''should return Left(ServerFailure(X)), 
-    when there is connectivity and remoteDataSource throws ServerException(X)''', ()async{
-      when(networkInfo.isConnected()).thenAnswer((_) async => true);
-      when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
-      when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tChosenProject);
-      when(visitsLocalDataSource.getChosenVisit(any)).thenAnswer((_) async => tChosenVisit);
-      when(remoteDataSource.updatePreparaciones(any, any, any)).thenThrow(ServerException(type: ServerExceptionType.REFRESH_ACCESS_TOKEN));
-      final result = await repository.updatePreparaciones(tPreparaciones);
-      expect(result, Left(ServerFailure(servExcType: ServerExceptionType.REFRESH_ACCESS_TOKEN)));
-    });
-
-    test('''should return Left(StorageFailure(X)), 
-    when there is connectivity and remoteDataSource throws ServerException(X)''', ()async{
-      when(networkInfo.isConnected()).thenAnswer((_) async => true);
-      when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
-      when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tChosenProject);
-      when(visitsLocalDataSource.getChosenVisit(any)).thenThrow(StorageException(type: StorageExceptionType.NORMAL));
-      final result = await repository.updatePreparaciones(tPreparaciones);
+      when(userLocalDataSource.getAccessToken()).thenThrow(StorageException(type: StorageExceptionType.NORMAL));;
+      when(remoteDataSource.setMuestra(any, any, any, any)).thenAnswer((_) async => tMuestreo);
+      final result = await repository.setMuestra(tMuestreo.id, tSelectedRangoId, tPesosTomados);
       expect(result, Left(StorageFailure(excType: StorageExceptionType.NORMAL)));
     });
   });

@@ -54,13 +54,15 @@ class VisitOld extends EntityWithStageOld{
   bool _completo;
   SedeOld sede;
   List<FormularioOld> formularios;
+  bool hasMuestreo;
 
   VisitOld({
-      int id,
-      bool completo,
-      this.date,
-      this.sede,
-      this.formularios,
+    int id,
+    bool completo,
+    this.date,
+    this.sede,
+    this.formularios,
+    this.hasMuestreo
   })
   :
   _completo = completo,
@@ -76,6 +78,7 @@ class VisitOld extends EntityWithStageOld{
     v.completo, 
     date: v.date, 
     sede: SedeOld(id: v.sede.id, nombre: v.sede.nombre),
+    hasMuestreo: v.hasMuestreo??false,
     formularios: []
   );
 

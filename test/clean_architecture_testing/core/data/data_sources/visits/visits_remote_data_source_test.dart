@@ -43,7 +43,7 @@ void main(){
       when(client.get(any, headers: anyNamed('headers'))).thenAnswer((_) async => http.Response(tStringVisits, 200));
       await remoteDataSource.getVisits(tProjectId, tAccessToken);
       verify(client.get(
-        Uri.https(remoteDataSource.BASE_URL, '${remoteDataSource.BASE_PANEL_UNCODED_PATH}${VisitsRemoteDataSourceImpl.VISITS_API_URL}/$tProjectId'),
+        Uri.http(remoteDataSource.BASE_URL, '${remoteDataSource.BASE_PANEL_UNCODED_PATH}${VisitsRemoteDataSourceImpl.VISITS_API_URL}/$tProjectId'),
         headers: tHeaders
       ));
     });

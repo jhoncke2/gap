@@ -170,11 +170,13 @@ abstract class DataDistributor{
   }
 
   VisitModel _getVisitFromVisitOld(VisitOld vO)=>VisitModel(
-    id: vO.id, 
+    id: vO.id,
+    formularios: [],
     completo: 
     vO.completo, 
-    date: vO.date, 
+    date: vO.date,
     sede: SedeModel(id: vO.sede.id, nombre: vO.sede.nombre),
+    hasMuestreo: vO.hasMuestreo??false,
   );
   
   Future<void> updateChosenVisit(VisitOld visitOld)async{

@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:gap/clean_architecture_structure/features/muestras/data/models/muestra_model.dart';
 import 'package:test/test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:gap/clean_architecture_structure/core/error/exceptions.dart';
@@ -40,36 +39,36 @@ void main(){
 
     test('should get the muestra from the client, using the specified headers', ()async{
       when(client.get(any, headers: anyNamed('headers'))).thenAnswer((_) async => http.Response(tStringMuestra, 200));
-      await dataSource.getMuestra(tAccessToken, tVisitId);
+      await dataSource.getMuestreo(tAccessToken, tVisitId);
       verify(client.get(
-        Uri.https(dataSource.BASE_URL, '${dataSource.BASE_PANEL_UNCODED_PATH}${MuestrasRemoteDataSourceImpl.GET_MUESTREO_URL}$tVisitId'),
+        Uri.http(dataSource.BASE_URL, '${dataSource.BASE_PANEL_UNCODED_PATH}${MuestrasRemoteDataSourceImpl.GET_MUESTREO_URL}$tVisitId'),
         headers: tHeaders
       ));
     });
 
     test('should return the muestra when all goes good', ()async{
       when(client.get(any, headers: anyNamed('headers'))).thenAnswer((_) async => http.Response(tStringMuestra, 200));
-      final muestra = await dataSource.getMuestra(tAccessToken, tVisitId);
+      final muestra = await dataSource.getMuestreo(tAccessToken, tVisitId);
       print('muestreoooooooooooooooosssss: $muestra \n $tMuestra');
       expect(muestra, tMuestra);
     });
 
     test('should throws a ServerException when the http response has a status code that is not 200', ()async{
       when(client.get(any, headers: anyNamed('headers'))).thenAnswer((_) async => http.Response(tStringMuestra, 303));
-      final call = dataSource.getMuestra;
+      final call = dataSource.getMuestreo;
       expect(()=>call(tAccessToken, tVisitId), throwsA(TypeMatcher<ServerException>()));
     });
   });
 
   group('updatePreparaciones', (){
     String tAccessToken;
-    int tVisitId;
+    int tMuestreoId;
     List<String> tPreparaciones;
     Map<String, String> tHeaders;
     Map<String, dynamic> tBody;
     setUp((){
       tAccessToken = 'access_token';
-      tVisitId = 1;
+      tMuestreoId = 1;
       tPreparaciones = ['prep1', 'prep2', 'prep3'];
       tHeaders = {'Authorization': 'Bearer $tAccessToken', 'Content-Type': 'application/json'};
       tBody = {
@@ -79,9 +78,9 @@ void main(){
 
     test('should call the client update method with the specified url, headers, body', ()async{
       when(client.post(any, headers: anyNamed('headers'), body: anyNamed('body'))).thenAnswer((_) async => http.Response('{}', 200));
-      await dataSource.updatePreparaciones(tAccessToken, tVisitId, tPreparaciones);
+      await dataSource.updatePreparaciones(tAccessToken, tMuestreoId, tPreparaciones);
       verify(client.post(
-        Uri.https(dataSource.BASE_URL, '${dataSource.BASE_PANEL_UNCODED_PATH}${MuestrasRemoteDataSourceImpl.UPDATE_PREPARACIONES_URL}$tVisitId'),
+        Uri.http(dataSource.BASE_URL, '${dataSource.BASE_PANEL_UNCODED_PATH}${MuestrasRemoteDataSourceImpl.UPDATE_PREPARACIONES_URL}$tMuestreoId'),
         headers: tHeaders,
         body: jsonEncode(tBody)
       ));
@@ -90,40 +89,41 @@ void main(){
     test('should throws a ServerException when the http response has a status code that is not 200', ()async{
       when(client.post(any, headers: anyNamed('headers'), body: anyNamed('body'))).thenAnswer((_) async => http.Response('ha ocurrio algo malo', 303));
       final call = dataSource.updatePreparaciones;
-      expect(()=>call(tAccessToken, tVisitId, tPreparaciones), throwsA(TypeMatcher<ServerException>()));
+      expect(()=>call(tAccessToken, tMuestreoId, tPreparaciones), throwsA(TypeMatcher<ServerException>()));
     });
   });
 
   group('setMuestra', (){
     String tAccessToken;
-    int tVisitId;
+    int tMuestreoId;
     MuestreoModel tMuestra;
-    int tSelectedRangoIndex;
+    int tSelectedRangoId;
+    String tSelectedRango;
     Map<String, String> tHeaders;
     Map<String, dynamic> tBody;
     List<double> tPesosTomados;
     setUp((){
       tAccessToken = 'access_token';
-      tVisitId = 1;
+      tMuestreoId = 1;
       tMuestra = MuestreoModel.fromJson( jsonDecode( callFixture('muestra.json') ) );
-      tSelectedRangoIndex = 0;
+      tSelectedRangoId = 1;
+      tSelectedRango = 'selected_rango';
       tHeaders = {'Authorization':'Bearer $tAccessToken', 'Content-Type':'application/json'};
       tPesosTomados = [];
       for(int i = 0; i < tMuestra.componentes.length; i++){
         tPesosTomados.add(i.toDouble());
       }
       tBody = {
-        'tipo_rango':tSelectedRangoIndex, 
-        'pesos':tPesosTomados,
-        'visita_id':tVisitId
+        'clasificacion_id':tSelectedRangoId,
+        'respuesta':tPesosTomados
       };
     });
 
     test('should set the data on the client. ', ()async{
       when(client.post(any, headers: anyNamed('headers'), body: anyNamed('body'))).thenAnswer((_) async => http.Response('{}', 200));
-      await dataSource.setMuestra(tAccessToken, tVisitId, tSelectedRangoIndex, tPesosTomados);
+      await dataSource.setMuestra(tAccessToken, tMuestreoId, tSelectedRangoId, tPesosTomados);
       verify(client.post(
-        Uri.https(dataSource.BASE_URL, '${dataSource.BASE_PANEL_UNCODED_PATH}${MuestrasRemoteDataSourceImpl.SET_MUESTRA_URL}$tVisitId'),
+        Uri.http(dataSource.BASE_URL, '${dataSource.BASE_PANEL_UNCODED_PATH}${MuestrasRemoteDataSourceImpl.SET_MUESTRA_URL}$tMuestreoId'),
         headers: tHeaders,
         body: jsonEncode( tBody )
       ));
@@ -132,7 +132,7 @@ void main(){
     test('should throws a ServerException when the http response has a status code that is not 200', ()async{
       when(client.post(any, headers: anyNamed('headers'), body: anyNamed('body'))).thenAnswer((_) async => http.Response('ha ocurrio algo malo', 303));
       final call = dataSource.setMuestra;
-      expect(()=>call(tAccessToken, tVisitId, tSelectedRangoIndex, tPesosTomados), throwsA(TypeMatcher<ServerException>()));
+      expect(()=>call(tAccessToken, tMuestreoId, tSelectedRangoId, tPesosTomados), throwsA(TypeMatcher<ServerException>()));
     });
   });
 
@@ -150,7 +150,7 @@ void main(){
       when(client.delete(any, headers: anyNamed('headers'))).thenAnswer((_) async => http.Response('{}', 200));
       await dataSource.removeMuestra(tAccessToken, tMuestraId);
       verify(client.delete(
-        Uri.https(dataSource.BASE_URL, '${dataSource.BASE_PANEL_UNCODED_PATH}${MuestrasRemoteDataSourceImpl.REMOVE_MUESTRA_URL}$tMuestraId'),
+        Uri.http(dataSource.BASE_URL, '${dataSource.BASE_PANEL_UNCODED_PATH}${MuestrasRemoteDataSourceImpl.REMOVE_MUESTRA_URL}$tMuestraId'),
         headers: tHeaders
       ));
     });

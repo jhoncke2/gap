@@ -16,7 +16,7 @@ class PesosChooser extends StatefulWidget {
     Key key
   }) : 
     this.muestra = muestra,
-    this.rangoEdad = muestra.rangos[rangoEdadIndex],
+    this.rangoEdad = muestra.stringRangos[rangoEdadIndex],
     super(key: key);
 
   @override
@@ -134,7 +134,7 @@ class _PesosChooserState extends State<PesosChooser> {
   }
 
   double _getPesoEsperadoFromComponenteIndex(int componenteIndex){
-    int rangoIndex = widget.muestra.rangos.indexWhere((r) => r == widget.rangoEdad);
+    int rangoIndex = widget.muestra.stringRangos.indexWhere((r) => r == widget.rangoEdad);
     return widget.muestra.pesosEsperadosPorRango[rangoIndex][componenteIndex];
   }
 

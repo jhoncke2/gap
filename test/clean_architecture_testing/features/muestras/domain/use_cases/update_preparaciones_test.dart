@@ -16,17 +16,20 @@ void main(){
   });
 
   group('call', (){
+    int tMuestreoId;
     List<String> tPreparaciones;
     setUp((){
+      tMuestreoId = 1;
       tPreparaciones = ['prep1', 'prep2', 'prep3'];
     });
 
     test('should call the repository method', ()async{
-      when(repository.updatePreparaciones(any)).thenAnswer((_) async => Right(null));
+      when(repository.updatePreparaciones(any, any)).thenAnswer((_) async => Right(null));
       await useCase(UpdatePreparacionesParams(
+        muestreoId: tMuestreoId,
         preparaciones: tPreparaciones
       ));
-      verify(repository.updatePreparaciones(tPreparaciones));
+      verify(repository.updatePreparaciones(tMuestreoId, tPreparaciones));
     });
   });
 }

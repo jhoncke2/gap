@@ -55,7 +55,7 @@ void main() {
       tAccessToken = 'a_t';
       tCommentedImages = _getUnsentCommentedImagesFromFixture();
       tChosenProject = ProjectModel(id: 1, nombre: 'asdf');
-      tChosenVisit = VisitModel(id: 2, completo: false, formularios: []);
+      tChosenVisit = VisitModel(id: 2, completo: false, formularios: [], hasMuestreo: false, date: null, sede: null);
     });
 
     test('should set the commImgs on the remoteDataSource with the accessToken and visitId when there is connectivity', ()async{

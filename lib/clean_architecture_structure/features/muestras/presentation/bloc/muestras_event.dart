@@ -18,9 +18,9 @@ class SetMuestreoPreparaciones extends MuestrasEvent{
 class InitNewMuestra extends MuestrasEvent{}
 
 class ChooseRangoEdad extends MuestrasEvent{
-  final int rangoIndex;
+  final int rangoId;
   ChooseRangoEdad({
-    @required this.rangoIndex
+    @required this.rangoId
   });
 }
 

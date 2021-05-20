@@ -29,7 +29,7 @@ class EleccionTomaOFinalizar extends StatelessWidget {
               fontSize: sizeUtils.subtitleSize
             ),
           ),
-          MuestreosHechos(muestreo: muestreo),
+          MuestrasHechas(muestreo: muestreo),
           _createBottomButtons(context),
         ],
       ),
@@ -71,11 +71,11 @@ class EleccionTomaOFinalizar extends StatelessWidget {
 }
 
 // ignore: must_be_immutable
-class MuestreosHechos extends StatelessWidget {
+class MuestrasHechas extends StatelessWidget {
   static final SizeUtils sizeUtils = SizeUtils();
   final Muestreo muestreo;
   List<int> nComponentesPorRango;
-  MuestreosHechos({
+  MuestrasHechas({
     @required this.muestreo, 
     Key key
   }) :super(key: key){
@@ -101,17 +101,17 @@ class MuestreosHechos extends StatelessWidget {
           height: MediaQuery.of(context).size.height * 0.4,
           child: ListView(
             padding: EdgeInsets.symmetric(horizontal: sizeUtils.size.width * 0.1),
-            children: _generateMuestreos(context)
+            children: _generateMuestras(context)
           ),
         ),
       ],
     );
   }
 
-  List<Widget> _generateMuestreos(BuildContext context){
+  List<Widget> _generateMuestras(BuildContext context){
     return muestreo.muestrasTomadas.map(
       (mT){
-        int rangoIndex = muestreo.rangos.indexWhere((r) => r == mT.rango);
+        int rangoIndex = muestreo.rangos.indexWhere((r) => r.nombre == mT.rango);
         nComponentesPorRango[rangoIndex]++;
         return _createCurrentMuestraButton(context, mT, nComponentesPorRango[rangoIndex]);
       }

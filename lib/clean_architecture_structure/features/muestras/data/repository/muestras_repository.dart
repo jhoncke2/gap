@@ -35,8 +35,8 @@ class MuestrasRepositoryImpl implements MuestrasRepository{
         final ProjectModel chosenProject = await projectsLocalDataSource.getChosenProject();
         final VisitModel chosenVisit = await visitsLocalDataSource.getChosenVisit(chosenProject.id);
         final String accessToken = await userLocalDataSource.getAccessToken();
-        final MuestreoModel muestra =  await remoteDataSource.getMuestra(accessToken, chosenVisit.id);
-        return Right(muestra);
+        final MuestreoModel muestreo = await remoteDataSource.getMuestreo(accessToken, chosenVisit.id);
+        return Right(muestreo);
       }on StorageException catch(exception){
         return Left(StorageFailure(excType: exception.type));
       }on ServerException catch(exception){
@@ -47,13 +47,11 @@ class MuestrasRepositoryImpl implements MuestrasRepository{
   }
 
   @override
-  Future<Either<Failure, void>> setMuestra(int selectedRangoIndex, List<double> pesosTomados)async{
+  Future<Either<Failure, void>> setMuestra(int muestreoId, int selectedRangoId, List<double> pesosTomados)async{
     try{
       if( await networkInfo.isConnected() ){
-        final ProjectModel chosenProject = await projectsLocalDataSource.getChosenProject();
-        final VisitModel chosenVisit = await visitsLocalDataSource.getChosenVisit(chosenProject.id);
         final String accessToken = await userLocalDataSource.getAccessToken();
-        await remoteDataSource.setMuestra(accessToken, chosenVisit.id, selectedRangoIndex, pesosTomados);
+        await remoteDataSource.setMuestra(accessToken, muestreoId, selectedRangoId, pesosTomados);
       }
       return Right(null);
     }on StorageException catch(exception){
@@ -79,13 +77,11 @@ class MuestrasRepositoryImpl implements MuestrasRepository{
   }
 
   @override
-  Future<Either<Failure, void>> updatePreparaciones(List<String> preparaciones)async{
+  Future<Either<Failure, void>> updatePreparaciones(int muestreoId, List<String> preparaciones)async{
     try{
       if(await networkInfo.isConnected()){
-        int chosenProjectId = (await projectsLocalDataSource.getChosenProject()).id;
-        int chosenVisitId = (await visitsLocalDataSource.getChosenVisit(chosenProjectId)).id;
         String accessToken = await userLocalDataSource.getAccessToken();
-        await remoteDataSource.updatePreparaciones(accessToken, chosenVisitId, preparaciones);
+        await remoteDataSource.updatePreparaciones(accessToken, muestreoId, preparaciones);
       }
       return Right(null);
     }on StorageException catch(exception){

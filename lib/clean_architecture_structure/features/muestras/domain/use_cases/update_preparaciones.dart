@@ -15,14 +15,16 @@ class UpdatePreparaciones implements UseCase<void, UpdatePreparacionesParams>{
 
   @override
   Future<Either<Failure, void>> call(UpdatePreparacionesParams params)async{
-    return await repository.updatePreparaciones(params.preparaciones);
+    return await repository.updatePreparaciones(params.muestreoId, params.preparaciones);
   }
 }
 
 class UpdatePreparacionesParams extends Equatable{
+  final int muestreoId;
   final List<String> preparaciones;
 
   UpdatePreparacionesParams({
+    @required this.muestreoId,
     @required this.preparaciones
   });
 

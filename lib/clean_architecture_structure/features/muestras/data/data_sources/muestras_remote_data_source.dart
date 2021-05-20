@@ -5,17 +5,17 @@ import 'package:gap/clean_architecture_structure/features/muestras/data/models/m
 import 'package:gap/clean_architecture_structure/core/data/data_sources/general/remote_data_source.dart';
 
 abstract class MuestrasRemoteDataSource{
-  Future<MuestreoModel> getMuestra(String accessToken, int visitId);
-  Future<void> setMuestra(String accessToken, int visitId, int selectedRangoIndex, List<double> pesosTomados);
-  Future<void> updatePreparaciones(String accessToken, int visitId, List<String> preparaciones);
+  Future<MuestreoModel> getMuestreo(String accessToken, int visitId);
+  Future<void> updatePreparaciones(String accessToken, int muestreoId, List<String> preparaciones);
+  Future<void> setMuestra(String accessToken, int muestreoId, int selectedRangoId, List<double> pesosTomados);
   Future<void> removeMuestra(String accessToken, int muestraId);
 }
 
 class MuestrasRemoteDataSourceImpl extends RemoteDataSource implements MuestrasRemoteDataSource{
   static const GET_MUESTREO_URL = 'getformatomuestra/visita/';
-  static const SET_MUESTRA_URL = 'setformatomuestra/visita/';
-  static const UPDATE_PREPARACIONES_URL = 'updateformatomuestra/visita/';
-  static const REMOVE_MUESTRA_URL = 'removemuestra/';
+  static const SET_MUESTRA_URL = 'setformatomuestra/respuesta/';
+  static const UPDATE_PREPARACIONES_URL = 'setformatomuestra/preparacion/';
+  static const REMOVE_MUESTRA_URL = 'getformatomuestra/respuesta-delete/';
 
   final http.Client client;
 
@@ -24,7 +24,7 @@ class MuestrasRemoteDataSourceImpl extends RemoteDataSource implements MuestrasR
   });
 
   @override
-  Future<MuestreoModel> getMuestra(String accessToken, int visitId)async{
+  Future<MuestreoModel> getMuestreo(String accessToken, int visitId)async{
     final Map<String, String> headers = super.createAuthorizationJsonHeaders(accessToken);
     final response = await executeGeneralService(()async{
       return await client.get(
@@ -37,15 +37,28 @@ class MuestrasRemoteDataSourceImpl extends RemoteDataSource implements MuestrasR
   }
 
   @override
-  Future<void> setMuestra(String accessToken, int visitId, int selectedRangoIndex, List<double> pesosTomados)async{
-    Map<String, dynamic> body = {
-      'tipo_rango':selectedRangoIndex,
-      'pesos':pesosTomados
+  Future<void> updatePreparaciones(String accessToken, int muestreoId, List<String> preparaciones)async{
+    final Map<String, dynamic> body = {
+      'preparaciones': preparaciones
     };
-    body['visita_id'] = visitId;
+    await executeGeneralService(() async =>
+      await client.post(
+        super.getUri('${super.BASE_PANEL_UNCODED_PATH}$UPDATE_PREPARACIONES_URL$muestreoId'),
+        headers: super.createAuthorizationJsonHeaders(accessToken),
+        body: jsonEncode(body)
+      )
+    );
+  }
+
+  @override
+  Future<void> setMuestra(String accessToken, int muestreoId, int selectedRangoId, List<double> pesosTomados)async{
+    Map<String, dynamic> body = {
+      'clasificacion_id':selectedRangoId,
+      'respuesta':pesosTomados
+    };
     await executeGeneralService(()async=>
       await client.post(
-        super.getUri('${super.BASE_PANEL_UNCODED_PATH}$SET_MUESTRA_URL$visitId'),
+        super.getUri('${super.BASE_PANEL_UNCODED_PATH}$SET_MUESTRA_URL$muestreoId'),
         headers: super.createAuthorizationJsonHeaders(accessToken),
         body: jsonEncode( body )
       )
@@ -61,19 +74,4 @@ class MuestrasRemoteDataSourceImpl extends RemoteDataSource implements MuestrasR
       )
     );
   }
-
-  @override
-  Future<void> updatePreparaciones(String accessToken, int visitId, List<String> preparaciones)async{
-    final Map<String, dynamic> body = {
-      'preparaciones': preparaciones
-    };
-    await executeGeneralService(() async =>
-      await client.post(
-        super.getUri('${super.BASE_PANEL_UNCODED_PATH}$UPDATE_PREPARACIONES_URL$visitId'),
-        headers: super.createAuthorizationJsonHeaders(accessToken),
-        body: jsonEncode(body)
-      )
-    );
-  }
-  
 }

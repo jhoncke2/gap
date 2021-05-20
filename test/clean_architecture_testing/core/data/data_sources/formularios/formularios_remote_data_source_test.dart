@@ -63,7 +63,7 @@ void _testGetFormulariosGroup(){
       when(client.get(any, headers: anyNamed('headers'))).thenAnswer((_) async => http.Response(tStringFormularios, 200));
       await remoteDataSource.getFormularios(tVisitId, tAccessToken);
       verify(client.get(
-        Uri.https(remoteDataSource.BASE_URL, '${remoteDataSource.BASE_PANEL_UNCODED_PATH}${FormulariosRemoteDataSourceImpl.FORMULARIOS_URL}$tVisitId'),
+        Uri.http(remoteDataSource.BASE_URL, '${remoteDataSource.BASE_PANEL_UNCODED_PATH}${FormulariosRemoteDataSourceImpl.FORMULARIOS_URL}$tVisitId'),
         headers: tHeaders
       ));
     });
@@ -107,7 +107,7 @@ void _testGetChosenFormularioGroup(){
       when(client.get(any, headers: anyNamed('headers'))).thenAnswer((_) async => http.Response(tStringFormulario, 200));
       await remoteDataSource.getChosenFormulario(tFormulario.id, tAccessToken);
       verify(client.get(
-        Uri.https(remoteDataSource.BASE_URL, '${remoteDataSource.BASE_PANEL_UNCODED_PATH}${FormulariosRemoteDataSourceImpl.CHOSEN_FORMULARIO_URL}${tFormulario.id}'),
+        Uri.http(remoteDataSource.BASE_URL, '${remoteDataSource.BASE_PANEL_UNCODED_PATH}${FormulariosRemoteDataSourceImpl.CHOSEN_FORMULARIO_URL}${tFormulario.id}'),
         headers: tHeaders
       ));
     });
@@ -157,7 +157,7 @@ void _testSetInitialPositionGroup(){
       when(client.post(any, headers: anyNamed('headers'), body: anyNamed('body'))).thenAnswer((_) async => http.Response('{}', 200));
       await remoteDataSource.setInitialPosition(tPosition, tFormularioId, tAccessToken);
       verify(client.post(
-        Uri.https(remoteDataSource.BASE_URL, '${remoteDataSource.BASE_PANEL_UNCODED_PATH}${FormulariosRemoteDataSourceImpl.INITIAL_POSITION_URL}$tFormularioId'),
+        Uri.http(remoteDataSource.BASE_URL, '${remoteDataSource.BASE_PANEL_UNCODED_PATH}${FormulariosRemoteDataSourceImpl.INITIAL_POSITION_URL}$tFormularioId'),
         headers: tHeaders,
         body: jsonEncode(tBody)
       ));
@@ -227,7 +227,7 @@ void _testSetCamposGroup(){
       when(client.post(any, headers: anyNamed('headers'), body: anyNamed('body'))).thenAnswer((realInvocation) async => http.Response('{}', 200));
       await remoteDataSource.setCampos(tFormulario, tVisitId, tAccessToken);
       verify(client.post(
-        Uri.https(remoteDataSource.BASE_URL, '${remoteDataSource.BASE_PANEL_UNCODED_PATH}${FormulariosRemoteDataSourceImpl.CAMPOS_URL}$tVisitId'),
+        Uri.http(remoteDataSource.BASE_URL, '${remoteDataSource.BASE_PANEL_UNCODED_PATH}${FormulariosRemoteDataSourceImpl.CAMPOS_URL}$tVisitId'),
         headers: tHeaders,
         body: jsonEncode(tBody)
       ));
@@ -265,7 +265,7 @@ void _testSetFinalPositionGroup(){
       when(client.post(any, headers: anyNamed('headers'), body: anyNamed('body'))).thenAnswer((_) async => http.Response('{}', 200));
       await remoteDataSource.setFinalPosition(tPosition, tFormularioId, tAccessToken);
       verify(client.post(
-        Uri.https(remoteDataSource.BASE_URL, '${remoteDataSource.BASE_PANEL_UNCODED_PATH}${FormulariosRemoteDataSourceImpl.FINAL_POSITION_URL}$tFormularioId'),
+        Uri.http(remoteDataSource.BASE_URL, '${remoteDataSource.BASE_PANEL_UNCODED_PATH}${FormulariosRemoteDataSourceImpl.FINAL_POSITION_URL}$tFormularioId'),
         headers: tHeaders,
         body: jsonEncode(tBody)
       ));

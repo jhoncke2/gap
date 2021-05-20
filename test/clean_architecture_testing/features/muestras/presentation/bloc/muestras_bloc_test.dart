@@ -1,11 +1,11 @@
 import 'dart:convert';
+import 'package:test/test.dart';
+import 'package:dartz/dartz.dart';
+import 'package:mockito/mockito.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/data/models/muestra_model.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/muestra.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/remove_muestra.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/update_preparaciones.dart';
-import 'package:test/test.dart';
-import 'package:dartz/dartz.dart';
-import 'package:mockito/mockito.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/utils/string_to_double_converter.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/componente.dart';
 import 'package:gap/clean_architecture_structure/core/domain/use_cases/use_case.dart';
@@ -60,23 +60,23 @@ void main(){
   });
 
   group('getMuestreos', (){
-    Muestreo tMuestra;
+    Muestreo tMuestreo;
     setUp((){
-      tMuestra = _getMuestreoFromFixture();
+      tMuestreo = _getMuestreoFromFixture();
     });
 
     test('should call the getMuestreos usecase', ()async{
-      when(getMuestras.call(any)).thenAnswer((_) async => Right(tMuestra));
+      when(getMuestras.call(any)).thenAnswer((_) async => Right(tMuestreo));
       bloc.add(GetMuestreoEvent());
       await untilCalled(getMuestras.call(any));
       verify(getMuestras.call(NoParams()));
     });
 
     test('should yield the specified states in order when all goes good', ()async{
-      when(getMuestras.call(any)).thenAnswer((_) async => Right(tMuestra));
+      when(getMuestras.call(any)).thenAnswer((_) async => Right(tMuestreo));
       final expectedsOrderedStates = [
         LoadingMuestreo(),
-        OnPreparacionMuestra(muestra: tMuestra)
+        OnPreparacionMuestra(muestra: tMuestreo)
       ];
       expectLater(bloc.asBroadcastStream(), emitsInOrder(expectedsOrderedStates));
       bloc.add(GetMuestreoEvent());
@@ -94,12 +94,12 @@ void main(){
   });
 
   group('SetMuestreoPreparaciones', (){
-    Muestreo tMuestra;
+    Muestreo tMuestreo;
     List<String> tPreparaciones;
     Muestreo tMuestraConPreparaciones;
     setUp((){
-      tMuestra = _getMuestreoFromFixture();
-      tPreparaciones = tMuestra.componentes.map(
+      tMuestreo = _getMuestreoFromFixture();
+      tPreparaciones = tMuestreo.componentes.map(
         (c) => 'preparacion_${c.nombre}'
       ).toList();
       tMuestraConPreparaciones = _getMuestreoFromFixture();
@@ -107,14 +107,14 @@ void main(){
       for(int i = 0; i < tMuestraComponentes.length; i++){
         tMuestraComponentes[i].preparacion = tPreparaciones[i];
       }
-      bloc.emit(OnPreparacionMuestra(muestra: tMuestra));
+      bloc.emit(OnPreparacionMuestra(muestra: tMuestreo));
       when(updatePreparaciones.call(any)).thenAnswer((_) async => Right(null));
     });
 
     test('should call the specified useCases', ()async{
       bloc.add(SetMuestreoPreparaciones(preparaciones: tPreparaciones));
       await untilCalled(updatePreparaciones(any));
-      verify(updatePreparaciones(UpdatePreparacionesParams(preparaciones: tPreparaciones)));
+      verify(updatePreparaciones(UpdatePreparacionesParams(muestreoId: tMuestreo.id, preparaciones: tPreparaciones)));
     });
 
     test('shoul yield the specified states when all goes good from onPreparacionMuestra', ()async{
@@ -128,10 +128,10 @@ void main(){
   });
 
   group('addNewMuestra', (){
-    Muestreo tMuestra;
+    Muestreo tMuestreo;
     setUp((){
-      tMuestra = _getMuestreoFromFixture();
-      List<Componente> tMuestraComponentes = tMuestra.componentes;
+      tMuestreo = _getMuestreoFromFixture();
+      List<Componente> tMuestraComponentes = tMuestreo.componentes;
       for(int i = 0; i < tMuestraComponentes.length; i++){
         tMuestraComponentes[i].preparacion = '${tMuestraComponentes[i].preparacion}_preparación';
       }
@@ -140,46 +140,47 @@ void main(){
     test('should yield the specified ordered states when all goes good', ()async{
       final expectedOrderedStates = [
         LoadingMuestreo(),
-        OnChosingRangoEdad(muestreo: tMuestra)
+        OnChosingRangoEdad(muestreo: tMuestreo)
       ];
-      bloc.emit(OnEleccionTomaOFinalizar(muestreo: tMuestra));
+      bloc.emit(OnEleccionTomaOFinalizar(muestreo: tMuestreo));
       expectLater(bloc.asBroadcastStream(), emitsInOrder(expectedOrderedStates));
       bloc.add(InitNewMuestra());
     });
   });
 
   group('chooseRangoEdad', (){
-    Muestreo tMuestra;
-    String tRango;
-    int tRangoIndex;
+    Muestreo tMuestreo;
+    int tRangoId;
     setUp((){
-      tMuestra = _getMuestreoFromFixture();
-      tRango = tMuestra.rangos[0];
-      tRangoIndex = 0;
+      tMuestreo = _getMuestreoFromFixture();
+      tRangoId = 0;
     });
     
     test('should yield the specified ordered states when all goes good', ()async{
       final expectedOrderedStates = [
         LoadingMuestreo(),
-        OnTomaPesos(muestreo: tMuestra, rangoEdadIndex: tRangoIndex)
+        OnTomaPesos(muestreo: tMuestreo, rangoId: tRangoId)
       ];
-      bloc.emit(OnChosingRangoEdad(muestreo: tMuestra));
+      bloc.emit(OnChosingRangoEdad(muestreo: tMuestreo));
       expectLater(bloc.asBroadcastStream(), emitsInOrder(expectedOrderedStates));
-      bloc.add(ChooseRangoEdad(rangoIndex: tRangoIndex));
+      bloc.add(ChooseRangoEdad(rangoId: tRangoId));
     });
   });
 
   group('addMuestraPesos', (){
-    Muestreo tMuestra;
-    String tRango;
+    Muestreo tMuestreo;
+    int tRangoId;
+    String tStringRango;
     int tRangoIndex;
     List<String> tStringPesos;
     List<double> tDoublePesos;
     Muestreo tMuestreoConPesosTomados;
     setUp((){
-      tMuestra = _getMuestreoFromFixture();
-      tRango = tMuestra.rangos[0];
+      tMuestreo = _getMuestreoFromFixture();
+      tRangoId = 1;
+      tStringRango = tMuestreo.rangos.singleWhere((r) => r.id == tRangoId).nombre;
       tRangoIndex = 0;
+      
       tStringPesos = [];
       tDoublePesos = [];
       tMuestreoConPesosTomados = _getMuestreoFromFixture()..nMuestras += 1;
@@ -189,19 +190,19 @@ void main(){
         tDoublePesos.add(i.toDouble());  
       }
       tMuestreoConPesosTomados.muestrasTomadas.add(
-        MuestraModel(id: 0, rango: tRango, pesos: tDoublePesos)
+        MuestraModel(id: 0, rango: tStringRango, pesos: tDoublePesos)
       );
-      bloc.emit(OnTomaPesos(muestreo: tMuestra, rangoEdadIndex: tRangoIndex));
+      bloc.emit(OnTomaPesos(muestreo: tMuestreo, rangoId: tRangoId));
     });
 
-    test('should call the pesosConverter', ()async{
+    test('should call the pesosConverter and the setMuestras useCase', ()async{
       when(pesosConverter.convert(any)).thenReturn(Right(tDoublePesos));
       when(getMuestras.call(any)).thenAnswer((_) async => Right(tMuestreoConPesosTomados));
       bloc.add(AddMuestraPesos(pesos: tStringPesos));
       await untilCalled(pesosConverter.convert(any));
       verify(pesosConverter.convert(tStringPesos));
       await untilCalled(setMuestras.call(any));
-      verify(setMuestras.call(SetMuestraParams(selectedRangoIndex: tRangoIndex, pesosTomados: tDoublePesos)));
+      verify(setMuestras.call(SetMuestraParams(muestreoId: tMuestreo.id, selectedRangoId: tRangoId, pesosTomados: tDoublePesos)));
     });
 
     test('should yield the specified ordered states when all goes good', ()async{

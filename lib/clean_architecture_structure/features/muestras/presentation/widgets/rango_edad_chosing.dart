@@ -51,7 +51,7 @@ class _RangoEdadChosingState extends State<RangoEdadChosing> {
       decoration: _createMainContainerDecoration(context),
       child: DropdownButton<int>(
         items: _createItems(),
-        selectedItemBuilder: (_)=>widget.muestra.rangos.map((rango) => Container(
+        selectedItemBuilder: (_)=>widget.muestra.stringRangos.map((rango) => Container(
           width: MediaQuery.of(context).size.width * 0.6,
           child: Center(
             child: Text(
@@ -84,7 +84,7 @@ class _RangoEdadChosingState extends State<RangoEdadChosing> {
 
   List<DropdownMenuItem<int>> _createItems(){
     List<DropdownMenuItem<int>> menuItems = [];
-    List<String> rangos = widget.muestra.rangos;
+    List<String> rangos = widget.muestra.stringRangos;
     for(int i = 0; i < rangos.length; i++){
       menuItems.add(DropdownMenuItem<int>(
         child: Text(rangos[i]),
@@ -106,6 +106,6 @@ class _RangoEdadChosingState extends State<RangoEdadChosing> {
   }
 
   void _continue(BuildContext context){
-    BlocProvider.of<MuestrasBloc>(context).add(ChooseRangoEdad(rangoIndex: _currentSelectedPosition));
+    BlocProvider.of<MuestrasBloc>(context).add(ChooseRangoEdad(rangoId: _currentSelectedPosition));
   }
 }

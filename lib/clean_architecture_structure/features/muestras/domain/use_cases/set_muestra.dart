@@ -13,19 +13,21 @@ class SetMuestra implements UseCase<void, SetMuestraParams>{
   });
   @override
   Future<Either<Failure, void>> call(SetMuestraParams params)async{
-    return await repository.setMuestra(params.selectedRangoIndex, params.pesosTomados);
+    return await repository.setMuestra(params.muestreoId, params.selectedRangoId, params.pesosTomados);
   }
 }
 
 class SetMuestraParams extends Equatable{
-  final int selectedRangoIndex;
+  final int muestreoId;
+  final int selectedRangoId;
   final List<double> pesosTomados;
 
   SetMuestraParams({
-    @required this.selectedRangoIndex,
+    @required this.muestreoId,
+    @required this.selectedRangoId,
     @required this.pesosTomados
   });
 
   @override
-  List<Object> get props => [this.selectedRangoIndex, pesosTomados];
+  List<Object> get props => [this.muestreoId, this.selectedRangoId, this.pesosTomados];
 }

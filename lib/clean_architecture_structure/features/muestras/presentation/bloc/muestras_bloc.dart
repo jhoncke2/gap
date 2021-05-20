@@ -78,7 +78,7 @@ class MuestrasBloc extends Bloc<MuestrasEvent, MuestrasState>{
     final Muestreo muestreo =  (state as OnPreparacionMuestra).muestreo;
     yield LoadingMuestreo();
     final List<String> preparaciones = event.preparaciones;
-    final eitherUpdatePreparaciones = await updatePreparaciones(UpdatePreparacionesParams(preparaciones: preparaciones));
+    final eitherUpdatePreparaciones = await updatePreparaciones(UpdatePreparacionesParams(muestreoId: muestreo.id, preparaciones: preparaciones));
     yield * eitherUpdatePreparaciones.fold((_)async*{
       yield MuestraError(message: GENERAL_ERROR_MESSAGE);
     }, (r)async*{
@@ -98,14 +98,14 @@ class MuestrasBloc extends Bloc<MuestrasEvent, MuestrasState>{
   }
 
   Stream<MuestrasState> _chooseRangoEdad(ChooseRangoEdad event)async*{
-    final Muestreo muestra = (state as OnChosingRangoEdad).muestreo;
+    final Muestreo muestreo = (state as OnChosingRangoEdad).muestreo;
     yield LoadingMuestreo();
-    yield OnTomaPesos(muestreo: muestra, rangoEdadIndex: event.rangoIndex);
+    yield OnTomaPesos(muestreo: muestreo, rangoId: event.rangoId);
   }
 
   Stream<MuestrasState> _addMuestraPesos(AddMuestraPesos event)async*{
     final Muestreo muestreo = (state as OnTomaPesos).muestreo;
-    final int rangoIndex = (state as OnTomaPesos).rangoEdadIndex;
+    final int rangoId = (state as OnTomaPesos).rangoId;
     yield LoadingMuestreo();
     final List<String> stringPesos = event.pesos;
     final eitherPesos = pesosConverter.convert(stringPesos);
@@ -113,7 +113,8 @@ class MuestrasBloc extends Bloc<MuestrasEvent, MuestrasState>{
       yield MuestraError(message: FORMAT_PESOS_ERROR);
     }, (pesos)async*{
       muestreo.nMuestras += 1;
-      await setMuestra(SetMuestraParams(selectedRangoIndex: rangoIndex, pesosTomados: pesos));
+      final String rangoNombre = muestreo.rangos.singleWhere((r) => r.id == rangoId).nombre;
+      await setMuestra(SetMuestraParams(muestreoId: muestreo.id, selectedRangoId: rangoId, pesosTomados: pesos));
       final eitherMuestreo = await getMuestras(NoParams());
       yield * eitherMuestreo.fold((l)async*{
         yield MuestraError(message: GENERAL_ERROR_MESSAGE);
@@ -127,7 +128,7 @@ class MuestrasBloc extends Bloc<MuestrasEvent, MuestrasState>{
   Stream<MuestrasState> _initMuestraEdigint(InitMuestraEditing event)async *{
     final Muestreo muestreo = (state as LoadedMuestreo).muestreo;
     yield LoadingMuestreo();
-    int rangoIndex = muestreo.rangos.indexWhere((r) => r == event.muestra.rango);
+    int rangoIndex = muestreo.stringRangos.indexWhere((r) => r == event.muestra.rango);
     yield OnEditingMuestra(
       muestra: event.muestra,
       indexMuestra: event.indexMuestra,

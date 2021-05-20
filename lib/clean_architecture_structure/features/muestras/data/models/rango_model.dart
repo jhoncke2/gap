@@ -1,6 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/rango.dart';
 
+List<RangoModel> rangosFromJson(List<Map<String, dynamic>> json) => json.map(
+  (rM) => RangoModel.fromJson(rM)
+).toList();
+
 class RangoModel extends Rango{
   RangoModel({
     @required int id,
@@ -16,8 +20,8 @@ class RangoModel extends Rango{
 
   factory RangoModel.fromJson(Map<String, dynamic> json)=>RangoModel(
     id: json['id'],
-    nombre: json['nombre'],
+    nombre: json['name'],
     pesosEsperados: json['pesos_esperados'].cast<double>(),
-    completo: json['completo']
+    completo: json['completo']??false
   );
 }

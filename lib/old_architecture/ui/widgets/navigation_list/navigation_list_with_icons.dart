@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/old_architecture/data/enums/enums.dart';
+import 'package:gap/old_architecture/logic/central_managers/pages_navigation_manager.dart';
 import 'package:gap/old_architecture/ui/widgets/navigation_list/button/button_with_icon.dart';
 import 'package:gap/old_architecture/ui/widgets/navigation_list/navigation_list.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
@@ -15,11 +16,13 @@ class NavigationListWithIcons extends NavigationList{
   final ProcessStage currentVisitProcessState;
   final List<IconData> icons = [];
   final List<Map<String, dynamic>> navigationItemsParts = navigationData.navigationItemsParts;
+  final bool visitHasMuestreo;
   List<Map<String, Color>> _navItemsColors;
   List<bool> _navItemsActivation;
 
   NavigationListWithIcons({
     @required this.currentVisitProcessState,
+    @required this.visitHasMuestreo
   }):super(
     itemsNames: [],
     itemsFunctions: [],
@@ -63,8 +66,13 @@ class NavigationListWithIcons extends NavigationList{
     this.itemsFunctions = [];
     for(int i = 0; i < navigationItemsParts.length; i++){
       final Map<String, dynamic> itemPart = navigationItemsParts[i];
+      Function navFunction = (i != 0 || visitHasMuestreo)? itemPart['nav_function']
+        : PagesNavigationManager.navToForms();
       this.itemsFunctions.add(
-        _generateFunctionByItemActivation(_navItemsActivation[i], itemPart['nav_function'])
+        _generateFunctionByItemActivation(
+          _navItemsActivation[i], 
+          navFunction
+        )
       );
       this.itemsNames.add(itemPart['name']);
       this.icons.add(
@@ -72,6 +80,8 @@ class NavigationListWithIcons extends NavigationList{
       );
     }
   }
+
+  //Function _getNavFunctionByIndex
 
   Function _generateFunctionByItemActivation(bool itemActivation, Function navigateToNextPage){
     if(itemActivation){

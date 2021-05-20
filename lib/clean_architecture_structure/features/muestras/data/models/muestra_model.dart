@@ -19,7 +19,7 @@ class MuestraModel extends Muestra{
   factory MuestraModel.fromJson(Map<String, dynamic> json)=>MuestraModel(
     id: json['id'],
     rango: json['rango'], 
-    pesos: (json['pesos'] as List).map(
+    pesos: (json['resultados'] as List).map(
       (p)=> (p as num).toDouble()
     ).toList()
   );
