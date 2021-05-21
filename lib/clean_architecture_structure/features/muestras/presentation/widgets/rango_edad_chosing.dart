@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/general_button.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/muestreo.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/rango.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/bloc/muestras_bloc.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
 
@@ -51,11 +52,11 @@ class _RangoEdadChosingState extends State<RangoEdadChosing> {
       decoration: _createMainContainerDecoration(context),
       child: DropdownButton<int>(
         items: _createItems(),
-        selectedItemBuilder: (_)=>widget.muestra.stringRangos.map((rango) => Container(
+        selectedItemBuilder: (_)=>widget.muestra.rangos.map((rango) => Container(
           width: MediaQuery.of(context).size.width * 0.6,
           child: Center(
             child: Text(
-              rango, 
+              rango.nombre, 
               textAlign: TextAlign.center,
             ),
           )
@@ -84,10 +85,10 @@ class _RangoEdadChosingState extends State<RangoEdadChosing> {
 
   List<DropdownMenuItem<int>> _createItems(){
     List<DropdownMenuItem<int>> menuItems = [];
-    List<String> rangos = widget.muestra.stringRangos;
+    List<Rango> rangos = widget.muestra.rangos;
     for(int i = 0; i < rangos.length; i++){
       menuItems.add(DropdownMenuItem<int>(
-        child: Text(rangos[i]),
+        child: Text(rangos[i].nombre),
         value: i,
       ));
     }
@@ -106,6 +107,8 @@ class _RangoEdadChosingState extends State<RangoEdadChosing> {
   }
 
   void _continue(BuildContext context){
-    BlocProvider.of<MuestrasBloc>(context).add(ChooseRangoEdad(rangoId: _currentSelectedPosition));
+    BlocProvider.of<MuestrasBloc>(context).add(
+      ChooseRangoEdad(rangoId: widget.muestra.rangos[_currentSelectedPosition].id)
+    );
   }
 }

@@ -21,7 +21,10 @@ class RangoModel extends Rango{
   factory RangoModel.fromJson(Map<String, dynamic> json)=>RangoModel(
     id: json['id'],
     nombre: json['name'],
-    pesosEsperados: json['pesos_esperados'].cast<double>(),
+    //Por si pesos vienen como strings o como doubles
+    pesosEsperados: (json['pesos_esperados'].map(
+      (pE) => double.parse( pE.toString() )
+    ).toList() ).cast<double>(),
     completo: json['completo']??false
   );
 }

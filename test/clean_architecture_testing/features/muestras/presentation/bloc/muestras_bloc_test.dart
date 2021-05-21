@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/rango.dart';
 import 'package:test/test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:mockito/mockito.dart';
@@ -76,7 +77,7 @@ void main(){
       when(getMuestras.call(any)).thenAnswer((_) async => Right(tMuestreo));
       final expectedsOrderedStates = [
         LoadingMuestreo(),
-        OnPreparacionMuestra(muestra: tMuestreo)
+        OnPreparacionMuestra(muestreo: tMuestreo)
       ];
       expectLater(bloc.asBroadcastStream(), emitsInOrder(expectedsOrderedStates));
       bloc.add(GetMuestreoEvent());
@@ -96,18 +97,18 @@ void main(){
   group('SetMuestreoPreparaciones', (){
     Muestreo tMuestreo;
     List<String> tPreparaciones;
-    Muestreo tMuestraConPreparaciones;
+    Muestreo tMuestreoConPreparaciones;
     setUp((){
       tMuestreo = _getMuestreoFromFixture();
       tPreparaciones = tMuestreo.componentes.map(
         (c) => 'preparacion_${c.nombre}'
       ).toList();
-      tMuestraConPreparaciones = _getMuestreoFromFixture();
-      List<Componente> tMuestraComponentes = tMuestraConPreparaciones.componentes;
+      tMuestreoConPreparaciones = _getMuestreoFromFixture();
+      List<Componente> tMuestraComponentes = tMuestreoConPreparaciones.componentes;
       for(int i = 0; i < tMuestraComponentes.length; i++){
         tMuestraComponentes[i].preparacion = tPreparaciones[i];
       }
-      bloc.emit(OnPreparacionMuestra(muestra: tMuestreo));
+      bloc.emit(OnPreparacionMuestra(muestreo: tMuestreo));
       when(updatePreparaciones.call(any)).thenAnswer((_) async => Right(null));
     });
 
@@ -120,10 +121,32 @@ void main(){
     test('shoul yield the specified states when all goes good from onPreparacionMuestra', ()async{
       final expectedOrderedStates = [
         LoadingMuestreo(),
-        OnEleccionTomaOFinalizar(muestreo: tMuestraConPreparaciones)
+        //OnChooseAddMuestraOFinalizar(muestreo: tMuestraConPreparaciones)
+        OnChooseRangosAUsar(muestreo: tMuestreoConPreparaciones)
       ];
       expectLater(bloc.asBroadcastStream(), emitsInOrder(expectedOrderedStates));
       bloc.add(SetMuestreoPreparaciones(preparaciones: tPreparaciones));
+    });
+  });
+
+  group('chooseRangosAUsar', (){
+    Muestreo tMuestreo;
+    List<Rango> tRangosAUsar;
+    Muestreo tMuestreoWithNewRangos;
+    setUp((){
+      tMuestreo = _getMuestreoFromFixture();
+      tRangosAUsar = tMuestreo.rangos.sublist(0, 1);
+      bloc.emit(OnChooseRangosAUsar(muestreo: tMuestreo));
+      tMuestreoWithNewRangos = _getMuestreoFromFixture().copyWith(rangos: tRangosAUsar);
+    });
+
+    test('should yield the specified ordered states when all goes good', ()async{
+      final expectedOrderedStates = [
+        LoadingMuestreo(),
+        OnChooseAddMuestraOFinalizar(muestreo: tMuestreoWithNewRangos)
+      ];
+      expectLater(bloc.asBroadcastStream(), emitsInOrder(expectedOrderedStates));
+      bloc.add(ChooseRangosAUsar(rangos: tRangosAUsar));
     });
   });
 
@@ -142,7 +165,7 @@ void main(){
         LoadingMuestreo(),
         OnChosingRangoEdad(muestreo: tMuestreo)
       ];
-      bloc.emit(OnEleccionTomaOFinalizar(muestreo: tMuestreo));
+      bloc.emit(OnChooseAddMuestraOFinalizar(muestreo: tMuestreo));
       expectLater(bloc.asBroadcastStream(), emitsInOrder(expectedOrderedStates));
       bloc.add(InitNewMuestra());
     });
@@ -171,19 +194,17 @@ void main(){
     Muestreo tMuestreo;
     int tRangoId;
     String tStringRango;
-    int tRangoIndex;
     List<String> tStringPesos;
     List<double> tDoublePesos;
     Muestreo tMuestreoConPesosTomados;
     setUp((){
       tMuestreo = _getMuestreoFromFixture();
       tRangoId = 1;
-      tStringRango = tMuestreo.rangos.singleWhere((r) => r.id == tRangoId).nombre;
-      tRangoIndex = 0;
-      
+      tStringRango = tMuestreo.rangos.singleWhere((r) => r.id == tRangoId).nombre;      
       tStringPesos = [];
       tDoublePesos = [];
-      tMuestreoConPesosTomados = _getMuestreoFromFixture()..nMuestras += 1;
+      tMuestreoConPesosTomados = _getMuestreoFromFixture();
+      tMuestreoConPesosTomados = tMuestreoConPesosTomados.copyWith(nMuestras: tMuestreoConPesosTomados.nMuestras + 1);
       List<Componente> tComponentes = tMuestreoConPesosTomados.componentes;
       for(int i = 0; i < tComponentes.length; i++){
         tStringPesos.add('$i');
@@ -210,7 +231,7 @@ void main(){
       when(getMuestras.call(any)).thenAnswer((_) async => Right(tMuestreoConPesosTomados));
       final expectedOrderedStates = [
         LoadingMuestreo(),
-        OnEleccionTomaOFinalizar(muestreo: tMuestreoConPesosTomados)
+        OnChooseAddMuestraOFinalizar(muestreo: tMuestreoConPesosTomados)
       ];
       expectLater(bloc.asBroadcastStream(), emitsInOrder(expectedOrderedStates));
       bloc.add(AddMuestraPesos(pesos: tStringPesos));
@@ -237,7 +258,7 @@ void main(){
     });
 
     test('should yield the specified ordered states', ()async{
-      bloc.emit(OnEleccionTomaOFinalizar(muestreo: tMuestreo));
+      bloc.emit(OnChooseAddMuestraOFinalizar(muestreo: tMuestreo));
       final expectedOrderedStates = [
         LoadingMuestreo(),
         OnMuestraDetail(muestra: tMuestra, muestreo: tMuestreo)
@@ -297,12 +318,13 @@ void main(){
       when(getMuestras.call(any)).thenAnswer((_) async => Right(tMuestreo));
       final expectedOrderedStates = [
         LoadingMuestreo(),
-        OnEleccionTomaOFinalizar(muestreo: tMuestreo)
+        OnChooseAddMuestraOFinalizar(muestreo: tMuestreo)
       ];
       expectLater(bloc.asBroadcastStream(), emitsInOrder(expectedOrderedStates));
       bloc.add(BackFromMuestraDetail());
     });
   });
+  
 }
 
 Muestreo _getMuestreoFromFixture(){

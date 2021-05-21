@@ -43,7 +43,7 @@ class MuestrasRepositoryFake implements MuestrasRepository{
   @override
   Future<Either<Failure, void>> removeMuestra(int muestraId)async{
     fakeMuestreo.muestrasTomadas.removeWhere((m) => m.id == muestraId);
-    fakeMuestreo.nMuestras--;
+    fakeMuestreo = fakeMuestreo.copyWith(nMuestras: fakeMuestreo.nMuestras-1);
     return Right(null);
   }
 }

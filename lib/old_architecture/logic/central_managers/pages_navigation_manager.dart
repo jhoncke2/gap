@@ -4,7 +4,6 @@ import 'package:gap/clean_architecture_structure/core/data/data_sources/navigati
 import 'package:gap/clean_architecture_structure/core/domain/repositories/navigation_repository.dart';
 import 'package:gap/clean_architecture_structure/core/platform/custom_navigator.dart';
 import 'package:gap/clean_architecture_structure/injection_container.dart';
-import 'package:gap/old_architecture/logic/bloc/nav_routes/custom_navigator.dart';
 import 'package:gap/old_architecture/logic/central_managers/data_distributor/data_distributor_error_handler_manager.dart';
 import 'package:gap/old_architecture/native_connectors/gps.dart';
 import 'package:gap/old_architecture/data/enums/enums.dart';
@@ -13,7 +12,7 @@ import 'package:gap/old_architecture/ui/utils/dialogs.dart' as dialogs;
 
 class PagesNavigationManager{
 
-  static final gpsActivationRequestMessage = 'Por favor active el servicio ubicación para esta app en configuración del dispositivo para continuar';
+  static final gpsActivationRequestMessage = 'Por favor active el servicio ubicación para esta app en configuración del dispositivo';
   static final CustomNavigator customNavigator = sl();
   static final NavigationRepository navRepository = sl();
   static final NavigationLocalDataSource navLocalDataSource = sl();
@@ -98,8 +97,9 @@ class PagesNavigationManager{
   }
 
   static Future _goToAppSetings(BuildContext context, String message)async{
-    await dialogs.showErrDialog(context, message);
-    await GPS.openAppSettings();
+    //await dialogs.showErrDialog(context, message);
+    await dialogs.showTemporalDialog(message);
+    //await GPS.openAppSettings();
   }
 
   static Future updateFormFieldsPage()async{
@@ -229,10 +229,10 @@ class _GPSValidator{
         await methodIfGps();
         break;
       case LocationPermission.denied:
-        await methodIfNotGps(CustomNavigatorOld.navigatorKey.currentContext, errMessage);
+        await methodIfNotGps(CustomNavigatorImpl.navigatorKey.currentContext, errMessage);
         break;
       case LocationPermission.deniedForever:
-        await methodIfNotGps(CustomNavigatorOld.navigatorKey.currentContext, errMessage);
+        await methodIfNotGps(CustomNavigatorImpl.navigatorKey.currentContext, errMessage);
         break;
     }
   }

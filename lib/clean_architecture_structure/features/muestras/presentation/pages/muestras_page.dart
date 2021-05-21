@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/header/page_header.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/scaffold_keyboard_detector.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/bloc/muestras_bloc.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/presentation/widgets/eleccion_rangos_a_usar.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/widgets/eleccion_toma_o_finalizar.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/widgets/muestra_detail.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/widgets/pesos_chooser.dart';
@@ -39,7 +40,7 @@ class MuestrasPage extends StatelessWidget {
           children: [
             PageHeader(
               withTitle: (state is LoadedMuestreo),
-              title: (state is LoadedMuestreo)? 'Muestra ${state.muestreo.tipo}': null,
+              title: (state is LoadedMuestreo)? '${state.muestreo.tipo}': 'Muestra',
               titleIsUnderlined: false,
             ),
             SizedBox(height: sizeUtils.xasisSobreYasis * 0.05),
@@ -52,28 +53,19 @@ class MuestrasPage extends StatelessWidget {
     );
   }
 
-  void _addInitialMuestrasBlocPostFrameCall(BuildContext context, MuestrasState state){
-    if(state is MuestreoEmpty)
-      _addInitialMuestrasBlocPostFrameCallIfMuestrasIsEmpty(context);
-  }
-
-  void _addInitialMuestrasBlocPostFrameCallIfMuestrasIsEmpty(BuildContext context){
-    WidgetsBinding.instance.addPostFrameCallback((_){
-      BlocProvider.of<MuestrasBloc>(context).add( GetMuestreoEvent() );
-    });
-  }
-
   Widget _createBlocBuilderBottom(BuildContext context, MuestrasState state){
     if(state is MuestreoEmpty){
       _addBlocEventPostFrameCallBack(context, GetMuestreoEvent());
     }if(state is OnPreparacionMuestra)
       return PreparacionComponentes(muestra: state.muestreo);
-    else if(state is OnEleccionTomaOFinalizar)
+    else if(state is OnChooseRangosAUsar)
+      return EleccionRangosAUsar(rangos: state.muestreo.rangos);
+    else if(state is OnChooseAddMuestraOFinalizar)
       return EleccionTomaOFinalizar(muestreo: state.muestreo);
     else if(state is OnChosingRangoEdad)
       return RangoEdadChosing(muestra: state.muestreo);
     else if(state is OnTomaPesos)
-      return PesosChooser(muestra: state.muestreo, rangoEdadIndex: state.rangoId);
+      return PesosChooser(muestra: state.muestreo, rangoEdadId: state.rangoId);
     else if(state is OnMuestraDetail)
       return MuestraDetail(muestra: state.muestra, muestreoComponentes: state.muestreo.componentes);
     else if(state is MuestraRemoved)

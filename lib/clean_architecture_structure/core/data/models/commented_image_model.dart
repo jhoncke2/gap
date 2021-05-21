@@ -31,7 +31,8 @@ class UnSentCommentedImageModel extends UnSentCommentedImage{
 
 // ignore: must_be_immutable
 class SentCommentedImageModel extends SentCommentedImage{
-  static final String baseUrl = 'https://gapfergon.com';
+  //static final String baseUrl = 'https://gapfergon.com';
+  //static final String baseUrl = 'http://dev.gapfergon.com';
   SentCommentedImageModel({
     String url,
     String commentary
@@ -41,7 +42,7 @@ class SentCommentedImageModel extends SentCommentedImage{
   );
 
   factory SentCommentedImageModel.fromJson(Map<String, dynamic> json)=>SentCommentedImageModel(
-    url: baseUrl + json['ruta'],
+    url: json['ruta'],
     commentary: json['descripcion'],
   );
 }

@@ -2,7 +2,7 @@ import 'package:gap/clean_architecture_structure/features/muestras/data/models/r
 import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/componente.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/muestreo.dart';
 
-final Muestreo fakeMuestreo = Muestreo(
+Muestreo fakeMuestreo = Muestreo(
   id: 1,
   tipo: 'Almuerzo', 
   obligatorio: true,

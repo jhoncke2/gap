@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/rango.dart';
 import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -44,6 +45,8 @@ class MuestrasBloc extends Bloc<MuestrasEvent, MuestrasState>{
       yield * _getMuestra(event);
     }else if(event is SetMuestreoPreparaciones){
       yield * _setMuestreoPreparaciones(event);
+    }else if(event is ChooseRangosAUsar){
+      yield * _chooseRangosAUsar(event);
     }else if(event is InitNewMuestra){
       yield * _addNewTomaDeMuestra(event);
     }else if(event is ChooseRangoEdad){
@@ -69,7 +72,7 @@ class MuestrasBloc extends Bloc<MuestrasEvent, MuestrasState>{
       yield MuestraError(message: message);
     }, (muestreo)async*{
       yield OnPreparacionMuestra(
-        muestra: muestreo
+        muestreo: muestreo
       );
     });
   }
@@ -86,13 +89,19 @@ class MuestrasBloc extends Bloc<MuestrasEvent, MuestrasState>{
       for(int i = 0; i < componentes.length; i++){
         componentes[i].preparacion = preparaciones[i];
       }
-      yield OnEleccionTomaOFinalizar(muestreo: muestreo);
+      yield OnChooseRangosAUsar(muestreo: muestreo);
     });
-    
+  }
+
+  Stream<MuestrasState> _chooseRangosAUsar(ChooseRangosAUsar event)async*{
+    Muestreo muestreo = (state as LoadedMuestreo).muestreo;
+    yield LoadingMuestreo();
+    muestreo = muestreo.copyWith(rangos: event.rangos);
+    yield OnChooseAddMuestraOFinalizar(muestreo: muestreo);
   }
 
   Stream<MuestrasState> _addNewTomaDeMuestra(InitNewMuestra event)async*{
-    final Muestreo muestra = (state as OnEleccionTomaOFinalizar).muestreo;
+    final Muestreo muestra = (state as OnChooseAddMuestraOFinalizar).muestreo;
     yield LoadingMuestreo();
     yield OnChosingRangoEdad(muestreo: muestra);
   }
@@ -104,7 +113,7 @@ class MuestrasBloc extends Bloc<MuestrasEvent, MuestrasState>{
   }
 
   Stream<MuestrasState> _addMuestraPesos(AddMuestraPesos event)async*{
-    final Muestreo muestreo = (state as OnTomaPesos).muestreo;
+    Muestreo muestreo = (state as OnTomaPesos).muestreo;
     final int rangoId = (state as OnTomaPesos).rangoId;
     yield LoadingMuestreo();
     final List<String> stringPesos = event.pesos;
@@ -112,16 +121,15 @@ class MuestrasBloc extends Bloc<MuestrasEvent, MuestrasState>{
     yield * eitherPesos.fold((_)async*{
       yield MuestraError(message: FORMAT_PESOS_ERROR);
     }, (pesos)async*{
-      muestreo.nMuestras += 1;
-      final String rangoNombre = muestreo.rangos.singleWhere((r) => r.id == rangoId).nombre;
+      muestreo = muestreo.copyWith(nMuestras: muestreo.nMuestras+1);
       await setMuestra(SetMuestraParams(muestreoId: muestreo.id, selectedRangoId: rangoId, pesosTomados: pesos));
       final eitherMuestreo = await getMuestras(NoParams());
       yield * eitherMuestreo.fold((l)async*{
         yield MuestraError(message: GENERAL_ERROR_MESSAGE);
-      }, (muestreo)async*{
-        yield OnEleccionTomaOFinalizar(muestreo: muestreo);
+      }, (newMuestreo)async*{
+        newMuestreo = newMuestreo.copyWith(rangos: muestreo.rangos);
+        yield OnChooseAddMuestraOFinalizar(muestreo: newMuestreo);
       });
-      
     });
   }
 
@@ -156,13 +164,15 @@ class MuestrasBloc extends Bloc<MuestrasEvent, MuestrasState>{
   }
 
   Stream<MuestrasState> _backFromMuestraDetail()async *{
+    final List<Rango> rangos = (state as LoadedMuestreo).muestreo.rangos;
     yield LoadingMuestreo();
     final eitherMuestreo = await getMuestras(NoParams());
     yield * eitherMuestreo.fold((failure)async*{
       String message = (failure is ServerFailure)? failure.message : GENERAL_ERROR_MESSAGE;
       yield MuestraError(message: message);
     }, (muestreo)async*{
-      yield OnEleccionTomaOFinalizar(muestreo: muestreo);
+      muestreo = muestreo.copyWith(rangos: rangos);
+      yield OnChooseAddMuestraOFinalizar(muestreo: muestreo);
     });
   }
 }

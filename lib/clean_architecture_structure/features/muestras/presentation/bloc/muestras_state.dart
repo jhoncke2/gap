@@ -24,14 +24,22 @@ abstract class LoadedMuestreo extends MuestrasState{
 
 class OnPreparacionMuestra extends LoadedMuestreo{
   OnPreparacionMuestra({
-    @required Muestreo muestra
+    @required Muestreo muestreo
   }):super(
-    muestreo: muestra
+    muestreo: muestreo
   );
 }
 
-class OnEleccionTomaOFinalizar extends LoadedMuestreo{
-  OnEleccionTomaOFinalizar({
+class OnChooseRangosAUsar extends LoadedMuestreo{
+  OnChooseRangosAUsar({
+    @required Muestreo muestreo
+  }):super(
+    muestreo: muestreo
+  );
+}
+
+class OnChooseAddMuestraOFinalizar extends LoadedMuestreo{
+  OnChooseAddMuestraOFinalizar({
     @required Muestreo muestreo
   }):super(
     muestreo: muestreo

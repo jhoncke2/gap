@@ -3,20 +3,21 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/general_button.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/componente.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/muestreo.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/rango.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/bloc/muestras_bloc.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
 
 class PesosChooser extends StatefulWidget {
 
   final Muestreo muestra;
-  final String rangoEdad;
+  final Rango rangoEdad;
   PesosChooser({
     @required Muestreo muestra,
-    @required int rangoEdadIndex,
+    @required int rangoEdadId,
     Key key
   }) : 
     this.muestra = muestra,
-    this.rangoEdad = muestra.stringRangos[rangoEdadIndex],
+    this.rangoEdad = muestra.rangos.singleWhere((r) => r.id == rangoEdadId),
     super(key: key);
 
   @override
@@ -44,7 +45,7 @@ class _PesosChooserState extends State<PesosChooser> {
            Padding(
              padding: const EdgeInsets.only(top: 25),
              child: Text(
-               'Rango de edad: ${widget.rangoEdad}',
+               'Rango de edad: ${widget.rangoEdad.nombre}',
                style: TextStyle(
                  fontSize: sizeUtils.subtitleSize
                ),
@@ -134,8 +135,7 @@ class _PesosChooserState extends State<PesosChooser> {
   }
 
   double _getPesoEsperadoFromComponenteIndex(int componenteIndex){
-    int rangoIndex = widget.muestra.stringRangos.indexWhere((r) => r == widget.rangoEdad);
-    return widget.muestra.pesosEsperadosPorRango[rangoIndex][componenteIndex];
+    return widget.rangoEdad.pesosEsperados[componenteIndex];
   }
 
   InputBorder _createInputBorder(){

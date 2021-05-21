@@ -15,6 +15,13 @@ class SetMuestreoPreparaciones extends MuestrasEvent{
   });
 }
 
+class ChooseRangosAUsar extends MuestrasEvent{
+  final List<Rango> rangos;
+  ChooseRangosAUsar({
+    @required this.rangos
+  });
+}
+
 class InitNewMuestra extends MuestrasEvent{}
 
 class ChooseRangoEdad extends MuestrasEvent{

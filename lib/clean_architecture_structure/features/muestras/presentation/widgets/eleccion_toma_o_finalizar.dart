@@ -121,7 +121,6 @@ class MuestrasHechas extends StatelessWidget {
   Widget _createCurrentMuestraButton(BuildContext context, Muestra muestra, int muestraRangoIndex){
     return Container(
       child: TextButton(
-        //width: MediaQuery.of(context).size.width * 0.5,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [

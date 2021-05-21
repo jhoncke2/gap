@@ -62,7 +62,6 @@ class DataDistributorManager{
       DataDistrFunctionName.UPDATE_COMMENTED_IMAGES: dataDistributor.updateCommentedImages,
       DataDistrFunctionName.ADD_CURRENT_PHOTOS_TO_COMMENTED_IMAGES: dataDistributor.addCurrentPhotosToCommentedImages,
       DataDistrFunctionName.END_COMMENTED_IMAGES_PROCESS: dataDistributor.endCommentedImagesProcess,
-      //DataDistrFunctionName.ADD_STORAGE_DATA_TO_INDEX_BLOC: dataDistributor.addStorageDataToIndexBloc,
       DataDistrFunctionName.RESET_CHOSEN_PROJECT: dataDistributor.resetChosenProject,
       DataDistrFunctionName.RESET_VISITS: dataDistributor.resetVisits,
       DataDistrFunctionName.RESET_CHOSEN_VISIT: dataDistributor.resetChosenVisit,

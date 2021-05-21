@@ -67,10 +67,10 @@ class NavigationListWithIcons extends NavigationList{
     for(int i = 0; i < navigationItemsParts.length; i++){
       final Map<String, dynamic> itemPart = navigationItemsParts[i];
       Function navFunction = (i != 0 || visitHasMuestreo)? itemPart['nav_function']
-        : PagesNavigationManager.navToForms();
+        : PagesNavigationManager.navToForms;
       this.itemsFunctions.add(
         _generateFunctionByItemActivation(
-          _navItemsActivation[i], 
+          _navItemsActivation[i],
           navFunction
         )
       );
