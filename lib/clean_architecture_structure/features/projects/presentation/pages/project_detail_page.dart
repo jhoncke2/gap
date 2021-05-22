@@ -125,7 +125,7 @@ class ProjectDetailPage extends StatelessWidget {
         name,
         style: TextStyle(
           color: Theme.of(context).primaryColor,
-          fontSize: _sizeUtils.titleSize
+          fontSize: _sizeUtils.subtitleSize
         ),
       ),
       onTap: onTap

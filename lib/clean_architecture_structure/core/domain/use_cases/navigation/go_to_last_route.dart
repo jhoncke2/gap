@@ -5,10 +5,11 @@ import 'package:gap/clean_architecture_structure/core/domain/use_cases/use_case.
 import 'package:gap/clean_architecture_structure/core/error/failures.dart';
 import 'package:gap/clean_architecture_structure/core/platform/custom_navigator.dart';
 
+import '../use_case_error_handler.dart';
+
 class GoToLastRoute implements UseCase<void, NoParams>{
   final CustomNavigator navigator;
   final NavigationRepository navRepository;
-
   GoToLastRoute({
     @required this.navigator, 
     @required this.navRepository

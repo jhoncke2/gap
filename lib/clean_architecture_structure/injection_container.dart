@@ -1,4 +1,5 @@
 //sl: service locator
+import 'package:gap/clean_architecture_structure/core/domain/use_cases/use_case_error_handler.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/blocs/navigation/navigation_bloc.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/data/repository/fake_impl/muestras_repository_fake.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/update_preparaciones.dart';
@@ -150,15 +151,19 @@ void init()async{
   //*/
 
   //useCases
-  sl.registerLazySingleton(()=>GoTo(navigator: sl(), navRepository: sl()));
-  sl.registerLazySingleton(()=>Pop(navigator: sl(), navRepository: sl()));
-  sl.registerLazySingleton(()=>GoReplacingAllTo(navigator: sl(), navRepository: sl()));
+  sl.registerLazySingleton<UseCaseErrorHandler>(()=>UseCaseErrorHandlerImpl(
+    centralSystemRepository: sl(), 
+    userRepository: sl()
+  ));
+  sl.registerLazySingleton(()=>GoTo(navigator: sl(), navRepository: sl(), errorHandler: sl()));
+  sl.registerLazySingleton(()=>Pop(navigator: sl(), navRepository: sl(), errorHandler: sl()));
+  sl.registerLazySingleton(()=>GoReplacingAllTo(navigator: sl(), navRepository: sl(), errorHandler: sl()));
   sl.registerLazySingleton(()=>GoToLastRoute(navigator: sl(), navRepository: sl()));
-  sl.registerLazySingleton(()=>Login(userRepository: sl(), centralSystemRepository: sl()));
-  sl.registerLazySingleton(()=>Logout(repository: sl()));
-  sl.registerLazySingleton(()=>GetProjects(repository: sl()));
-  sl.registerLazySingleton(()=>GetChosenProject(repository: sl()));
-  sl.registerLazySingleton(()=>SetChosenProject(repository: sl()));
+  sl.registerLazySingleton(()=>Login(userRepository: sl(), centralSystemRepository: sl(), errorHandler: sl()));
+  sl.registerLazySingleton(()=>Logout(repository: sl(), errorHandler: sl()));
+  sl.registerLazySingleton(()=>GetProjects(repository: sl(), errorHandler: sl()));
+  sl.registerLazySingleton(()=>GetChosenProject(repository: sl(), errorHandler: sl()));
+  sl.registerLazySingleton(()=>SetChosenProject(repository: sl(), errorHandler: sl()));
   sl.registerLazySingleton(()=>GetMuestras(repository: sl()));
   sl.registerLazySingleton(()=>SetMuestra(repository: sl()));
   sl.registerLazySingleton(()=>UpdatePreparaciones(repository: sl()));

@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:gap/clean_architecture_structure/core/domain/repositories/navigation_repository.dart';
 import 'package:gap/clean_architecture_structure/core/domain/use_cases/navigation/go_to_last_route.dart';
 import 'package:gap/clean_architecture_structure/core/domain/use_cases/use_case.dart';
+import 'package:gap/clean_architecture_structure/core/domain/use_cases/use_case_error_handler.dart';
 import 'package:gap/clean_architecture_structure/core/error/exceptions.dart';
 import 'package:gap/clean_architecture_structure/core/error/failures.dart';
 import 'package:gap/clean_architecture_structure/core/platform/custom_navigator.dart';
@@ -15,14 +16,13 @@ class MockCustomNavigator extends Mock implements CustomNavigator{}
 GoToLastRoute useCase;
 MockCustomNavigator navigator;
 MockNavigationRepository repository;
-
 void main(){
   setUp((){
     repository = MockNavigationRepository();
     navigator = MockCustomNavigator();
     useCase = GoToLastRoute(
       navigator: navigator,
-      navRepository: repository
+      navRepository: repository,
     );
   });
 

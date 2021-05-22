@@ -1,4 +1,5 @@
 import 'package:gap/clean_architecture_structure/features/muestras/data/models/rango_model.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/rango.dart';
 import 'package:meta/meta.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/muestreo.dart';
 import 'componente_model.dart';
@@ -15,9 +16,9 @@ class MuestreoModel extends Muestreo{
     @required List<MuestraModel> muestrasTomadas,
     @required List<RangoModel> rangos,
     @required bool obligatorio,
-    @required int minMuestreos,
-    @required int maxMuestreos,    
-    @required int nMuestreos
+    @required int minMuestras,
+    @required int maxMuestras,    
+    @required int nMuestras
   }):super(
     id: id,
     tipo: tipo,
@@ -27,9 +28,9 @@ class MuestreoModel extends Muestreo{
     muestrasTomadas: muestrasTomadas,
     rangos: rangos,
     obligatorio: obligatorio,
-    minMuestras: minMuestreos,
-    maxMuestras: maxMuestreos,    
-    nMuestras: nMuestreos
+    minMuestras: minMuestras,
+    maxMuestras: maxMuestras,    
+    nMuestras: nMuestras
   );
 
   factory MuestreoModel.fromJson(Map<String, dynamic> json)=>MuestreoModel(
@@ -41,9 +42,9 @@ class MuestreoModel extends Muestreo{
     rangos:  rangosFromJson( json['rangos'].cast<Map<String, dynamic>>() ),
     muestrasTomadas: json['muestras'] != null? muestrasFromJson(json['muestras'].cast<Map<String, dynamic>>()): [],
     obligatorio: json['obligatorio'],
-    minMuestreos: json['n_muestreos'][0],
-    maxMuestreos: json['n_muestreos'][1],
-    nMuestreos: ( json['muestras']??[] ).length
+    minMuestras: json['n_muestreos'][0],
+    maxMuestras: json['n_muestreos'][1],
+    nMuestras: ( json['muestras']??[] ).length
   );
 
   static List<List<double>> _getPesosEsperadosFromJson(Map<String, dynamic> json){
@@ -56,4 +57,22 @@ class MuestreoModel extends Muestreo{
     ).toList();
     return doubleList;
   }
+
+  @override
+  Muestreo copyWith({
+    int nMuestras,
+    List<Rango> rangos
+  })=>MuestreoModel(
+    id: this.id,    
+    tipo: this.tipo,
+    obligatorio: this.obligatorio,
+    stringRangos: this.stringRangos,
+    pesosEsperadosPorRango: this.pesosEsperadosPorRango,
+    componentes: this.componentes,
+    muestrasTomadas: this.muestrasTomadas,
+    rangos: rangos ?? this.rangos,
+    minMuestras: this.minMuestras,
+    maxMuestras: this.maxMuestras,
+    nMuestras: nMuestras ?? this.nMuestras,    
+  );
 }

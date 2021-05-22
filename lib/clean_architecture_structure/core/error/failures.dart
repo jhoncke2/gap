@@ -30,6 +30,7 @@ class StorageFailure extends Failure{
 
 enum ServerFailureType{
   LOGIN,
+  UNHAUTORAIZED,
   NORMAL
 }
 
@@ -43,8 +44,8 @@ class ServerFailure extends Failure{
     ServerExceptionType servExcType,
   }):
     this.type = (type!=null)? type : 
-    (servExcType==ServerExceptionType.LOGIN)? 
-      ServerFailureType.LOGIN : 
+    (servExcType==ServerExceptionType.LOGIN)? ServerFailureType.LOGIN :
+    (servExcType==ServerExceptionType.UNHAUTORAIZED)? ServerFailureType.UNHAUTORAIZED : 
       ServerFailureType.NORMAL,
     super(
       properties: [message, (type??servExcType)]

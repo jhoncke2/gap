@@ -2,6 +2,9 @@ import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/clean_architecture_structure/core/domain/entities/commented_image.dart';
+import 'package:gap/clean_architecture_structure/core/domain/entities/formulario/formulario.dart';
+import 'package:gap/clean_architecture_structure/core/domain/use_cases/use_case_error_handler.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:gap/clean_architecture_structure/core/domain/repositories/central_system_repository.dart';
 import 'package:gap/clean_architecture_structure/core/data/models/commented_image_model.dart';
@@ -50,6 +53,7 @@ import 'package:gap/old_architecture/ui/utils/dialogs.dart' as dialogs;
 
 abstract class DataDistributor{
 
+  final UseCaseErrorHandler errorHandler = sl();
   final CentralSystemRepository centralSystemRepository = sl();
   final UserRepository userRepository = sl();
   final ProjectsRepository projectsRepository = sl();
@@ -58,7 +62,6 @@ abstract class DataDistributor{
   final PreloadedRepository preloadedRepository = sl();
   final IndexRepository indexRepository = sl();
   final CommentedImagesRepository commentedImagesRepository = sl();
-
 
   static final Map<BlocName, Bloc> blocsAsMap = BlocProvidersCreator.blocsAsMap;
   final Map<BlocName, ChangeNotifier> singletonesAsMap = BlocProvidersCreator.singletonesAsMap;
@@ -150,7 +153,7 @@ abstract class DataDistributor{
     final ProjectModel project = ProjectModel(id: projectOld.id, nombre: projectOld.nombre);
     final eitherResult = await projectsRepository.setChosenProject(project);
     eitherResult.fold((l){
-      //TODO: Implementar manejo de errores     
+      //TODO: Implementar manejo de errores
     }, (r){
       final ProjectOld chosenProjectOld = ProjectOld(id: project.id, nombre: project.nombre, visits: []);
       projectsB.add(ChooseProject(chosenOne: chosenProjectOld));
@@ -159,13 +162,12 @@ abstract class DataDistributor{
 
   Future<void> updateVisits()async{
     projectsB.add(ResetProjects());
-    final eitherVisits = await visitsRepository.getVisits();
+    final eitherVisits = await errorHandler.executeFunction<List<Visit>>(() => visitsRepository.getVisits());
     eitherVisits.fold((failure){
       //TODO: Implementar manejo de errores
     }, (visits){
       final List<VisitOld> visitsOld = visits.map((v) => VisitOld.fromNewVisit(v)).toList();
       visitsB.add(SetVisits(visits: visitsOld));
-      //UploadedBlocsData.dataContainer[NavigationRoute.Visits] = visits;
     });
   }
 
@@ -182,10 +184,10 @@ abstract class DataDistributor{
   Future<void> updateChosenVisit(VisitOld visitOld)async{
     visitsB.add(ResetVisits());
     final VisitModel chosenVisit = _getVisitFromVisitOld(visitOld);
-    final eitherChooseResult = await visitsRepository.setChosenVisit(chosenVisit);
+    final eitherChooseResult = await errorHandler.executeFunction<void>(() => visitsRepository.setChosenVisit(chosenVisit));
     eitherChooseResult.fold((failure){
       //TODO: Implementar manejo de errores
-    }, (r){
+    }, (_){
       visitsB.add(ChooseVisit(chosenOne: visitOld));
       //UploadedBlocsData.dataContainer[NavigationRoute.VisitDetail] = visitOld;
     });
@@ -200,7 +202,7 @@ abstract class DataDistributor{
 
   Future<void> updateFormularios()async{
     visitsB.add(ChangeChosenVisitBlocking(isBlocked: true));
-    final eitherFormularios = await formulariosRepository.getFormularios();
+    final eitherFormularios = await errorHandler.executeFunction<List<Formulario>>(() =>  formulariosRepository.getFormularios());
     eitherFormularios.fold((failure){
       //TODO: Implementar manejo de errores
     }, (formularios){
@@ -214,7 +216,7 @@ abstract class DataDistributor{
   Future<void> updateChosenForm(FormularioOld formOld)async{
     formsB.add(ChangeFormsAreBlocked(areBlocked: true));
     final FormularioModel chosenForm = _getFormularioFromFormularioOld(formOld);
-    final eitherChoose = await formulariosRepository.setChosenFormulario(chosenForm);
+    final eitherChoose = await errorHandler.executeFunction(() => formulariosRepository.setChosenFormulario(chosenForm));
     indexB.add(ResetAllOfIndex());
     await eitherChoose.fold((l)async{
       formsB.add(ChangeFormsAreBlocked(areBlocked: false));
@@ -226,7 +228,7 @@ abstract class DataDistributor{
   }
 
   Future<void> _updateChosenFormFromRepository()async{
-    final eitherUpdatedChosenForm = await formulariosRepository.getChosenFormulario();
+    final eitherUpdatedChosenForm = await errorHandler.executeFunction<Formulario>(() => formulariosRepository.getChosenFormulario());
     await eitherUpdatedChosenForm.fold((l)async{
       formsB.add(ChangeFormsAreBlocked(areBlocked: false));
       throw NavObstructionErr(message: 'Ocurrió un problema al cargar la información del formulario');
@@ -247,10 +249,12 @@ abstract class DataDistributor{
     formsB.add(ChooseForm(chosenOne: updatedChosenFormOld));
     await _chooseBlocMethodByChosenFormStep(updatedChosenFormOld);
     formsB.add(ChangeFormsAreBlocked(areBlocked: false));
-    final eitherSetInitialPosition = await formulariosRepository.setInitialPosition(CustomPositionModel(
-      latitude: updatedChosenFormOld.initialPosition.latitude,
-      longitude: updatedChosenFormOld.initialPosition.longitude
-    ));
+    final eitherSetInitialPosition = await errorHandler.executeFunction(
+      () => formulariosRepository.setInitialPosition(CustomPositionModel(
+        latitude: updatedChosenFormOld.initialPosition.latitude,
+        longitude: updatedChosenFormOld.initialPosition.longitude
+      ))
+    );
     eitherSetInitialPosition.fold((l){
       formsB.add(ChangeFormsAreBlocked(areBlocked: false));
       throw NavObstructionErr(message: 'Ocurrión un problema al enviar la posición geográfica.');
@@ -365,17 +369,19 @@ abstract class DataDistributor{
     await _addFinalPosition(chosenFormOld); 
     deleteNullFirmersFromForm(chosenFormOld);
     //await updateChosenFormInStorage(chosenForm);
-    final eitherSetFinalPosition = await formulariosRepository.setFinalPosition(CustomPositionModel(
-      latitude: chosenFormOld.finalPosition.latitude, 
-      longitude: chosenFormOld.finalPosition.longitude
-    ));
+    final eitherSetFinalPosition = await errorHandler.executeFunction<void>(
+      () => formulariosRepository.setFinalPosition(CustomPositionModel(
+        latitude: chosenFormOld.finalPosition.latitude, 
+        longitude: chosenFormOld.finalPosition.longitude
+      ))
+    );
     eitherSetFinalPosition.fold((_){
       //TODO: Implementar manejo de errores
     }, (_){
 
     });
     FormularioModel formulario = _getFormularioFromFormularioOld(chosenFormOld);
-    final eitherSetCampos = await formulariosRepository.setCampos(formulario);
+    final eitherSetCampos = await errorHandler.executeFunction<void>(() => formulariosRepository.setCampos(formulario));
     await eitherSetCampos.fold((_)async{
       //TODO: Implementar manejo de errores
       await dialogs.showTemporalDialog('Ocurrió un error al enviar los campos');
@@ -413,7 +419,7 @@ abstract class DataDistributor{
     _initOnFirstFirmerInformation();
     chosenFormOld.advanceInStep();
     final FormularioModel chosenForm = _getFormularioFromFormularioOld(chosenFormOld);
-    final eitherUpdateForm = await formulariosRepository.setChosenFormulario(chosenForm);
+    final eitherUpdateForm = await errorHandler.executeFunction<void>(() => formulariosRepository.setChosenFormulario(chosenForm));
     eitherUpdateForm.fold((l){
       //TODO: Implementar manejo de errores
     }, (_){
@@ -435,13 +441,13 @@ abstract class DataDistributor{
     _advanceInStepIfIsInFirstFirmerFirm(chosenFormOld);
     //await updateChosenFormInStorage(chosenForm);
     final FormularioModel chosenFormulario = _getFormularioFromFormularioOld(chosenFormOld);
-    final eitherSetFirmer = await formulariosRepository.setFirmer(chosenFormulario.firmers.last);
+    final eitherSetFirmer = await errorHandler.executeFunction<void>(() => formulariosRepository.setFirmer(chosenFormulario.firmers.last));
     await eitherSetFirmer.fold((failure){
       //TODO: Implementar manejo de errores
       dialogs.showTemporalDialog('Ocurrió un error con el envío de la firma');
     }, (r)async{
       chosenFormulario.firmers.removeAt(0);
-      final eitherUpdateFormulario = await formulariosRepository.setChosenFormulario(chosenFormulario);
+      final eitherUpdateFormulario = await errorHandler.executeFunction<void>(() => formulariosRepository.setChosenFormulario(chosenFormulario));
       eitherUpdateFormulario.fold((failure){
         //TODO: Implementar manejo de errores
         dialogs.showTemporalDialog('Ocurrió un error con la actualización de las firmas del formulario');
@@ -483,7 +489,9 @@ abstract class DataDistributor{
   Future updateCommentedImages()async{
     commImgsB.add(InitImagesCommenting());
     visitsB.add(ChangeChosenVisitBlocking(isBlocked: true));
-    final eitherCommentedImages = await commentedImagesRepository.getCommentedImages();
+    final eitherCommentedImages = await errorHandler.executeFunction<List<SentCommentedImage>>(
+      () => commentedImagesRepository.getCommentedImages()
+    );
     eitherCommentedImages.fold((l){
       //TODO: Implementar manejo de errores
     }, (commentedImages){
@@ -549,7 +557,7 @@ abstract class DataDistributor{
         image: (ciO as UnSentCommentedImageOld).image,
         commentary: ciO.commentary
       )).toList();
-      final eitherSetCommImgs = await commentedImagesRepository.setCommentedImages(commentedImages);
+      final eitherSetCommImgs = await errorHandler.executeFunction<void>(() => commentedImagesRepository.setCommentedImages(commentedImages));
       eitherSetCommImgs.fold((l){
         //TODO: Implementar manejo de errores
       }, (r){
@@ -573,7 +581,7 @@ abstract class DataDistributor{
 
   Future resetVisits()async{
     visitsB.add(ResetVisits());
-    final eitherChosenProject = await projectsRepository.getChosenProject();
+    final eitherChosenProject = await errorHandler.executeFunction<Project>(() => projectsRepository.getChosenProject());
     eitherChosenProject.fold((l){
 
     }, (chosenProject){
@@ -596,7 +604,7 @@ abstract class DataDistributor{
     formsB.add(ResetForms());
     await updateVisits();
     VisitOld chosenVisitOld = visitsB.state.chosenVisit;
-    final eitherVisits = await visitsRepository.getVisits();
+    final eitherVisits = await errorHandler.executeFunction<List<Visit>>(() => visitsRepository.getVisits());
     eitherVisits.fold((failure){
       //TODO: Implementar manejo de errores
     }, (visits){
@@ -614,7 +622,6 @@ abstract class DataDistributor{
   Future resetCommentedImages()async{
   }
 }
-
 
 class UploadedBlocsData{
   static final Map<NavigationRoute, dynamic> dataContainer = {};

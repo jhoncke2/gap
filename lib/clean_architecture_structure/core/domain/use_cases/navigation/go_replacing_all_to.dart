@@ -6,19 +6,23 @@ import 'package:gap/clean_architecture_structure/core/domain/use_cases/use_case.
 import 'package:gap/clean_architecture_structure/core/error/failures.dart';
 import 'package:gap/clean_architecture_structure/core/platform/custom_navigator.dart';
 
+import '../use_case_error_handler.dart';
+
 class GoReplacingAllTo implements UseCase<void, NavigationParams>{
   final CustomNavigator navigator;
   final NavigationRepository navRepository;
+  final UseCaseErrorHandler errorHandler;
 
   GoReplacingAllTo({
     @required this.navigator, 
-    @required this.navRepository
+    @required this.navRepository,
+    @required this.errorHandler
   });
 
   @override
   Future<Either<Failure, void>> call(NavigationParams params)async{
-    final eitherRepository = await navRepository.replaceAllNavRoutesForNew(params.navRoute);
-    //navigator.navigateReplacingTo(params.navRoute, params.arguments);
-    return eitherRepository;
+    return await errorHandler.executeFunction<void>(
+      () async => await navRepository.replaceAllNavRoutesForNew(params.navRoute)
+    );
   }
 }

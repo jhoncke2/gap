@@ -35,19 +35,7 @@ class Muestreo extends Equatable{
   Muestreo copyWith({
     List<Rango> rangos,
     int nMuestras
-  }) => Muestreo(
-    id: this.id,    
-    tipo: this.tipo,
-    obligatorio: this.obligatorio,
-    stringRangos: this.stringRangos,
-    pesosEsperadosPorRango: this.pesosEsperadosPorRango,
-    componentes: this.componentes,
-    muestrasTomadas: this.muestrasTomadas,
-    rangos: rangos ?? this.rangos,
-    minMuestras: this.minMuestras,
-    maxMuestras: this.maxMuestras,
-    nMuestras: nMuestras ?? this.nMuestras,    
-  );
+  }){}
 
   @override
   List<Object> get props => [this.id, this.tipo, this.obligatorio, this.stringRangos, this.pesosEsperadosPorRango, this.componentes, this.muestrasTomadas, this.nMuestras];

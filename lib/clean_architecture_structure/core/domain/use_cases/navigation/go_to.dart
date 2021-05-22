@@ -7,22 +7,27 @@ import 'package:gap/clean_architecture_structure/core/domain/use_cases/use_case.
 import 'package:gap/clean_architecture_structure/core/error/failures.dart';
 import 'package:gap/old_architecture/data/enums/enums.dart';
 
+import '../use_case_error_handler.dart';
+
 
 class GoTo implements UseCase<void, NavigationParams>{
 
   final CustomNavigator navigator;
   final NavigationRepository navRepository;
-
+  final UseCaseErrorHandler errorHandler;
   GoTo({
     @required this.navigator,
-    @required this.navRepository
+    @required this.navRepository,
+    @required this.errorHandler
   });
 
   @override
   Future<Either<Failure, void>> call(NavigationParams params)async{
-    //await navigator.navigateReplacingTo(params.navRoute, params.arguments);
-    return await navRepository.setNavRoute(params.navRoute);
+    return await errorHandler.executeFunction(() => navRepository.setNavRoute(params.navRoute));
   }
+}
+
+class MockUseCaseErrorHandler {
 }
 
 class NavigationParams extends Equatable{
