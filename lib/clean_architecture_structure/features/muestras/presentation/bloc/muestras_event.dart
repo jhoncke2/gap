@@ -8,6 +8,8 @@ abstract class MuestrasEvent extends Equatable {
 
 class GetMuestreoEvent extends MuestrasEvent{}
 
+class InitTomaMuestras extends MuestrasEvent{}
+
 class SetMuestreoPreparaciones extends MuestrasEvent{
   final List<String> preparaciones;
   SetMuestreoPreparaciones({

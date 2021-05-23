@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/navigation/navigation_local_data_source.dart';
-import 'package:gap/clean_architecture_structure/core/data/repositories/preloaded_repository.dart';
 import 'package:gap/clean_architecture_structure/core/domain/repositories/formularios_repository.dart';
 import 'package:gap/clean_architecture_structure/core/domain/repositories/preloaded_repository.dart';
 import 'package:gap/clean_architecture_structure/core/domain/repositories/projects_repository.dart';
@@ -57,20 +56,6 @@ class DataInitializer{
     await _doFunctionByStoragePermissionStatus(permissionStatus, context, netConnState);
   }
 
-  /*
-  Future _init(BuildContext context, NetConnectionState netConnState)async{
-    final String accessToken = await UserStorageManager.getAccessToken();
-    await _doInitializationByAccessToken(accessToken, context, netConnState);
-  }
-
-  Future _doInitializationByAccessToken(String accessToken, BuildContext context, NetConnectionState netConnState)async{
-    if(accessToken == null)
-      await _navigateToLogin(context, netConnState);
-    else
-      await _doInitialization(context, netConnState);
-  }
-  */
-
   Future _navigateToLogin(BuildContext context, NetConnectionState netConnState)async{
     _defineLogginButtonAvaibleless(netConnState);
     await PagesNavigationManager.navToLogin();
@@ -84,7 +69,6 @@ class DataInitializer{
   Future _doInitialization(BuildContext context, NetConnectionState netConnState)async{
     await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.DO_INITIAL_CONFIG);
     if(dataDisrtibutorErrorHandlingManager.happendError){
-      //await _routesManager.replaceAllRoutesForNew(dataDisrtibutorErrorHandlingManager.navigationTodoByError??NavigationRoute.Login);
       await _replaceAllNavRoutesByHavingError();
     }
     else
@@ -92,7 +76,6 @@ class DataInitializer{
   }
 
   Future _continueInitializationAfterDoneInitialConfig(BuildContext context, NetConnectionState netConnState)async{
-    //await _routesManager.loadRoute();
     await _sendPreloadedData();
     await _doAllNavigationByEvaluatingInitialConditions(context, netConnState);
   }
@@ -116,23 +99,19 @@ class DataInitializer{
   }
 
   Future<bool> _currentNavRouteIsLogin()async{
-    //final NavigationRoute currentNavRoute = _routesManager.currentRoute;
     final NavigationRoute currentNavRoute = (await navLocalDataSource.getNavRoutes()).last;
     return (currentNavRoute == NavigationRoute.Login);
   }
 
   Future _doAllNavigationTree(BuildContext context)async{
-    //final List<NavigationRoute> navRoutes = await _routesManager.routesTree;
     final List<NavigationRoute> navRoutes = await navLocalDataSource.getNavRoutes();
     for(NavigationRoute nr in navRoutes){
       await _doUpdatingIfContinueInitialization(nr, context);
     }
     if(_continueInitialization){
-      //await _routesManager.updateLastRoute();
       await customNavigator.navigateReplacingTo(navRoutes.last);
     }
     else{
-      //await _routesManager.replaceAllRoutesForNew(dataDisrtibutorErrorHandlingManager.navigationTodoByError??NavigationRoute.Login);
       await _replaceAllNavRoutesByHavingError();
     }
       
@@ -184,7 +163,6 @@ class DataInitializer{
   }
 
   Future _doProjectDetailUpdating()async{
-    //final ProjectOld chosenOne = await ProjectsStorageManager.getChosenProject();
     final eitherChosenProject = await projectsRepository.getChosenProject();
     await eitherChosenProject.fold((l)async{
       _continueInitialization = false;
@@ -206,9 +184,7 @@ class DataInitializer{
     }, (chosenVisit)async{
       final VisitOld chosenVisitOld = VisitOld.fromNewVisit(chosenVisit);
       await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_CHOSEN_VISIT, chosenVisitOld);
-    });
-    //final VisitOld chosenOne = await VisitsStorageManager.getChosenVisit();
-    
+    });    
   }
 
   Future _doFormsUpdating()async{
@@ -223,8 +199,6 @@ class DataInitializer{
       FormularioOld chosenFormularioOld = FormularioOld.fromFormularioNew(chosenFormulario);
       await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_CHOSEN_FORM, chosenFormularioOld);
     });
-    //final FormularioOld chosenOne = await ChosenFormStorageManager.getChosenForm();
-    //await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_CHOSEN_FORM, chosenOne);
   }
 
   Future _doAdjuntarFotosUpdating()async{
@@ -232,8 +206,6 @@ class DataInitializer{
   }
 
   Future _doFirmersUpdating()async{
-    // Deberían haberse actualizado los firmers en el _doFormDetailUpdating (el chosen form contenia las firmas)
-    //await dataDisributorErrorHandlingManager.executeFunction(DataDistrFunctionName.)
   }
 
   void _evaluateifThereWasAnyErr(){

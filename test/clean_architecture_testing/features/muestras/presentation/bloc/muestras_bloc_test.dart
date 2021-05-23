@@ -54,13 +54,13 @@ void main(){
     });
 
     test('bloc creation', ()async{
-      expect(bloc.state, MuestreoEmpty());
+      expect(bloc.state, OnChooseInitOrEndMuestreo());
     });
 
     //TODO: Encontrar forma de testear que inicialmente se haga un auto add de getMuestra
   });
 
-  group('getMuestreos', (){
+  group('getMuestreo', (){
     Muestreo tMuestreo;
     setUp((){
       tMuestreo = _getMuestreoFromFixture();
@@ -73,14 +73,31 @@ void main(){
       verify(getMuestras.call(NoParams()));
     });
 
-    test('should yield the specified states in order when all goes good', ()async{
+    test('should yield the specified ordered states', ()async{
       when(getMuestras.call(any)).thenAnswer((_) async => Right(tMuestreo));
       final expectedsOrderedStates = [
         LoadingMuestreo(),
-        OnPreparacionMuestra(muestreo: tMuestreo)
+        OnChooseMuestreoStep(muestreo: tMuestreo)
       ];
       expectLater(bloc.asBroadcastStream(), emitsInOrder(expectedsOrderedStates));
       bloc.add(GetMuestreoEvent());
+    });
+  });
+
+  group('initTomaMuestras', (){
+    Muestreo tMuestreo;
+    setUp((){
+      tMuestreo = _getMuestreoFromFixture();
+      bloc.emit(OnChooseMuestreoStep(muestreo: tMuestreo));
+    });
+
+    test('should yield the specified states in order when all goes good', ()async{
+      when(getMuestras.call(any)).thenAnswer((_) async => Right(tMuestreo));
+      final expectedsOrderedStates = [
+        OnPreparacionMuestreo(muestreo: tMuestreo)
+      ];
+      expectLater(bloc.asBroadcastStream(), emitsInOrder(expectedsOrderedStates));
+      bloc.add(InitTomaMuestras());
     });
 
     test('should yield the specified states in order when there is any problem', ()async{
@@ -108,7 +125,7 @@ void main(){
       for(int i = 0; i < tMuestraComponentes.length; i++){
         tMuestraComponentes[i].preparacion = tPreparaciones[i];
       }
-      bloc.emit(OnPreparacionMuestra(muestreo: tMuestreo));
+      bloc.emit(OnPreparacionMuestreo(muestreo: tMuestreo));
       when(updatePreparaciones.call(any)).thenAnswer((_) async => Right(null));
     });
 

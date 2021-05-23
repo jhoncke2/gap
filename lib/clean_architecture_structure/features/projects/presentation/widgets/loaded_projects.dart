@@ -6,8 +6,6 @@ import 'package:gap/clean_architecture_structure/core/presentation/widgets/navig
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/navigation_list/navigation_list.dart';
 import 'package:gap/clean_architecture_structure/features/projects/presentation/bloc/projects_bloc.dart';
 import 'package:gap/old_architecture/data/enums/enums.dart';
-import 'package:gap/old_architecture/data/models/entities/entities.dart';
-import 'package:gap/old_architecture/logic/central_managers/pages_navigation_manager.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
 // ignore: must_be_immutable
 class LoadedProjectsWidget extends StatelessWidget {

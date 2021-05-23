@@ -1,11 +1,9 @@
 import 'dart:convert';
-
+import 'package:test/test.dart';
+import 'package:mockito/mockito.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/user/user_local_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/models/user_model.dart';
 import 'package:gap/clean_architecture_structure/core/platform/storage_connector.dart';
-import 'package:mockito/mockito.dart';
-import 'package:test/test.dart';
-
 import '../../../../fixtures/fixture_reader.dart';
 
 class MockStorageConnector extends Mock implements StorageConnector{}

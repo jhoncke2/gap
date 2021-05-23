@@ -5,7 +5,9 @@ import 'package:gap/clean_architecture_structure/core/presentation/widgets/scaff
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/bloc/muestras_bloc.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/widgets/eleccion_rangos_a_usar.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/widgets/eleccion_toma_o_finalizar.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/presentation/widgets/init_or_end_muestreo_view.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/widgets/muestra_detail.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/presentation/widgets/muestreo_step_choser.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/widgets/pesos_chooser.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/widgets/preparacion_componentes.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/widgets/rango_edad_chosing.dart';
@@ -35,7 +37,6 @@ class MuestrasPage extends StatelessWidget {
   Widget _createMuestrasBlocBuilder(){
     return BlocBuilder<MuestrasBloc, MuestrasState>(
       builder: (context, state) {
-        //_addInitialMuestrasBlocPostFrameCall(context, state);
         return Column(
           children: [
             PageHeader(
@@ -54,9 +55,11 @@ class MuestrasPage extends StatelessWidget {
   }
 
   Widget _createBlocBuilderBottom(BuildContext context, MuestrasState state){
-    if(state is MuestreoEmpty){
-      _addBlocEventPostFrameCallBack(context, GetMuestreoEvent());
-    }if(state is OnPreparacionMuestra)
+    if(state is OnChooseInitOrEndMuestreo)
+      return InitOrEndMuestreoView();
+    else if(state is OnChooseMuestreoStep)
+      return MuestreoStepChoser();
+    else if(state is OnPreparacionMuestreo)
       return PreparacionComponentes(muestra: state.muestreo);
     else if(state is OnChooseRangosAUsar)
       return EleccionRangosAUsar(rangos: state.muestreo.rangos);

@@ -7,9 +7,7 @@ abstract class MuestrasState extends Equatable {
   List<Object> get props => [this.runtimeType];
 }
 
-class MuestreoEmpty extends MuestrasState {}
-
-class ChosingIfDoMuestrasOrNot extends MuestrasState {}
+class OnChooseInitOrEndMuestreo extends MuestrasState {}
 
 class LoadingMuestreo extends MuestrasState {}
 
@@ -22,8 +20,16 @@ abstract class LoadedMuestreo extends MuestrasState{
   List<Object> get props => [...super.props, this.muestreo];
 }
 
-class OnPreparacionMuestra extends LoadedMuestreo{
-  OnPreparacionMuestra({
+class OnChooseMuestreoStep extends LoadedMuestreo {
+  OnChooseMuestreoStep({
+    @required Muestreo muestreo
+  }):super(
+    muestreo: muestreo
+  );
+}
+
+class OnPreparacionMuestreo extends LoadedMuestreo{
+  OnPreparacionMuestreo({
     @required Muestreo muestreo
   }):super(
     muestreo: muestreo

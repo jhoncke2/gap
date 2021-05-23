@@ -33,7 +33,7 @@ class MuestrasBloc extends Bloc<MuestrasEvent, MuestrasState>{
     @required this.updatePreparaciones,
     @required this.removeMuestra,
     @required this.pesosConverter
-  }) : super(MuestreoEmpty()){
+  }) : super(OnChooseInitOrEndMuestreo()){
     //add(GetMuestraEvent());
   }
 
@@ -42,7 +42,9 @@ class MuestrasBloc extends Bloc<MuestrasEvent, MuestrasState>{
     MuestrasEvent event,
   ) async* {
     if(event is GetMuestreoEvent){
-      yield * _getMuestra(event);
+      yield * _getMuestreo();
+    }else if(event is InitTomaMuestras){
+      yield * _initTomaMuestras();
     }else if(event is SetMuestreoPreparaciones){
       yield * _setMuestreoPreparaciones(event);
     }else if(event is ChooseRangosAUsar){
@@ -64,21 +66,26 @@ class MuestrasBloc extends Bloc<MuestrasEvent, MuestrasState>{
     }
   }
 
-  Stream<MuestrasState> _getMuestra(GetMuestreoEvent event)async*{
+  Stream<MuestrasState> _getMuestreo()async*{
     yield LoadingMuestreo();
     final eitherMuestreo = await getMuestras(NoParams());
     yield * eitherMuestreo.fold((failure)async*{
       String message = (failure is ServerFailure)? failure.message : GENERAL_ERROR_MESSAGE;
       yield MuestraError(message: message);
     }, (muestreo)async*{
-      yield OnPreparacionMuestra(
+      yield OnChooseMuestreoStep(
         muestreo: muestreo
       );
     });
   }
 
+  Stream<MuestrasState> _initTomaMuestras()async*{
+    final Muestreo muestreo = (state as LoadedMuestreo).muestreo;
+    yield OnPreparacionMuestreo(muestreo: muestreo);
+  }
+
   Stream<MuestrasState> _setMuestreoPreparaciones(SetMuestreoPreparaciones event)async*{
-    final Muestreo muestreo =  (state as OnPreparacionMuestra).muestreo;
+    final Muestreo muestreo =  (state as OnPreparacionMuestreo).muestreo;
     yield LoadingMuestreo();
     final List<String> preparaciones = event.preparaciones;
     final eitherUpdatePreparaciones = await updatePreparaciones(UpdatePreparacionesParams(muestreoId: muestreo.id, preparaciones: preparaciones));

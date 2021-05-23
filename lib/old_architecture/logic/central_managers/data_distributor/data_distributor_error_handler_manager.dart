@@ -7,7 +7,6 @@ import 'package:gap/old_architecture/errors/storage/app_never_runned.dart';
 import 'package:gap/old_architecture/errors/storage/unfound_storage_element_err.dart';
 import 'package:gap/old_architecture/logic/bloc/entities/user/user_bloc.dart';
 import 'package:gap/old_architecture/logic/central_managers/data_distributor/data_distributor_manager.dart';
-import 'package:gap/old_architecture/native_connectors/storage_connector.dart';
 import 'package:gap/old_architecture/ui/utils/dialogs.dart' as dialogs;
 
 class DataDisributorErrorHandlingManager{
