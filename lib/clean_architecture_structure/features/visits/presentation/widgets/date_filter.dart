@@ -1,41 +1,37 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:gap/old_architecture/logic/bloc/entities/visits/visits_bloc.dart';
+import 'package:gap/clean_architecture_structure/features/visits/presentation/notifier/visits_change_notifier.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
+import 'package:provider/provider.dart';
+class DateFilter extends StatefulWidget {
+  DateFilter({
+    Key key
+  }) : super(key: key);
 
-// ignore: must_be_immutable
-class VisitsDateFilterOld extends StatelessWidget {
+  @override
+  _DateFilterState createState() => _DateFilterState();
+}
+
+class _DateFilterState extends State<DateFilter> {
+  static final SizeUtils _sizeUtils = SizeUtils();
   final List<String> _menuItemsNames = ['Hoy', 'Mañana', 'Elige un día'];
-  final SizeUtils _sizeUtils = SizeUtils();
   BuildContext _context;
-  List<PopupMenuEntry<int>> _menuItems;
-  VisitsState _currentVisitsState;
-  VisitsDateFilterOld({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     _initInitialConfiguration(context);
-    return BlocBuilder<VisitsOldBloc, VisitsState>(
-      builder: (context, VisitsState state) {
-        _currentVisitsState = state;
-        _instanciarPopupItems();
-        return PopupMenuButton<int>(
-          initialValue: state.indexOfChosenFilterItem,
-          onSelected: (int index) => _onPopUpSelected(index),
-          elevation: 0.75,
-          shape: _createMenuShape(),
-          offset: Offset(
-            _sizeUtils.xasisSobreYasis * 0.01,
-            _sizeUtils.xasisSobreYasis * 0.07,
-          ),
-          padding: EdgeInsets.all(0.0),
-          child: _crearPopUpChild(),
-          itemBuilder: (BuildContext context) {
-            return _menuItems;
-          },
-        );
-      },
+    return PopupMenuButton<int>(
+      initialValue: Provider.of<VisitsChangeNotifier>(context).selectedDateMenuIndex,
+      onSelected: (int index) => _onPopUpSelected(index),
+      elevation: 0.75,
+      shape: _createMenuShape(),
+      offset: Offset(
+        _sizeUtils.xasisSobreYasis * 0.01,
+        _sizeUtils.xasisSobreYasis * 0.07,
+      ),
+      padding: EdgeInsets.all(0.0),
+      child: _crearPopUpChild(),
+      itemBuilder: (_) => _instanciarPopupItems()
     );
   }
 
@@ -53,13 +49,13 @@ class VisitsDateFilterOld extends StatelessWidget {
     _context = appContext;
   }
 
-  void _instanciarPopupItems() {
-    _menuItems = [];
+  List<PopupMenuEntry<int>> _instanciarPopupItems() {
+    List<PopupMenuEntry<int>> menuItems = [];
     for (int i = 0; i < _menuItemsNames.length; i++) {
-      final String name = _menuItemsNames[i];
-      _menuItems.add(
-          PopupMenuItem<int>(value: i, child: _crearItemsDePopUpItem(i, name)));
+      menuItems.add(
+          PopupMenuItem<int>(value: i, child: _crearItemsDePopUpItem(i, _menuItemsNames[i])));
     }
+    return menuItems;
   }
 
   Widget _crearItemsDePopUpItem(int itemIndex, String name) {
@@ -71,7 +67,7 @@ class VisitsDateFilterOld extends StatelessWidget {
             fontSize: _sizeUtils.normalTextSize),
       )
     ];
-    if (itemIndex == 2) {
+    if(itemIndex == 2){
       rowChildren.addAll([
         SizedBox(width: _sizeUtils.xasisSobreYasis * 0.03),
         Icon(
@@ -93,7 +89,7 @@ class VisitsDateFilterOld extends StatelessWidget {
 
   Widget _crearPopUpChild() {
     String itemText;
-    final DateTime selectedDate = _currentVisitsState.filterDate;
+    DateTime selectedDate = Provider.of<VisitsChangeNotifier>(context).selectedDate;
     if(selectedDate != null){
       itemText = '${selectedDate.year}/${selectedDate.month}/${selectedDate.day}';
     }else{
@@ -121,13 +117,8 @@ class VisitsDateFilterOld extends StatelessWidget {
   }
 
   void _onPopUpSelected(int index) async {
-    final VisitsOldBloc visitsBloc = BlocProvider.of<VisitsOldBloc>(_context);
-    final DateTime selectedDate = await _hallarDateSegunItem(index);
-    final ChangeDateFilterItem event = ChangeDateFilterItem(
-      filterItemIndex: index, 
-      filterDate: selectedDate
-    );
-    visitsBloc.add(event);
+    DateTime selectedDate = await _hallarDateSegunItem(index);
+    Provider.of<VisitsChangeNotifier>(context, listen: false).setCurrentSelectedDateFilter(index, selectedDate);
   }
 
   Future<DateTime> _hallarDateSegunItem(int index)async{

@@ -65,12 +65,21 @@ class CommentedImageCard extends StatelessWidget {
   }
 
   Widget _createNetworkImage(SentCommentedImageOld commImg){
-    return Image.network(
-      commImg.url,
-      height: _sizeUtils.xasisSobreYasis * 0.14,
-      width: _sizeUtils.xasisSobreYasis * 0.14,
-      fit: BoxFit.cover,
-    );
+    try{
+      return Image.network(
+        commImg.url,
+        height: _sizeUtils.xasisSobreYasis * 0.14,
+        width: _sizeUtils.xasisSobreYasis * 0.14,
+        fit: BoxFit.cover,
+      );
+    }on Exception{
+      return Image.asset(
+        'assets/logos/logo_con_fondo.png',
+        height: _sizeUtils.xasisSobreYasis * 0.14,
+        width: _sizeUtils.xasisSobreYasis * 0.14,
+        fit: BoxFit.cover,
+      );
+    }
   }
 
   Widget _createComentaryInput(){

@@ -42,7 +42,7 @@ class SentCommentedImageModel extends SentCommentedImage{
   );
 
   factory SentCommentedImageModel.fromJson(Map<String, dynamic> json)=>SentCommentedImageModel(
-    url: json['ruta'],
+    url: json['ruta']??'null_route',
     commentary: json['descripcion'],
   );
 }

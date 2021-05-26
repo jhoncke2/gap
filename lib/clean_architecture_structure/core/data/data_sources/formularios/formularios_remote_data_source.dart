@@ -84,7 +84,7 @@ class FormulariosRemoteDataSourceImpl extends RemoteDataSourceWithMultiPartReque
       return await client.post(
         getUri('${super.BASE_PANEL_UNCODED_PATH}$INITIAL_POSITION_URL$formularioId'),
         //Uri.http(super.BASE_URL, '${super.BASE_PANEL_UNCODED_PATH}$INITIAL_POSITION_URL$formularioId'),
-        headers: createSingleAuthorizationHeaders(accessToken),
+        headers: createAuthorizationJsonHeaders(accessToken),
         body: jsonEncode(body)
       );
     });
@@ -146,7 +146,7 @@ class FormulariosRemoteDataSourceImpl extends RemoteDataSourceWithMultiPartReque
       return await client.post(
         getUri('${super.BASE_PANEL_UNCODED_PATH}$FINAL_POSITION_URL$formularioId'),
         //Uri.http(super.BASE_URL, '${super.BASE_PANEL_UNCODED_PATH}$FINAL_POSITION_URL$formularioId'),
-        headers: createSingleAuthorizationHeaders(accessToken),
+        headers: createAuthorizationJsonHeaders(accessToken),
         body: jsonEncode(body)
       );
     });

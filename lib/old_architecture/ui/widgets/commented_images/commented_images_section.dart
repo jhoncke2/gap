@@ -20,7 +20,7 @@ class CommentedImagesPageOfIndex extends StatelessWidget{
             if(commImgsWidgtsState.nPaginasDeCommImages == 0){
               return UnloadedNavItems();
             }else{
-              return _LoadedCommentedImagesPag(indexState: indexState, commImgsWidgetsState: commImgsWidgtsState);
+              return _LoadedCommentedImagesPage(indexState: indexState, commImgsWidgetsState: commImgsWidgtsState);
             }
           },
         );
@@ -33,12 +33,12 @@ class CommentedImagesPageOfIndex extends StatelessWidget{
   }
 }
 
-class _LoadedCommentedImagesPag extends StatelessWidget {
+class _LoadedCommentedImagesPage extends StatelessWidget {
   final SizeUtils _sizeUtils = SizeUtils();
   final List<FocusNode> _cardsInputsFocuses = [];
   final IndexState indexState;
   final CommentedImagesState commImgsWidgetsState;
-  _LoadedCommentedImagesPag({
+  _LoadedCommentedImagesPage({
     @required this.indexState,
     @required this.commImgsWidgetsState,
   });

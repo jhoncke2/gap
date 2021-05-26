@@ -4,16 +4,23 @@ import 'package:gap/old_architecture/data/enums/enums.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
 class ButtonWithStageColor extends StatelessWidget {
   final SizeUtils _sizeUtils = SizeUtils();
+  final Widget rightChild;
   final String name;
   final Color textColor;
   final Function onTap;
   final ProcessStage stage;
   ButtonWithStageColor({
-    @required this.name,
+    String name,
     @required this.textColor,
     @required this.onTap,
     @required this.stage,
-  });
+    Widget rightChild
+  }):
+    this.name = name,
+    this.rightChild = rightChild,
+    assert(
+      name == null || rightChild == null
+    );
 
   @override
   Widget build(BuildContext context) {
@@ -45,14 +52,14 @@ class ButtonWithStageColor extends StatelessWidget {
   }
 
   Widget _createRightItem(){
-    return Expanded(
-      child: NavigationListButton(
-        child: _createButtonName(),
-        textColor: this.textColor,
-        onTap: this.onTap,
-        hasBottomBorder: true,
-      )  
-    ); 
+      return Expanded(
+        child: NavigationListButton(
+          child: this.rightChild ?? _createButtonName(),
+          textColor: this.textColor,
+          onTap: this.onTap,
+          hasBottomBorder: true,
+        )  
+      ); 
   }
 
   Widget _createButtonName(){

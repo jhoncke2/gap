@@ -1,3 +1,4 @@
+import 'package:gap/clean_architecture_structure/core/domain/use_cases/use_case.dart';
 import 'package:gap/clean_architecture_structure/features/visits/domain/use_cases/get_chosen_visit.dart';
 import 'package:gap/clean_architecture_structure/features/visits/domain/use_cases/get_visits.dart';
 import 'package:gap/clean_architecture_structure/features/visits/domain/use_cases/set_chosen_visit.dart';
@@ -27,6 +28,26 @@ class VisitsBloc extends Bloc<VisitsEvent, VisitsState> {
   Stream<VisitsState> mapEventToState(
     VisitsEvent event,
   ) async* {
-    // TODO: implement mapEventToState
+    yield LoadingVisits();
+    if(event is LoadVisits){
+      final eitherVisits = await getVisits(NoParams());
+      yield * eitherVisits.fold((l)async*{
+
+      }, (visits)async*{
+        yield OnVisits(visits: visits);
+      });
+    }else if(event is ChooseVisit){
+      yield LoadingVisits();
+      await setChosenVisit(ChosenVisitParams(chosenVisit: event.visit));
+      yield OnVisitDetail(visit: event.visit);
+    }else if(event is LoadChosenVisit){
+      yield LoadingVisits();
+      final eitherVisit = await getChosenVisit(NoParams());
+      yield *eitherVisit.fold((l)async*{
+
+      }, (visit)async*{
+        yield OnVisitDetail(visit: visit);
+      });
+    }
   }
 }

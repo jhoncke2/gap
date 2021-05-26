@@ -33,6 +33,14 @@ class SetCommentedImages extends CommentedImagesEvent{
   });
 }
 
+class ChangeCommentedImagesLoading extends CommentedImagesEvent{
+  final bool isLoading;
+
+  ChangeCommentedImagesLoading({
+    @required this.isLoading
+  });
+}
+
 class CommentImage extends CommentedImagesEvent{
   final int page;
   final int positionInPage;

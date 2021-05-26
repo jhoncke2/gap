@@ -146,7 +146,7 @@ class PagesNavigationManager{
   }
 
   static Future<void> endAdjuntarImages(BuildContext context)async{
-    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.END_COMMENTED_IMAGES_PROCESS);
+    //await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.END_COMMENTED_IMAGES_PROCESS);
     await pop();
   }
 
@@ -213,7 +213,7 @@ class PagesNavigationManager{
   static Future _chooseMethodByCurrentBackingRoute(NavigationRoute route)async{
     if(route == NavigationRoute.AdjuntarFotosVisita)
       await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.END_COMMENTED_IMAGES_PROCESS);
-    else if(route == NavigationRoute.Formularios)
+    if(route == NavigationRoute.Formularios)
       await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.RESET_FORMS);
   }
 }

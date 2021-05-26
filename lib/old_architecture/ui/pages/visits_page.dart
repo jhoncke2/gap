@@ -98,7 +98,7 @@ class _VisitsComponents extends StatelessWidget {
           PageTitle(title: 'Listado de visitas'),
           SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
           _createNavForVisitsStates(state),
-          VisitsDateFilter(),
+          VisitsDateFilterOld(),
           _createNavigationList(state)
         ],
       )
@@ -152,7 +152,7 @@ class _VisitsComponents extends StatelessWidget {
     final VisitsOldBloc visitsBloc = BlocProvider.of<VisitsOldBloc>(_context);
     final ChangeSelectedStepInNav changeShVisitsStepEVent = ChangeSelectedStepInNav(newSelectedMenuStage: newSelectedStage);
     visitsBloc.add(changeShVisitsStepEVent);
-    final ResetDateFilter resetDateFilterEvent= ResetDateFilter();
+    final ResetDateFilter resetDateFilterEvent = ResetDateFilter();
     visitsBloc.add(resetDateFilterEvent);
   }
 

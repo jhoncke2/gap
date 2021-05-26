@@ -28,7 +28,10 @@ class UserRemoteDataSourceImpl extends RemoteDataSource implements UserRemoteDat
       final response = await client.post(
         //Uri.http(super.BASE_URL, '${super.BASE_AUTH_UNCODED_PATH}$LOGIN_URL'),
         getUri('${super.BASE_AUTH_UNCODED_PATH}$LOGIN_URL'),
-        body: body
+        headers: {
+          'Content-Type':'application/json'
+        },
+        body: jsonEncode( body )
       );
       if(response.statusCode != 200)
         throw Exception();

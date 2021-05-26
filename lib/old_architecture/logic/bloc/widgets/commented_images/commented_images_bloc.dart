@@ -25,6 +25,8 @@ class CommentedImagesBloc extends Bloc<CommentedImagesEvent, CommentedImagesStat
       _addCommentedImagesFromFiles(event);
     }else if(event is CommentImage){
       _commentImage(event);
+    }else if(event is ChangeCommentedImagesLoading){
+      _changeLoading(event.isLoading);
     }else if(event is InitSentCommImgsWatching){
       _initSentCommImgsWatching(event);
     }else if(event is ResetCommentedImages){
@@ -55,6 +57,10 @@ class CommentedImagesBloc extends Bloc<CommentedImagesEvent, CommentedImagesStat
     final CommentedImageOld commImageWithNewCommentary = commentedImagesPages[page][positionInPage];
     commImageWithNewCommentary.commentary = newCommentary;
     _currentStateToYield = state.copyWith();
+  }
+
+  void _changeLoading(bool isLoading){
+    _currentStateToYield = state.copyWith(isLoading: isLoading);
   }
 
   void _initSentCommImgsWatching(InitSentCommImgsWatching event){

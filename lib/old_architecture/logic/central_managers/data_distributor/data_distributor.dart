@@ -489,6 +489,7 @@ abstract class DataDistributor{
   Future updateCommentedImages()async{
     commImgsB.add(InitImagesCommenting());
     visitsB.add(ChangeChosenVisitBlocking(isBlocked: true));
+    
     final eitherCommentedImages = await errorHandler.executeFunction<List<SentCommentedImage>>(
       () => commentedImagesRepository.getCommentedImages()
     );
@@ -550,6 +551,7 @@ abstract class DataDistributor{
 
   Future endCommentedImagesProcess()async{
     visitsB.add(ChangeChosenVisitBlocking(isBlocked: false));
+    commImgsB.add(ChangeCommentedImagesLoading(isLoading: true));
     indexB.add(ResetAllOfIndex());
     if(commImgsB.state.dataType == CmmImgDataType.UNSENT){
       final List<CommentedImageOld> commImgsOld = commImgsB.state.allCommentedImages.toList();
@@ -561,7 +563,7 @@ abstract class DataDistributor{
       eitherSetCommImgs.fold((l){
         //TODO: Implementar manejo de errores
       }, (r){
-        //TODO: Implementar algo
+        //commImgsB.add(ChangeCommentedImagesLoading(isLoading: false));
       });
     }
     else

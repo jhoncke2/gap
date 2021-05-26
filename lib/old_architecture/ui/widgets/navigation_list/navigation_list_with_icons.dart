@@ -66,8 +66,9 @@ class NavigationListWithIcons extends NavigationList{
     this.itemsFunctions = [];
     for(int i = 0; i < navigationItemsParts.length; i++){
       final Map<String, dynamic> itemPart = navigationItemsParts[i];
-      Function navFunction = (i != 0 || visitHasMuestreo)? itemPart['nav_function']
-        : PagesNavigationManager.navToForms;
+      //Function navFunction = (i != 0 || visitHasMuestreo)? itemPart['nav_function']
+        //: PagesNavigationManager.navToForms;
+      Function navFunction = (i == 0)? PagesNavigationManager.navToForms : itemPart['nav_function'];
       this.itemsFunctions.add(
         _generateFunctionByItemActivation(
           _navItemsActivation[i],

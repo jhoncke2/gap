@@ -1,14 +1,17 @@
 //sl: service locator
-import 'package:gap/clean_architecture_structure/core/domain/use_cases/use_case_error_handler.dart';
-import 'package:gap/clean_architecture_structure/core/presentation/blocs/navigation/navigation_bloc.dart';
-import 'package:gap/clean_architecture_structure/features/muestras/data/repository/fake_impl/muestras_repository_fake.dart';
-import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/update_preparaciones.dart';
-import 'package:gap/clean_architecture_structure/features/projects/domain/use_cases/get_chosen_project.dart';
-import 'package:gap/clean_architecture_structure/features/projects/domain/use_cases/set_chosen_project.dart';
+import 'package:gap/clean_architecture_structure/features/visits/presentation/notifier/visits_change_notifier.dart';
 import 'package:get_it/get_it.dart';
 import 'core/network/network_info.dart';
 import 'package:http/http.dart' as http;
 import 'package:connectivity/connectivity.dart';
+import 'package:gap/clean_architecture_structure/core/domain/use_cases/use_case_error_handler.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/blocs/navigation/navigation_bloc.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/update_preparaciones.dart';
+import 'package:gap/clean_architecture_structure/features/projects/domain/use_cases/get_chosen_project.dart';
+import 'package:gap/clean_architecture_structure/features/projects/domain/use_cases/set_chosen_project.dart';
+import 'package:gap/clean_architecture_structure/features/visits/domain/use_cases/get_chosen_visit.dart';
+import 'package:gap/clean_architecture_structure/features/visits/domain/use_cases/get_visits.dart';
+import 'package:gap/clean_architecture_structure/features/visits/domain/use_cases/set_chosen_visit.dart';
 import 'package:gap/clean_architecture_structure/core/data/repositories/central_system_repository.dart';
 import 'package:gap/clean_architecture_structure/core/domain/repositories/central_system_repository.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/data/data_sources/muestras_remote_data_source.dart';
@@ -61,6 +64,7 @@ import 'core/data/data_sources/projects/projects_local_data_source.dart';
 import 'core/data/data_sources/projects/projects_remote_data_source.dart';
 import 'core/presentation/blocs/user/user_bloc.dart';
 import 'features/muestras/domain/use_cases/remove_muestra.dart';
+import 'features/visits/presentation/bloc/visits_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -74,12 +78,9 @@ void init()async{
   sl.registerLazySingleton<FormulariosLocalDataSource>(()=>FormulariosLocalDataSourceImpl(storageConnector: sl()));
   sl.registerLazySingleton<IndexLocalDataSource>(()=>IndexLocalDataSourceImpl(storageConnector: sl()));
   sl.registerLazySingleton<PreloadedLocalDataSource>(()=>PreloadedLocalDataSourceImpl(storageConnector: sl()));
-  sl.registerLazySingleton<ProjectsRemoteDataSource>(()=>ProjectsRemoteDataSourceImpl(client: sl()));
-  sl.registerLazySingleton<ProjectsLocalDataSource>(()=>ProjectsLocalDataSourceImpl(storageConnector: sl()));
   sl.registerLazySingleton<UserRemoteDataSource>(()=>UserRemoteDataSourceImpl(client: sl()));
   sl.registerLazySingleton<UserLocalDataSource>(()=>UserLocalDataSourceImpl(storageConnector: sl()));
-  sl.registerLazySingleton<VisitsRemoteDataSource>(()=>VisitsRemoteDataSourceImpl(client: sl()));
-  sl.registerLazySingleton<VisitsLocalDataSource>(()=>VisitsLocalDataSourceImpl(storageConnector: sl()));
+  
   sl.registerLazySingleton<NavigationLocalDataSource>(()=> NavigationLocalDataSourceImpl(storageConnector: sl()));
   sl.registerLazySingleton<MuestrasRemoteDataSource>(()=> MuestrasRemoteDataSourceImpl(client: sl()));
   
@@ -93,22 +94,6 @@ void init()async{
     userLocalDataSource: sl(), 
     projectsLocalDataSource: sl(), 
     visitsLocalDataSource: sl()
-  ));
-  sl.registerLazySingleton<ProjectsRepository>(()=>ProjectsRepositoryImpl(
-    networkInfo: sl(), 
-    localDataSource: sl(), 
-    remoteDataSource: sl(), 
-    preloadedLocalDataSource: sl(), 
-    userLocalDataSource: sl()
-  ));
-  sl.registerLazySingleton<VisitsRepository>(()=>VisitsRepositoryImpl(
-    networkInfo: sl(), 
-    remoteDataSource: sl(), 
-    localDataSource: sl(), 
-    preloadedDataSource: sl(), 
-    userLocalDataSource: sl(), 
-    projectsLocalDataSource: sl(), 
-    formulariosRemoteDataSource: sl()
   ));
   sl.registerLazySingleton<FormulariosRepository>(()=>FormulariosRepositoryImpl(
     networkInfo: sl(), 
@@ -161,13 +146,11 @@ void init()async{
   sl.registerLazySingleton(()=>GoToLastRoute(navigator: sl(), navRepository: sl()));
   sl.registerLazySingleton(()=>Login(userRepository: sl(), centralSystemRepository: sl(), errorHandler: sl()));
   sl.registerLazySingleton(()=>Logout(repository: sl(), errorHandler: sl()));
-  sl.registerLazySingleton(()=>GetProjects(repository: sl(), errorHandler: sl()));
-  sl.registerLazySingleton(()=>GetChosenProject(repository: sl(), errorHandler: sl()));
-  sl.registerLazySingleton(()=>SetChosenProject(repository: sl(), errorHandler: sl()));
   sl.registerLazySingleton(()=>GetMuestras(repository: sl()));
   sl.registerLazySingleton(()=>SetMuestra(repository: sl()));
   sl.registerLazySingleton(()=>UpdatePreparaciones(repository: sl()));
   sl.registerLazySingleton(()=>RemoveMuestra(repository: sl()));
+
   //blocs
   sl.registerFactory(() => UserBloc(
     login: sl(), 
@@ -175,11 +158,7 @@ void init()async{
     inputValidator: sl(), 
     navigationUseCase: sl()
   ));
-  sl.registerFactory(()=>ProjectsBloc(
-    getProjects: sl(),
-    getChosenProject: sl(),
-    setChosenProject: sl()
-  ));
+  
   sl.registerFactory(()=>MuestrasBloc(
     getMuestras: sl(), 
     setMuestra: sl(),
@@ -192,6 +171,51 @@ void init()async{
     goReplacingAllTo: sl(), 
     pop: sl()
   ));
+
+
+  // ******************************* Features ***********************************
+
+  // Projects
+  sl.registerLazySingleton<ProjectsRemoteDataSource>(()=>ProjectsRemoteDataSourceImpl(client: sl()));
+  sl.registerLazySingleton<ProjectsLocalDataSource>(()=>ProjectsLocalDataSourceImpl(storageConnector: sl()));
+  sl.registerLazySingleton<ProjectsRepository>(()=>ProjectsRepositoryImpl(
+    networkInfo: sl(),
+    localDataSource: sl(), 
+    remoteDataSource: sl(), 
+    preloadedLocalDataSource: sl(), 
+    userLocalDataSource: sl()
+  ));
+  sl.registerLazySingleton(()=>GetProjects(repository: sl(), errorHandler: sl()));
+  sl.registerLazySingleton(()=>GetChosenProject(repository: sl(), errorHandler: sl()));
+  sl.registerLazySingleton(()=>SetChosenProject(repository: sl(), errorHandler: sl()));
+  sl.registerFactory(()=>ProjectsBloc(
+    getProjects: sl(),
+    getChosenProject: sl(),
+    setChosenProject: sl()
+  ));
+
+  // Visits
+  sl.registerLazySingleton<VisitsRemoteDataSource>(()=>VisitsRemoteDataSourceImpl(client: sl()));
+  sl.registerLazySingleton<VisitsLocalDataSource>(()=>VisitsLocalDataSourceImpl(storageConnector: sl()));
+  sl.registerLazySingleton<VisitsRepository>(()=>VisitsRepositoryImpl(
+    networkInfo: sl(), 
+    remoteDataSource: sl(), 
+    localDataSource: sl(), 
+    preloadedDataSource: sl(), 
+    userLocalDataSource: sl(), 
+    projectsLocalDataSource: sl(), 
+    formulariosRemoteDataSource: sl()
+  ));
+  sl.registerLazySingleton(()=>GetVisits(repository: sl(), errorHandler: sl()));
+  sl.registerLazySingleton(()=>SetChosenVisit(repository: sl(), errorHandler: sl()));
+  sl.registerLazySingleton(()=>GetChosenVisit(repository: sl(), errorHandler: sl()));
+  sl.registerLazySingleton(()=>VisitsBloc(
+    getVisits: sl(), 
+    setChosenVisit: sl(), 
+    getChosenVisit: sl()
+  ));
+  sl.registerLazySingleton(()=>VisitsChangeNotifier());
+
 
   //***** util components
   sl.registerLazySingleton(()=>InputValidator());

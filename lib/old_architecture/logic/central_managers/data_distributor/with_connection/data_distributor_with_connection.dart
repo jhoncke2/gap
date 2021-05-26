@@ -12,7 +12,6 @@ import 'package:gap/old_architecture/logic/storage_managers/forms/formularios_st
 import 'package:gap/old_architecture/logic/storage_managers/forms/preloaded_forms_storage_manager.dart';
 import 'package:gap/old_architecture/logic/storage_managers/projects/projects_storage_manager.dart';
 import 'package:gap/old_architecture/logic/storage_managers/user/user_storage_manager.dart';
-import 'package:gap/old_architecture/logic/storage_managers/visits/preloaded_visits_storage_manager.dart';
 import 'package:gap/old_architecture/services/auth_service.dart';
 
 class DataDistributorWithConnection extends DataDistributor{
