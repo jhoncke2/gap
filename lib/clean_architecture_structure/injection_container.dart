@@ -131,7 +131,8 @@ void init()async{
     remoteDataSource: sl(),
     userLocalDataSource: sl(), 
     projectsLocalDataSource: sl(),
-    visitsLocalDataSource: sl()
+    visitsLocalDataSource: sl(),
+    formulariosRemoteDataSource: sl()
   ));
   //*/
 
@@ -214,7 +215,7 @@ void init()async{
     setChosenVisit: sl(), 
     getChosenVisit: sl()
   ));
-  sl.registerLazySingleton(()=>VisitsChangeNotifier());
+  sl.registerFactory(()=>VisitsChangeNotifier());
 
 
   //***** util components

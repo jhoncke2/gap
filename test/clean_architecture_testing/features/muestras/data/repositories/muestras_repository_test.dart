@@ -1,6 +1,8 @@
 import 'dart:convert';
-
 import 'package:dartz/dartz.dart';
+import 'package:gap/clean_architecture_structure/core/data/data_sources/formularios/formularios_remote_data_source.dart';
+import 'package:gap/clean_architecture_structure/core/data/models/formulario/formulario_model.dart';
+import 'package:mockito/mockito.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/projects/projects_local_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/user/user_local_data_source.dart';
@@ -11,11 +13,8 @@ import 'package:gap/clean_architecture_structure/core/error/exceptions.dart';
 import 'package:gap/clean_architecture_structure/core/error/failures.dart';
 import 'package:gap/clean_architecture_structure/core/network/network_info.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/data/data_sources/muestras_remote_data_source.dart';
-import 'package:gap/clean_architecture_structure/features/muestras/data/models/muestra_model.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/data/models/muestreo_model.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/data/repository/muestras_repository.dart';
-import 'package:mockito/mockito.dart';
-
 import '../../../../fixtures/fixture_reader.dart';
 
 class MockNetworkInfo extends Mock implements NetworkInfo{}
@@ -23,7 +22,7 @@ class MockMuestrasRemoteDataSource extends Mock implements MuestrasRemoteDataSou
 class MockUserLocalDataSource extends Mock implements UserLocalDataSource{}
 class MockProjectsLocalDataSource extends Mock implements ProjectsLocalDataSource{}
 class MockVisitsLocalDataSource extends Mock implements VisitsLocalDataSource{}
-
+class MockFormularioRemoteDataSource extends Mock implements FormulariosRemoteDataSource{}
 
 MuestrasRepositoryImpl repository;
 NetworkInfo networkInfo;
@@ -31,9 +30,11 @@ MockMuestrasRemoteDataSource remoteDataSource;
 MockUserLocalDataSource userLocalDataSource;
 MockProjectsLocalDataSource projectsLocalDataSource;
 MockVisitsLocalDataSource visitsLocalDataSource;
+MockFormularioRemoteDataSource formulariosRemoteDataSource;
 
 void main(){
   setUp((){
+    formulariosRemoteDataSource = MockFormularioRemoteDataSource();
     remoteDataSource = MockMuestrasRemoteDataSource();
     userLocalDataSource = MockUserLocalDataSource();
     projectsLocalDataSource = MockProjectsLocalDataSource();
@@ -44,7 +45,8 @@ void main(){
       remoteDataSource: remoteDataSource,
       userLocalDataSource: userLocalDataSource,
       projectsLocalDataSource: projectsLocalDataSource,
-      visitsLocalDataSource: visitsLocalDataSource      
+      visitsLocalDataSource: visitsLocalDataSource,
+      formulariosRemoteDataSource: formulariosRemoteDataSource
     );
   });
 
@@ -328,6 +330,59 @@ void main(){
       expect(result, Left(StorageFailure(excType: StorageExceptionType.NORMAL)));
     });
   });
+
+  group('getFormulario', (){
+    String tAccessToken;
+    FormularioModel tFormulario;
+    setUp((){
+      tAccessToken = 'access_token';
+      tFormulario = _getFormularioFromxFixture();
+    });
+
+    test('should call the specified remoteDataSource method', ()async{
+      when(networkInfo.isConnected()).thenAnswer((_) async => true);
+      when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
+      when(formulariosRemoteDataSource.getChosenFormulario(any, any)).thenAnswer((_)async => tFormulario);
+      await repository.getFormulario(tFormulario.id);
+      verify(networkInfo.isConnected());
+      verify(userLocalDataSource.getAccessToken());
+      verify(formulariosRemoteDataSource.getChosenFormulario(tFormulario.id, tAccessToken));
+    });
+
+    test('should do nothing when there is not connectivity', ()async{
+      when(networkInfo.isConnected()).thenAnswer((_) async => false);
+      await repository.getFormulario(tFormulario.id);
+      verify(networkInfo.isConnected());
+      verifyNever(userLocalDataSource.getAccessToken());
+      verifyNever(formulariosRemoteDataSource.getChosenFormulario(tFormulario.id, tAccessToken));
+    });
+
+    test('should return Right(tFormulario) when there is connectivity and all goes good', ()async{
+      when(networkInfo.isConnected()).thenAnswer((_) async => true);
+      when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
+      when(formulariosRemoteDataSource.getChosenFormulario(any, any)).thenAnswer((_)async => tFormulario);
+      final result = await repository.getFormulario(tFormulario.id);
+      expect(result, Right(tFormulario));
+    });
+
+    test('''should return Left(ServerFailure(x)) when there is connectivity 
+    and remoteDataSource throws a ServerException(x)''', ()async{
+      when(networkInfo.isConnected()).thenAnswer((_) async => true);
+      when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
+      when(formulariosRemoteDataSource.getChosenFormulario(any, any)).thenThrow(ServerException(type: ServerExceptionType.REFRESH_ACCESS_TOKEN));
+      final result = await repository.getFormulario(tFormulario.id);
+      expect(result, Left(ServerFailure(servExcType: ServerExceptionType.REFRESH_ACCESS_TOKEN)));
+    });
+
+    test('''should return Left(StorageFailure(x)) when there is connectivity 
+    and localDataSource throws a StorageException(x)''', ()async{
+      when(networkInfo.isConnected()).thenAnswer((_) async => true);
+      when(userLocalDataSource.getAccessToken()).thenThrow(StorageException(type: StorageExceptionType.PLATFORM));
+      when(formulariosRemoteDataSource.getChosenFormulario(any, any)).thenAnswer((_)async => tFormulario);
+      final result = await repository.getFormulario(tFormulario.id);
+      expect(result, Left(StorageFailure(excType: StorageExceptionType.PLATFORM)));
+    });
+  });
 }
 
 ProjectModel _getProjectFromFixture(){
@@ -346,4 +401,10 @@ MuestreoModel _getMuestreoFromFixture(){
   final String stringM = callFixture('muestra.json');
   final Map<String, dynamic> jsonM = jsonDecode(stringM);
   return MuestreoModel.fromJson(jsonM);
+}
+
+FormularioModel _getFormularioFromxFixture(){
+  final String stringFs = callFixture('formularios.json');
+  final List<Map<String, dynamic>> jsonFs = jsonDecode(stringFs).cast<Map<String, dynamic>>();
+  return FormularioModel.fromJson(jsonFs[0]);
 }

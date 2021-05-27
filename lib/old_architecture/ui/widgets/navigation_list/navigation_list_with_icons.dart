@@ -6,7 +6,7 @@ import 'package:gap/old_architecture/ui/widgets/navigation_list/navigation_list.
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
 import 'package:gap/old_architecture/ui/utils/static_data/visit_detail_navigation.dart' as navigationData;
 // ignore: must_be_immutable
-class NavigationListWithIcons extends NavigationList{
+class NavigationListWithIconsOld extends NavigationList{
 
   final SizeUtils _sizeUtils = SizeUtils();
   final Color _activeFirstIconColor = Color.fromRGBO(213, 199, 18, 1);
@@ -20,7 +20,7 @@ class NavigationListWithIcons extends NavigationList{
   List<Map<String, Color>> _navItemsColors;
   List<bool> _navItemsActivation;
 
-  NavigationListWithIcons({
+  NavigationListWithIconsOld({
     @required this.currentVisitProcessState,
     @required this.visitHasMuestreo
   }):super(
@@ -68,7 +68,7 @@ class NavigationListWithIcons extends NavigationList{
       final Map<String, dynamic> itemPart = navigationItemsParts[i];
       //Function navFunction = (i != 0 || visitHasMuestreo)? itemPart['nav_function']
         //: PagesNavigationManager.navToForms;
-      Function navFunction = (i == 0)? PagesNavigationManager.navToForms : itemPart['nav_function'];
+      Function navFunction = (i == 0 && this.visitHasMuestreo)? PagesNavigationManager.navToMuestras : PagesNavigationManager.navToForms;
       this.itemsFunctions.add(
         _generateFunctionByItemActivation(
           _navItemsActivation[i],
@@ -81,8 +81,6 @@ class NavigationListWithIcons extends NavigationList{
       );
     }
   }
-
-  //Function _getNavFunctionByIndex
 
   Function _generateFunctionByItemActivation(bool itemActivation, Function navigateToNextPage){
     if(itemActivation){

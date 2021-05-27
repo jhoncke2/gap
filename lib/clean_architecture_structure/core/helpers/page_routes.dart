@@ -2,6 +2,7 @@ import 'package:gap/clean_architecture_structure/features/login/presentation/pag
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/pages/muestras_page.dart';
 import 'package:gap/clean_architecture_structure/features/projects/presentation/pages/project_detail_page.dart';
 import 'package:gap/clean_architecture_structure/features/projects/presentation/pages/projects_page.dart';
+import 'package:gap/clean_architecture_structure/features/visits/presentation/pages/visit_detail_page.dart';
 import 'package:gap/clean_architecture_structure/features/visits/presentation/pages/visits_page.dart';
 import 'package:gap/old_architecture/data/enums/enums.dart';
 import 'package:gap/old_architecture/ui/pages/adjuntar_fotos_visita_page.dart';
@@ -19,9 +20,10 @@ class PageRoutes{
     NavigationRoute.Login.value : (_)=>LoginPage(),
     NavigationRoute.Projects.value : (_)=>ProjectsPage(),
     NavigationRoute.ProjectDetail.value: (_)=> ProjectDetailPage(),
-    //NavigationRoute.Visits.value: (_)=>VisitsPageOld(),
-    NavigationRoute.Visits.value: (_)=>VisitsPage(),
+    NavigationRoute.Visits.value: (_)=>VisitsPageOld(),
+    //NavigationRoute.Visits.value: (_)=>VisitsPage(),
     NavigationRoute.VisitDetail.value: (_)=>VisitDetailPageOld(),
+    //NavigationRoute.VisitDetail.value: (_)=>VisitDetailPage(),
     NavigationRoute.Muestras.value : (_)=>MuestrasPage(),
     NavigationRoute.Formularios.value: (_)=>FormulariosPageOld(),
     NavigationRoute.FormularioDetailForms.value: (_)=>FormularioDetailPageOld(),

@@ -34,5 +34,7 @@ Muestreo fakeMuestreo = Muestreo(
   ],
   minMuestras: 1,
   maxMuestras: 3,
-  nMuestras: 0
+  nMuestras: 0,
+  formularioInicialId: 1,
+  formularioFinalId: 2
 );

@@ -152,7 +152,7 @@ void _testSetInitialPositionGroup(){
     });
 
     test('should set the initial position to the client, using the tHeaders and the tFormularioId in the uri', ()async{
-      final Map<String, String> tHeaders = {'Authorization':'Bearer $tAccessToken'};
+      final Map<String, String> tHeaders = {'Authorization':'Bearer $tAccessToken', 'Content-Type':'application/json'};
       final Map<String, dynamic> tBody = {'latitud_inicio':tPosition.latitude, 'longitud_inicio':tPosition.longitude};
       when(client.post(any, headers: anyNamed('headers'), body: anyNamed('body'))).thenAnswer((_) async => http.Response('{}', 200));
       await remoteDataSource.setInitialPosition(tPosition, tFormularioId, tAccessToken);
@@ -260,7 +260,7 @@ void _testSetFinalPositionGroup(){
     });
 
     test('should set the final position to the client, using the tHeaders and the tFormularioId in the uri', ()async{
-      final Map<String, String> tHeaders = {'Authorization':'Bearer $tAccessToken'};
+      final Map<String, String> tHeaders = {'Authorization':'Bearer $tAccessToken', 'Content-Type':'application/json'};
       final Map<String, dynamic> tBody = {'latitud_final':tPosition.latitude, 'longitud_final':tPosition.longitude};
       when(client.post(any, headers: anyNamed('headers'), body: anyNamed('body'))).thenAnswer((_) async => http.Response('{}', 200));
       await remoteDataSource.setFinalPosition(tPosition, tFormularioId, tAccessToken);

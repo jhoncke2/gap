@@ -28,6 +28,7 @@ class VisitsBloc extends Bloc<VisitsEvent, VisitsState> {
   Stream<VisitsState> mapEventToState(
     VisitsEvent event,
   ) async* {
+    print('********* on bloc ********');
     yield LoadingVisits();
     if(event is LoadVisits){
       final eitherVisits = await getVisits(NoParams());

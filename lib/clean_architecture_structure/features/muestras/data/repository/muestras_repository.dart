@@ -1,3 +1,7 @@
+import 'package:gap/clean_architecture_structure/core/data/data_sources/formularios/formularios_remote_data_source.dart';
+import 'package:gap/clean_architecture_structure/core/domain/entities/formulario/formulario.dart';
+import 'package:meta/meta.dart';
+import 'package:dartz/dartz.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/projects/projects_local_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/user/user_local_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/visits/visits_local_data_source.dart';
@@ -6,8 +10,6 @@ import 'package:gap/clean_architecture_structure/core/data/models/visit_model.da
 import 'package:gap/clean_architecture_structure/core/error/exceptions.dart';
 import 'package:gap/clean_architecture_structure/core/network/network_info.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/data/models/muestreo_model.dart';
-import 'package:meta/meta.dart';
-import 'package:dartz/dartz.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/data/data_sources/muestras_remote_data_source.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/muestreo.dart';
 import 'package:gap/clean_architecture_structure/core/error/failures.dart';
@@ -19,13 +21,15 @@ class MuestrasRepositoryImpl implements MuestrasRepository{
   final UserLocalDataSource userLocalDataSource;
   final ProjectsLocalDataSource projectsLocalDataSource;
   final VisitsLocalDataSource visitsLocalDataSource;
+  final FormulariosRemoteDataSource formulariosRemoteDataSource;
 
   MuestrasRepositoryImpl({
     @required this.remoteDataSource,
     @required this.userLocalDataSource,
     @required this.projectsLocalDataSource,
     @required this.visitsLocalDataSource,
-    @required this.networkInfo 
+    @required this.networkInfo,
+    @required this.formulariosRemoteDataSource
   });
 
   @override
@@ -88,6 +92,21 @@ class MuestrasRepositoryImpl implements MuestrasRepository{
       return Left(StorageFailure(excType: exception.type));
     }on ServerException catch(exception){
       return Left(ServerFailure(servExcType: exception.type, message: exception.message));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Formulario>> getFormulario(int formularioId)async{
+    try{
+      if( await networkInfo.isConnected() ){
+        final String accessToken = await userLocalDataSource.getAccessToken();
+        final Formulario formulario = await formulariosRemoteDataSource.getChosenFormulario(formularioId, accessToken);
+        return Right(formulario);
+      }
+    }on StorageException catch(exception){
+      return Left(StorageFailure(excType: exception.type));
+    }on ServerException catch(exception){
+      return Left(ServerFailure(servExcType: exception.type));
     }
   }
 }

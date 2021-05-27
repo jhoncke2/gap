@@ -1,81 +1,105 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:gap/clean_architecture_structure/core/domain/entities/visit.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/blocs/navigation/navigation_bloc.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/navigation_list/buttons/button_with_icon.dart';
-import 'package:gap/old_architecture/data/enums/enums.dart';
+import 'package:gap/old_architecture/logic/central_managers/pages_navigation_manager.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
-import 'package:gap/old_architecture/ui/utils/static_data/visit_detail_navigation.dart' as navigationData;
-class NavigationListWithIcons extends StatelessWidget {
-  final SizeUtils _sizeUtils = SizeUtils();
-  final Color _activeFirstIconColor = Color.fromRGBO(213, 199, 18, 1);
-  final Color _activeOtherIconsColor = Colors.black54;
-  final Color _activeTextColor = Colors.black87;
-  final Color _inactiveItemColor = Colors.grey[300];
-  final ProcessStage currentVisitProcessState;
-  final List<IconData> icons = [];
-  final List itemsFunctions = [];
-  final List itemsNames = [];
-  List<Map<String, Color>> _navItemsColors;
-  List<bool> _navItemsActivation;
+import 'package:gap/old_architecture/data/enums/enums.dart';
 
-  NavigationListWithIcons({
-    @required this.currentVisitProcessState,
+// ignore: must_be_immutable
+class VisitNavigationList extends StatelessWidget {
+  final SizeUtils _sizeUtils = SizeUtils();
+  final Visit visit;
+  Color iconColorItem1;  
+  Color textColorItem1;
+  Color iconColorDemasItems;
+  Color textColorDemasItems;  
+  BuildContext context;
+
+  VisitNavigationList({
+    @required this.visit  
   });
 
   @override
   Widget build(BuildContext context) {
+    this.context = context;
     _initNavItemsVisualFeatures();
-    _defineFunctionsAndNames();
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: _sizeUtils.xasisSobreYasis * 0.03
       ),
       child: Column(
-        children: _createNavigationItems(),
+        children: [
+          _createIniciarVisitaWidget(),          
+          _createAdjuntarImagenesWidget(),
+          _createVisualizarVisitaWidget(),          
+        ],
       ),
     );
   }
 
   void _initNavItemsVisualFeatures(){
-    final bool visitaEstaPendiente = currentVisitProcessState == ProcessStage.Pendiente;
-    final Color iconColorItem1 = (visitaEstaPendiente)?_activeFirstIconColor:_inactiveItemColor;
-    final Color textColorItem1 = (visitaEstaPendiente)?_activeTextColor:_inactiveItemColor;
-    final Color iconColorDemasItems = (visitaEstaPendiente)?_inactiveItemColor:_activeOtherIconsColor;
-    final Color textColorDemasItems = (visitaEstaPendiente)?_inactiveItemColor:_activeTextColor;
-    _navItemsColors = [
-      {
-        'icon':iconColorItem1,
-        'text':textColorItem1,
-      }
-    ];
-    _navItemsActivation = [visitaEstaPendiente];
-    for(int i = 1; i <= 2; i++){
-      _navItemsColors.add({'icon':iconColorDemasItems, 'text':textColorDemasItems});
-      _navItemsActivation.add(!visitaEstaPendiente);
-    }
+    final Color activeFirstIconColor = Color.fromRGBO(213, 199, 18, 1);
+    final Color activeOtherIconsColor = Colors.black54;
+    final Color activeTextColor = Colors.black87;
+    final Color inactiveItemColor = Colors.grey[300];
+    iconColorItem1 = (visit.completo)? inactiveItemColor : activeFirstIconColor;
+    textColorItem1 = (visit.completo)? inactiveItemColor : activeTextColor;
+    iconColorDemasItems = (visit.completo)?activeOtherIconsColor : inactiveItemColor;
+    textColorDemasItems = (visit.completo)?activeTextColor : inactiveItemColor;
   }
 
-  void _defineFunctionsAndNames(){
-    final List<Map<String, dynamic>> navigationItemsParts = navigationData.navigationItemsParts;
-    for(int i = 0; i < navigationItemsParts.length; i++){
-      final Map<String, dynamic> itemPart = navigationItemsParts[i];
-      this.itemsFunctions.add( _navItemsActivation[i]? itemPart['nav_function'] : null );
-      this.itemsNames.add(itemPart['name']);
-      this.icons.add( itemPart['icon'] );
-    }
+  Widget _createIniciarVisitaWidget(){
+    return ButtonWithIcon(
+      name: 'Iniciar visita', 
+      textColor: textColorItem1,
+      icon: FontAwesomeIcons.longArrowAltRight, 
+      iconColor: iconColorItem1, 
+      onTap: (visit.completo)? null : _onTapIniciarVisita
+    );
   }
 
-  List<Widget> _createNavigationItems(){ 
-    final List<Widget> items = [];
-    for(int i = 0; i < _navItemsActivation.length; i++){
-      items.add(
-        ButtonWithIcon(
-          name: itemsNames[i], 
-          textColor: _navItemsColors[i]['text'], 
-          icon: icons[i],
-          iconColor: _navItemsColors[i]['icon'], 
-          onTap: itemsFunctions[i]
-        )
-      );
-    }
-    return items;
+  void _onTapIniciarVisita(){
+    if(visit.hasMuestreo)
+      _navTo(NavigationRoute.Muestras);
+    else
+      _navTo(NavigationRoute.Formularios); 
+  }
+
+  void _navTo(NavigationRoute navRoute){
+    BlocProvider.of<NavigationBloc>(context).add(NavigateToEvent(navigationRoute: navRoute));
+    Navigator.of(context).pushReplacementNamed(navRoute.value);
+  }
+
+  Widget _createAdjuntarImagenesWidget(){
+    return ButtonWithIcon(
+      name: 'Adjuntar imágenes', 
+      textColor: textColorDemasItems,
+      icon: Icons.attach_file, 
+      iconColor: iconColorDemasItems, 
+      onTap: (visit.completo)? _onTapAdjuntarImagenes : null
+    );
+  }
+
+  void _onTapAdjuntarImagenes(){
+    //TODO: Arreglar cuando se haya implementado clean architecture en esas pages
+    PagesNavigationManager.navToCommentedImages();
+  }
+
+  Widget _createVisualizarVisitaWidget(){
+    return ButtonWithIcon(
+      name: 'Visualizar visita', 
+      textColor: textColorDemasItems,
+      icon: Icons.remove_red_eye, 
+      iconColor: iconColorDemasItems, 
+      onTap: (visit.completo)? _onTapVisualizarVisita : null
+    );
+  }
+
+  void _onTapVisualizarVisita(){
+    //TODO: Arreglar cuando se haya implementado clean architecture en esas pages
+    PagesNavigationManager.navToForms();
   }
 }

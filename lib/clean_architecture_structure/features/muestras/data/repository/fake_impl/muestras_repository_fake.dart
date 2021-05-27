@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:gap/clean_architecture_structure/core/domain/entities/formulario/formulario.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/data/models/componente_model.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/data/models/muestra_model.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/data/repository/fake_impl/fake_muestra.dart';
@@ -45,5 +46,11 @@ class MuestrasRepositoryFake implements MuestrasRepository{
     fakeMuestreo.muestrasTomadas.removeWhere((m) => m.id == muestraId);
     fakeMuestreo = fakeMuestreo.copyWith(nMuestras: fakeMuestreo.nMuestras-1);
     return Right(null);
+  }
+
+  @override
+  Future<Either<Failure, Formulario>> getFormulario(int formularioId) {
+    // TODO: implement getFormulario
+    throw UnimplementedError();
   }
 }

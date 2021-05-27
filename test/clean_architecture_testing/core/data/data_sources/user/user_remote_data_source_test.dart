@@ -25,12 +25,14 @@ void main(){
   group('login', (){
     String tAccessToken;
     String tStringUser;
+    Map<String, String> tHeaders;
     Map<String, dynamic> tJsonUser;
     UserModel tUser;
     Map<String, dynamic> tResponseBody;
     setUp((){
       tAccessToken = 'access_token';
       tStringUser = callFixture('user.json');
+      tHeaders = {'Content-Type':'application/json'};
       tJsonUser = jsonDecode(tStringUser);
       tUser = UserModel.fromJson(tJsonUser);
       tResponseBody = {
@@ -47,22 +49,23 @@ void main(){
     });
 
     test('should get the login on the client, usnig the tJsonUser as body and the specified uri', ()async{
-      when(client.post(any, body: anyNamed('body'))).thenAnswer((_) async => http.Response(jsonEncode(tResponseBody), 200));
+      when(client.post(any, body: anyNamed('body'), headers: anyNamed('headers'))).thenAnswer((_) async => http.Response(jsonEncode(tResponseBody), 200));
       await remoteDataSource.login(tUser);
       verify(client.post(
         Uri.http(remoteDataSource.BASE_URL, '${remoteDataSource.BASE_AUTH_UNCODED_PATH}${UserRemoteDataSourceImpl.LOGIN_URL}'),
-        body: tJsonUser
+        headers: tHeaders,
+        body: jsonEncode( tJsonUser )
       ));
     });
 
     test('should return the tAccessToken when all goes good', ()async{
-      when(client.post(any, body: anyNamed('body'))).thenAnswer((_) async => http.Response(jsonEncode(tResponseBody), 200));
+      when(client.post(any, body: anyNamed('body'), headers: anyNamed('headers'))).thenAnswer((_) async => http.Response(jsonEncode(tResponseBody), 200));
       final accessToken = await remoteDataSource.login(tUser);
       expect(accessToken, equals(tAccessToken));
     });
 
     test('should throw ServerException(LOGIN) when response status code is not 200', ()async{
-      when(client.post(any, body: anyNamed('body'))).thenAnswer((_) async => http.Response(jsonEncode(tResponseBody), 303));
+      when(client.post(any, body: anyNamed('body'), headers: anyNamed('headers'))).thenAnswer((_) async => http.Response(jsonEncode(tResponseBody), 303));
       try{
         await remoteDataSource.login(tUser);
         fail('debería haber lanzado un ServerException');
@@ -72,7 +75,7 @@ void main(){
     });
 
     test('should throw ServerException(LOGIN) when response body is not json', ()async{
-      when(client.post(any, body: anyNamed('body'))).thenAnswer((_) async => http.Response('pos, no soy un json', 200));
+      when(client.post(any, body: anyNamed('body'), headers: anyNamed('headers'))).thenAnswer((_) async => http.Response('pos, no soy un json', 200));
       try{
         await remoteDataSource.login(tUser);
         fail('debería haber lanzado un ServerException');

@@ -137,9 +137,9 @@ class ProjectDetailPage extends StatelessWidget {
 
   void _navToPage(NavigationRoute navRoute) {
     //TODO: Quitar con implementación de nuevo código
-    //PagesNavigationManager.navToVisits();
-    BlocProvider.of<NavigationBloc>(context)
-        .add(NavigateToEvent(navigationRoute: navRoute));
-    Navigator.of(context).pushReplacementNamed(navRoute.value);
+    PagesNavigationManager.navToVisits();
+    //BlocProvider.of<NavigationBloc>(context)
+    //    .add(NavigateToEvent(navigationRoute: navRoute));
+    //Navigator.of(context).pushReplacementNamed(navRoute.value);
   }
 }

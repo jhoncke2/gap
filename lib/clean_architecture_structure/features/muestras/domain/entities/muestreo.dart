@@ -17,6 +17,8 @@ class Muestreo extends Equatable{
   final int minMuestras;
   final int maxMuestras;
   final int nMuestras;
+  final int formularioInicialId;
+  final int formularioFinalId;
 
   Muestreo({
     @required this.id,
@@ -29,7 +31,9 @@ class Muestreo extends Equatable{
     @required this.rangos,
     @required this.minMuestras,
     @required this.maxMuestras,    
-    @required this.nMuestras
+    @required this.nMuestras,
+    @required this.formularioInicialId,
+    @required this.formularioFinalId  
   });
 
   Muestreo copyWith({
@@ -38,5 +42,16 @@ class Muestreo extends Equatable{
   }){}
 
   @override
-  List<Object> get props => [this.id, this.tipo, this.obligatorio, this.stringRangos, this.pesosEsperadosPorRango, this.componentes, this.muestrasTomadas, this.nMuestras];
+  List<Object> get props => [
+    this.id,
+    this.tipo,
+    this.obligatorio,
+    this.stringRangos,
+    this.pesosEsperadosPorRango,
+    this.componentes, 
+    this.muestrasTomadas, 
+    this.nMuestras, 
+    this.formularioInicialId, 
+    this.formularioFinalId
+  ];
 }

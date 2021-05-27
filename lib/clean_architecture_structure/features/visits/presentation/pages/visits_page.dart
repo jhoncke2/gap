@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/blocs/navigation/navigation_bloc.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/header/page_header.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/scaffold_native_back_button_locker.dart';
 import 'package:gap/clean_architecture_structure/features/visits/presentation/bloc/visits_bloc.dart';
 import 'package:gap/clean_architecture_structure/features/visits/presentation/widgets/loaded_visits.dart';
 import 'package:gap/clean_architecture_structure/injection_container.dart';
+import 'package:gap/old_architecture/data/enums/enums.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
 
+// ignore: must_be_immutable
 class VisitsPage extends StatelessWidget {
   static final _sizeUtils = SizeUtils();
   VisitsPage({Key key}) : super(key: key);
@@ -15,11 +18,11 @@ class VisitsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ScaffoldNativeBackButtonLocker(
-        child: BlocProvider<VisitsBloc>(
-          create: (context) => sl(),
-          child: SafeArea(
-            child: Container(child: _createBodyComponents()),
-          ),
+        providers: [
+          BlocProvider<VisitsBloc>(create: (_)=>sl()),
+        ],
+        child: SafeArea(
+          child: Container(child: _createBodyComponents()),
         ),
       ),
     );
@@ -47,12 +50,20 @@ class VisitsPage extends StatelessWidget {
             });
           }else if (state is OnVisits) {
             return LoadedVisits(visits: state.visits);
+          }else if(state is OnVisitDetail){
+            WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+              _navToVisit(context);
+            });
           }
           return _createLoadingIndicator();
-          
         },
       ),
     );
+  }
+
+  void _navToVisit(BuildContext context){
+    BlocProvider.of<NavigationBloc>(context).add(NavigateToEvent(navigationRoute: NavigationRoute.VisitDetail));
+    Navigator.of(context).pushReplacementNamed(NavigationRoute.VisitDetail.value);
   }
 
   Widget _createLoadingIndicator() {

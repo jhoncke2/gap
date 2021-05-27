@@ -1,7 +1,7 @@
 import 'package:gap/clean_architecture_structure/features/muestras/data/models/rango_model.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/rango.dart';
-import 'package:meta/meta.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/muestreo.dart';
+import 'package:meta/meta.dart';
 import 'componente_model.dart';
 import 'muestra_model.dart';
 
@@ -18,7 +18,9 @@ class MuestreoModel extends Muestreo{
     @required bool obligatorio,
     @required int minMuestras,
     @required int maxMuestras,    
-    @required int nMuestras
+    @required int nMuestras,
+    @required int formularioInicialId,
+    @required int formularioFinalId
   }):super(
     id: id,
     tipo: tipo,
@@ -30,7 +32,9 @@ class MuestreoModel extends Muestreo{
     obligatorio: obligatorio,
     minMuestras: minMuestras,
     maxMuestras: maxMuestras,    
-    nMuestras: nMuestras
+    nMuestras: nMuestras,
+    formularioInicialId: formularioInicialId,
+    formularioFinalId: formularioFinalId
   );
 
   factory MuestreoModel.fromJson(Map<String, dynamic> json)=>MuestreoModel(
@@ -44,7 +48,9 @@ class MuestreoModel extends Muestreo{
     obligatorio: json['obligatorio'],
     minMuestras: json['n_muestreos'][0],
     maxMuestras: json['n_muestreos'][1],
-    nMuestras: ( json['muestras']??[] ).length
+    nMuestras: ( json['muestras']??[] ).length,
+    formularioInicialId: json['formulario_inicial_id'],
+    formularioFinalId: json['formulario_final_id']
   );
 
   static List<List<double>> _getPesosEsperadosFromJson(Map<String, dynamic> json){
@@ -73,6 +79,8 @@ class MuestreoModel extends Muestreo{
     rangos: rangos ?? this.rangos,
     minMuestras: this.minMuestras,
     maxMuestras: this.maxMuestras,
-    nMuestras: nMuestras ?? this.nMuestras,    
+    nMuestras: nMuestras ?? this.nMuestras,
+    formularioInicialId: this.formularioInicialId,
+    formularioFinalId: this.formularioFinalId
   );
 }

@@ -7,7 +7,9 @@ final List<Map<String, dynamic>> navigationItemsParts = [
     'icon':FontAwesomeIcons.longArrowAltRight,
     'name':'Iniciar visita',
     //'nav_function':PagesNavigationManager.navToForms,
-    'nav_function':PagesNavigationManager.navToMuestras
+    'nav_function': (bool visitHasMuestra, BuildContext context){        
+
+    }
   },
   {
     'icon': Icons.attach_file,
