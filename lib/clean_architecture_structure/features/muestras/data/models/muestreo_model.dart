@@ -49,8 +49,8 @@ class MuestreoModel extends Muestreo{
     minMuestras: json['n_muestreos'][0],
     maxMuestras: json['n_muestreos'][1],
     nMuestras: ( json['muestras']??[] ).length,
-    formularioInicialId: json['formulario_inicial_id'],
-    formularioFinalId: json['formulario_final_id']
+    formularioInicialId: json['pre_formulario_id'],
+    formularioFinalId: json['pos_formulario_id']
   );
 
   static List<List<double>> _getPesosEsperadosFromJson(Map<String, dynamic> json){
@@ -76,7 +76,7 @@ class MuestreoModel extends Muestreo{
     pesosEsperadosPorRango: this.pesosEsperadosPorRango,
     componentes: this.componentes,
     muestrasTomadas: this.muestrasTomadas,
-    rangos: rangos ?? this.rangos,
+    rangos: (rangos ?? this.rangos).cast<RangoModel>(),
     minMuestras: this.minMuestras,
     maxMuestras: this.maxMuestras,
     nMuestras: nMuestras ?? this.nMuestras,

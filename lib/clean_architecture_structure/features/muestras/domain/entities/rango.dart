@@ -21,4 +21,12 @@ class Rango extends Equatable{
     this.pesosEsperados,
     this.completo    
   ];
+  
+  // ignore: missing_return
+  Rango copyWith({
+    int id,
+    String nombre,
+    List<double> pesosEsperados,
+    bool completo
+  }){}
 }

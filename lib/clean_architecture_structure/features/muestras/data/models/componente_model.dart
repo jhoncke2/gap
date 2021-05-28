@@ -3,9 +3,11 @@ import 'package:gap/clean_architecture_structure/features/muestras/domain/entiti
 List<ComponenteModel> componentesFromJson(Map<String, dynamic> json){
   List<ComponenteModel> componentes = [];
   final List componentesNombres = json['componentes'];
-  for(int i = 0; i < componentesNombres.length; i++){
-    json['componente_index'] = i;
-    componentes.add(ComponenteModel.fromJson(json));
+  if(componentesNombres != null){
+    for(int i = 0; i < componentesNombres.length; i++){
+      json['componente_index'] = i;
+      componentes.add(ComponenteModel.fromJson(json));
+    }
   }
   return componentes;
 }

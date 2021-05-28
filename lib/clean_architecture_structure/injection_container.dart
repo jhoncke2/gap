@@ -1,4 +1,6 @@
 //sl: service locator
+import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/get_formulario.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/save_formulario.dart';
 import 'package:gap/clean_architecture_structure/features/visits/presentation/notifier/visits_change_notifier.dart';
 import 'package:get_it/get_it.dart';
 import 'core/network/network_info.dart';
@@ -151,6 +153,8 @@ void init()async{
   sl.registerLazySingleton(()=>SetMuestra(repository: sl()));
   sl.registerLazySingleton(()=>UpdatePreparaciones(repository: sl()));
   sl.registerLazySingleton(()=>RemoveMuestra(repository: sl()));
+  sl.registerLazySingleton(()=>GetFormulario(repository: sl(), errorHandler: sl()));
+  sl.registerLazySingleton(()=>SaveFormulario(repository: sl(), errorHandler: sl()));
 
   //blocs
   sl.registerFactory(() => UserBloc(
@@ -165,7 +169,9 @@ void init()async{
     setMuestra: sl(),
     pesosConverter: sl(),
     updatePreparaciones: sl(),
-    removeMuestra: sl()
+    removeMuestra: sl(),
+    getFormulario: sl(),
+    saveFormulario: sl()
   ));
   sl.registerFactory(()=>NavigationBloc(
     goTo: sl(), 

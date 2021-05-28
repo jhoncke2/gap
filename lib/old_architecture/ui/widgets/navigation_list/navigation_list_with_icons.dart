@@ -7,7 +7,6 @@ import 'package:gap/old_architecture/ui/utils/size_utils.dart';
 import 'package:gap/old_architecture/ui/utils/static_data/visit_detail_navigation.dart' as navigationData;
 // ignore: must_be_immutable
 class NavigationListWithIconsOld extends NavigationList{
-
   final SizeUtils _sizeUtils = SizeUtils();
   final Color _activeFirstIconColor = Color.fromRGBO(213, 199, 18, 1);
   final Color _activeOtherIconsColor = Colors.black54;
@@ -97,10 +96,10 @@ class NavigationListWithIconsOld extends NavigationList{
     for(int i = 0; i < _navItemsActivation.length; i++){
       items.add(
         ButtonWithIcon(
-          name: itemsNames[i], 
-          textColor: _navItemsColors[i]['text'], 
+          name: itemsNames[i],
+          textColor: _navItemsColors[i]['text'],
           icon: icons[i],
-          iconColor: _navItemsColors[i]['icon'], 
+          iconColor: _navItemsColors[i]['icon'],
           onTap: itemsFunctions[i]
         )
       );

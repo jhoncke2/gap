@@ -54,7 +54,7 @@ class ChosenFormCurrentComponent extends StatelessWidget {
 
   void _elegirComponentsSegunFormState() {
     if([FormStep.OnFormFillingOut, FormStep.OnFormReading, FormStep.Finished].contains( _chosenFormState.formStep )) {
-      _bottomComponents = BottomFormFillingNavigation();
+      _bottomComponents = BottomFormFillingNavigationOld();
     }else{
       _bottomComponents = Container();
     }

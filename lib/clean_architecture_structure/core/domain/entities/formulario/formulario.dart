@@ -29,7 +29,7 @@ class Formulario extends EntityWithStage{
   bool completo;
   final DateTime initialDate;
   final List<Firmer> firmers;
-  final List<CustomFormFieldOld> campos;
+  List<CustomFormFieldOld> campos;
   int formStepIndex;
   CustomPosition initialPosition;
   CustomPosition finalPosition;

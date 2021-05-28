@@ -36,6 +36,7 @@ class Muestreo extends Equatable{
     @required this.formularioFinalId  
   });
 
+  // ignore: missing_return
   Muestreo copyWith({
     List<Rango> rangos,
     int nMuestras

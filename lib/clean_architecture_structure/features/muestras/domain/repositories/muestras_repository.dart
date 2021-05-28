@@ -9,4 +9,5 @@ abstract class MuestrasRepository{
   Future<Either<Failure, void>> updatePreparaciones(int muestreoId, List<String> preparaciones);
   Future<Either<Failure, void>> removeMuestra(int muestraId);
   Future<Either<Failure, Formulario>> getFormulario(int formularioId);
+  Future<Either<Failure, void>> setFormulario(Formulario formulario);
 }

@@ -16,6 +16,7 @@ import 'package:gap/clean_architecture_structure/features/muestras/data/data_sou
 import 'package:gap/clean_architecture_structure/features/muestras/data/models/muestreo_model.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/data/repository/muestras_repository.dart';
 import '../../../../fixtures/fixture_reader.dart';
+import '../../../visits/presentation/bloc/visits_bloc_test.dart';
 
 class MockNetworkInfo extends Mock implements NetworkInfo{}
 class MockMuestrasRemoteDataSource extends Mock implements MuestrasRemoteDataSource{}
@@ -380,6 +381,66 @@ void main(){
       when(userLocalDataSource.getAccessToken()).thenThrow(StorageException(type: StorageExceptionType.PLATFORM));
       when(formulariosRemoteDataSource.getChosenFormulario(any, any)).thenAnswer((_)async => tFormulario);
       final result = await repository.getFormulario(tFormulario.id);
+      expect(result, Left(StorageFailure(excType: StorageExceptionType.PLATFORM)));
+    });
+  });
+
+  group('setFormulario', (){
+    String tAccessToken;
+    ProjectModel tChosenProject;
+    VisitModel tChosenVisit;
+    FormularioModel tFormulario;
+    setUp((){
+      tAccessToken = 'access_token';
+      tChosenProject = _getProjectFromFixture();
+      tChosenVisit = _getVisitFromFixture();
+      tFormulario = _getFormularioFromxFixture();
+      when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tChosenProject);
+      when(visitsLocalDataSource.getChosenVisit(any)).thenAnswer((_) async => tChosenVisit);
+    });
+
+    test('should call the specified remoteDataSource method', ()async{
+      when(networkInfo.isConnected()).thenAnswer((_) async => true);
+      when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
+      await repository.setFormulario(tFormulario);
+      verify(networkInfo.isConnected());
+      verify(projectsLocalDataSource.getChosenProject());
+      verify(visitsLocalDataSource.getChosenVisit(tChosenProject.id));      
+      verify(userLocalDataSource.getAccessToken());
+      verify(formulariosRemoteDataSource.setCampos(tFormulario, tChosenVisit.id, tAccessToken));
+    });
+
+    test('should do nothing when there is not connectivity', ()async{
+      when(networkInfo.isConnected()).thenAnswer((_) async => false);
+      await repository.setFormulario(tFormulario);
+      verify(networkInfo.isConnected());
+      verifyNever(projectsLocalDataSource.getChosenProject());
+      verifyNever(visitsLocalDataSource.getChosenVisit(tChosenProject.id));      
+      verifyNever(userLocalDataSource.getAccessToken());
+      verifyNever(formulariosRemoteDataSource.setCampos(tFormulario, tChosenVisit.id, tAccessToken));
+    });
+
+    test('should return Right(tFormulario) when there is connectivity and all goes good', ()async{
+      when(networkInfo.isConnected()).thenAnswer((_) async => true);
+      when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
+      final result = await repository.setFormulario(tFormulario);
+      expect(result, Right(null));
+    });
+
+    test('''should return Left(ServerFailure(x)) when there is connectivity 
+    and remoteDataSource throws a ServerException(x)''', ()async{
+      when(networkInfo.isConnected()).thenAnswer((_) async => true);
+      when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
+      when(formulariosRemoteDataSource.setCampos(any, any, any)).thenThrow(ServerException(type: ServerExceptionType.REFRESH_ACCESS_TOKEN));
+      final result = await repository.setFormulario(tFormulario);
+      expect(result, Left(ServerFailure(servExcType: ServerExceptionType.REFRESH_ACCESS_TOKEN)));
+    });
+
+    test('''should return Left(StorageFailure(x)) when there is connectivity 
+    and localDataSource throws a StorageException(x)''', ()async{
+      when(networkInfo.isConnected()).thenAnswer((_) async => true);
+      when(userLocalDataSource.getAccessToken()).thenThrow(StorageException(type: StorageExceptionType.PLATFORM));
+      final result = await repository.setFormulario(tFormulario);
       expect(result, Left(StorageFailure(excType: StorageExceptionType.PLATFORM)));
     });
   });

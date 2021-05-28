@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/blocs/navigation/navigation_bloc.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/header/page_header.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/widgets/progress_indicator.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/scaffold_keyboard_detector.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/bloc/muestras_bloc.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/widgets/eleccion_rangos_a_usar.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/widgets/eleccion_toma_o_finalizar.dart';
-import 'package:gap/clean_architecture_structure/features/muestras/presentation/widgets/init_or_end_muestreo_view.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/presentation/widgets/formulario_final.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/presentation/widgets/formulario_inicial.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/widgets/muestra_detail.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/widgets/muestreo_step_choser.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/widgets/pesos_chooser.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/widgets/preparacion_componentes.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/widgets/rango_edad_chosing.dart';
 import 'package:gap/clean_architecture_structure/injection_container.dart';
+import 'package:gap/old_architecture/data/enums/enums.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
 
 class MuestrasPage extends StatelessWidget {
@@ -55,8 +59,12 @@ class MuestrasPage extends StatelessWidget {
   }
 
   Widget _createBlocBuilderBottom(BuildContext context, MuestrasState state){
-    if(state is OnChooseInitOrEndMuestreo)
-      return InitOrEndMuestreoView();
+    if(state is OnMuestreoEmpty){
+      _addBlocEventPostFrameCallBack(context, InitMuestreoEvent());
+      return CustomProgressIndicator(heightScreenPercentage: 0.6);
+    }
+    else if(state is LoadedInitialFormulario)
+      return FormularioInicial(formulario: state.formulario);
     else if(state is OnChooseMuestreoStep)
       return MuestreoStepChoser();
     else if(state is OnPreparacionMuestreo)
@@ -73,13 +81,22 @@ class MuestrasPage extends StatelessWidget {
       return MuestraDetail(muestra: state.muestra, muestreoComponentes: state.muestreo.componentes);
     else if(state is MuestraRemoved)
       _addBlocEventPostFrameCallBack(context, BackFromMuestraDetail());
+    else if(state is LoadedFinalFormulario)
+      return FormularioFinal(formulario: state.formulario);
     else if(state is MuestraError)
       return Container(
         child: Center(
           child: Text(state.message),
         ),
       );
-    return Container();
+    else if(state is MuestreoFinished)
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        BlocProvider.of<NavigationBloc>(context).add(NavigateToEvent(navigationRoute: NavigationRoute.Formularios));
+        Navigator.of(context).pushReplacementNamed(NavigationRoute.Formularios.value);
+      });
+    return CustomProgressIndicator(
+      heightScreenPercentage: 0.75,
+    );
   }
 
   void _addBlocEventPostFrameCallBack(BuildContext context, MuestrasEvent event){

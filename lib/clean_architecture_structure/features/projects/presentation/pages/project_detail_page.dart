@@ -5,6 +5,7 @@ import 'package:gap/clean_architecture_structure/core/presentation/widgets/heade
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/navigation_list/buttons/navigation_list_button.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/navigation_list/navigation_list.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/scaffold_native_back_button_locker.dart';
+import 'package:gap/clean_architecture_structure/features/projects/domain/use_cases/set_chosen_project.dart';
 import 'package:gap/clean_architecture_structure/features/projects/presentation/bloc/projects_bloc.dart';
 import 'package:gap/clean_architecture_structure/features/projects/domain/entities/project.dart';
 import 'package:gap/old_architecture/logic/central_managers/pages_navigation_manager.dart';
@@ -55,7 +56,7 @@ class ProjectDetailPage extends StatelessWidget {
           return _createLoadingProjectsWidget();
         else if (state is LoadedChosenProject)
           return _createLoadedElements(state.project);
-        return Container();
+        return _createLoadingProjectsWidget();
       },
     );
   }
@@ -116,7 +117,7 @@ class ProjectDetailPage extends StatelessWidget {
     });
   }
 
-  Widget _createViaticosListButton(BuildContext context) {
+  Widget _createViaticosListButton(BuildContext context){
     return _createButton(context, 'viáticos', () {
       _navToPage(NavigationRoute.Visits);
     });

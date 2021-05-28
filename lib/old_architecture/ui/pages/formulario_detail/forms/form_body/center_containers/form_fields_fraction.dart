@@ -63,29 +63,12 @@ class _FormInputsFractionState extends State<FormInputsFraction> {
 
   void _doPostFrameBack(){
     WidgetsBinding.instance.addPostFrameCallback((_){
-      //if(!_isReBuilding)
-       // _animateScrollToInitialOffset();
-      //_isReBuilding = false;
-
-      //final keyboardState = BlocProvider.of<KeyboardListenerBloc>(context).state;
-      
       int currentIndexPage = _indexState.currentIndexPage;
       if(latIndexPage != currentIndexPage){
         latIndexPage = currentIndexPage;
         widget.elementsScrollController.jumpTo(0.0);
       }
     });
-  }
-
-  void _initOnTextFieldTapStream(){
-    widget.onTextFieldTapStream.listen((int tappedIndex) {
-      _moveScrollByTappedFormIndex(tappedIndex);
-    });
-  }
-
-  void _moveScrollByTappedFormIndex(int index){
-    final newScrollOffset = defineOffsetPositionByIndex(index);
-    _animateScrollToPosition(newScrollOffset);
   }
 
   double defineOffsetPositionByIndex(int index){
@@ -103,19 +86,12 @@ class _FormInputsFractionState extends State<FormInputsFraction> {
     }
   }
 
-  void _animateScrollToInitialOffset(){
-    widget.lastScrollOffset = 0.0;
-    //widget.formFieldsScrollController.jumpTo(widget.lastScrollOffset);
-    //widget.formFieldsScrollController.animateTo(widget.lastScrollOffset, duration: Duration(milliseconds: 2), curve: Curves.bounceIn);
-  }
-
   Future _animateScrollToPosition(double offset)async{
     //await widget.formFieldsScrollController.animateTo(offset, duration: Duration(milliseconds: 15), curve: Curves.bounceIn);
     print(widget.formFieldsScrollController.offset);
   }
 
   Widget _createFormFieldsWithIndex(){
-    
     List<CustomFormFieldOld> formFIeldsByPage = _getFormFIeldsByCurrentPage();
     final double screenHeight = MediaQuery.of(context).size.height;
     return Container(

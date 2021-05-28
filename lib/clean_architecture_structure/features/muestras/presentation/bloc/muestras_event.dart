@@ -6,7 +6,27 @@ abstract class MuestrasEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class GetMuestreoEvent extends MuestrasEvent{}
+class InitMuestreoEvent extends MuestrasEvent{}
+
+class EndInitialFormulario extends MuestrasEvent{
+  final Formulario formulario;
+  EndInitialFormulario({
+    @required this.formulario
+  });
+}
+
+class EndTomaMuestras extends MuestrasEvent{
+
+}
+
+class EndFinalFormulario extends MuestrasEvent{
+  final Formulario formulario;
+  EndFinalFormulario({
+    @required this.formulario
+  });
+}
+
+class GoToNextMuestreoStep extends MuestrasEvent{}
 
 class InitTomaMuestras extends MuestrasEvent{}
 

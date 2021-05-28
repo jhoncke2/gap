@@ -109,4 +109,21 @@ class MuestrasRepositoryImpl implements MuestrasRepository{
       return Left(ServerFailure(servExcType: exception.type));
     }
   }
+
+  @override
+  Future<Either<Failure, void>> setFormulario(Formulario formulario)async{
+    try{
+      if( await networkInfo.isConnected() ){
+        final int chosenProjectId = (await projectsLocalDataSource.getChosenProject() ).id;
+        final int chosenVisitId = (await visitsLocalDataSource.getChosenVisit(chosenProjectId) ).id;
+        final String accessToken = await userLocalDataSource.getAccessToken();
+        await formulariosRemoteDataSource.setCampos(formulario, chosenVisitId, accessToken);
+        return Right(null);
+      }
+    }on StorageException catch(exception){
+      return Left(StorageFailure(excType: exception.type));
+    }on ServerException catch(exception){
+      return Left(ServerFailure(servExcType: exception.type));
+    }
+  }
 }

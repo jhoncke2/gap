@@ -8,11 +8,11 @@ import 'package:gap/old_architecture/logic/central_managers/pages_navigation_man
 import 'package:gap/old_architecture/ui/pages/formulario_detail/forms/form_index.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
 // ignore: must_be_immutable
-class BottomFormFillingNavigation extends StatelessWidget {
+class BottomFormFillingNavigationOld extends StatelessWidget {
   final SizeUtils _sizeUtils = SizeUtils();
   BuildContext _context;
   ChosenFormState _chosenFormState;
-  BottomFormFillingNavigation();
+  BottomFormFillingNavigationOld();
 
   @override
   Widget build(BuildContext context) {

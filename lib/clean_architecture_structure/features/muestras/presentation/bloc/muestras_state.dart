@@ -7,7 +7,7 @@ abstract class MuestrasState extends Equatable {
   List<Object> get props => [this.runtimeType];
 }
 
-class OnChooseInitOrEndMuestreo extends MuestrasState {}
+class OnMuestreoEmpty extends MuestrasState {}
 
 class LoadingMuestreo extends MuestrasState {}
 
@@ -26,6 +26,32 @@ class OnChooseMuestreoStep extends LoadedMuestreo {
   }):super(
     muestreo: muestreo
   );
+}
+
+class LoadingFormulario extends MuestrasState{}
+
+abstract class LoadedFormulario extends LoadedMuestreo{
+  final Formulario formulario;
+  LoadedFormulario({
+    @required this.formulario,
+    @required Muestreo muestreo
+  }):super(
+    muestreo: muestreo
+  );
+  @override
+  List<Object> get props => [...super.props, this.formulario];
+}
+
+class LoadedInitialFormulario extends LoadedFormulario{
+  LoadedInitialFormulario({
+    @required Formulario formulario,
+    @required Muestreo muestreo
+  }):super(
+    formulario: formulario,
+    muestreo: muestreo
+  );
+  @override
+  List<Object> get props => [...super.props, this.formulario];
 }
 
 class OnPreparacionMuestreo extends LoadedMuestreo{
@@ -117,4 +143,22 @@ class MuestraError extends MuestrasState{
 
   @override
   List<Object> get props => [this.message];
+}
+
+class LoadedFinalFormulario extends LoadedFormulario{
+  LoadedFinalFormulario({
+    @required Formulario formulario,
+    @required Muestreo muestreo
+  }):super(
+    formulario: formulario,
+    muestreo: muestreo
+  );
+  @override
+  List<Object> get props => [...super.props, this.formulario];
+}
+
+class MuestreoFinished extends LoadedMuestreo{
+  MuestreoFinished({
+    @required Muestreo muestreo
+  }):super(muestreo: muestreo);
 }

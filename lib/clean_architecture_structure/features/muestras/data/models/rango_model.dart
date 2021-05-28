@@ -27,4 +27,17 @@ class RangoModel extends Rango{
     ).toList() ).cast<double>(),
     completo: json['completo']??false
   );
+
+  @override
+  RangoModel copyWith({
+    int id,
+    String nombre,
+    List<double> pesosEsperados,
+    bool completo
+  })=>RangoModel(
+    id: this.id, 
+    nombre: this.nombre, 
+    pesosEsperados: this.pesosEsperados, 
+    completo: this.completo
+  );
 }

@@ -53,4 +53,10 @@ class MuestrasRepositoryFake implements MuestrasRepository{
     // TODO: implement getFormulario
     throw UnimplementedError();
   }
+
+  @override
+  Future<Either<Failure, void>> setFormulario(Formulario formulario) {
+    // TODO: implement setFormulario
+    throw UnimplementedError();
+  }
 }

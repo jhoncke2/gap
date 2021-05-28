@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/clean_architecture_structure/core/domain/entities/commented_image.dart';
 import 'package:gap/clean_architecture_structure/core/domain/entities/formulario/formulario.dart';
 import 'package:gap/clean_architecture_structure/core/domain/use_cases/use_case_error_handler.dart';
+import 'package:gap/clean_architecture_structure/core/platform/custom_navigator.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:gap/clean_architecture_structure/core/domain/repositories/central_system_repository.dart';
 import 'package:gap/clean_architecture_structure/core/data/models/commented_image_model.dart';
@@ -140,7 +141,7 @@ abstract class DataDistributor{
     final Either<Failure, List<Project>> eitherProjects = await projectsRepository.getProjects();
     eitherProjects.fold((l)async{
       //TODO: Implementar manejo de error de conexión
-      dialogs.showBlockedDialog(CustomNavigatorOld.navigatorKey.currentContext, 'Ocurrió un error con los datos de los proyectos');
+      dialogs.showBlockedDialog(CustomNavigatorImpl.navigatorKey.currentContext, 'Ocurrió un error con los datos de los proyectos');
     }, (projects){
       List<ProjectOld> oldProjects = projects.map((p) => ProjectOld(id: p.id, nombre: p.nombre, visits: [])).toList();
       projectsB.add(SetProjects(projects: oldProjects));  

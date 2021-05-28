@@ -10,6 +10,9 @@ import 'package:gap/old_architecture/ui/pages/firmers/firmers_page.dart';
 import 'package:gap/old_architecture/ui/pages/formulario_detail/formulario_detail_page.dart';
 import 'package:gap/old_architecture/ui/pages/formularios_page.dart';
 import 'package:gap/old_architecture/ui/pages/init_page.dart';
+import 'package:gap/old_architecture/ui/pages/login_page.dart';
+import 'package:gap/old_architecture/ui/pages/project_detail_page.dart';
+import 'package:gap/old_architecture/ui/pages/projects_page.dart';
 import 'package:gap/old_architecture/ui/pages/visit_detail_page.dart';
 import 'package:gap/old_architecture/ui/pages/visits_page.dart';
 
@@ -18,8 +21,11 @@ class PageRoutes{
   static final routes = {
     NavigationRoute.Init.value : (_)=>InitPageOld(),
     NavigationRoute.Login.value : (_)=>LoginPage(),
+    //NavigationRoute.Login.value : (_)=>LoginPageOld(),
     NavigationRoute.Projects.value : (_)=>ProjectsPage(),
+    //NavigationRoute.Projects.value : (_)=>ProjectsPageOld(),
     NavigationRoute.ProjectDetail.value: (_)=> ProjectDetailPage(),
+    //NavigationRoute.ProjectDetail.value: (_)=> ProjectDetailPageOld(),
     NavigationRoute.Visits.value: (_)=>VisitsPageOld(),
     //NavigationRoute.Visits.value: (_)=>VisitsPage(),
     NavigationRoute.VisitDetail.value: (_)=>VisitDetailPageOld(),

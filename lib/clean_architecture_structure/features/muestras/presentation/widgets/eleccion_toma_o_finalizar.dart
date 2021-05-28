@@ -4,13 +4,12 @@ import 'package:gap/clean_architecture_structure/core/presentation/widgets/gener
 import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/muestra.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/muestreo.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/bloc/muestras_bloc.dart';
-import 'package:gap/clean_architecture_structure/features/muestras/presentation/widgets/muestra_detail.dart';
-import 'package:gap/old_architecture/logic/central_managers/pages_navigation_manager.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
 
 class EleccionTomaOFinalizar extends StatelessWidget {
   final SizeUtils sizeUtils = SizeUtils();
   final Muestreo muestreo;
+  BuildContext context;
   EleccionTomaOFinalizar({
     @required this.muestreo,
     Key key
@@ -18,6 +17,7 @@ class EleccionTomaOFinalizar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context){
+    this.context = context;
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -66,7 +66,8 @@ class EleccionTomaOFinalizar extends StatelessWidget {
 
   void _finalizar(){
     //TODO: Cambiar cuando se haya implementado el nuevo FormulariosPage
-    PagesNavigationManager.navToForms();
+    //PagesNavigationManager.navToForms();
+    BlocProvider.of<MuestrasBloc>(context).add(EndTomaMuestras());
   }
 }
 
