@@ -16,6 +16,7 @@ import 'package:gap/clean_architecture_structure/features/muestras/presentation/
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/widgets/rango_edad_chosing.dart';
 import 'package:gap/clean_architecture_structure/injection_container.dart';
 import 'package:gap/old_architecture/data/enums/enums.dart';
+import 'package:gap/old_architecture/logic/central_managers/pages_navigation_manager.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
 
 class MuestrasPage extends StatelessWidget {
@@ -91,8 +92,9 @@ class MuestrasPage extends StatelessWidget {
       );
     else if(state is MuestreoFinished)
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        BlocProvider.of<NavigationBloc>(context).add(NavigateToEvent(navigationRoute: NavigationRoute.Formularios));
-        Navigator.of(context).pushReplacementNamed(NavigationRoute.Formularios.value);
+        //BlocProvider.of<NavigationBloc>(context).add(NavigateToEvent(navigationRoute: NavigationRoute.Formularios));
+        //Navigator.of(context).pushReplacementNamed(NavigationRoute.Formularios.value);
+        PagesNavigationManager.navToForms();
       });
     return CustomProgressIndicator(
       heightScreenPercentage: 0.75,

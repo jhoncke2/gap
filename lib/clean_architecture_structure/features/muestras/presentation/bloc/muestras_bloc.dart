@@ -91,7 +91,7 @@ class MuestrasBloc extends Bloc<MuestrasEvent, MuestrasState>{
       if(muestreo.formularioInicialId != null){
         yield * _loadFormularioInicial(muestreo);
       }else if(muestreo.componentes != null && muestreo.componentes.length > 0){
-        yield OnPreparacionMuestreo(muestreo: muestreo);
+        yield * _initMuestrasProcess(muestreo);
       }else if(muestreo.formularioFinalId != null){
         yield * _loadFormularioFinal(muestreo);
       }else{
