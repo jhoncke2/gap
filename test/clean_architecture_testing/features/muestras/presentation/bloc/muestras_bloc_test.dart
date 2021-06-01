@@ -1,9 +1,9 @@
 import 'dart:convert';
-import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/save_formulario.dart';
 import 'package:test/test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:mockito/mockito.dart';
 import 'package:gap/clean_architecture_structure/core/error/failures.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/save_formulario.dart';
 import 'package:gap/clean_architecture_structure/core/domain/use_cases/use_case.dart';
 import 'package:gap/clean_architecture_structure/core/data/models/formulario/formulario_model.dart';
 import 'package:gap/clean_architecture_structure/core/domain/entities/formulario/formulario.dart';
@@ -20,17 +20,15 @@ import 'package:gap/clean_architecture_structure/features/muestras/domain/entiti
 import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/get_muestras.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/set_muestra.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/bloc/muestras_bloc.dart';
-import '../../../../core/data/models/formulario_model_test.dart';
 import '../../../../fixtures/fixture_reader.dart';
 
-class MockGetMuestras extends Mock implements GetMuestras{}
 class MockSetMuestra extends Mock implements SetMuestra{}
-class MockUpdatePreparaciones extends Mock implements UpdatePreparaciones{}
+class MockGetMuestras extends Mock implements GetMuestras{}
 class MockRemoveMuestra extends Mock implements RemoveMuestra{}
 class MockGetFormulario extends Mock implements GetFormulario{}
 class MockSaveFormulario extends Mock implements SaveFormulario{}
+class MockUpdatePreparaciones extends Mock implements UpdatePreparaciones{}
 class MockStringToDoubleConverter extends Mock implements StringToDoubleConverter{}
-
 
 MuestrasBloc bloc;
 MockGetMuestras getMuestras;
@@ -79,43 +77,26 @@ void main(){
     setUp((){
       tMuestreo = _getMuestreoFromFixture();
     });
-
-    test('should call the getMuestreos usecase', ()async{
-      when(getMuestras.call(any)).thenAnswer((_) async => Right(tMuestreo));
-      when(getFormulario.call(any)).thenAnswer((_) async => Right(tFormulario));
-      bloc.add(InitMuestreoEvent());
-      await untilCalled(getMuestras.call(any));
-      verify(getMuestras.call(NoParams()));
-    });
-
-    test('should call the specified useCase when there is initialFormularioId', ()async{
-      Formulario tFormulario = _getFormularioFromxFixture();
-      when(getMuestras.call(any)).thenAnswer((_) async => Right(tMuestreo));
-      when(getFormulario.call(any)).thenAnswer((_) async => Right(tFormulario));
-      bloc.add(InitMuestreoEvent());
-      await untilCalled(getFormulario.call(any));
-      verify(getFormulario(MuestreoFormularioParams(formularioId: tMuestreo.formularioInicialId)));
-    });
     
     test('should yield the specified ordered states when there is initialFormularioId', ()async{
-      Formulario tFormulario = _getFormularioFromxFixture();
       when(getMuestras.call(any)).thenAnswer((_) async => Right(tMuestreo));
-      when(getFormulario.call(any)).thenAnswer((_) async => Right(tFormulario));
       final expectedsOrderedStates = [
         LoadingMuestreo(),
         LoadingFormulario(),
-        LoadedInitialFormulario(muestreo: tMuestreo, formulario: tFormulario)
+        LoadedInitialFormulario(muestreo: tMuestreo, formulario: tMuestreo.preFormulario)
       ];
       expectLater(bloc.asBroadcastStream(), emitsInOrder(expectedsOrderedStates));
       bloc.add(InitMuestreoEvent());
     });
 
-    test('should yield the specified ordered states when there is not initialFormularioId but yes componentes', ()async{
-      tMuestreo = _getMuestreoFromFixtureWithNullFields(['pre_formulario_id']);
+    test('''should yield the specified ordered states when there is not initialFormularioId but yes componentes
+    and muestreo has created muestras''', ()async{
+      tMuestreo = _getMuestreoFromFixtureWithNullFields(['pre_formulario']);
       when(getMuestras.call(any)).thenAnswer((_) async => Right(tMuestreo));
       final expectedsOrderedStates = [
         LoadingMuestreo(),
-        OnPreparacionMuestreo(muestreo: tMuestreo)
+        //OnPreparacionMuestreo(muestreo: tMuestreo)
+        OnChooseAddMuestraOFinalizar(muestreo: tMuestreo)
       ];
       expectLater(bloc.asBroadcastStream(), emitsInOrder(expectedsOrderedStates));
       bloc.add(InitMuestreoEvent());
@@ -124,24 +105,22 @@ void main(){
     test('''should call the specified useCase 
     when there is neither initialFormularioId nor componentes but yes finalFormularioId''', ()async{
       Formulario tFormulario = _getFormularioFromxFixture();
-      tMuestreo = _getMuestreoFromFixtureWithNullFields(['pre_formulario_id', 'componentes']);
+      tMuestreo = _getMuestreoFromFixtureWithNullFields(['pre_formulario', 'componentes']);
       when(getMuestras.call(any)).thenAnswer((_) async => Right(tMuestreo));
       when(getFormulario.call(any)).thenAnswer((_) async => Right(tFormulario));
       bloc.add(InitMuestreoEvent());
-      await untilCalled(getFormulario.call(any));
-      verify(getFormulario(MuestreoFormularioParams(formularioId: tMuestreo.formularioFinalId)));
+      //await untilCalled(getFormulario.call(any));
+      //verify(getFormulario(MuestreoFormularioParams(formularioId: tMuestreo.formularioFinalId)));
     });
 
     test('''should yield the specified ordered states 
     when there is neither initialFormularioId nor componentes but yes finalFormularioId''', ()async{
-      Formulario tFormulario = _getFormularioFromxFixture();
-      tMuestreo = _getMuestreoFromFixtureWithNullFields(['pre_formulario_id', 'componentes']);
+      tMuestreo = _getMuestreoFromFixtureWithNullFields(['pre_formulario', 'componentes']);
       when(getMuestras.call(any)).thenAnswer((_) async => Right(tMuestreo));
-      when(getFormulario.call(any)).thenAnswer((_) async => Right(tFormulario));
       final expectedsOrderedStates = [
         LoadingMuestreo(),
         LoadingFormulario(),
-        LoadedFinalFormulario(muestreo: tMuestreo, formulario: tFormulario)
+        LoadedFinalFormulario(muestreo: tMuestreo, formulario: tMuestreo.posFormulario)
       ];
       expectLater(bloc.asBroadcastStream(), emitsInOrder(expectedsOrderedStates));
       bloc.add(InitMuestreoEvent());
@@ -149,7 +128,7 @@ void main(){
 
     test('''should yield the specified ordered states 
     neither initialFormularioId nor componentes nor finalFormularioId''', ()async{
-      tMuestreo = _getMuestreoFromFixtureWithNullFields(['pre_formulario_id', 'componentes', 'pos_formulario_id']);
+      tMuestreo = _getMuestreoFromFixtureWithNullFields(['pre_formulario', 'componentes', 'pos_formulario']);
       when(getMuestras.call(any)).thenAnswer((_) async => Right(tMuestreo));
       final expectedsOrderedStates = [
         LoadingMuestreo(),
@@ -173,7 +152,7 @@ void main(){
       bloc.emit(LoadedInitialFormulario(formulario: tFormulario, muestreo: tMuestreo));
       bloc.add(EndInitialFormulario(formulario: tFormulario));
       await untilCalled(saveFormulario(any));
-      verify(saveFormulario( SaveFormularioParams(formulario: tFormulario)));  
+      verify(saveFormulario( SaveFormularioParams(muestreoId: tMuestreo.id, formulario: tFormulario, formularioType: MuestrasBloc.PRE_FORMULARIO_TYPE)));  
     });
 
     test('should yield the specified states in order when all goes good and there is muestras components', ()async{
@@ -208,7 +187,7 @@ void main(){
       when(getMuestras.call(any)).thenAnswer((_) async => Right(tMuestreo));
       final expectedsOrderedStates = [
         LoadingFormulario(),
-        LoadedFinalFormulario(muestreo: tMuestreo, formulario: tFormulario)
+        LoadedFinalFormulario(muestreo: tMuestreo, formulario: tMuestreo.posFormulario)
       ];
       expectLater(bloc.asBroadcastStream(), emitsInOrder(expectedsOrderedStates));
       bloc.add(EndInitialFormulario(formulario: tFormulario));
@@ -216,7 +195,7 @@ void main(){
 
     test('''should yield the specified states in order when all goes good 
     and there is not componentes and there is not formulario final''', ()async{
-      tMuestreo = _getMuestreoFromFixtureWithNullFields(['componentes', 'pos_formulario_id']);
+      tMuestreo = _getMuestreoFromFixtureWithNullFields(['componentes', 'pos_formulario']);
       bloc.emit(LoadedInitialFormulario(formulario: tFormulario, muestreo: tMuestreo));
       when(getFormulario.call(any)).thenAnswer((_) async => Right(tFormulario));
       when(getMuestras.call(any)).thenAnswer((_) async => Right(tMuestreo));
@@ -231,34 +210,22 @@ void main(){
 
   group('endTomaMuestras', (){
     Muestreo tMuestreo;
-    Formulario tFormulario;
     setUp((){
       tMuestreo = _getMuestreoFromFixture();
-      tFormulario = _getFormularioFromxFixture();
-    });
-
-    test('should call the specified useCase when all goes good and there is finalFormularioId', ()async{
-      when(getFormulario.call(any)).thenAnswer((_) async => Right(tFormulario));
-      bloc.emit(OnChooseAddMuestraOFinalizar(muestreo: tMuestreo));
-      bloc.add(EndTomaMuestras());
-      await untilCalled(getFormulario(any));
-      verify(getFormulario(MuestreoFormularioParams(formularioId: tMuestreo.formularioFinalId)));
     });
     
     test('should yield the specified states in order when all goes good and there is finalFormularioId', ()async{
-      when(getFormulario.call(any)).thenAnswer((_) async => Right(tFormulario));
       bloc.emit(OnChooseAddMuestraOFinalizar(muestreo: tMuestreo));
       final expectedsOrderedStates = [
         LoadingFormulario(),
-        LoadedFinalFormulario(muestreo: tMuestreo, formulario: tFormulario)
+        LoadedFinalFormulario(muestreo: tMuestreo, formulario: tMuestreo.posFormulario)
       ];
       expectLater(bloc.asBroadcastStream(), emitsInOrder(expectedsOrderedStates));
       bloc.add(EndTomaMuestras());
     });
 
     test('should yield the specified states in order when all goes good and there is not finalFormularioId', ()async{
-      tMuestreo = _getMuestreoFromFixtureWithNullFields(['pos_formulario_id']);
-      when(getFormulario.call(any)).thenAnswer((_) async => Right(tFormulario));
+      tMuestreo = _getMuestreoFromFixtureWithNullFields(['pos_formulario']);
       bloc.emit(OnChooseAddMuestraOFinalizar(muestreo: tMuestreo));
       final expectedsOrderedStates = [
         MuestreoFinished(muestreo: tMuestreo)
@@ -281,7 +248,7 @@ void main(){
       bloc.emit(LoadedFinalFormulario(muestreo: tMuestreo, formulario: tFormulario));
       bloc.add(EndFinalFormulario(formulario: tFormulario));
       await untilCalled(saveFormulario(any));
-      verify(saveFormulario(SaveFormularioParams(formulario: tFormulario)));
+      verify(saveFormulario(SaveFormularioParams(muestreoId: tMuestreo.id, formulario: tFormulario, formularioType: MuestrasBloc.POS_FORMULARIO_TYPE)));
     });
 
     test('should yield the specified states in order when all goes good', ()async{
@@ -552,88 +519,16 @@ void main(){
       bloc.add(BackFromMuestraDetail());
     });
   });
-
-  group('goToNexteMuestreoStep', (){
-    Muestreo tMuestreo;
-    Formulario tFormulario;
-    setUp((){
-      tMuestreo = _getMuestreoFromFixture();
-      tFormulario = _getFormularioFromxFixture();
-    });
-    
-    //TODO: Implementar useCases cuadno se envía formulario inicial o final
-
-    test('''should call the specified useCase when it is on LoadedInitialFormulario 
-    and there is muestras and there is not createdMuestras''', ()async{
-      tMuestreo = _getMuestreoFromFixtureWithNullFields(['muestras']);
-      bloc.emit(LoadedInitialFormulario(muestreo: tMuestreo, formulario: tFormulario));
-      bloc.add(GoToNextMuestreoStep());
-      await untilCalled(saveFormulario.call(any));
-      verify(saveFormulario(SaveFormularioParams(formulario: tFormulario)));
-    });
-
-    test('''should yield the specified states when it is on LoadedInitialFormulario 
-    and there is muestras and there is not createdMuestras''', ()async{
-      tMuestreo = _getMuestreoFromFixtureWithNullFields(['muestras']);
-      bloc.emit(LoadedInitialFormulario(muestreo: tMuestreo, formulario: tFormulario));
-      final expectedOrderedStates = [
-        OnPreparacionMuestreo(muestreo: tMuestreo)
-      ];
-      expectLater(bloc.asBroadcastStream(), emitsInOrder(expectedOrderedStates));
-      bloc.add(GoToNextMuestreoStep());
-    });
-
-    test('''should yield the specified states when it is on LoadedInitialFormulario 
-    and there is muestras and there is createdMuestras''', ()async{
-      bloc.emit(LoadedInitialFormulario(muestreo: tMuestreo, formulario: tFormulario));
-      final expectedOrderedStates = [
-        OnChooseAddMuestraOFinalizar(muestreo: tMuestreo)
-      ];
-      expectLater(bloc.asBroadcastStream(), emitsInOrder(expectedOrderedStates));
-      bloc.add(GoToNextMuestreoStep());
-    });
-
-    test('should call the specified useCase method when it is on LoadedInitialFormulario and there is not muestras', ()async{
-      tMuestreo = _getMuestreoFromFixtureWithNullFields(['componentes']);
-      bloc.emit(LoadedInitialFormulario(muestreo: tMuestreo, formulario: null));
-      when(getFormulario.call(any)).thenAnswer((_) async => Right(tFormulario));
-      bloc.add(GoToNextMuestreoStep());
-      await untilCalled(getFormulario.call(any));
-      verify(getFormulario(MuestreoFormularioParams(formularioId: tMuestreo.formularioFinalId)));
-    });
-
-    
-    test('should yield the specified states when it is on LoadedInitialFormulario and there is not muestras', ()async{
-      tMuestreo = _getMuestreoFromFixtureWithNullFields(['componentes']);
-      bloc.emit(LoadedInitialFormulario(muestreo: tMuestreo, formulario: null));
-      when(getFormulario.call(any)).thenAnswer((_) async => Right(tFormulario));
-      final expectedOrderedStates = [
-        LoadingFormulario(),
-        LoadedFinalFormulario(formulario: tFormulario, muestreo: tMuestreo)
-      ];
-      expectLater(bloc.asBroadcastStream(), emitsInOrder(expectedOrderedStates));
-      bloc.add(GoToNextMuestreoStep());
-    });
-
-    test('should yield the specified states when it is on LoadedFinalFormulario', ()async{
-      bloc.emit(LoadedFinalFormulario(formulario: tFormulario, muestreo: tMuestreo));
-      final expectedOrderedStates = [
-        MuestreoFinished(muestreo: tMuestreo)
-      ];
-      expectLater(bloc.asBroadcastStream(), emitsInOrder(expectedOrderedStates));
-      bloc.add(GoToNextMuestreoStep());
-    });
-  });
 }
 
 Muestreo _getMuestreoFromFixture(){
-  String stringMuestra = callFixture('muestra.json');
+  String stringMuestra = callFixture('muestreo.json');
   Map<String, dynamic> jsonMuestra = jsonDecode(stringMuestra);
   return MuestreoModel.fromJson(jsonMuestra);
 }
 
 Muestreo _getMuestreoFromFixtureWithNullFields(List<String> fields){
-  String stringMuestra = callFixture('muestra.json');
+  String stringMuestra = callFixture('muestreo.json');
   Map<String, dynamic> jsonMuestra = jsonDecode(stringMuestra);
   fields.forEach((f) {
     jsonMuestra[f] = null;

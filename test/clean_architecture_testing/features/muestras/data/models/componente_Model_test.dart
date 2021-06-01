@@ -15,7 +15,7 @@ void main(){
       preparacion: null
     );
     tJson['componente_index'] = 0;
-    tComponente = ComponenteModel.fromJson(tJson);
+    tComponente = ComponenteModel.fromName(tJson);
   });
 
   test('should have the specified values', (){
@@ -24,6 +24,6 @@ void main(){
 }
 
 Map<String, dynamic> _getMuestraFromFixture(){
-  String stringMuestra = callFixture('muestra.json');
+  String stringMuestra = callFixture('muestreo.json');
   return jsonDecode(stringMuestra).cast<String, dynamic>();
 }

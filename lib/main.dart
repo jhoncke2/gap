@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gap/old_architecture/ui/gap_app.dart';
 import 'package:gap/old_architecture/data/enums/enums.dart';
 import 'package:gap/old_architecture/native_connectors/permissions.dart';
 import 'package:gap/old_architecture/native_connectors/storage_connector.dart';
@@ -8,7 +9,6 @@ import 'package:gap/old_architecture/native_connectors/net_connection_detector.d
 import 'package:gap/old_architecture/logic/storage_managers/user/user_storage_manager.dart';
 import 'package:gap/old_architecture/ui/utils/dialogs.dart' as dialogs;
 import 'clean_architecture_structure/injection_container.dart' as ic;
-import 'package:gap/old_architecture/ui/gap_app.dart';
 
 GapApp app;
 void main()async{

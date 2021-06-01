@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gap/clean_architecture_structure/core/presentation/blocs/navigation/navigation_bloc.dart';
+import 'package:gap/clean_architecture_structure/injection_container.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/header/page_header.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/progress_indicator.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/scaffold_keyboard_detector.dart';
@@ -14,8 +14,6 @@ import 'package:gap/clean_architecture_structure/features/muestras/presentation/
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/widgets/pesos_chooser.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/widgets/preparacion_componentes.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/widgets/rango_edad_chosing.dart';
-import 'package:gap/clean_architecture_structure/injection_container.dart';
-import 'package:gap/old_architecture/data/enums/enums.dart';
 import 'package:gap/old_architecture/logic/central_managers/pages_navigation_manager.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
 

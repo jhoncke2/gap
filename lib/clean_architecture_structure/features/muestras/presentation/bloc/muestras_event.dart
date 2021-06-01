@@ -26,8 +26,6 @@ class EndFinalFormulario extends MuestrasEvent{
   });
 }
 
-class GoToNextMuestreoStep extends MuestrasEvent{}
-
 class InitTomaMuestras extends MuestrasEvent{}
 
 class SetMuestreoPreparaciones extends MuestrasEvent{

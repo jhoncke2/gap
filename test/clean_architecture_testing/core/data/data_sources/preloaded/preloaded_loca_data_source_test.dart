@@ -70,14 +70,14 @@ void _testSetPreloadedFamilyGroup(){
     });
 
     test('should set a preloaded family on a empty storage successfuly', ()async{
-      await preloadedLocalDataSource.setPreloadedFamily(tPreloadedProjectId, tPreloadedVisitId1, tFormularios);
+      await preloadedLocalDataSource.setPreloadedFamilyOld(tPreloadedProjectId, tPreloadedVisitId1, tFormularios);
       verify(storageConnector.getMap(PreloadedLocalDataSourceImpl.PRELOADED_DATA_STORAGE_KEY));
       verify(storageConnector.setMap(tPreloaded1Project1Visit1Form, PreloadedLocalDataSourceImpl.PRELOADED_DATA_STORAGE_KEY));
     });
 
     test('should delete 1 formulario because of it is completed, and leave alone the other one', ()async{
       when(storageConnector.getMap(any)).thenAnswer((realInvocation) async => tPreloaded1Project1VisitAllForms);
-      await preloadedLocalDataSource.setPreloadedFamily(tPreloadedProjectId, tPreloadedVisitId1, tFormularios);
+      await preloadedLocalDataSource.setPreloadedFamilyOld(tPreloadedProjectId, tPreloadedVisitId1, tFormularios);
       verify(storageConnector.setMap(tPreloaded1Project1Visit1Form, PreloadedLocalDataSourceImpl.PRELOADED_DATA_STORAGE_KEY));
     });
 
@@ -88,7 +88,7 @@ void _testSetPreloadedFamilyGroup(){
         jsonF['completo'] = true;
         return FormularioModel.fromJson(jsonF);
       }).toList();
-      await preloadedLocalDataSource.setPreloadedFamily(tPreloadedProjectId, tPreloadedVisitId1, tCompletedFormularios);
+      await preloadedLocalDataSource.setPreloadedFamilyOld(tPreloadedProjectId, tPreloadedVisitId1, tCompletedFormularios);
       verify(storageConnector.setMap(tPreloaded1ProjectAndThe2ndVisitWithForms, PreloadedLocalDataSourceImpl.PRELOADED_DATA_STORAGE_KEY));
     });
   });

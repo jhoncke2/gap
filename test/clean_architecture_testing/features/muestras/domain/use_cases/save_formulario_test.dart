@@ -28,18 +28,22 @@ void main(){
   });
 
   group('call', (){
+    int tMuestreoId;
     Formulario tFormulario;
+    String tForularioType;
     setUp((){
+      tMuestreoId = 1;
       tFormulario = _getFormularioFromxFixture();
+      tForularioType = 'Pos';
     });
 
     test('should call the repository specified method and the errorHandler specified method', ()async{
-      when(repository.setFormulario(any)).thenAnswer((_) async => Right(null));
+      when(repository.setFormulario(any, any, any)).thenAnswer((_) async => Right(null));
       when(errorHandler.executeFunction(any)).thenAnswer((realInvocation) => realInvocation.positionalArguments[0]());
-      await useCase(SaveFormularioParams(formulario: tFormulario));
+      await useCase(SaveFormularioParams(muestreoId: tMuestreoId, formulario: tFormulario, formularioType: tForularioType));
       verify(errorHandler.executeFunction(any));
-      verify(repository.setFormulario(tFormulario));
-
+      verify(repository.setFormulario(tMuestreoId, tFormulario, tForularioType));
+      
     });
   });
 }

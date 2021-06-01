@@ -210,7 +210,7 @@ void _testSetChosenVisitGroup(){
       tEmptyFormularios.forEach((f) {
         verify(formulariosRemoteDataSource.getChosenFormulario(f.id, any));
       });
-      verify(preloadedDataSource.setPreloadedFamily(tChosenProject.id, tChosenVisit.id, tFormularios));
+      verify(preloadedDataSource.setPreloadedFamilyOld(tChosenProject.id, tChosenVisit.id, tFormularios));
     });
 
     test('''should save on the preloadedDataSource only the formularios
@@ -231,7 +231,7 @@ void _testSetChosenVisitGroup(){
       tEmptyFormularios.forEach((f) {
         verify(formulariosRemoteDataSource.getChosenFormulario(f.id, any));
       });
-      verify(preloadedDataSource.setPreloadedFamily(tChosenProject.id, tChosenVisit.id, tUncompletedFormularios));
+      verify(preloadedDataSource.setPreloadedFamilyOld(tChosenProject.id, tChosenVisit.id, tUncompletedFormularios));
     });
 
     test('''should save on the preloadedDataSource only the formularios
@@ -252,7 +252,7 @@ void _testSetChosenVisitGroup(){
       tEmptyFormularios.forEach((f) {
         verify(formulariosRemoteDataSource.getChosenFormulario(f.id, any));
       });
-      verify(preloadedDataSource.setPreloadedFamily(tChosenProject.id, tChosenVisit.id, tUncompletedFormularios));
+      verify(preloadedDataSource.setPreloadedFamilyOld(tChosenProject.id, tChosenVisit.id, tUncompletedFormularios));
     });
 
     test('''should save on the preloadedDataSource only when the remoteDataSource desn't throw an exception
@@ -279,7 +279,7 @@ void _testSetChosenVisitGroup(){
         verify(formulariosRemoteDataSource.getChosenFormulario(f.id, any));
       });
 
-      verify(preloadedDataSource.setPreloadedFamily(tChosenProject.id, tChosenVisit.id, tFormulariosWithoutExceptions));
+      verify(preloadedDataSource.setPreloadedFamilyOld(tChosenProject.id, tChosenVisit.id, tFormulariosWithoutExceptions));
     });
 
     test('should return Right(null) when all goes good', ()async{

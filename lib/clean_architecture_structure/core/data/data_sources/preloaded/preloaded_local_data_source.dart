@@ -1,9 +1,11 @@
+import 'package:gap/clean_architecture_structure/features/muestras/data/models/muestreo_model.dart';
 import 'package:meta/meta.dart';
 import 'package:gap/clean_architecture_structure/core/data/models/formulario/formulario_model.dart';
 import 'package:gap/clean_architecture_structure/core/platform/storage_connector.dart';
 
 abstract class PreloadedLocalDataSource{
-  Future<void> setPreloadedFamily(int projectId, int visitId, List<FormularioModel> formularios);
+  Future<void> setPreloadedFamilyOld(int projectId, int visitId, List<FormularioModel> formularios, [MuestreoModel muestreo, FormularioModel preFormulario, FormularioModel posFormulario]);
+  Future<void> setPreloadedFamily(int projectId, int visitId, List<FormularioModel> formularios, MuestreoModel muestreo);
   Future<List<int>> getPreloadedProjectsIds(); 
   Future<List<int>> getPreloadedVisitsIds(int projectId);
   Future<List<FormularioModel>> getPreloadedFormularios(int projectId, int visitId);
@@ -21,7 +23,7 @@ class PreloadedLocalDataSourceImpl implements PreloadedLocalDataSource{
   });
 
   @override
-  Future<void> setPreloadedFamily(int projectId, int visitId, List<FormularioModel> formularios)async{
+  Future<void> setPreloadedFamilyOld(int projectId, int visitId, List<FormularioModel> formularios, [MuestreoModel muestreo, FormularioModel preFormulario, FormularioModel posFormulario])async{
     Map<String, dynamic> preloadedData = (await storageConnector.getMap(PRELOADED_DATA_STORAGE_KEY) )??{};
     Map<String, dynamic> preloadedProject = preloadedData['$projectId']??{};
     List<Map<String, dynamic>> previousFormularios = (preloadedProject['$visitId']??[]).cast<Map<String, dynamic>>();
@@ -48,6 +50,12 @@ class PreloadedLocalDataSourceImpl implements PreloadedLocalDataSource{
         newProjectData[key] = value;
     });
     return newProjectData;
+  }
+
+  @override
+  Future<void> setPreloadedFamily(int projectId, int visitId, List<FormularioModel> formularios, MuestreoModel muestreo) {
+    // TODO: implement setPreloadedFamily
+    throw UnimplementedError();
   }
 
   @override

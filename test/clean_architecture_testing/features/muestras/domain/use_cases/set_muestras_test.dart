@@ -53,7 +53,7 @@ void main(){
 }
 
 Muestreo _getMuestrasFromFixture(){
-  String stringMuestra = callFixture('muestra.json');
+  String stringMuestra = callFixture('muestreo.json');
   Map<String, dynamic> jsonMuestra = jsonDecode(stringMuestra);
   return MuestreoModel.fromJson(jsonMuestra);
 }

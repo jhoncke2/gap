@@ -5,6 +5,10 @@ List<RangoModel> rangosFromJson(List<Map<String, dynamic>> json) => json.map(
   (rM) => RangoModel.fromJson(rM)
 ).toList();
 
+List<Map<String, dynamic>> rangosToJson(List<RangoModel> rangos) => rangos.map(
+  (r) => r.toJson()
+).toList();
+
 class RangoModel extends Rango{
   RangoModel({
     @required int id,
@@ -27,6 +31,13 @@ class RangoModel extends Rango{
     ).toList() ).cast<double>(),
     completo: json['completo']??false
   );
+
+  Map<String, dynamic> toJson() => {
+    'id': this.id,
+    'name': this.nombre,
+    'pesos_esperados': this.pesosEsperados,
+    'completo': this.completo
+  };
 
   @override
   RangoModel copyWith({

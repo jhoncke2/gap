@@ -10,10 +10,6 @@ Muestreo fakeMuestreo = Muestreo(
     RangoModel(id: 1, nombre: '5-8 años', pesosEsperados: [20.0, 40.0, 100.0], completo: false),
     RangoModel(id: 2, nombre: '9-12 años', pesosEsperados: [30.0, 65.0, 125.0], completo: false)
   ],
-  pesosEsperadosPorRango: [
-    [20.0, 40.0, 100.0],
-    [30.0, 65.0, 125.0]
-  ],
   stringRangos: ['5-8 años', '9-12 años'], 
   componentes: [
     Componente(
@@ -35,6 +31,6 @@ Muestreo fakeMuestreo = Muestreo(
   minMuestras: 1,
   maxMuestras: 3,
   nMuestras: 0,
-  formularioInicialId: 1,
-  formularioFinalId: 2
+  preFormulario: null,
+  posFormulario: null,
 );

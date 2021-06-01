@@ -16,7 +16,6 @@ import 'package:gap/clean_architecture_structure/features/muestras/data/data_sou
 import 'package:gap/clean_architecture_structure/features/muestras/data/models/muestreo_model.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/data/repository/muestras_repository.dart';
 import '../../../../fixtures/fixture_reader.dart';
-import '../../../visits/presentation/bloc/visits_bloc_test.dart';
 
 class MockNetworkInfo extends Mock implements NetworkInfo{}
 class MockMuestrasRemoteDataSource extends Mock implements MuestrasRemoteDataSource{}
@@ -389,12 +388,16 @@ void main(){
     String tAccessToken;
     ProjectModel tChosenProject;
     VisitModel tChosenVisit;
+    int tMuestreoId;
     FormularioModel tFormulario;
+    String tFormularioTipo;
     setUp((){
       tAccessToken = 'access_token';
       tChosenProject = _getProjectFromFixture();
       tChosenVisit = _getVisitFromFixture();
+      tMuestreoId = 1;
       tFormulario = _getFormularioFromxFixture();
+      tFormularioTipo = 'Pre';
       when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tChosenProject);
       when(visitsLocalDataSource.getChosenVisit(any)).thenAnswer((_) async => tChosenVisit);
     });
@@ -402,20 +405,16 @@ void main(){
     test('should call the specified remoteDataSource method', ()async{
       when(networkInfo.isConnected()).thenAnswer((_) async => true);
       when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
-      await repository.setFormulario(tFormulario);
+      await repository.setFormulario(tMuestreoId, tFormulario, tFormularioTipo);
       verify(networkInfo.isConnected());
-      verify(projectsLocalDataSource.getChosenProject());
-      verify(visitsLocalDataSource.getChosenVisit(tChosenProject.id));      
       verify(userLocalDataSource.getAccessToken());
-      verify(formulariosRemoteDataSource.setCampos(tFormulario, tChosenVisit.id, tAccessToken));
+      verify(remoteDataSource.setFormulario(tAccessToken, tMuestreoId, tFormulario, tFormularioTipo));
     });
 
     test('should do nothing when there is not connectivity', ()async{
       when(networkInfo.isConnected()).thenAnswer((_) async => false);
-      await repository.setFormulario(tFormulario);
+      await repository.setFormulario(tMuestreoId, tFormulario, tFormularioTipo);
       verify(networkInfo.isConnected());
-      verifyNever(projectsLocalDataSource.getChosenProject());
-      verifyNever(visitsLocalDataSource.getChosenVisit(tChosenProject.id));      
       verifyNever(userLocalDataSource.getAccessToken());
       verifyNever(formulariosRemoteDataSource.setCampos(tFormulario, tChosenVisit.id, tAccessToken));
     });
@@ -423,7 +422,7 @@ void main(){
     test('should return Right(tFormulario) when there is connectivity and all goes good', ()async{
       when(networkInfo.isConnected()).thenAnswer((_) async => true);
       when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
-      final result = await repository.setFormulario(tFormulario);
+      final result = await repository.setFormulario(tMuestreoId, tFormulario, tFormularioTipo);
       expect(result, Right(null));
     });
 
@@ -431,17 +430,9 @@ void main(){
     and remoteDataSource throws a ServerException(x)''', ()async{
       when(networkInfo.isConnected()).thenAnswer((_) async => true);
       when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
-      when(formulariosRemoteDataSource.setCampos(any, any, any)).thenThrow(ServerException(type: ServerExceptionType.REFRESH_ACCESS_TOKEN));
-      final result = await repository.setFormulario(tFormulario);
+      when(remoteDataSource.setFormulario(any, any, any, any)).thenThrow(ServerException(type: ServerExceptionType.REFRESH_ACCESS_TOKEN));
+      final result = await repository.setFormulario(tMuestreoId, tFormulario, tFormularioTipo);
       expect(result, Left(ServerFailure(servExcType: ServerExceptionType.REFRESH_ACCESS_TOKEN)));
-    });
-
-    test('''should return Left(StorageFailure(x)) when there is connectivity 
-    and localDataSource throws a StorageException(x)''', ()async{
-      when(networkInfo.isConnected()).thenAnswer((_) async => true);
-      when(userLocalDataSource.getAccessToken()).thenThrow(StorageException(type: StorageExceptionType.PLATFORM));
-      final result = await repository.setFormulario(tFormulario);
-      expect(result, Left(StorageFailure(excType: StorageExceptionType.PLATFORM)));
     });
   });
 }
@@ -459,7 +450,7 @@ VisitModel _getVisitFromFixture(){
 }
 
 MuestreoModel _getMuestreoFromFixture(){
-  final String stringM = callFixture('muestra.json');
+  final String stringM = callFixture('muestreo.json');
   final Map<String, dynamic> jsonM = jsonDecode(stringM);
   return MuestreoModel.fromJson(jsonM);
 }

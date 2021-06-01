@@ -1,0 +1,83 @@
+{
+    "tipo":"tipo_muestra_1",
+    "string_rangos":["rango1", "rango2", "rango3"],
+    "componentes":["lácteos", "dulces", "principio"],
+    "rangos":[
+        {
+            "id":1,
+            "rango":"rango_1",
+            "pesos_esperados":[1, 2, 3]
+        },
+        {
+            "id":2,
+            "rango":"rango_2",
+            "pesos_esperados":[4, 5, 6]
+        },
+        {
+            "id":3,
+            "rango":"rango_3",
+            "pesos_esperados":[7, 8, 9]
+        }
+    ],
+    "pesos_esperados":[
+        [1, 2, 3],
+        [4, 5, 6],
+        [7, 8, 9]
+    ],
+    "n_muestreos":[1,2,0],
+    "obligatorio":true,
+    "muestras":[
+        {
+            "id":1,
+            "rango":"rango1",
+            "resultados":[10, 11, 12]
+        },
+        {
+            "id":2,
+            "rango":"rango3",
+            "resultados":[19, 21, 22]
+        }
+    ],
+    "pre_formulario": {
+        "completo": false,
+        "campos": [
+            {
+                "type": "time",
+                "required": false,
+                "label": "Campo de tiempo",
+                "className": "form-control",
+                "name": "time-1621530429735",
+                "access": false
+            },
+            {
+                "type": "date",
+                "required": false,
+                "label": "Campo de Fecha",
+                "className": "form-control",
+                "name": "date-1621530430558",
+                "access": false
+            }
+        ]
+    },
+    "pos_formulario": {
+        "completo": false,
+        "campos": [
+            {
+                "type": "date",
+                "required": false,
+                "label": "Campo de Fecha",
+                "className": "form-control",
+                "name": "date-1621529183930",
+                "access": false
+            },
+            {
+                "type": "number",
+                "required": false,
+                "label": "Número",
+                "className": "form-control",
+                "name": "number-1621529187799",
+                "access": false
+            }
+        ]
+    }
+}

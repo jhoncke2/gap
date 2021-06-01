@@ -67,7 +67,7 @@ class VisitsRepositoryImpl implements VisitsRepository{
         final String accessToken = await userLocalDataSource.getAccessToken();
         final List<FormularioModel> emptyVisitFormularios = await formulariosRemoteDataSource.getFormularios(visit.id, accessToken);
         final List<FormularioModel> visitFormularios = await _getNotEmptyFormulariosFromRemoteDataSource(emptyVisitFormularios, accessToken);
-        await preloadedDataSource.setPreloadedFamily(chosenProject.id, visit.id, visitFormularios);
+        await preloadedDataSource.setPreloadedFamilyOld(chosenProject.id, visit.id, visitFormularios);
       }
       return Right(null);
     }on StorageException catch(exception){

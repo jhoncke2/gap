@@ -23,6 +23,8 @@ part 'muestras_state.dart';
 class MuestrasBloc extends Bloc<MuestrasEvent, MuestrasState>{
   static const GENERAL_ERROR_MESSAGE = 'Ha ocurrido un error';
   static const FORMAT_PESOS_ERROR = 'Hay un problema con el formato de los pesos';
+  static const PRE_FORMULARIO_TYPE = 'Pre';
+  static const POS_FORMULARIO_TYPE = 'Pos';
 
   final GetMuestras getMuestras;
   final SetMuestra setMuestra;
@@ -52,12 +54,10 @@ class MuestrasBloc extends Bloc<MuestrasEvent, MuestrasState>{
       yield * _initMuestreo();
     }else if(event is EndInitialFormulario){
       yield * _endInitialFormulario(event);
-    }else if(event is EndTomaMuestras){
-      yield * _endTomaMuestras();
-    }else if(event is GoToNextMuestreoStep){
-      yield * _goToNextMuestreoStep();
     }else if(event is InitTomaMuestras){
       yield * _initTomaMuestras();
+    }else if(event is EndTomaMuestras){
+      yield * _endTomaMuestras();
     }else if(event is SetMuestreoPreparaciones){
       yield * _setMuestreoPreparaciones(event);
     }else if(event is ChooseRangosAUsar){
@@ -88,11 +88,11 @@ class MuestrasBloc extends Bloc<MuestrasEvent, MuestrasState>{
       String message = (failure is ServerFailure)? failure.message : GENERAL_ERROR_MESSAGE;
       yield MuestraError(message: message);
     }, (muestreo)async*{
-      if(muestreo.formularioInicialId != null){
+      if(muestreo.preFormulario != null){
         yield * _loadFormularioInicial(muestreo);
       }else if(muestreo.componentes != null && muestreo.componentes.length > 0){
         yield * _initMuestrasProcess(muestreo);
-      }else if(muestreo.formularioFinalId != null){
+      }else if(muestreo.posFormulario != null){
         yield * _loadFormularioFinal(muestreo);
       }else{
         yield MuestreoFinished(muestreo: muestreo);
@@ -102,21 +102,16 @@ class MuestrasBloc extends Bloc<MuestrasEvent, MuestrasState>{
 
   Stream<MuestrasState> _loadFormularioInicial(Muestreo muestreo)async*{
     yield LoadingFormulario();
-    final eitherFormulario = await getFormulario(MuestreoFormularioParams(formularioId: muestreo.formularioInicialId));
-    yield * eitherFormulario.fold((l)async*{
-      //TODO: Implementar manejo de errores
-    }, (formulario)async*{
-      yield LoadedInitialFormulario(formulario: formulario, muestreo: muestreo);
-    });
+    yield LoadedInitialFormulario(formulario: muestreo.preFormulario, muestreo: muestreo);
   }
   
   Stream<MuestrasState> _endInitialFormulario(EndInitialFormulario event)async*{
     final Muestreo muestreo = (state as LoadedMuestreo).muestreo;
     yield LoadingFormulario();
-    await saveFormulario(SaveFormularioParams(formulario: event.formulario));
+    await saveFormulario(SaveFormularioParams( muestreoId: muestreo.id, formulario: event.formulario, formularioType: PRE_FORMULARIO_TYPE));
     if(muestreo.componentes != null && muestreo.componentes.length > 0){
       yield * _initMuestrasProcess(muestreo);
-    }else if (muestreo.formularioFinalId != null)
+    }else if (muestreo.posFormulario != null)
       yield * _loadFormularioFinal(muestreo);
     else
       yield MuestreoFinished(muestreo: muestreo);
@@ -124,25 +119,10 @@ class MuestrasBloc extends Bloc<MuestrasEvent, MuestrasState>{
 
   Stream<MuestrasState> _endTomaMuestras()async*{
     final Muestreo muestreo = (state as LoadedMuestreo).muestreo;
-    if (muestreo.formularioFinalId != null)
+    if (muestreo.posFormulario != null)
       yield * _loadFormularioFinal(muestreo);
     else
       yield MuestreoFinished(muestreo: muestreo);
-  }
-
-  Stream<MuestrasState> _goToNextMuestreoStep()async*{
-    final Muestreo muestreo = (state as LoadedMuestreo).muestreo;
-    if(state is LoadedInitialFormulario){
-      if(muestreo.componentes != null && muestreo.componentes.length > 0){
-        Formulario formulario = (state as LoadedInitialFormulario).formulario;
-        await saveFormulario(SaveFormularioParams(formulario: formulario));
-        yield * _initMuestrasProcess(muestreo);
-      }
-      else
-        yield * _loadFormularioFinal(muestreo);
-    }else{
-      yield MuestreoFinished(muestreo: muestreo);
-    }
   }
 
   Stream<MuestrasState> _initMuestrasProcess(Muestreo muestreo)async*{
@@ -154,25 +134,7 @@ class MuestrasBloc extends Bloc<MuestrasEvent, MuestrasState>{
 
   Stream<MuestrasState> _loadFormularioFinal(Muestreo muestreo)async*{
     yield LoadingFormulario();
-    final eitherFormulario = await getFormulario(MuestreoFormularioParams(formularioId: muestreo.formularioFinalId));
-    yield * eitherFormulario.fold((l)async * {
-      //TODO: Implementar manejo de errores
-    }, (formulario)async * {
-      yield LoadedFinalFormulario(formulario: formulario, muestreo: muestreo);
-    });
-  }
-
-  Stream<MuestrasState> _loadInitialFormulario()async*{
-    final Muestreo muestreo = (state as LoadedMuestreo).muestreo;
-    yield LoadingFormulario();
-    final eitherInitialFormulario = await getFormulario(
-      MuestreoFormularioParams(formularioId: (state as LoadedMuestreo).muestreo.formularioInicialId)
-    );
-    yield * eitherInitialFormulario.fold((l)async*{
-
-    }, (formulario)async*{
-      yield LoadedInitialFormulario(formulario: formulario, muestreo: muestreo);
-    });
+    yield LoadedFinalFormulario(formulario: muestreo.posFormulario, muestreo: muestreo);
   }
 
   Stream<MuestrasState> _initTomaMuestras()async*{
@@ -243,7 +205,7 @@ class MuestrasBloc extends Bloc<MuestrasEvent, MuestrasState>{
     yield OnEditingMuestra(
       muestra: event.muestra,
       indexMuestra: event.indexMuestra,
-      pesosEsperados: muestreo.pesosEsperadosPorRango[rangoIndex],
+      pesosEsperados: muestreo.rangos[rangoIndex].pesosEsperados,
       muestreo: muestreo
     );
   }
@@ -282,20 +244,7 @@ class MuestrasBloc extends Bloc<MuestrasEvent, MuestrasState>{
   Stream<MuestrasState> _endFinalFormulario(EndFinalFormulario event)async*{
     final Muestreo muestreo = (state as LoadedMuestreo).muestreo;
     yield LoadingFormulario();
-    await saveFormulario(SaveFormularioParams(formulario: event.formulario));
+    await saveFormulario(SaveFormularioParams(muestreoId: muestreo.id, formulario: event.formulario, formularioType: POS_FORMULARIO_TYPE));
     yield MuestreoFinished(muestreo: muestreo);
-  }
-
-  Stream<MuestrasState> _loadFinalFormulario()async*{
-    final Muestreo muestreo = (state as LoadedMuestreo).muestreo;
-    yield LoadingFormulario();
-    final eitherFinalFormulario = await getFormulario(
-      MuestreoFormularioParams(formularioId: (state as LoadedMuestreo).muestreo.formularioFinalId)
-    );
-    yield * eitherFinalFormulario.fold((l)async *{
-
-    }, (formulario)async *{
-      yield LoadedFinalFormulario(formulario: formulario, muestreo: muestreo);
-    });
   }
 }

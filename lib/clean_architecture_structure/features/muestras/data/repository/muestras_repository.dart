@@ -50,6 +50,22 @@ class MuestrasRepositoryImpl implements MuestrasRepository{
     return Right(null);
   }
 
+  //TODO: Quitar muestreoId cuando se haya implementado en el storage
+  @override
+  Future<Either<Failure, void>> setFormulario(int muestreoId, Formulario formulario, String tipo)async{
+    try{
+      if( await networkInfo.isConnected() ){
+        final String accessToken = await userLocalDataSource.getAccessToken();
+        await remoteDataSource.setFormulario(accessToken, muestreoId, formulario, tipo);
+        return Right(null);
+      }
+    }on StorageException catch(exception){
+      return Left(StorageFailure(excType: exception.type));
+    }on ServerException catch(exception){
+      return Left(ServerFailure(servExcType: exception.type));
+    }
+  }
+
   @override
   Future<Either<Failure, void>> setMuestra(int muestreoId, int selectedRangoId, List<double> pesosTomados)async{
     try{
@@ -102,23 +118,6 @@ class MuestrasRepositoryImpl implements MuestrasRepository{
         final String accessToken = await userLocalDataSource.getAccessToken();
         final Formulario formulario = await formulariosRemoteDataSource.getChosenFormulario(formularioId, accessToken);
         return Right(formulario);
-      }
-    }on StorageException catch(exception){
-      return Left(StorageFailure(excType: exception.type));
-    }on ServerException catch(exception){
-      return Left(ServerFailure(servExcType: exception.type));
-    }
-  }
-
-  @override
-  Future<Either<Failure, void>> setFormulario(Formulario formulario)async{
-    try{
-      if( await networkInfo.isConnected() ){
-        final int chosenProjectId = (await projectsLocalDataSource.getChosenProject() ).id;
-        final int chosenVisitId = (await visitsLocalDataSource.getChosenVisit(chosenProjectId) ).id;
-        final String accessToken = await userLocalDataSource.getAccessToken();
-        await formulariosRemoteDataSource.setCampos(formulario, chosenVisitId, accessToken);
-        return Right(null);
       }
     }on StorageException catch(exception){
       return Left(StorageFailure(excType: exception.type));

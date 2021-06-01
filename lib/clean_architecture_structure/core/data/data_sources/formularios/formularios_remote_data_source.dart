@@ -45,19 +45,6 @@ class FormulariosRemoteDataSourceImpl extends RemoteDataSourceWithMultiPartReque
       final List<Map<String, dynamic>> jsonFormularios = jsonDecode(response.body).cast<Map<String, dynamic>>();
       return formulariosFromJson(jsonFormularios);
     });
-    /*
-    return await _executeService(()async{
-      final response = await client.get(
-        getUri('${super.BASE_PANEL_UNCODED_PATH}$FORMULARIOS_URL$visitId'),
-        //Uri.http(super.BASE_URL, '${super.BASE_PANEL_UNCODED_PATH}$FORMULARIOS_URL$visitId'),
-        headers: createAuthorizationJsonHeaders(accessToken)
-      );
-      if(response.statusCode != 200)
-        throw Exception();
-      final List<Map<String, dynamic>> jsonFormularios = jsonDecode(response.body).cast<Map<String, dynamic>>();
-      return formulariosFromJson(jsonFormularios);
-    });
-    */
   }
 
   @override

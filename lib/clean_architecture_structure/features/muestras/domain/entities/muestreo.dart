@@ -1,3 +1,4 @@
+import 'package:gap/clean_architecture_structure/core/domain/entities/formulario/formulario.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/muestra.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/rango.dart';
 import 'package:meta/meta.dart';
@@ -10,30 +11,28 @@ class Muestreo extends Equatable{
   final String tipo;
   final bool obligatorio;
   final List<String> stringRangos;
-  final List<List<double>> pesosEsperadosPorRango;
   final List<Componente> componentes;
   final List<Muestra> muestrasTomadas;
   final List<Rango> rangos;
   final int minMuestras;
   final int maxMuestras;
   final int nMuestras;
-  final int formularioInicialId;
-  final int formularioFinalId;
+  final Formulario preFormulario;
+  final Formulario posFormulario;
 
   Muestreo({
     @required this.id,
     @required this.tipo,
     @required this.obligatorio,
     @required this.stringRangos,
-    @required this.pesosEsperadosPorRango,
     @required this.componentes,
     @required this.muestrasTomadas,
     @required this.rangos,
     @required this.minMuestras,
     @required this.maxMuestras,    
     @required this.nMuestras,
-    @required this.formularioInicialId,
-    @required this.formularioFinalId  
+    @required this.preFormulario,
+    @required this.posFormulario
   });
 
   // ignore: missing_return
@@ -48,11 +47,10 @@ class Muestreo extends Equatable{
     this.tipo,
     this.obligatorio,
     this.stringRangos,
-    this.pesosEsperadosPorRango,
     this.componentes, 
     this.muestrasTomadas, 
     this.nMuestras, 
-    this.formularioInicialId, 
-    this.formularioFinalId
+    this.preFormulario,
+    this.posFormulario
   ];
 }
