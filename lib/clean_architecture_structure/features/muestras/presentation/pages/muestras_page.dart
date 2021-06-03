@@ -44,7 +44,7 @@ class MuestrasPage extends StatelessWidget {
           children: [
             PageHeader(
               withTitle: (state is LoadedMuestreo),
-              title: (state is LoadedMuestreo)? '${state.muestreo.tipo}': 'Muestra',
+              title: _getHeaderNameByMuestrasState(state),
               titleIsUnderlined: false,
             ),
             SizedBox(height: sizeUtils.xasisSobreYasis * 0.05),
@@ -56,6 +56,13 @@ class MuestrasPage extends StatelessWidget {
       },
     );
   }
+
+  String _getHeaderNameByMuestrasState(MuestrasState state) => 
+    (state is LoadedFormulario)? 
+      '${state.formulario.name}' 
+      : (state is LoadedMuestreo)? 
+        '${state.muestreo.tipo}'
+        : 'Muestra';
 
   Widget _createBlocBuilderBottom(BuildContext context, MuestrasState state){
     if(state is OnMuestreoEmpty){

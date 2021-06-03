@@ -136,6 +136,13 @@ class PagesNavigationManager{
     await customNavigator.navigateReplacingTo((await navLocalDataSource.getNavRoutes()).last);
   }
 
+  static Future<void> endForms()async{
+    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.RESET_FORMS);
+    await navLocalDataSource.removeLast();
+    await navLocalDataSource.removeLast();
+    await customNavigator.navigateReplacingTo((await navLocalDataSource.getNavRoutes()).last);
+  }
+
   static Future<void> navToCommentedImages()async{ 
     await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_COMMENTED_IMAGES);
     await _goToPageByHavingOrNotError(NavigationRoute.AdjuntarFotosVisita, false);

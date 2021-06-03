@@ -6,6 +6,7 @@ import 'package:gap/clean_architecture_structure/features/muestras/domain/entiti
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/bloc/muestras_bloc.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
 
+// ignore: must_be_immutable
 class EleccionTomaOFinalizar extends StatelessWidget {
   final SizeUtils sizeUtils = SizeUtils();
   final Muestreo muestreo;
@@ -144,15 +145,6 @@ class MuestrasHechas extends StatelessWidget {
         ),
         onPressed: (){
           BlocProvider.of<MuestrasBloc>(context).add(ChooseMuestra(muestra: muestra));
-          /*
-          showDialog(
-            context: context, 
-            builder: (_)=>Dialog(
-              child: MuestraDetail(),
-            ),
-            useRootNavigator: false
-          );
-          */
         },
       ),
       decoration: BoxDecoration(

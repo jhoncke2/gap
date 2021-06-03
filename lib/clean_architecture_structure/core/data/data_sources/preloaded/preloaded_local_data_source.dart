@@ -1,11 +1,12 @@
+import 'package:gap/clean_architecture_structure/core/data/data_sources/preloaded/preloaded_data_model.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/data/models/muestreo_model.dart';
 import 'package:meta/meta.dart';
 import 'package:gap/clean_architecture_structure/core/data/models/formulario/formulario_model.dart';
 import 'package:gap/clean_architecture_structure/core/platform/storage_connector.dart';
 
 abstract class PreloadedLocalDataSource{
-  Future<void> setPreloadedFamilyOld(int projectId, int visitId, List<FormularioModel> formularios, [MuestreoModel muestreo, FormularioModel preFormulario, FormularioModel posFormulario]);
   Future<void> setPreloadedFamily(int projectId, int visitId, List<FormularioModel> formularios, MuestreoModel muestreo);
+  Future<void> setPreloadedFamilyOld(int projectId, int visitId, List<FormularioModel> formularios, [MuestreoModel muestreo, FormularioModel preFormulario, FormularioModel posFormulario]);
   Future<List<int>> getPreloadedProjectsIds(); 
   Future<List<int>> getPreloadedVisitsIds(int projectId);
   Future<List<FormularioModel>> getPreloadedFormularios(int projectId, int visitId);
@@ -21,6 +22,14 @@ class PreloadedLocalDataSourceImpl implements PreloadedLocalDataSource{
   PreloadedLocalDataSourceImpl({
     @required this.storageConnector
   });
+
+  @override
+  Future<void> setPreloadedFamily(int projectId, int visitId, List<FormularioModel> formularios, MuestreoModel muestreo)async{
+    final Map<String, dynamic> jsonPreloadedData = await storageConnector.getMap(PRELOADED_DATA_STORAGE_KEY);
+    final PreloadedDataModel preloadedData = PreloadedDataModel.fromJson(jsonPreloadedData);
+    preloadedData.setVisitData(projectId, visitId, formularios, muestreo);
+    await storageConnector.setMap(preloadedData.toJson(), PRELOADED_DATA_STORAGE_KEY);
+  }
 
   @override
   Future<void> setPreloadedFamilyOld(int projectId, int visitId, List<FormularioModel> formularios, [MuestreoModel muestreo, FormularioModel preFormulario, FormularioModel posFormulario])async{
@@ -52,11 +61,7 @@ class PreloadedLocalDataSourceImpl implements PreloadedLocalDataSource{
     return newProjectData;
   }
 
-  @override
-  Future<void> setPreloadedFamily(int projectId, int visitId, List<FormularioModel> formularios, MuestreoModel muestreo) {
-    // TODO: implement setPreloadedFamily
-    throw UnimplementedError();
-  }
+  
 
   @override
   Future<List<int>> getPreloadedProjectsIds()async{

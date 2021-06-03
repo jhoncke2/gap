@@ -1,4 +1,5 @@
 import 'package:gap/clean_architecture_structure/core/data/models/formulario/formulario_model.dart';
+import 'package:gap/clean_architecture_structure/core/domain/entities/formulario/formulario.dart';
 
 import 'muestra_model.dart';
 import 'componente_model.dart';
@@ -48,13 +49,13 @@ class MuestreoModel extends Muestreo{
     minMuestras: json['n_muestreos'][0],
     maxMuestras: json['n_muestreos'][1],
     nMuestras: ( json['muestras']??[] ).length,
-    preFormulario: json['pre_formulario'] == null? null : _getFormularioFromCampos( json['pre_formulario'], 'Pre' ),
-    posFormulario: json['pos_formulario'] == null? null : _getFormularioFromCampos( json['pos_formulario'], 'Pos' )
+    preFormulario: json['pre_formulario'] == null? null : _getFormularioFromCampos( json['pre_formulario'] ),
+    posFormulario: json['pos_formulario'] == null? null : _getFormularioFromCampos( json['pos_formulario'] )
   );
 
-  static FormularioModel _getFormularioFromCampos(Map<String, dynamic> jsonFormulario, String tipoFormulario){
+  static FormularioModel _getFormularioFromCampos(Map<String, dynamic> jsonFormulario){
     FormularioModel formularioModel = FormularioModel.fromJson( jsonFormulario );
-    formularioModel.name = '$tipoFormulario formulario';
+    formularioModel.name = jsonFormulario['nombre'];
     return formularioModel;
   }
 
@@ -70,7 +71,9 @@ class MuestreoModel extends Muestreo{
   @override
   Muestreo copyWith({
     int nMuestras,
-    List<Rango> rangos
+    List<Rango> rangos,
+    Formulario preFormulario,
+    Formulario posFormulario
   })=>MuestreoModel(
     id: this.id,    
     tipo: this.tipo,
@@ -82,7 +85,7 @@ class MuestreoModel extends Muestreo{
     minMuestras: this.minMuestras,
     maxMuestras: this.maxMuestras,
     nMuestras: nMuestras ?? this.nMuestras,
-    preFormulario: this.preFormulario,
-    posFormulario: this.posFormulario
+    preFormulario: preFormulario ?? this.preFormulario,
+    posFormulario: posFormulario ?? this.posFormulario
   );
 }

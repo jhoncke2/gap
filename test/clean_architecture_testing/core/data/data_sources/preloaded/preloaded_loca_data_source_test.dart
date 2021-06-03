@@ -1,11 +1,10 @@
 import 'dart:convert';
-
+import 'package:mockito/mockito.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:gap/clean_architecture_structure/core/platform/storage_connector.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/preloaded/preloaded_local_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/models/formulario/formulario_model.dart';
-import 'package:gap/clean_architecture_structure/core/platform/storage_connector.dart';
-import 'package:mockito/mockito.dart';
-
+import 'package:gap/clean_architecture_structure/features/muestras/data/models/muestreo_model.dart';
 import '../../../../fixtures/fixture_reader.dart';
 
 class MockStorageConnector extends Mock implements StorageConnector{}
@@ -18,7 +17,6 @@ void main(){
     storageConnector = MockStorageConnector();
     preloadedLocalDataSource = PreloadedLocalDataSourceImpl(storageConnector: storageConnector);
   });
-
   _testSetPreloadedFamilyGroup();
   _testGetPreloadedProjectsIdsGroup();
   _testGetPreloadedVisitsIdsGroup();
@@ -26,70 +24,39 @@ void main(){
   _testUpdatePreloadedFormularioGroup();
   _testRemovePreloadedFormularioGroup();
   _testDeleteAllGroup();
-  
-  
 }
 
 void _testSetPreloadedFamilyGroup(){
+
   group('setPreloadedFamily', (){
     int tPreloadedProjectId;
     int tPreloadedVisitId1;
-    int tPreloadedVisitId2;
     List<FormularioModel> tFormularios;
+    Map<String, dynamic> tEmptyPreloadedData;
     Map<String, dynamic> tPreloaded1Project1VisitAllForms;
-    Map<String, dynamic> tPreloaded1Project1Visit1Form;
-    Map<String, dynamic> tPreloaded1Project2VisitsWithForms;
-    Map<String, dynamic> tPreloaded1ProjectAndThe2ndVisitWithForms;
+    MuestreoModel tMuestreo;
 
     setUp((){
       tPreloadedProjectId = 1;
       tPreloadedVisitId1 = 2;
-      tPreloadedVisitId2 = 3;
       tFormularios = _getFormulariosFromFixtures();
+      tMuestreo = _getMuestreoFromFixtures();
+      tEmptyPreloadedData = {};
       tPreloaded1Project1VisitAllForms = {
         '$tPreloadedProjectId': {
-          '$tPreloadedVisitId1': formulariosToJson(tFormularios)
-        }
-      };
-      tPreloaded1Project1Visit1Form = {
-        '$tPreloadedProjectId': {
-          '$tPreloadedVisitId1': formulariosToJson(tFormularios.where((f) => !f.completo).toList())
-        }
-      };
-      tPreloaded1Project2VisitsWithForms = {
-        '$tPreloadedProjectId':{
-          '$tPreloadedVisitId1': formulariosToJson(tFormularios.where((f) => !f.completo).toList()),
-          '$tPreloadedVisitId2': formulariosToJson(tFormularios.where((f) => !f.completo).toList())
-        }
-      };
-      tPreloaded1ProjectAndThe2ndVisitWithForms = {
-        '$tPreloadedProjectId':{
-          '$tPreloadedVisitId2': formulariosToJson(tFormularios.where((f) => !f.completo).toList())
+          '$tPreloadedVisitId1': {
+            'formularios': formulariosToJson(tFormularios),
+            'muestreo': tMuestreo.toJson()
+          }
         }
       };
     });
 
-    test('should set a preloaded family on a empty storage successfuly', ()async{
-      await preloadedLocalDataSource.setPreloadedFamilyOld(tPreloadedProjectId, tPreloadedVisitId1, tFormularios);
+    test('should add all to the storageConnector when all goes good and there is not preloaded data', ()async{
+      when(storageConnector.getMap(any)).thenAnswer((_) async => tEmptyPreloadedData);
+      await preloadedLocalDataSource.setPreloadedFamily(tPreloadedProjectId, tPreloadedVisitId1, tFormularios, tMuestreo);
       verify(storageConnector.getMap(PreloadedLocalDataSourceImpl.PRELOADED_DATA_STORAGE_KEY));
-      verify(storageConnector.setMap(tPreloaded1Project1Visit1Form, PreloadedLocalDataSourceImpl.PRELOADED_DATA_STORAGE_KEY));
-    });
-
-    test('should delete 1 formulario because of it is completed, and leave alone the other one', ()async{
-      when(storageConnector.getMap(any)).thenAnswer((realInvocation) async => tPreloaded1Project1VisitAllForms);
-      await preloadedLocalDataSource.setPreloadedFamilyOld(tPreloadedProjectId, tPreloadedVisitId1, tFormularios);
-      verify(storageConnector.setMap(tPreloaded1Project1Visit1Form, PreloadedLocalDataSourceImpl.PRELOADED_DATA_STORAGE_KEY));
-    });
-
-    test('should delete the visit that is empty because of its formularios are all completed and removed', ()async{
-      when(storageConnector.getMap(any)).thenAnswer((realInvocation) async => tPreloaded1Project2VisitsWithForms );
-      List<FormularioModel> tCompletedFormularios = tFormularios.map((f){
-        Map<String, dynamic> jsonF = f.toJson();
-        jsonF['completo'] = true;
-        return FormularioModel.fromJson(jsonF);
-      }).toList();
-      await preloadedLocalDataSource.setPreloadedFamilyOld(tPreloadedProjectId, tPreloadedVisitId1, tCompletedFormularios);
-      verify(storageConnector.setMap(tPreloaded1ProjectAndThe2ndVisitWithForms, PreloadedLocalDataSourceImpl.PRELOADED_DATA_STORAGE_KEY));
+      verify(storageConnector.setMap(tPreloaded1Project1VisitAllForms, PreloadedLocalDataSourceImpl.PRELOADED_DATA_STORAGE_KEY));
     });
   });
 }
@@ -294,5 +261,8 @@ void _testDeleteAllGroup(){
   });
 }
 
-
-
+MuestreoModel _getMuestreoFromFixtures(){
+  final String sMuestreo = callFixture('muestreo.json');
+  final Map<String, dynamic> jMuestreo = jsonDecode(sMuestreo);
+  return MuestreoModel.fromJson(jMuestreo);
+}

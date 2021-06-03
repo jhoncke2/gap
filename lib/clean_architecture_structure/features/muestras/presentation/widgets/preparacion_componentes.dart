@@ -33,16 +33,19 @@ class _PreparacionComponentesState extends State<PreparacionComponentes> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      //color: Colors.grey.withOpacity(0.25),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          //_createComponenteAndPreparacionTable(),
-          _createTable(),
-          _createContinueButton()
-        ],
+    return SingleChildScrollView(
+      child: Container(
+        width: double.infinity,
+        height: MediaQuery.of(context).size.height * 0.8,
+        //color: Colors.grey.withOpacity(0.25),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            //_createComponenteAndPreparacionTable(),
+            _createTable(),
+            _createContinueButton()
+          ],
+        ),
       ),
     );
   }

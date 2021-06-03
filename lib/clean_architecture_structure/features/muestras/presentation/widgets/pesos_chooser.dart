@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/notifiers/keyboard_notifier.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/general_button.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/componente.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/muestreo.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/rango.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/bloc/muestras_bloc.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
+import 'package:provider/provider.dart';
+
+import '../../../../injection_container.dart';
 
 class PesosChooser extends StatefulWidget {
 
@@ -38,29 +42,52 @@ class _PesosChooserState extends State<PesosChooser> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-       child: Column(
-         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-         children: [
-           Padding(
-             padding: const EdgeInsets.only(top: 25),
-             child: Text(
-               'Rango de edad: ${widget.rangoEdad.nombre}',
-               style: TextStyle(
-                 fontSize: sizeUtils.subtitleSize
-               ),
-             ),
-           ),
-           _createTable(),
-           _createContinueButton(context)
-         ],
-       ),
+    return ChangeNotifierProvider<KeyboardNotifier>(
+      create: (_)=>sl()
+          ..sizePercentagesWithKeyboard = _defineWithKeyboardSizes()
+          ..sizePercentagesWithoutKeyboard = _defineWithoutKeyboardSizes(),
+      builder: (context, _){
+        final notifier = Provider.of<KeyboardNotifier>(context);
+        return Container(
+          height: notifier.sizePercentages['main_container_height'],
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).size.height * notifier.sizePercentages['top_padding']
+                ),
+                child: Text(
+                  'Rango de edad: ${widget.rangoEdad.nombre}',
+                  style: TextStyle(
+                    fontSize: sizeUtils.subtitleSize
+                  ),
+                ),
+              ),
+              _createTable(notifier.sizePercentages['table_height']),
+              _createContinueButton(context)
+            ],
+          ),
+        );
+      },
     );
   }
 
-  Widget _createTable(){
+  Map<String, double> _defineWithoutKeyboardSizes() => {
+    'main_container_height': 0.855,
+    'top_padding': 0.07,
+    'table_height': 0.5
+  };
+
+  Map<String, double> _defineWithKeyboardSizes() => {
+    'main_container_height': 0.625,
+    'top_padding': 0.02,
+    'table_height': 0.325
+  };
+
+  Widget _createTable(double heightPercentage){
     return Container(
-      height: MediaQuery.of(context).size.height * 0.5,
+      height: MediaQuery.of(context).size.height * heightPercentage,
       padding: EdgeInsets.symmetric(horizontal: 25),
       child: SingleChildScrollView(
         child: Table(

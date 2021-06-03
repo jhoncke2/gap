@@ -67,7 +67,7 @@ class NavigationListWithIconsOld extends NavigationList{
       final Map<String, dynamic> itemPart = navigationItemsParts[i];
       //Function navFunction = (i != 0 || visitHasMuestreo)? itemPart['nav_function']
         //: PagesNavigationManager.navToForms;
-      Function navFunction = (i == 0 && this.visitHasMuestreo)? PagesNavigationManager.navToMuestras : PagesNavigationManager.navToForms;
+      Function navFunction = (i == 0 && this.visitHasMuestreo)? PagesNavigationManager.navToMuestras : this.navigationItemsParts[i]['nav_function'];
       this.itemsFunctions.add(
         _generateFunctionByItemActivation(
           _navItemsActivation[i],

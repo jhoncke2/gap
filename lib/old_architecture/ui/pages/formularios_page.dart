@@ -12,6 +12,7 @@ import 'package:gap/old_architecture/ui/widgets/navigation_list/navigation_list_
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
 
 // ignore: must_be_immutable
+
 class FormulariosPageOld extends StatelessWidget {
   static final String route = 'formularios';
   final SizeUtils _sizeUtils = SizeUtils();
@@ -23,7 +24,9 @@ class FormulariosPageOld extends StatelessWidget {
           child: Column(
             children: [
               SizedBox(height:_sizeUtils.normalSizedBoxHeigh),
-              PageHeaderOld(),
+              PageHeaderOld(
+                onBackButtonTap: _onBack,
+              ),
               BlocBuilder<FormulariosOldBloc, FormulariosState>(
                 builder: (_, state) {
                   if(state.formsAreLoaded && !state.backing && !state.formsAreBlocked){
@@ -38,6 +41,10 @@ class FormulariosPageOld extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _onBack(){
+    PagesNavigationManager.endForms();
   }
 
   Widget _createContent(FormulariosState state){

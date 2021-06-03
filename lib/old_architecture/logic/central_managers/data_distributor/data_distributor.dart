@@ -488,6 +488,7 @@ abstract class DataDistributor{
   }
   
   Future updateCommentedImages()async{
+    indexB.add(ResetAllOfIndex());
     commImgsB.add(InitImagesCommenting());
     visitsB.add(ChangeChosenVisitBlocking(isBlocked: true));
     
@@ -605,15 +606,12 @@ abstract class DataDistributor{
 
   Future resetForms()async{
     formsB.add(ResetForms());
-    await updateVisits();
-    VisitOld chosenVisitOld = visitsB.state.chosenVisit;
-    final eitherVisits = await errorHandler.executeFunction<List<Visit>>(() => visitsRepository.getVisits());
-    eitherVisits.fold((failure){
-      //TODO: Implementar manejo de errores
-    }, (visits){
-      Visit chosenVisit = visits.singleWhere((v) => v.id == chosenVisitOld.id);
-      chosenVisitOld = VisitOld.fromNewVisit(chosenVisit);
-      updateChosenVisit(chosenVisitOld);
+    final eitherChosenVisit = await errorHandler.executeFunction<Visit>(() => visitsRepository.getChosenVisit( ));
+    await eitherChosenVisit.fold((l){
+      
+    }, (visit)async{
+      VisitOld chosenVisitOld = VisitOld.fromNewVisit(visit);
+      await updateChosenVisit(chosenVisitOld);
     });
   }
 

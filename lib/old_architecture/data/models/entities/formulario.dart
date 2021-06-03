@@ -36,9 +36,9 @@ class FormularioOld extends EntityWithStageOld {
     id: f.id,
     completo: f.completo,
     nombre: f.name,
-    campos: f.campos,
+    campos: f.campos, 
     date: f.initialDate,
-    firmers: f.firmers.map((f) => PersonalInformationOld(
+    firmers: f.firmers == null? [] : f.firmers.map((f) => PersonalInformationOld(
       id: f.id, 
       name: f.name, 
       identifDocumentType: f.identifDocumentType,

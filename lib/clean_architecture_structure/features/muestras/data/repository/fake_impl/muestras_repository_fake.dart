@@ -17,6 +17,7 @@ class MuestrasRepositoryFake implements MuestrasRepository{
   Future<Either<Failure, Muestreo>> getMuestreo()async{
     if(lastSettedMuestra != null){
       fakeMuestreo.muestrasTomadas.add(lastSettedMuestra);
+      fakeMuestreo = fakeMuestreo.copyWith(nMuestras: fakeMuestreo.nMuestras + 1);
       lastSettedMuestra = null;
     }
     return Right(fakeMuestreo);
@@ -26,7 +27,7 @@ class MuestrasRepositoryFake implements MuestrasRepository{
   Future<Either<Failure, void>> setMuestra(int muestreoId, int selectedRangoId, List<double> pesosTomados)async{
     lastSettedMuestra = MuestraModel(
       id: ++nSavedMuestras,
-      rango: '', 
+      rango: fakeMuestreo.rangos.singleWhere((r) => r.id == selectedRangoId).nombre, 
       pesos: pesosTomados
     );
     return Right(null);
@@ -55,8 +56,12 @@ class MuestrasRepositoryFake implements MuestrasRepository{
   }
 
   @override
-  Future<Either<Failure, void>> setFormulario(int muestreoId, Formulario formulario, String tipo) {
-    // TODO: implement setFormulario
-    throw UnimplementedError();
+  Future<Either<Failure, void>> setFormulario(int muestreoId, Formulario formulario, String tipo)async{
+    formulario.completo = true;
+    fakeMuestreo = fakeMuestreo.copyWith(
+      preFormulario: (tipo == 'Pre')? formulario : fakeMuestreo.preFormulario,
+      posFormulario: (tipo == 'Pos')? formulario : fakeMuestreo.preFormulario,
+    );
+    return Right(null);
   }
 }

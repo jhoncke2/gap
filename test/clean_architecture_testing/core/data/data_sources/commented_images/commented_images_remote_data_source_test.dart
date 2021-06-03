@@ -47,7 +47,7 @@ void main(){
       when(client.get(any, headers: anyNamed('headers'))).thenAnswer((_) async => http.Response(tStringCommImgs, 200));
       await remoteDataSource.getCommentedImages(tVisitId, tAccessToken);
       verify(client.get(
-        Uri.http(remoteDataSource.BASE_URL, '${remoteDataSource.BASE_PANEL_UNCODED_PATH}${CommentedImagesRemoteDataSourceImpl.COMM_IMGS_URL}$tVisitId'), 
+        Uri.https(remoteDataSource.BASE_URL, '${remoteDataSource.BASE_PANEL_UNCODED_PATH}${CommentedImagesRemoteDataSourceImpl.COMM_IMGS_URL}$tVisitId'), 
         headers: tHeaders
       ));
     });

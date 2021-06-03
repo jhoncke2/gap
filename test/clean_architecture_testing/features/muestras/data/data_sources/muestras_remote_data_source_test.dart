@@ -42,7 +42,7 @@ void main(){
       when(client.get(any, headers: anyNamed('headers'))).thenAnswer((_) async => http.Response(tStringMuestra, 200));
       await dataSource.getMuestreo(tAccessToken, tVisitId);
       verify(client.get(
-        Uri.http(dataSource.BASE_URL, '${dataSource.BASE_PANEL_UNCODED_PATH}${MuestrasRemoteDataSourceImpl.GET_MUESTREO_URL}$tVisitId'),
+        Uri.https(dataSource.BASE_URL, '${dataSource.BASE_PANEL_UNCODED_PATH}${MuestrasRemoteDataSourceImpl.GET_MUESTREO_URL}$tVisitId'),
         headers: tHeaders
       ));
     });
@@ -81,7 +81,7 @@ void main(){
       when(client.post(any, headers: anyNamed('headers'), body: anyNamed('body'))).thenAnswer((_) async => http.Response('{}', 200));
       await dataSource.updatePreparaciones(tAccessToken, tMuestreoId, tPreparaciones);
       verify(client.post(
-        Uri.http(dataSource.BASE_URL, '${dataSource.BASE_PANEL_UNCODED_PATH}${MuestrasRemoteDataSourceImpl.UPDATE_PREPARACIONES_URL}$tMuestreoId'),
+        Uri.https(dataSource.BASE_URL, '${dataSource.BASE_PANEL_UNCODED_PATH}${MuestrasRemoteDataSourceImpl.UPDATE_PREPARACIONES_URL}$tMuestreoId'),
         headers: tHeaders,
         body: jsonEncode(tBody)
       ));
@@ -125,7 +125,7 @@ void main(){
       when(client.post(any, headers: anyNamed('headers'), body: anyNamed('body'))).thenAnswer((_) async => http.Response('{}', 200));
       await dataSource.setMuestra(tAccessToken, tMuestreoId, tSelectedRangoId, tPesosTomados);
       verify(client.post(
-        Uri.http(dataSource.BASE_URL, '${dataSource.BASE_PANEL_UNCODED_PATH}${MuestrasRemoteDataSourceImpl.SET_MUESTRA_URL}$tMuestreoId'),
+        Uri.https(dataSource.BASE_URL, '${dataSource.BASE_PANEL_UNCODED_PATH}${MuestrasRemoteDataSourceImpl.SET_MUESTRA_URL}$tMuestreoId'),
         headers: tHeaders,
         body: jsonEncode( tBody )
       ));
@@ -152,7 +152,7 @@ void main(){
       when(client.delete(any, headers: anyNamed('headers'))).thenAnswer((_) async => http.Response('{}', 200));
       await dataSource.removeMuestra(tAccessToken, tMuestraId);
       verify(client.delete(
-        Uri.http(dataSource.BASE_URL, '${dataSource.BASE_PANEL_UNCODED_PATH}${MuestrasRemoteDataSourceImpl.REMOVE_MUESTRA_URL}$tMuestraId'),
+        Uri.https(dataSource.BASE_URL, '${dataSource.BASE_PANEL_UNCODED_PATH}${MuestrasRemoteDataSourceImpl.REMOVE_MUESTRA_URL}$tMuestraId'),
         headers: tHeaders
       ));
     });
@@ -185,7 +185,7 @@ void main(){
       when(client.post(any, headers: anyNamed('headers'), body: anyNamed('body'))).thenAnswer((_) async=> http.Response('{}', 200));
       await dataSource.setFormulario(tAccessToken, tMuestreoId, tFormulario, tFormularioType);
       verify(client.post(
-        Uri.http(dataSource.BASE_URL, '${dataSource.BASE_PANEL_UNCODED_PATH}${MuestrasRemoteDataSourceImpl.SET_FORMULARIO_URL}$tMuestreoId'),
+        Uri.https(dataSource.BASE_URL, '${dataSource.BASE_PANEL_UNCODED_PATH}${MuestrasRemoteDataSourceImpl.SET_FORMULARIO_URL}$tMuestreoId'),
         headers: tHeaders,
         body: jsonEncode( tBody )
       ));

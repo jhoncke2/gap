@@ -8,6 +8,7 @@ class PageHeaderOld extends StatelessWidget {
   final bool withTitle;
   final String title;
   final bool titleIsUnderlined;
+  final Function onBackButtonTap;
 
   BuildContext _context;
   SizeUtils _sizeUtils;
@@ -16,7 +17,8 @@ class PageHeaderOld extends StatelessWidget {
     this.showBackNavButton = true,
     this.withTitle = false,
     this.title,
-    this.titleIsUnderlined = true
+    this.titleIsUnderlined = true,
+    this.onBackButtonTap
   });
 
   @override
@@ -56,7 +58,7 @@ class PageHeaderOld extends StatelessWidget {
 
   Widget _elegirTopLeftElement(){
     if(showBackNavButton)
-      return AppBackButtonOld();
+      return AppBackButtonOld(onTap: this.onBackButtonTap);
     else
       return _createEmptyContainer();
   }

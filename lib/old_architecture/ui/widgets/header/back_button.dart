@@ -4,7 +4,8 @@ import 'package:gap/old_architecture/ui/utils/size_utils.dart';
 class AppBackButtonOld extends StatelessWidget {
   final SizeUtils _sizeUtils = SizeUtils();
   final bool withLeftMargin;
-  AppBackButtonOld({Key key, this.withLeftMargin = true}) : super(key: key);
+  final Function onTap;
+  AppBackButtonOld({Key key, this.withLeftMargin = true, this.onTap}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +17,7 @@ class AppBackButtonOld extends StatelessWidget {
         icon: Icon(
           Icons.arrow_back_ios
         ),
-        onPressed: (){
+        onPressed: this.onTap ?? (){
           PagesNavigationManager.pop();
         },
       ),

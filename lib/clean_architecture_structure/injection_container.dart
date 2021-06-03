@@ -1,11 +1,29 @@
 //sl: service locator
-import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/get_formulario.dart';
-import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/save_formulario.dart';
-import 'package:gap/clean_architecture_structure/features/visits/presentation/notifier/visits_change_notifier.dart';
 import 'package:get_it/get_it.dart';
 import 'core/network/network_info.dart';
 import 'package:http/http.dart' as http;
 import 'package:connectivity/connectivity.dart';
+import 'core/domain/use_cases/user/logout.dart';
+import 'core/data/repositories/index_repository.dart';
+import 'core/data/repositories/preloaded_repository.dart';
+import 'core/domain/repositories/index_repository.dart';
+import 'core/domain/repositories/preloaded_repository.dart';
+import 'core/domain/repositories/user_repository.dart';
+import 'core/domain/repositories/visits_repository.dart';
+import 'core/data/data_sources/user/user_local_data_source.dart';
+import 'core/data/data_sources/user/user_remote_data_source.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'core/data/data_sources/visits/visits_local_data_source.dart';
+import 'core/data/data_sources/visits/visits_remote_data_source.dart';
+import 'core/data/data_sources/navigation/navigation_local_data_source.dart';
+import 'package:gap/clean_architecture_structure/core/platform/custom_navigator.dart';
+import 'package:gap/clean_architecture_structure/core/domain/use_cases/user/login.dart';
+import 'package:gap/clean_architecture_structure/core/domain/use_cases/navigation/pop.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/utils/input_validator.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/notifiers/keyboard_notifier.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/get_formulario.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/save_formulario.dart';
+import 'package:gap/clean_architecture_structure/features/visits/presentation/notifier/visits_change_notifier.dart';
 import 'package:gap/clean_architecture_structure/core/domain/use_cases/use_case_error_handler.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/blocs/navigation/navigation_bloc.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/update_preparaciones.dart';
@@ -18,7 +36,6 @@ import 'package:gap/clean_architecture_structure/core/data/repositories/central_
 import 'package:gap/clean_architecture_structure/core/domain/repositories/central_system_repository.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/data/data_sources/muestras_remote_data_source.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/data/repository/muestras_repository.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/central_system/central_system_local_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/repositories/commented_images_repository.dart';
 import 'package:gap/clean_architecture_structure/core/data/repositories/formularios_repository.dart';
@@ -33,10 +50,6 @@ import 'package:gap/clean_architecture_structure/core/domain/repositories/projec
 import 'package:gap/clean_architecture_structure/core/domain/use_cases/navigation/go_replacing_all_to.dart';
 import 'package:gap/clean_architecture_structure/core/domain/use_cases/navigation/go_to.dart';
 import 'package:gap/clean_architecture_structure/core/domain/use_cases/navigation/go_to_last_route.dart';
-import 'package:gap/clean_architecture_structure/core/domain/use_cases/navigation/pop.dart';
-import 'package:gap/clean_architecture_structure/core/domain/use_cases/user/login.dart';
-import 'package:gap/clean_architecture_structure/core/platform/custom_navigator.dart';
-import 'package:gap/clean_architecture_structure/core/presentation/utils/input_validator.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/repositories/muestras_repository.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/get_muestras.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/set_muestra.dart';
@@ -44,18 +57,6 @@ import 'package:gap/clean_architecture_structure/features/muestras/presentation/
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/utils/string_to_double_converter.dart';
 import 'package:gap/clean_architecture_structure/features/projects/domain/use_cases/get_projects.dart';
 import 'package:gap/clean_architecture_structure/features/projects/presentation/bloc/projects_bloc.dart';
-import 'core/data/data_sources/navigation/navigation_local_data_source.dart';
-import 'core/data/data_sources/user/user_local_data_source.dart';
-import 'core/data/data_sources/user/user_remote_data_source.dart';
-import 'core/data/data_sources/visits/visits_local_data_source.dart';
-import 'core/data/data_sources/visits/visits_remote_data_source.dart';
-import 'core/data/repositories/index_repository.dart';
-import 'core/data/repositories/preloaded_repository.dart';
-import 'core/domain/repositories/index_repository.dart';
-import 'core/domain/repositories/preloaded_repository.dart';
-import 'core/domain/repositories/user_repository.dart';
-import 'core/domain/repositories/visits_repository.dart';
-import 'core/domain/use_cases/user/logout.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/commented_images/commented_images_remote_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/formularios/formularios_local_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/index/index_local_data_source.dart';
@@ -64,9 +65,9 @@ import 'package:gap/clean_architecture_structure/core/platform/storage_connector
 import 'core/data/data_sources/formularios/formularios_remote_data_source.dart';
 import 'core/data/data_sources/projects/projects_local_data_source.dart';
 import 'core/data/data_sources/projects/projects_remote_data_source.dart';
-import 'core/presentation/blocs/user/user_bloc.dart';
 import 'features/muestras/domain/use_cases/remove_muestra.dart';
 import 'features/visits/presentation/bloc/visits_bloc.dart';
+import 'core/presentation/blocs/user/user_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -149,10 +150,10 @@ void init()async{
   sl.registerLazySingleton(()=>GoToLastRoute(navigator: sl(), navRepository: sl()));
   sl.registerLazySingleton(()=>Login(userRepository: sl(), centralSystemRepository: sl(), errorHandler: sl()));
   sl.registerLazySingleton(()=>Logout(repository: sl(), errorHandler: sl()));
-  sl.registerLazySingleton(()=>GetMuestras(repository: sl()));
-  sl.registerLazySingleton(()=>SetMuestra(repository: sl()));
-  sl.registerLazySingleton(()=>UpdatePreparaciones(repository: sl()));
-  sl.registerLazySingleton(()=>RemoveMuestra(repository: sl()));
+  sl.registerLazySingleton(()=>GetMuestras(repository: sl(), errorHandler: sl()));
+  sl.registerLazySingleton(()=>SetMuestra(repository: sl(), errorHandler: sl()));
+  sl.registerLazySingleton(()=>UpdatePreparaciones(repository: sl(), errorHandler: sl()));
+  sl.registerLazySingleton(()=>RemoveMuestra(repository: sl(), errorHandler: sl()));
   sl.registerLazySingleton(()=>GetFormulario(repository: sl(), errorHandler: sl()));
   sl.registerLazySingleton(()=>SaveFormulario(repository: sl(), errorHandler: sl()));
 
@@ -178,6 +179,9 @@ void init()async{
     goReplacingAllTo: sl(), 
     pop: sl()
   ));
+
+  //change notifiers
+  sl.registerFactory(() => KeyboardNotifier());
 
 
   // ******************************* Features ***********************************
@@ -238,7 +242,6 @@ void init()async{
   sl.registerLazySingleton<CustomNavigator>(()=>
     CustomNavigatorImpl()
   );
-
 
   //**********External
   sl.registerLazySingleton(() => Connectivity());

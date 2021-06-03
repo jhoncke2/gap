@@ -38,7 +38,9 @@ class Muestreo extends Equatable{
   // ignore: missing_return
   Muestreo copyWith({
     List<Rango> rangos,
-    int nMuestras
+    int nMuestras,
+    Formulario preFormulario,
+    Formulario posFormulario
   }){}
 
   @override

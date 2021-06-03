@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gap/clean_architecture_structure/core/domain/entities/formulario/formulario.dart';
-import 'package:gap/clean_architecture_structure/core/presentation/widgets/general_button.dart';
-import 'package:gap/clean_architecture_structure/features/muestras/presentation/bloc/muestras_bloc.dart';
 import 'package:gap/old_architecture/data/models/entities/entities.dart';
-import 'package:gap/old_architecture/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/old_architecture/logic/bloc/widgets/index/index_bloc.dart';
 import 'package:gap/old_architecture/logic/blocs_manager/chosen_form_manager.dart';
+import 'package:gap/old_architecture/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/widgets/general_button.dart';
+import 'package:gap/clean_architecture_structure/core/domain/entities/formulario/formulario.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/notifiers/keyboard_notifier.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/presentation/bloc/muestras_bloc.dart';
 import 'package:gap/old_architecture/ui/pages/formulario_detail/forms/form_body/center_containers/form_fields_fraction.dart';
 import 'package:gap/old_architecture/ui/widgets/indexing/index_pagination.dart';
+import '../../../../injection_container.dart';
 
+// ignore: must_be_immutable
 class FormularioView extends StatelessWidget {
   final Formulario formulario;
   final Function(Formulario) onEnd;
@@ -24,39 +28,66 @@ class FormularioView extends StatelessWidget {
   Widget build(BuildContext context) {
     this.context = context;
     _addPostFrameConfig();
-    return SingleChildScrollView(
-      child: Container(
-        child: Center(child: BlocBuilder<IndexOldBloc, IndexState>(
+    return Container(
+      child: Center(
+        child: BlocBuilder<IndexOldBloc, IndexState>(
           builder: (context, state) {
-            if(state.nPages > 0){
-              return Column(
-                children: [
-                  FormInputsFraction(
-                    screenHeightPercent: 0.7,
-                    formFieldsAreEnabled: true,
-                  ),
-                  BottomFormNavigation(
-                    onTapMuestrasBlocEvent: onEnd,
-                    indexNPages: state.nPages,
-                    indexPage: state.currentIndexPage,
-                    sePuedeRetroceder: state.sePuedeRetroceder,
-                    sePuedeAvanzar: state.sePuedeAvanzar,
-                  )
-                ],
-              );
-            }
+            if(state.nPages > 0)
+              return _createWidgetWithIndex(state);
             return Container();
           },
-        )),
+        )
       ),
     );
   }
+  
+  Widget _createWidgetWithIndex(IndexState state){
+    return ChangeNotifierProvider<KeyboardNotifier>(
+      create: (_)=>sl()
+          ..sizePercentagesWithKeyboard = _defineWithKeyboardSizes()
+          ..sizePercentagesWithoutKeyboard = _defineWithoutKeyboardSizes(),
+      builder: (context, _){
+        final notifier = Provider.of<KeyboardNotifier>(context);
+        return Container(
+          height: MediaQuery.of(context).size.height * notifier.sizePercentages['main_container_height'],
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              FormInputsFraction(
+                screenHeightPercent: notifier.sizePercentages['form_fields_fraction_height'],
+                formFieldsAreEnabled: !formulario.completo,
+              ),
+              SizedBox(height: 10),
+              BottomFormNavigation(
+                onTapMuestrasBlocEvent: onEnd,
+                indexNPages: state.nPages,
+                indexPage: state.currentIndexPage,
+                sePuedeRetroceder: state.sePuedeRetroceder,
+                sePuedeAvanzar: state.sePuedeAvanzar,
+              )
+            ],
+          ),
+        );
+      }
+    );
+  }
+
+  Map<String, double> _defineWithoutKeyboardSizes() => {
+    'main_container_height': 0.855,
+    'form_fields_fraction_height': 0.675
+  };
+
+  Map<String, double> _defineWithKeyboardSizes() => {
+    'main_container_height': 0.625,
+    'form_fields_fraction_height': 0.375
+  };
 
   void _addPostFrameConfig() {
     //TODO: Cambiar cuando se haya implementado clean architecture
     BlocProvider.of<ChosenFormBloc>(context).add(InitFormFillingOut(
         formulario: FormularioOld.fromFormularioNew(this.formulario),
-        onEndEvent: _changeIndex));
+        onEndEvent: _changeIndex
+    ));
   }
 
   void _changeIndex(int nPages) {

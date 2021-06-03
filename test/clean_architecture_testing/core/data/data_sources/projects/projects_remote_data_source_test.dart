@@ -40,7 +40,7 @@ void main(){
       when(client.get(any, headers: anyNamed('headers'))).thenAnswer((realInvocation) async => http.Response(tStringProjects, 200));
       await remoteDataSource.getProjects(tAccessToken);
       verify(client.get(
-        Uri.http(remoteDataSource.BASE_URL, '${remoteDataSource.BASE_PANEL_UNCODED_PATH}${ProjectsRemoteDataSourceImpl.PROJECTS_API_URL}'),
+        Uri.https(remoteDataSource.BASE_URL, '${remoteDataSource.BASE_PANEL_UNCODED_PATH}${ProjectsRemoteDataSourceImpl.PROJECTS_API_URL}'),
         headers: tHeaders
       ));
     });
