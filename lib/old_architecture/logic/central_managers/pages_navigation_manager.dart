@@ -93,7 +93,7 @@ class PagesNavigationManager{
 
   static Future _updateForm(FormularioOld formulario)async{
     await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_CHOSEN_FORM, formulario);
-    await _goToPageByHavingOrNotError(NavigationRoute.FormularioDetailForms, false);
+    await _goToPageByHavingOrNotError(NavigationRoute.FormularioDetail, false);
   }
 
   static Future _goToAppSetings(BuildContext context, String message)async{

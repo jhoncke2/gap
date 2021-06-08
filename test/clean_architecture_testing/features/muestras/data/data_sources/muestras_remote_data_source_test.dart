@@ -34,7 +34,7 @@ void main(){
       tVisitId = 1;
       tStringMuestra = callFixture('muestreo.json');
       tJsonMuestra = jsonDecode(tStringMuestra);
-      tMuestra = MuestreoModel.fromJson(tJsonMuestra);
+      tMuestra = MuestreoModel.fromRemoteJson(tJsonMuestra);
       tHeaders = {'Authorization':'Bearer $tAccessToken', 'Content-Type':'application/json'};
     });
 
@@ -107,7 +107,7 @@ void main(){
     setUp((){
       tAccessToken = 'access_token';
       tMuestreoId = 1;
-      tMuestra = MuestreoModel.fromJson( jsonDecode( callFixture('muestreo.json') ) );
+      tMuestra = MuestreoModel.fromRemoteJson( jsonDecode( callFixture('muestreo.json') ) );
       tSelectedRangoId = 1;
       tSelectedRango = 'selected_rango';
       tHeaders = {'Authorization':'Bearer $tAccessToken', 'Content-Type':'application/json'};

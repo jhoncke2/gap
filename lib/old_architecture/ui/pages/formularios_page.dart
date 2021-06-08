@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/page_title.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/progress_indicator.dart';
+import 'package:gap/clean_architecture_structure/features/visits/presentation/bloc/visits_bloc.dart';
+import 'package:gap/clean_architecture_structure/injection_container.dart';
 import 'package:gap/old_architecture/logic/bloc/entities/formularios/formularios_bloc.dart';
-import 'package:gap/old_architecture/logic/bloc/entities/visits/visits_bloc.dart';
 import 'package:gap/old_architecture/data/models/entities/entities.dart';
 import 'package:gap/old_architecture/logic/central_managers/pages_navigation_manager.dart';
 import 'package:gap/old_architecture/ui/widgets/header/page_header.dart';
@@ -17,41 +18,47 @@ class FormulariosPageOld extends StatelessWidget {
   static final String route = 'formularios';
   final SizeUtils _sizeUtils = SizeUtils();
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Scaffold(
-      body: NativeBackButtonLocker(
-        child: SafeArea(
-          child: Column(
-            children: [
-              SizedBox(height:_sizeUtils.normalSizedBoxHeigh),
-              PageHeaderOld(
-                onBackButtonTap: _onBack,
-              ),
-              BlocBuilder<FormulariosOldBloc, FormulariosState>(
-                builder: (_, state) {
-                  if(state.formsAreLoaded && !state.backing && !state.formsAreBlocked){
-                    return _createContent(state);
-                  }else{
-                    return CustomProgressIndicator(heightScreenPercentage: 0.75);
-                  }
-                },
-              ),
-            ],
+      body: BlocProvider<VisitsBloc>(
+        create: (context) => sl(),
+        child: NativeBackButtonLocker(
+          child: SafeArea(
+            child: Column(
+              children: [
+                SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
+                PageHeaderOld(
+                  onBackButtonTap: _onBack,
+                ),
+                BlocBuilder<FormulariosOldBloc, FormulariosState>(
+                  builder: (_, state) {
+                    if (state.formsAreLoaded &&
+                        !state.backing &&
+                        !state.formsAreBlocked) {
+                      return _createContent(state);
+                    } else {
+                      return CustomProgressIndicator(
+                          heightScreenPercentage: 0.75);
+                    }
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  void _onBack(){
+  void _onBack() {
     PagesNavigationManager.endForms();
   }
 
-  Widget _createContent(FormulariosState state){
+  Widget _createContent(FormulariosState state) {
     return FutureBuilder(
       future: Future.delayed(Duration(milliseconds: 500)),
-      builder: (_, snapshot){
-        if(snapshot.connectionState == ConnectionState.waiting)
+      builder: (_, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting)
           return Container();
         else
           return _createLoadedContent(state);
@@ -59,7 +66,7 @@ class FormulariosPageOld extends StatelessWidget {
     );
   }
 
-  Widget _createLoadedContent(FormulariosState state){
+  Widget _createLoadedContent(FormulariosState state) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -68,7 +75,6 @@ class FormulariosPageOld extends StatelessWidget {
       ],
     );
   }
-
 }
 
 // ignore: must_be_immutable
@@ -77,50 +83,57 @@ class _FormulariosComponents extends StatelessWidget {
   final List<FormularioOld> visitForms;
   VisitOld visit;
   BuildContext _context;
-  _FormulariosComponents({
-    @required this.visitForms
-  });
+  _FormulariosComponents({@required this.visitForms});
 
   @override
   Widget build(BuildContext context) {
-    _initInitialConfiguration(context);
+    _context = context;
     return Container(
-      height: _sizeUtils.xasisSobreYasis * 0.95,
-      padding: EdgeInsets.only(left: _sizeUtils.xasisSobreYasis * 0.05),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          PageTitle(title: this.visit.name, underlined: false),
-          SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
-          _createDate(),
-          SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
-          NavigationListWithStageButtons(itemsFunction: _onItemTap, entitiesWithStages: visitForms),
-        ],
-      )
+        height: _sizeUtils.xasisSobreYasis * 0.95,
+        padding: EdgeInsets.only(left: _sizeUtils.xasisSobreYasis * 0.05),
+        child: BlocBuilder<VisitsBloc, VisitsState>(
+          builder: (visitsBContext, state) {
+            if(state is OnVisitDetail){
+              return _createLoadedVisitChild(state);
+            }else{
+              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                BlocProvider.of<VisitsBloc>(visitsBContext).add(LoadChosenVisit());
+              });
+              return Container();
+            }
+          },
+        ));
+  }
+
+  Widget _createLoadedVisitChild(OnVisitDetail state){
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        PageTitle(title: state.visit.name, underlined: false),
+        SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
+        _createDate(state.visit.date),
+        SizedBox(height: _sizeUtils.normalSizedBoxHeigh),
+        NavigationListWithStageButtons(
+            itemsFunction: _onItemTap, 
+            entitiesWithStages: visitForms),
+      ],
     );
   }
 
-  void _initInitialConfiguration(BuildContext appContext){
-    _context = appContext;
-    final VisitsOldBloc vBloc = BlocProvider.of<VisitsOldBloc>(appContext);
-    this.visit = vBloc.state.chosenVisit;
-  }
-
-  Widget _createDate(){
-    return Container(   
+  Widget _createDate(DateTime date){
+    return Container(
       padding: EdgeInsets.only(left: _sizeUtils.xasisSobreYasis * 0.03),
       child: Text(
-        visit.date.toString().split(' ')[0],
+        date.toString().split(' ')[0],
         textAlign: TextAlign.left,
         style: TextStyle(
-          fontSize: _sizeUtils.subtitleSize,
-          color: Theme.of(_context).primaryColor
-        ),
+            fontSize: _sizeUtils.subtitleSize,
+            color: Theme.of(_context).primaryColor),
       ),
     );
   }
 
-  void _onItemTap(EntityWithStageOld entity){
+  void _onItemTap(EntityWithStageOld entity) {
     PagesNavigationManager.navToFormDetail(entity, _context);
   }
 }

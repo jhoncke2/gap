@@ -34,8 +34,8 @@ class LoadedProjectsWidget extends StatelessWidget {
       names.add(project.nombre);
       functions.add(() {
         BlocProvider.of<ProjectsBloc>(context).add(SetChosenProjectEvent(project: project));
-        BlocProvider.of<NavigationBloc>(context).add(NavigateToEvent(navigationRoute: NavigationRoute.ProjectDetail));
-        Navigator.of(context).pushNamed(NavigationRoute.ProjectDetail.value, arguments: project);
+        //BlocProvider.of<NavigationBloc>(context).add(NavigateToEvent(navigationRoute: NavigationRoute.ProjectDetail));
+        //Navigator.of(context).pushNamed(NavigationRoute.ProjectDetail.value, arguments: project);
       });
     });
     namesAndFunctions['names'] = names;

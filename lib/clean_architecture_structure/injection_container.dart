@@ -112,7 +112,8 @@ void init()async{
     userLocalDataSource: sl(), 
     localDataSource: sl(),
     formulariosRemoteDataSource: sl(),
-    formulariosLocalDataSource: sl()    
+    formulariosLocalDataSource: sl(),
+    muestrasRemoteDataSource: sl()  
   ));
   sl.registerLazySingleton<IndexRepository>(()=>IndexRepositoryImpl(
     localDataSource: sl()
@@ -135,7 +136,8 @@ void init()async{
     userLocalDataSource: sl(), 
     projectsLocalDataSource: sl(),
     visitsLocalDataSource: sl(),
-    formulariosRemoteDataSource: sl()
+    formulariosRemoteDataSource: sl(), 
+    preloadedLocalDataSource: sl()
   ));
   //*/
 
@@ -154,7 +156,6 @@ void init()async{
   sl.registerLazySingleton(()=>SetMuestra(repository: sl(), errorHandler: sl()));
   sl.registerLazySingleton(()=>UpdatePreparaciones(repository: sl(), errorHandler: sl()));
   sl.registerLazySingleton(()=>RemoveMuestra(repository: sl(), errorHandler: sl()));
-  sl.registerLazySingleton(()=>GetFormulario(repository: sl(), errorHandler: sl()));
   sl.registerLazySingleton(()=>SaveFormulario(repository: sl(), errorHandler: sl()));
 
   //blocs
@@ -171,7 +172,6 @@ void init()async{
     pesosConverter: sl(),
     updatePreparaciones: sl(),
     removeMuestra: sl(),
-    getFormulario: sl(),
     saveFormulario: sl()
   ));
   sl.registerFactory(()=>NavigationBloc(
@@ -215,12 +215,13 @@ void init()async{
     preloadedDataSource: sl(), 
     userLocalDataSource: sl(), 
     projectsLocalDataSource: sl(), 
-    formulariosRemoteDataSource: sl()
+    formulariosRemoteDataSource: sl(),
+    muestrasRemoteDataSource: sl()
   ));
   sl.registerLazySingleton(()=>GetVisits(repository: sl(), errorHandler: sl()));
   sl.registerLazySingleton(()=>SetChosenVisit(repository: sl(), errorHandler: sl()));
   sl.registerLazySingleton(()=>GetChosenVisit(repository: sl(), errorHandler: sl()));
-  sl.registerLazySingleton(()=>VisitsBloc(
+  sl.registerFactory(()=>VisitsBloc(
     getVisits: sl(), 
     setChosenVisit: sl(), 
     getChosenVisit: sl()

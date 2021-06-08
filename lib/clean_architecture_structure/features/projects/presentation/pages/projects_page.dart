@@ -8,6 +8,7 @@ import 'package:gap/clean_architecture_structure/core/presentation/widgets/scaff
 import 'package:gap/clean_architecture_structure/features/projects/presentation/bloc/projects_bloc.dart';
 import 'package:gap/clean_architecture_structure/features/projects/presentation/widgets/loaded_projects.dart';
 import 'package:gap/clean_architecture_structure/injection_container.dart';
+import 'package:gap/old_architecture/data/enums/enums.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
 
 class ProjectsPage extends StatelessWidget {
@@ -63,23 +64,30 @@ class ProjectsPage extends StatelessWidget {
   Widget _createProjectsNavList() {
     return BlocBuilder<ProjectsBloc, ProjectsState>(
       builder: (context, state) {
-        _addPostFrameCall(context, state);
-        if (state is LoadedProjects) {
+        if(state is EmptyProjects){
+          _loadProjects(context);
+        }else if (state is LoadedProjects) {
           return LoadedProjectsWidget(projects: state.projects);
         }else if (state is LoadingProjects) {
           return CustomProgressIndicator(heightScreenPercentage: 0.4);
-        }else {
-          return Container();
+        }else if(state is LoadedChosenProject){
+          _navToProjectDetail(context);
         }
+        return Container();
       },
     );
   }
 
-  void _addPostFrameCall(BuildContext context, ProjectsState state){
-    if(state is EmptyProjects){
-      WidgetsBinding.instance.addPostFrameCallback((_){
-        BlocProvider.of<ProjectsBloc>(context).add( LoadProjectsEvent() );
-      });
-    }
+  void _loadProjects(BuildContext context){
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      BlocProvider.of<ProjectsBloc>(context).add( LoadProjectsEvent() );
+    });
+  }
+
+  void _navToProjectDetail(BuildContext context){
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      BlocProvider.of<NavigationBloc>(context).add(NavigateToEvent(navigationRoute: NavigationRoute.ProjectDetail));
+      Navigator.of(context).pushReplacementNamed(NavigationRoute.ProjectDetail.value);
+    }); 
   }
 }

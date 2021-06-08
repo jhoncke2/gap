@@ -6,7 +6,7 @@ class NavigationRoutesStorageManager{
 
   static Future<void> setNavigationRoute(NavigationRoute newRoute)async{
     final List<Map<String, dynamic>> routes = await _obtainNavigationRoutesFromStorage();
-    routes.add({ 'route': newRoute.value, 'step':newRoute.step});
+    routes.add({ 'route': newRoute.value, 'step':null});
     await _updateStorageWithNewRoutes(routes);
   }
 

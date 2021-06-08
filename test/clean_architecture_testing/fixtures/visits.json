@@ -11,7 +11,8 @@
             "direccion":"o",
             "telefono":"123456789",
             "barrio":"u"         
-        }
+        },
+        "muestra":true
     },
     {
         "id":2,
@@ -25,6 +26,7 @@
             "direccion":"d",
             "telefono":"1234567890",
             "barrio":"e"         
-        }
+        },
+        "muestra":false
     }
 ]

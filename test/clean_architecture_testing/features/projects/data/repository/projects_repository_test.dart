@@ -69,10 +69,10 @@ void main(){
     
     test('should get projects from localDataSource when there is not connectivity.', ()async{
       when(networkInfo.isConnected()).thenAnswer((_) async => false);
-      when(preloadedLocalDataSource.getPreloadedProjectsIds()).thenAnswer((_) async => tProjects.map((p) => p.id).toList());
+      when(preloadedLocalDataSource.getPreloadedProjectsIdsOld()).thenAnswer((_) async => tProjects.map((p) => p.id).toList());
       when(localDataSource.getProjects()).thenAnswer((realInvocation) async => tProjects );
       await projectsRepository.getProjects();
-      verify(preloadedLocalDataSource.getPreloadedProjectsIds());
+      verify(preloadedLocalDataSource.getPreloadedProjectsIdsOld());
       verify(localDataSource.getProjects());
     });
 
@@ -98,7 +98,7 @@ void main(){
     test('should get Right(tProjects) when there is not connectivity and localDataSource returns good response.', ()async{
       final List<Project> tPreloadedProjects = [_getProjectsFromFixture()[0]];
       when(networkInfo.isConnected()).thenAnswer((_) async => false);
-      when(preloadedLocalDataSource.getPreloadedProjectsIds()).thenAnswer((_) async => [tPreloadedProjects[0].id]);
+      when(preloadedLocalDataSource.getPreloadedProjectsIdsOld()).thenAnswer((_) async => [tPreloadedProjects[0].id]);
       when(localDataSource.getProjects()).thenAnswer((realInvocation) async => tProjects);
       final response = await projectsRepository.getProjects();
       expect(response.isRight(), true);

@@ -25,7 +25,6 @@ import '../../../../fixtures/fixture_reader.dart';
 class MockSetMuestra extends Mock implements SetMuestra{}
 class MockGetMuestras extends Mock implements GetMuestras{}
 class MockRemoveMuestra extends Mock implements RemoveMuestra{}
-class MockGetFormulario extends Mock implements GetFormulario{}
 class MockSaveFormulario extends Mock implements SaveFormulario{}
 class MockUpdatePreparaciones extends Mock implements UpdatePreparaciones{}
 class MockStringToDoubleConverter extends Mock implements StringToDoubleConverter{}
@@ -35,7 +34,6 @@ MockGetMuestras getMuestras;
 MockSetMuestra setMuestras;
 MockUpdatePreparaciones updatePreparaciones;
 MockRemoveMuestra removeMuestra;
-MockGetFormulario getFormulario;
 MockSaveFormulario saveFormulario;
 MockStringToDoubleConverter pesosConverter;
 
@@ -43,7 +41,6 @@ void main(){
   setUp((){
     pesosConverter = MockStringToDoubleConverter();
     saveFormulario = MockSaveFormulario();
-    getFormulario = MockGetFormulario();
     removeMuestra = MockRemoveMuestra();
     updatePreparaciones = MockUpdatePreparaciones();
     setMuestras = MockSetMuestra();
@@ -54,8 +51,7 @@ void main(){
       updatePreparaciones: updatePreparaciones,
       removeMuestra: removeMuestra,
       pesosConverter: pesosConverter,
-      saveFormulario: saveFormulario,
-      getFormulario: getFormulario
+      saveFormulario: saveFormulario
     );
   });
 
@@ -107,7 +103,6 @@ void main(){
       Formulario tFormulario = _getFormularioFromxFixture();
       tMuestreo = _getMuestreoFromFixtureWithNullFields(['pre_formulario', 'componentes']);
       when(getMuestras.call(any)).thenAnswer((_) async => Right(tMuestreo));
-      when(getFormulario.call(any)).thenAnswer((_) async => Right(tFormulario));
       bloc.add(InitMuestreoEvent());
       //await untilCalled(getFormulario.call(any));
       //verify(getFormulario(MuestreoFormularioParams(formularioId: tMuestreo.formularioFinalId)));
@@ -183,7 +178,6 @@ void main(){
     and there is not componentes and there is formulario final''', ()async{
       tMuestreo = _getMuestreoFromFixtureWithNullFields(['componentes']);
       bloc.emit(LoadedInitialFormulario(formulario: tFormulario, muestreo: tMuestreo));
-      when(getFormulario.call(any)).thenAnswer((_) async => Right(tFormulario));
       when(getMuestras.call(any)).thenAnswer((_) async => Right(tMuestreo));
       final expectedsOrderedStates = [
         LoadingFormulario(),
@@ -197,7 +191,6 @@ void main(){
     and there is not componentes and there is not formulario final''', ()async{
       tMuestreo = _getMuestreoFromFixtureWithNullFields(['componentes', 'pos_formulario']);
       bloc.emit(LoadedInitialFormulario(formulario: tFormulario, muestreo: tMuestreo));
-      when(getFormulario.call(any)).thenAnswer((_) async => Right(tFormulario));
       when(getMuestras.call(any)).thenAnswer((_) async => Right(tMuestreo));
       final expectedsOrderedStates = [
         LoadingFormulario(),
@@ -524,7 +517,7 @@ void main(){
 Muestreo _getMuestreoFromFixture(){
   String stringMuestra = callFixture('muestreo.json');
   Map<String, dynamic> jsonMuestra = jsonDecode(stringMuestra);
-  return MuestreoModel.fromJson(jsonMuestra);
+  return MuestreoModel.fromRemoteJson(jsonMuestra);
 }
 
 Muestreo _getMuestreoFromFixtureWithNullFields(List<String> fields){
@@ -533,7 +526,7 @@ Muestreo _getMuestreoFromFixtureWithNullFields(List<String> fields){
   fields.forEach((f) {
     jsonMuestra[f] = null;
   });
-  return MuestreoModel.fromJson(jsonMuestra);
+  return MuestreoModel.fromRemoteJson(jsonMuestra);
 }
 
 Formulario _getFormularioFromxFixture(){

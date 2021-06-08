@@ -1,3 +1,6 @@
+import 'package:gap/clean_architecture_structure/features/muestras/data/data_sources/muestras_remote_data_source.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/data/models/muestra_model.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/data/models/muestreo_model.dart';
 import 'package:meta/meta.dart';
 import 'package:dartz/dartz.dart';
 import 'package:gap/clean_architecture_structure/core/domain/entities/formulario/formulario.dart';
@@ -17,6 +20,7 @@ class PreloadedRepositoryImpl implements PreloadedRepository{
   final PreloadedLocalDataSource localDataSource;
   final FormulariosRemoteDataSource formulariosRemoteDataSource;
   final FormulariosLocalDataSource formulariosLocalDataSource;
+  final MuestrasRemoteDataSource muestrasRemoteDataSource;
   bool _sentAnyData;
 
   PreloadedRepositoryImpl({
@@ -24,7 +28,8 @@ class PreloadedRepositoryImpl implements PreloadedRepository{
     @required this.userLocalDataSource,
     @required this.localDataSource, 
     @required this.formulariosRemoteDataSource, 
-    @required this.formulariosLocalDataSource
+    @required this.formulariosLocalDataSource,
+    @required this.muestrasRemoteDataSource
   });
 
   @override
@@ -42,23 +47,51 @@ class PreloadedRepositoryImpl implements PreloadedRepository{
     if( await networkInfo.isConnected() ){
       final String accessToken = await userLocalDataSource.getAccessToken();
       final List<int> projectsIds = await localDataSource.getPreloadedProjectsIds();
-      return _sentDataInProjects(projectsIds, accessToken);
+      return _sendDataInProjects(projectsIds, accessToken);
     }
     return false;
   }
 
-  Future<bool> _sentDataInProjects(List<int> projectsIds, String accessToken)async{
+  Future<bool> _sendDataInProjects(List<int> projectsIds, String accessToken)async{
     _sentAnyData = false;
     for(int projectId in projectsIds){
       final List<int> visitsIds = await localDataSource.getPreloadedVisitsIds(projectId);
-      for(int visitId in visitsIds){
-        final List<FormularioModel> formularios = await localDataSource.getPreloadedFormularios(projectId, visitId);
-        for(FormularioModel formulario in formularios){
-          await _sendFormularioData(formulario, projectId, visitId, accessToken);
-        }
-      }
+      for(int visitId in visitsIds)
+        await _sendVisitData(projectId, visitId, accessToken);
     }
     return _sentAnyData;
+  }
+
+  Future<void> _sendVisitData(int projectId, int visitId, String accessToken)async{
+    try{
+      final MuestreoModel muestreo = await localDataSource.getMuestreo(projectId, visitId);
+      await _sendMuestreoData(projectId, visitId, muestreo, accessToken);
+      final List<FormularioModel> formularios = await localDataSource.getPreloadedFormularios(projectId, visitId);
+      for(FormularioModel formulario in formularios)
+        await _sendFormularioData(formulario, projectId, visitId, accessToken);    
+    }catch(_){
+
+    }
+  }
+
+  Future<void> _sendMuestreoData(int projectId, int visitId, MuestreoModel muestreo, String accessToken)async{
+    if(muestreo != null){
+      List<String> preparaciones = muestreo.componentes.map((c) => c.preparacion).toList();
+      await muestrasRemoteDataSource.updatePreparaciones(accessToken, muestreo.id, preparaciones);
+      final List<MuestraModel> muestras = muestreo.muestrasTomadas.toList();
+      for(MuestraModel m in muestras){
+        await muestrasRemoteDataSource.setMuestra(
+          accessToken, 
+          muestreo.id, 
+          muestreo.rangos.singleWhere((r) => r.nombre == m.rango).id, 
+          m.pesos
+        );
+        muestreo.muestrasTomadas.removeWhere((muestreoM) => muestreoM.id == m.id);
+        await localDataSource.updateMuestreo(projectId, visitId, muestreo);
+      }
+      await localDataSource.removeMuestreo(projectId, visitId, muestreo.id);
+    }
+      
   }
 
   Future<void> _sendFormularioData(FormularioModel formulario, int projectId, int visitId, String accessToken)async{
@@ -94,7 +127,7 @@ class PreloadedRepositoryImpl implements PreloadedRepository{
       _sentAnyData = true;
     }
     if(_formularioSentAllItsData(formulario))
-      await localDataSource.removePreloadedFormulario(formulario.id);
+      await localDataSource.removePreloadedFormulario(projectId, visitId, formulario.id);
   }
 
   bool _canSendCampos(FormularioModel formulario){

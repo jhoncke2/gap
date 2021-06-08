@@ -52,7 +52,7 @@ class VisitsPage extends StatelessWidget {
             return LoadedVisits(visits: state.visits);
           }else if(state is OnVisitDetail){
             WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-              _navToVisit(context);
+              _navToVisitDetail(context);
             });
           }
           return _createLoadingIndicator();
@@ -61,7 +61,7 @@ class VisitsPage extends StatelessWidget {
     );
   }
 
-  void _navToVisit(BuildContext context){
+  void _navToVisitDetail(BuildContext context){
     BlocProvider.of<NavigationBloc>(context).add(NavigateToEvent(navigationRoute: NavigationRoute.VisitDetail));
     Navigator.of(context).pushReplacementNamed(NavigationRoute.VisitDetail.value);
   }

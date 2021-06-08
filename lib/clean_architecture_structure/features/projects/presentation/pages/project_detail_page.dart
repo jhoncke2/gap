@@ -48,20 +48,24 @@ class ProjectDetailPage extends StatelessWidget {
     return BlocBuilder<ProjectsBloc, ProjectsState>(
       builder: (builderContext, state) {
         if (state is EmptyProjects) {
-          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-            BlocProvider.of<ProjectsBloc>(builderContext)
-                .add(LoadChosenProjectEvent());
-          });
+          _loadChosenProject(builderContext);
         } else if (state is LoadingChosenProject)
-          return _createLoadingProjectsWidget();
+          return _createLoadingProjectWidget();
         else if (state is LoadedChosenProject)
           return _createLoadedElements(state.project);
-        return _createLoadingProjectsWidget();
+        return _createLoadingProjectWidget();
       },
     );
   }
 
-  Widget _createLoadingProjectsWidget() {
+  void _loadChosenProject(BuildContext builderContext){
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      BlocProvider.of<ProjectsBloc>(builderContext)
+          .add(LoadChosenProjectEvent());
+    });
+  }
+
+  Widget _createLoadingProjectWidget() {
     return Container(
       child: Center(
         child: CircularProgressIndicator(
@@ -138,9 +142,9 @@ class ProjectDetailPage extends StatelessWidget {
 
   void _navToPage(NavigationRoute navRoute) {
     //TODO: Quitar con implementación de nuevo código
-    PagesNavigationManager.navToVisits();
-    //BlocProvider.of<NavigationBloc>(context)
-    //    .add(NavigateToEvent(navigationRoute: navRoute));
-    //Navigator.of(context).pushReplacementNamed(navRoute.value);
+    //PagesNavigationManager.navToVisits();
+    BlocProvider.of<NavigationBloc>(context)
+        .add(NavigateToEvent(navigationRoute: navRoute));
+    Navigator.of(context).pushReplacementNamed(navRoute.value);
   }
 }

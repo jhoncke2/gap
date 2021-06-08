@@ -30,7 +30,6 @@ class MuestrasBloc extends Bloc<MuestrasEvent, MuestrasState>{
   final SetMuestra setMuestra;
   final UpdatePreparaciones updatePreparaciones;
   final RemoveMuestra removeMuestra;
-  final GetFormulario getFormulario;
   final SaveFormulario saveFormulario;
   final StringToDoubleConverter pesosConverter;
 
@@ -39,7 +38,6 @@ class MuestrasBloc extends Bloc<MuestrasEvent, MuestrasState>{
     @required this.setMuestra,
     @required this.updatePreparaciones,
     @required this.removeMuestra,
-    @required this.getFormulario,
     @required this.saveFormulario,
     @required this.pesosConverter
   }) : super(OnMuestreoEmpty()){

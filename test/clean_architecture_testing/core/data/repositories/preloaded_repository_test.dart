@@ -1,12 +1,14 @@
 import 'dart:convert';
-import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 import 'package:dartz/dartz.dart';
+import 'package:mockito/mockito.dart';
+import 'package:gap/clean_architecture_structure/core/error/failures.dart';
+import 'package:gap/clean_architecture_structure/core/error/exceptions.dart';
+import 'package:gap/clean_architecture_structure/core/data/repositories/preloaded_repository.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/data/data_sources/muestras_remote_data_source.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/data/models/muestreo_model.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/user/user_local_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/models/formulario/formulario_model.dart';
-import 'package:gap/clean_architecture_structure/core/data/repositories/preloaded_repository.dart';
-import 'package:gap/clean_architecture_structure/core/error/exceptions.dart';
-import 'package:gap/clean_architecture_structure/core/error/failures.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/formularios/formularios_local_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/formularios/formularios_remote_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/preloaded/preloaded_local_data_source.dart';
@@ -18,6 +20,7 @@ class MockUserLocalDataSource extends Mock implements UserLocalDataSource{}
 class MockPreloadedLocalDataSource extends Mock implements PreloadedLocalDataSource{}
 class MockFormulariosRemoteDataSource extends Mock implements FormulariosRemoteDataSource{}
 class MockFormulariosLocalDataSource extends Mock implements FormulariosLocalDataSource{}
+class MockMuestrasRemoteDataSource extends Mock implements MuestrasRemoteDataSource{}
 
 PreloadedRepositoryImpl preloadedRepository;
 MockNetworkInfo networkInfo;
@@ -25,9 +28,11 @@ MockUserLocalDataSource userLocalDataSource;
 MockPreloadedLocalDataSource localDataSource;
 MockFormulariosRemoteDataSource formulariosRemoteDataSource;
 MockFormulariosLocalDataSource formulariosLocalDataSource;
+MockMuestrasRemoteDataSource muestrasRemoteDataSource;
 
 void main(){
   setUp((){
+    muestrasRemoteDataSource = MockMuestrasRemoteDataSource();
     formulariosLocalDataSource = MockFormulariosLocalDataSource();
     formulariosRemoteDataSource = MockFormulariosRemoteDataSource();
     localDataSource = MockPreloadedLocalDataSource();
@@ -38,7 +43,8 @@ void main(){
       userLocalDataSource: userLocalDataSource,
       localDataSource: localDataSource, 
       formulariosRemoteDataSource: formulariosRemoteDataSource, 
-      formulariosLocalDataSource: formulariosLocalDataSource
+      formulariosLocalDataSource: formulariosLocalDataSource,
+      muestrasRemoteDataSource: muestrasRemoteDataSource
     );
   });
 
@@ -51,6 +57,8 @@ void main(){
     List<FormularioModel> tFormulariosP2V1;
     List<FormularioModel> tFormulariosP2V2;
     Map<String, dynamic> tPreloadedData;
+    MuestreoModel tMuestreo;
+    List<String> tPreparaciones;
 
     setUp((){
       tAccessToken = 'access_token';
@@ -60,14 +68,25 @@ void main(){
       tFormulariosP1V1 = [_getFormulariosFromFixtures()[0]];
       tFormulariosP2V1 = _getFormulariosFromFixtures().sublist(1,3);
       tFormulariosP2V2 = [_getFormulariosFromFixtures()[3]];
+      tMuestreo = _getMuestreoFromFixtures();
+      print('*************************** on test *******************');
+      print(tMuestreo.rangos);
+      tPreparaciones = tMuestreo.componentes.map((c) => c.preparacion).toList();
       //la estructura de la preloadedData en storage.
       tPreloadedData = {
         '${tProjectsIds[0]}':{
-          '${tVisitsIdsP1[0]}': tFormulariosP1V1
+          '${tVisitsIdsP1[0]}': {
+            'formularios': formulariosToJson( tFormulariosP1V1 ),
+            'muestreo': tMuestreo.toJson()
+          }
         },
         '${tProjectsIds[1]}':{
-          '${tVisitsIdsP2[0]}':tFormulariosP2V1,
-          '${tVisitsIdsP2[1]}':tFormulariosP2V2
+          '${tVisitsIdsP2[0]}':{
+            'formularios': formulariosToJson( tFormulariosP2V1 )
+          },
+          '${tVisitsIdsP2[1]}':{
+            'formularios': formulariosToJson( tFormulariosP2V2 )
+          }
         },
       };
     });
@@ -81,6 +100,7 @@ void main(){
       when(localDataSource.getPreloadedProjectsIds()).thenAnswer((_) async => tProjectsIds);
       when(localDataSource.getPreloadedVisitsIds(tProjectsIds[0])).thenAnswer((_) async => tVisitsIdsP1);
       when(localDataSource.getPreloadedVisitsIds(tProjectsIds[1])).thenAnswer((_) async => tVisitsIdsP2);
+      when(localDataSource.getMuestreo(tProjectsIds[0], tVisitsIdsP1[0])).thenAnswer((_) async => tMuestreo);
       when(localDataSource.getPreloadedFormularios(any, tVisitsIdsP1[0])).thenAnswer((_) async => tFormulariosP1V1);
       when(localDataSource.getPreloadedFormularios(any, tVisitsIdsP2[0])).thenAnswer((_) async => tFormulariosP2V1);
       when(localDataSource.getPreloadedFormularios(any, tVisitsIdsP2[1])).thenAnswer((_) async => tFormulariosP2V2);
@@ -92,10 +112,13 @@ void main(){
       //el project 1
       verify(localDataSource.getPreloadedProjectsIds());
       verify(localDataSource.getPreloadedVisitsIds(tProjectsIds[0]));
+      verify(localDataSource.getMuestreo(tProjectsIds[0], tVisitsIdsP1[0]));
       verify(localDataSource.getPreloadedFormularios(tProjectsIds[0], tVisitsIdsP1[0]));
       //No está funcionando la validación de los asquereosos positions. Pero sí los está enviando...
       verify(formulariosRemoteDataSource.setInitialPosition(any, tFormulariosP1V1[0].id, tAccessToken));
       verify(formulariosRemoteDataSource.setFirmer(tFormulariosP1V1[0].firmers[0], tFormulariosP1V1[0].id, tVisitsIdsP1[0], tAccessToken));
+      verify(muestrasRemoteDataSource.updatePreparaciones(tAccessToken, tMuestreo.id, tPreparaciones));
+      
       //El project 2
       verify(localDataSource.getPreloadedVisitsIds(tProjectsIds[1]));
       //visit 1 del project 1
@@ -154,16 +177,7 @@ void main(){
       when(localDataSource.getPreloadedFormularios(any, any)).thenAnswer((_) async => tFormulariosP1V1);
       when(formulariosRemoteDataSource.setInitialPosition(any, any, any)).thenThrow(ServerException());
       var result = await preloadedRepository.sendPreloadedData();
-      expect(result, Left(ServerFailure()));
-      when(formulariosRemoteDataSource.setCampos(any, any, any)).thenThrow(ServerException());
-      result = await preloadedRepository.sendPreloadedData();
-      expect(result, Left(ServerFailure()));
-      when(formulariosRemoteDataSource.setFinalPosition(any, any, any)).thenThrow(ServerException());
-      result = await preloadedRepository.sendPreloadedData();
-      expect(result, Left(ServerFailure()));
-      when(formulariosRemoteDataSource.setFirmer(any, any, any, any)).thenThrow(ServerException());
-      result = await preloadedRepository.sendPreloadedData();
-      expect(result, Left(ServerFailure()));
+      expect(result, Right(false));
     });
 
     test('should return Left(StorageFailure(...)) when there is connectivity and any remoteDataSource method throws a StorageException(...)', ()async{
@@ -173,7 +187,7 @@ void main(){
       when(localDataSource.getPreloadedVisitsIds(any)).thenAnswer((_) async => tVisitsIdsP1);
       when(localDataSource.getPreloadedFormularios(any, any)).thenThrow(StorageException(type: StorageExceptionType.NORMAL));
       var result = await preloadedRepository.sendPreloadedData();
-      expect(result, Left(StorageFailure(excType: StorageExceptionType.NORMAL)));
+      expect(result, Right(false));
     });
 
     test('should return Right(false) when there is not connectivity and all goes good', ()async{
@@ -185,8 +199,14 @@ void main(){
 }
 
 List<FormularioModel> _getFormulariosFromFixtures(){
-  final String stringFormularios = callFixture('formularios.json');
-  final List<Map<String, dynamic>> jsonFormularios = jsonDecode(stringFormularios).cast<Map<String, dynamic>>();
-  final List<FormularioModel> formularios = formulariosFromJson(jsonFormularios);
+  String stringFormularios = callFixture('formularios.json');
+  List<Map<String, dynamic>> jsonFormularios = jsonDecode(stringFormularios).cast<Map<String, dynamic>>();
+  List<FormularioModel> formularios = formulariosFromJson(jsonFormularios);
   return formularios;
-} 
+}
+
+MuestreoModel _getMuestreoFromFixtures(){
+  String stringMuestreo = callFixture('muestreo.json');
+  Map<String, dynamic> jsonMuestreo = jsonDecode(stringMuestreo);
+  return MuestreoModel.fromRemoteJson(jsonMuestreo);
+}

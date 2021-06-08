@@ -5,17 +5,17 @@
     "rangos":[
         {
             "id":1,
-            "rango":"rango_1",
+            "name":"rango1",
             "pesos_esperados":[1, 2, 3]
         },
         {
             "id":2,
-            "rango":"rango_2",
+            "name":"rango2",
             "pesos_esperados":[4, 5, 6]
         },
         {
             "id":3,
-            "rango":"rango_3",
+            "name":"rango3",
             "pesos_esperados":[7, 8, 9]
         }
     ],

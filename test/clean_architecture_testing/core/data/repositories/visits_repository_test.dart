@@ -1,19 +1,21 @@
 import 'dart:convert';
-import 'package:gap/old_architecture/data/models/entities/entities.dart';
 import 'package:test/test.dart';
-import 'package:mockito/mockito.dart';
 import 'package:dartz/dartz.dart';
-import 'package:gap/clean_architecture_structure/core/data/data_sources/formularios/formularios_remote_data_source.dart';
-import 'package:gap/clean_architecture_structure/core/data/data_sources/projects/projects_local_data_source.dart';
-import 'package:gap/clean_architecture_structure/core/data/models/formulario/formulario_model.dart';
-import 'package:gap/clean_architecture_structure/core/data/models/project_model.dart';
-import 'package:gap/clean_architecture_structure/core/data/data_sources/user/user_local_data_source.dart';
-import 'package:gap/clean_architecture_structure/core/error/exceptions.dart';
+import 'package:mockito/mockito.dart';
+import 'package:gap/old_architecture/data/models/entities/entities.dart';
 import 'package:gap/clean_architecture_structure/core/error/failures.dart';
+import 'package:gap/clean_architecture_structure/core/error/exceptions.dart';
+import 'package:gap/clean_architecture_structure/core/data/models/visit_model.dart';
+import 'package:gap/clean_architecture_structure/core/data/models/project_model.dart';
+import 'package:gap/clean_architecture_structure/core/data/models/formulario/formulario_model.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/data/models/muestreo_model.dart';
+import 'package:gap/clean_architecture_structure/core/data/data_sources/user/user_local_data_source.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/data/data_sources/muestras_remote_data_source.dart';
+import 'package:gap/clean_architecture_structure/core/data/data_sources/formularios/formularios_remote_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/preloaded/preloaded_local_data_source.dart';
+import 'package:gap/clean_architecture_structure/core/data/data_sources/projects/projects_local_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/visits/visits_local_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/visits/visits_remote_data_source.dart';
-import 'package:gap/clean_architecture_structure/core/data/models/visit_model.dart';
 import 'package:gap/clean_architecture_structure/core/data/repositories/visits_repository.dart';
 import 'package:gap/clean_architecture_structure/core/domain/entities/visit.dart';
 import 'package:gap/clean_architecture_structure/core/network/network_info.dart';
@@ -26,6 +28,7 @@ class MockNetworkInfo extends Mock implements NetworkInfo{}
 class MockProjectsLocalDataSource extends Mock implements ProjectsLocalDataSource{}
 class MockFormulariosRemoteDataSource extends Mock implements FormulariosRemoteDataSource{}
 class MockUserLocalDataSource extends Mock implements UserLocalDataSource{}
+class MockMuestrasRemoteDataSource extends Mock implements MuestrasRemoteDataSource{}
 
 VisitsRepositoryImpl visitsRepository;
 MockNetworkInfo networkInfo;
@@ -35,9 +38,10 @@ MockVisitsRemoteDataSource remoteDataSource;
 MockVisitsLocalDataSource localDataSource;
 MockPreloadedLocalDataSource preloadedDataSource;
 MockUserLocalDataSource userLocalDataSource;
-
+MockMuestrasRemoteDataSource muestrasRemoteDataSource;
 void main(){
   setUp((){
+    muestrasRemoteDataSource = MockMuestrasRemoteDataSource();
     userLocalDataSource = MockUserLocalDataSource();
     preloadedDataSource = MockPreloadedLocalDataSource();
     localDataSource= MockVisitsLocalDataSource();
@@ -52,7 +56,8 @@ void main(){
       remoteDataSource: remoteDataSource, 
       localDataSource: localDataSource, 
       preloadedDataSource: preloadedDataSource,
-      userLocalDataSource: userLocalDataSource
+      userLocalDataSource: userLocalDataSource,
+      muestrasRemoteDataSource: muestrasRemoteDataSource
     );
   });
 
@@ -103,7 +108,6 @@ void _testGetVisitsGroup(){
       verify(localDataSource.getVisits(tProject.id));
     });
 
-    
     test('should get the Right(tVisits) when there is connection and all goes good', ()async{
       when(networkInfo.isConnected()).thenAnswer((realInvocation) async => true);
       when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
@@ -137,7 +141,7 @@ void _testGetVisitsGroup(){
     test('should return Left(StorageFailure()) when there is connection and preloadedDataSource throws StorageException', ()async{
       when(networkInfo.isConnected()).thenAnswer((realInvocation) async => false);
       when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tProject);
-      when(preloadedDataSource.getPreloadedVisitsIds(any)).thenAnswer((realInvocation) async => tVisitsIds);
+      when(preloadedDataSource.getPreloadedVisitsIdsOld(any)).thenAnswer((realInvocation) async => tVisitsIds);
       when(localDataSource.getVisits(any)).thenThrow(StorageException(type: StorageExceptionType.NORMAL));
       final response = await visitsRepository.getVisits();
       expect(response, Left(StorageFailure(excType: StorageExceptionType.NORMAL)));
@@ -166,17 +170,20 @@ List<FormularioModel> _getFormulariosFromFixture(){
   return formularios;
 }
 
-void _testSetChosenVisitGroup(){
+void _testSetChosenVisitGroup(){ 
   group('setChosenVisit', (){
     String tAccessToken;
     Visit tChosenVisit;
     ProjectModel tChosenProject;
     List<FormularioModel> tEmptyFormularios;
+    MuestreoModel tMuestreo;
     setUp((){
       tAccessToken = 'a_t';
       tChosenVisit = _getVisitsFromFixture()[0];
       tChosenProject = _getProjectFromFixture();
       tEmptyFormularios = _getFormulariosFromFixture();
+      tMuestreo = _getMuestreoFromFixtures();
+      when(muestrasRemoteDataSource.getMuestreo(any, any)).thenAnswer((_) async => tMuestreo);
     });
 
     test('''should set the chosen visit on localDataSource when there is connectivity''', ()async{
@@ -191,6 +198,7 @@ void _testSetChosenVisitGroup(){
       verify(networkInfo.isConnected());
       verify(localDataSource.setChosenVisit(tChosenVisit));
       verify(projectsLocalDataSource.getChosenProject());
+      verify(muestrasRemoteDataSource.getMuestreo(tAccessToken, tChosenVisit.id));
       verify(formulariosRemoteDataSource.getFormularios(tChosenVisit.id, tAccessToken));
     });
 
@@ -210,7 +218,7 @@ void _testSetChosenVisitGroup(){
       tEmptyFormularios.forEach((f) {
         verify(formulariosRemoteDataSource.getChosenFormulario(f.id, any));
       });
-      verify(preloadedDataSource.setPreloadedFamilyOld(tChosenProject.id, tChosenVisit.id, tFormularios));
+      verify(preloadedDataSource.setPreloadedFamily(tChosenProject.id, tChosenVisit.id, tFormularios, tMuestreo));
     });
 
     test('''should save on the preloadedDataSource only the formularios
@@ -231,7 +239,7 @@ void _testSetChosenVisitGroup(){
       tEmptyFormularios.forEach((f) {
         verify(formulariosRemoteDataSource.getChosenFormulario(f.id, any));
       });
-      verify(preloadedDataSource.setPreloadedFamilyOld(tChosenProject.id, tChosenVisit.id, tUncompletedFormularios));
+      verify(preloadedDataSource.setPreloadedFamily(tChosenProject.id, tChosenVisit.id, tUncompletedFormularios, tMuestreo));
     });
 
     test('''should save on the preloadedDataSource only the formularios
@@ -252,7 +260,7 @@ void _testSetChosenVisitGroup(){
       tEmptyFormularios.forEach((f) {
         verify(formulariosRemoteDataSource.getChosenFormulario(f.id, any));
       });
-      verify(preloadedDataSource.setPreloadedFamilyOld(tChosenProject.id, tChosenVisit.id, tUncompletedFormularios));
+      verify(preloadedDataSource.setPreloadedFamily(tChosenProject.id, tChosenVisit.id, tUncompletedFormularios, tMuestreo));
     });
 
     test('''should save on the preloadedDataSource only when the remoteDataSource desn't throw an exception
@@ -279,7 +287,7 @@ void _testSetChosenVisitGroup(){
         verify(formulariosRemoteDataSource.getChosenFormulario(f.id, any));
       });
 
-      verify(preloadedDataSource.setPreloadedFamilyOld(tChosenProject.id, tChosenVisit.id, tFormulariosWithoutExceptions));
+      verify(preloadedDataSource.setPreloadedFamily(tChosenProject.id, tChosenVisit.id, tFormulariosWithoutExceptions, tMuestreo));
     });
 
     test('should return Right(null) when all goes good', ()async{
@@ -358,4 +366,10 @@ List<CustomFormFieldOld> _getFormFieldsFromFixture(){
   final String stringFormFields = callFixture('formulario_campos.json');
   final List<Map<String, dynamic>> jsonFormFields = jsonDecode(stringFormFields).cast<Map<String, dynamic>>();
   return customFormFieldsFromJson(jsonFormFields);
+}
+
+MuestreoModel _getMuestreoFromFixtures(){
+  String stringMuestreo = callFixture('muestreo.json');
+  Map<String, dynamic> jsonMuestreo = jsonDecode(stringMuestreo);
+  return MuestreoModel.fromRemoteJson(jsonMuestreo);
 }

@@ -1,8 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gap/old_architecture/data/enums/enums.dart';
 import 'package:gap/old_architecture/logic/storage_managers/navigation_route/navigation_routes_storage_manager.dart';
-import 'package:gap/old_architecture/native_connectors/storage_connector.dart';
-import '../../../mock/storage/mock_flutter_secure_storage.dart';
 import 'navigation_route_storage_manager_descriptions.dart' as descriptions;
 
 final List<NavigationRoute> _fakeRoutes = [
@@ -13,8 +11,7 @@ final List<NavigationRoute> _fakeRoutes = [
   NavigationRoute.Visits,
   NavigationRoute.VisitDetail,
   NavigationRoute.Formularios,
-  NavigationRoute.FormularioDetailForms,
-  NavigationRoute.FormularioDetailFirmers,
+  NavigationRoute.FormularioDetail,
   NavigationRoute.AdjuntarFotosVisita
 ];
 

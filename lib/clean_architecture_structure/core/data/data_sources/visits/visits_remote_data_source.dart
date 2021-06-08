@@ -1,8 +1,7 @@
 import 'dart:convert';
-
-import 'package:gap/clean_architecture_structure/core/error/exceptions.dart';
 import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
+import 'package:gap/clean_architecture_structure/core/error/exceptions.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/general/remote_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/models/visit_model.dart';
 

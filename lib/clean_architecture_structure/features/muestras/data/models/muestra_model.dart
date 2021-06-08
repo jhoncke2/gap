@@ -5,6 +5,10 @@ List<MuestraModel> muestrasFromJson(List<Map<String, dynamic>> json)=>json.map(
   (j)=>MuestraModel.fromJson(j)
 ).toList();
 
+List<Map<String, dynamic>> muestrasToJson(List<MuestraModel> muestras) => muestras.map(
+  (m) => m.toJson()
+).toList();
+
 class MuestraModel extends Muestra{
   MuestraModel({
     @required int id,
@@ -23,4 +27,10 @@ class MuestraModel extends Muestra{
       (p)=> (p as num).toDouble()
     ).toList()
   );
+
+  Map<String, dynamic> toJson() => {
+    'id': this.id,
+    'rango': this.rango,
+    'resultados': this.pesos
+  };
 }

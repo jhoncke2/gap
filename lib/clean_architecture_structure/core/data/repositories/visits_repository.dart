@@ -1,3 +1,5 @@
+import 'package:gap/clean_architecture_structure/features/muestras/data/data_sources/muestras_remote_data_source.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/data/models/muestreo_model.dart';
 import 'package:meta/meta.dart';
 import 'package:dartz/dartz.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/formularios/formularios_remote_data_source.dart';
@@ -23,6 +25,7 @@ class VisitsRepositoryImpl implements VisitsRepository{
   final UserLocalDataSource userLocalDataSource;
   final ProjectsLocalDataSource projectsLocalDataSource;
   final FormulariosRemoteDataSource formulariosRemoteDataSource;
+  final MuestrasRemoteDataSource muestrasRemoteDataSource;
 
   VisitsRepositoryImpl({
     @required this.networkInfo,
@@ -31,7 +34,8 @@ class VisitsRepositoryImpl implements VisitsRepository{
     @required this.preloadedDataSource,
     @required this.userLocalDataSource,
     @required this.projectsLocalDataSource,
-    @required this.formulariosRemoteDataSource
+    @required this.formulariosRemoteDataSource,
+    @required this.muestrasRemoteDataSource
   });
 
   @override
@@ -67,7 +71,10 @@ class VisitsRepositoryImpl implements VisitsRepository{
         final String accessToken = await userLocalDataSource.getAccessToken();
         final List<FormularioModel> emptyVisitFormularios = await formulariosRemoteDataSource.getFormularios(visit.id, accessToken);
         final List<FormularioModel> visitFormularios = await _getNotEmptyFormulariosFromRemoteDataSource(emptyVisitFormularios, accessToken);
-        await preloadedDataSource.setPreloadedFamilyOld(chosenProject.id, visit.id, visitFormularios);
+        MuestreoModel muestreo;
+        if(visit.hasMuestreo)
+          muestreo = await muestrasRemoteDataSource.getMuestreo(accessToken, visit.id);
+        await preloadedDataSource.setPreloadedFamily(chosenProject.id, visit.id, visitFormularios, muestreo);
       }
       return Right(null);
     }on StorageException catch(exception){

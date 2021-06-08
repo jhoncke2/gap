@@ -27,7 +27,7 @@ class PreloadedDataModel extends Equatable{
       projects['$projectId'] = PreloadedProjectModel(visits: {
         '$visitId': PreloadedVisitModel(formularios: formularios, muestreo: muestreo)
       });
-    }else if(project.visits['$visitId'] == null){
+    }else{
       project.visits['$visitId'] = PreloadedVisitModel(formularios: formularios, muestreo: muestreo);
     }
   }
@@ -37,7 +37,7 @@ class PreloadedDataModel extends Equatable{
 }
 
 Map<String, PreloadedProjectModel> preloadedProjectsFromJson(Map<String, dynamic> json) =>
-  json.map((key, value) => MapEntry(key, PreloadedProjectModel.fromJson(value)));
+  json.map((key, value) => MapEntry(key, PreloadedProjectModel.fromJson( value.cast<String, dynamic>() )));
 
 Map<String, Map> preloadedProjectsToJson(Map<String, PreloadedProjectModel> projs) =>
   projs.map((key, p) => MapEntry(key, p.toJson()));
@@ -59,7 +59,7 @@ class PreloadedProjectModel extends Equatable{
 }
 
 Map<String, PreloadedVisitModel> preloadedVisitsFromJson(Map<String, dynamic> json) =>
-  json.map((key, value) => MapEntry(key, PreloadedVisitModel.fromJson(value)));
+  json.map((key, value) => MapEntry(key, PreloadedVisitModel.fromJson(value.cast<String, dynamic>())));
 
 Map<String, Map> preloadedVisitsToJson(Map<String, PreloadedVisitModel> prelVisits) => 
   prelVisits.map((key, v) => MapEntry(key, v.toJson()));
@@ -74,8 +74,8 @@ class PreloadedVisitModel extends Equatable{
   });
 
   factory PreloadedVisitModel.fromJson(Map<String, dynamic> json)=>PreloadedVisitModel(
-    formularios: formulariosFromJson(json['formularios']),
-    muestreo: MuestreoModel.fromJson(json['muestreo'])
+    formularios: json['formularios'] == null? [] : formulariosFromJson(json['formularios'].cast<Map<String, dynamic>>()),
+    muestreo: json['muestreo'] == null? null : MuestreoModel.fromLocalJson(json['muestreo'])
   );
 
   @override
@@ -86,6 +86,6 @@ class PreloadedVisitModel extends Equatable{
 
   Map<String, dynamic> toJson() => {
     'formularios': formulariosToJson(this.formularios),
-    'muestreo': this.muestreo.toJson()
+    'muestreo': (this.muestreo == null)? null : this.muestreo.toJson()
   };
 }

@@ -88,7 +88,7 @@ void main(){
       verify(projectsLocalDataSource.getChosenProject());      
       verify(visitsLocalDataSource.getChosenVisit(tChosenProject.id));
       verify(localDataSource.getChosenFormulario(tChosenVisit.id));
-      verify(preloadedDataSource.removePreloadedFormulario(tChosenFormulario.id));
+      verify(preloadedDataSource.removePreloadedFormulario(tChosenProject.id, tChosenVisit.id, tChosenFormulario.id));
       verify(networkInfo.isConnected());    
     });
 
@@ -102,7 +102,7 @@ void main(){
       verify(visitsLocalDataSource.getChosenVisit(tChosenProject.id));
       verify(localDataSource.getChosenFormulario(tChosenVisit.id));
       verify(preloadedDataSource.updatePreloadedFormulario(tChosenProject.id, tChosenVisit.id, tChosenFormulario.copyWith(completo: true)));
-      verifyNever(preloadedDataSource.removePreloadedFormulario(tChosenFormulario.id));
+      verifyNever(preloadedDataSource.removePreloadedFormulario(tChosenProject.id, tChosenVisit.id, tChosenFormulario.id));
       verify(networkInfo.isConnected());
     });
 
@@ -277,7 +277,6 @@ void _testSetChosenFormularioGroup(){
       final result = await formulariosRepository.setChosenFormulario(tFormulario);
       expect(result, Left(StorageFailure(excType: StorageExceptionType.PLATFORM)));
     });
-
   });
 }
 

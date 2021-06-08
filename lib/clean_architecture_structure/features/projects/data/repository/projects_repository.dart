@@ -42,7 +42,7 @@ class ProjectsRepositoryImpl implements ProjectsRepository{
       }
     }else{
       try{
-        final List<int> preloadedProjectsIds = await preloadedLocalDataSource.getPreloadedProjectsIds();
+        final List<int> preloadedProjectsIds = await preloadedLocalDataSource.getPreloadedProjectsIdsOld();
         List<ProjectModel> projects = await localDataSource.getProjects();
         List<Project> finalProjects = projects.where((p) => preloadedProjectsIds.contains(p.id)).toList();
         return Right(finalProjects);

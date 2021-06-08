@@ -2,10 +2,10 @@ import 'package:gap/clean_architecture_structure/features/muestras/domain/entiti
 
 List<ComponenteModel> componentesFromRemoteJson(Map<String, dynamic> json){
   List<ComponenteModel> componentes = [];
-  final List componentesNombres = json['componentes'];
+  final List<String> componentesNombres = (json['componentes']??[]).cast<String>();
   if(componentesNombres != null){
     return componentesNombres.map(
-      (cN) => ComponenteModel.fromName(cN) 
+      (cN) => ComponenteModel.fromName(cN)
     ).toList();
     /*
     for(int i = 0; i < componentesNombres.length; i++){

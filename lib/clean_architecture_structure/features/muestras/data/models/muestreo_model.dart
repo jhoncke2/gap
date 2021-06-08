@@ -38,7 +38,7 @@ class MuestreoModel extends Muestreo{
     posFormulario: posFormulario
   );
 
-  factory MuestreoModel.fromJson(Map<String, dynamic> json)=>MuestreoModel(
+  factory MuestreoModel.fromRemoteJson(Map<String, dynamic> json)=>MuestreoModel(
     id: json['id'],
     tipo: json['tipo'],
     stringRangos: [''],
@@ -53,6 +53,21 @@ class MuestreoModel extends Muestreo{
     posFormulario: json['pos_formulario'] == null? null : _getFormularioFromCampos( json['pos_formulario'] )
   );
 
+  factory MuestreoModel.fromLocalJson(Map<String, dynamic> json)=>MuestreoModel(
+    id: json['id'],
+    tipo: json['tipo'],
+    stringRangos: [''],
+    componentes: componentesFromLocalJson(json['componentes'].cast<Map<String, dynamic>>()),
+    rangos:  rangosFromJson( json['rangos'].cast<Map<String, dynamic>>() ),
+    muestrasTomadas: json['muestras'] != null? muestrasFromJson(json['muestras'].cast<Map<String, dynamic>>()): [],
+    obligatorio: json['obligatorio'],
+    minMuestras: json['n_muestreos'][0],
+    maxMuestras: json['n_muestreos'][1],
+    nMuestras: ( json['muestras']??[] ).length,
+    preFormulario: json['pre_formulario'] == null? null : FormularioModel.fromJson( json['pre_formulario'] ),
+    posFormulario: json['pos_formulario'] == null? null : FormularioModel.fromJson( json['pos_formulario'] )
+  );
+
   static FormularioModel _getFormularioFromCampos(Map<String, dynamic> jsonFormulario){
     FormularioModel formularioModel = FormularioModel.fromJson( jsonFormulario );
     formularioModel.name = jsonFormulario['nombre'];
@@ -62,10 +77,13 @@ class MuestreoModel extends Muestreo{
   Map<String, dynamic> toJson() => {
     'id': this.id,
     'tipo': this.tipo,
-    'rangos': rangosToJson(this.rangos),
     'componentes': componentesToLocalJson(this.componentes),
-    'muestras': this.muestrasTomadas,
-    'obligatorio': this.obligatorio
+    'rangos': rangosToJson(this.rangos),
+    'muestras': muestrasToJson( this.muestrasTomadas ),
+    'obligatorio': this.obligatorio,
+    'n_muestreos':[ minMuestras, maxMuestras ],
+    'pre_formulario': (this.preFormulario as FormularioModel).toJson(),
+    'pos_formulario': (this.posFormulario as FormularioModel).toJson()
   };
 
   @override

@@ -114,7 +114,6 @@ class DataInitializer{
     else{
       await _replaceAllNavRoutesByHavingError();
     }
-      
   }
 
   Future _replaceAllNavRoutesByHavingError()async{
@@ -146,7 +145,7 @@ class DataInitializer{
       case NavigationRoute.Formularios:
         await _doFormsUpdating();
         break;    
-      case NavigationRoute.FormularioDetailForms:
+      case NavigationRoute.FormularioDetail:
         await _doFormDetailUpdating();
         break;
       case NavigationRoute.AdjuntarFotosVisita:

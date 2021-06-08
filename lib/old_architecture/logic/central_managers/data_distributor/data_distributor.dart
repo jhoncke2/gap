@@ -211,7 +211,6 @@ abstract class DataDistributor{
       formsB.add(SetForms(forms: formulariosOld));
       formsB.add(ChangeFormsAreBlocked(areBlocked: false));
     });
-    
   }
   
   Future<void> updateChosenForm(FormularioOld formOld)async{

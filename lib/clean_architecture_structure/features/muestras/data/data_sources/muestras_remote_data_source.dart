@@ -1,13 +1,13 @@
 import 'dart:convert';
+import 'package:meta/meta.dart';
+import 'package:http/http.dart' as http;
+import 'package:gap/old_architecture/data/models/entities/entities.dart';
 import 'package:gap/clean_architecture_structure/core/data/models/formulario/formulario_model.dart';
 import 'package:gap/old_architecture/data/models/entities/custom_form_field/variable/multi_value/multi_value_form_field.dart';
 import 'package:gap/old_architecture/data/models/entities/custom_form_field/variable/single_value/single_value_form_field.dart';
 import 'package:gap/old_architecture/data/models/entities/custom_form_field/variable/variable_form_field.dart';
-import 'package:gap/old_architecture/data/models/entities/entities.dart';
-import 'package:meta/meta.dart';
-import 'package:http/http.dart' as http;
-import 'package:gap/clean_architecture_structure/features/muestras/data/models/muestreo_model.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/general/remote_data_source.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/data/models/muestreo_model.dart';
 
 abstract class MuestrasRemoteDataSource{
   Future<MuestreoModel> getMuestreo(String accessToken, int visitId);
@@ -40,7 +40,7 @@ class MuestrasRemoteDataSourceImpl extends RemoteDataSource implements MuestrasR
       );
     }); 
     final Map<String, dynamic> jsonMuestra = jsonDecode(response.body);
-    return MuestreoModel.fromJson(jsonMuestra);
+    return MuestreoModel.fromRemoteJson(jsonMuestra);
   }
 
   @override

@@ -17,8 +17,8 @@ class FormularioFinal extends StatelessWidget {
       formulario: formulario, 
       onEnd: (Formulario formulario){
         //TODO: Implementar primer linea y quitar demás cuando se haya implementado clean architecture en formularios
-        //BlocProvider.of<MuestrasBloc>(context).add(EndFinalFormulario(formulario: formulario));
-        PagesNavigationManager.navToForms();
+        BlocProvider.of<MuestrasBloc>(context).add(EndFinalFormulario(formulario: formulario));
+        //PagesNavigationManager.navToForms();
       }
     );
   }

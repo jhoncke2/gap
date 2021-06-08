@@ -31,7 +31,7 @@ void main(){
     final int tProjectId = 1;
     test('should set visits successfuly', ()async{
       await visitsLocalDataSource.setVisits(tVisits, tProjectId);
-      verify(storageConnector.setList(tJsonVisits, '${VisitsLocalDataSourceImpl.BASE_VISITS_STORAGE_KEY}_$tProjectId'));
+      verify(storageConnector.setList(visitsToStorageJson(tVisits), '${VisitsLocalDataSourceImpl.BASE_VISITS_STORAGE_KEY}_$tProjectId'));
     });
   });
 

@@ -82,6 +82,7 @@ Future _requestStorageActivation()async{
 Future<void> _testRemovePartOfStorage()async{
   await UserStorageManager.removeAuthToken();
   StorageConnectorOld sc = StorageConnectorOld();
+  sc.deleteAll();
   await sc.removeResource('new_auth_token');
   await sc.removeResource('user');
   await sc.removeResource('projects_with_preloaded_visits');

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/clean_architecture_structure/core/platform/custom_navigator.dart';
-import 'package:gap/clean_architecture_structure/core/helpers/page_routes.dart';
+import 'package:gap/clean_architecture_structure/page_routes.dart';
 import 'package:gap/old_architecture/central_config/bloc_providers_creator.dart';
 import 'package:gap/old_architecture/ui/pages/init_page.dart';
 

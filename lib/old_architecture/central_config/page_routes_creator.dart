@@ -21,7 +21,7 @@ class PageRoutesCreatorOld{
     NavigationRoute.Visits.value: (_)=>VisitsPageOld(),
     NavigationRoute.VisitDetail.value: (_)=>VisitDetailPageOld(),
     NavigationRoute.Formularios.value: (_)=>FormulariosPageOld(),
-    NavigationRoute.FormularioDetailForms.value: (_)=>FormularioDetailPageOld(),
+    NavigationRoute.FormularioDetail.value: (_)=>FormularioDetailPageOld(),
     NavigationRoute.Firmers.value: (_)=>FirmersPageOld(),
     NavigationRoute.AdjuntarFotosVisita.value: (_)=>AdjuntarFotosVisitaPageOld(),
   };

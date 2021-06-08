@@ -41,20 +41,13 @@ class ProcessStage extends Enum<String>{
       return EnProceso;
     else if(value == Realizada.value)
       return Realizada;
-    else{
+    else
       return Pendiente;
-    }
-      
   }
 }
 
-abstract class NavRouteEnum extends Enum<String>{
-  final String step;
-  const NavRouteEnum(String route, {this.step}) : super(route);
-}
-
-class NavigationRoute extends NavRouteEnum{
-  const NavigationRoute(String value, {String step}) : super(value, step: step);
+class NavigationRoute extends Enum<String>{
+  const NavigationRoute(String value) : super(value);
   static const NavigationRoute Init = const NavigationRoute('init');
   static const NavigationRoute Login = const NavigationRoute('login');
   static const NavigationRoute Projects = const NavigationRoute('projects');
@@ -63,8 +56,7 @@ class NavigationRoute extends NavRouteEnum{
   static const NavigationRoute VisitDetail = const NavigationRoute('visit_detail');
   static const NavigationRoute Muestras = const NavigationRoute('muestras');
   static const NavigationRoute Formularios = const NavigationRoute('formularios');
-  static const NavigationRoute FormularioDetailForms = const NavigationRoute('formulario_detail', step: 'forms');
-  static const NavigationRoute FormularioDetailFirmers = const NavigationRoute('formulario_detail', step: 'firmers');
+  static const NavigationRoute FormularioDetail = const NavigationRoute('formulario_detail');
   static const NavigationRoute Firmers = const NavigationRoute('firmers');
   static const NavigationRoute AdjuntarFotosVisita = const NavigationRoute('adjuntar_fotos_visit');
 
@@ -84,22 +76,14 @@ class NavigationRoute extends NavRouteEnum{
       return Muestras;
     }else if(jsonRoute == Formularios.value){
       return Formularios;
-    }else if(jsonRoute == FormularioDetailForms.value){
-      return _getExactFormularioDetailRoute(json['step']);
+    }else if(jsonRoute == FormularioDetail.value){
+      return FormularioDetail;
     }else if(jsonRoute == AdjuntarFotosVisita.value){
       return AdjuntarFotosVisita;
     }else if(jsonRoute == Firmers.value)
       return Firmers;
     else
       return Init;
-  }
-
-  static NavigationRoute _getExactFormularioDetailRoute(String step){
-    if(step == FormularioDetailForms.step){
-      return FormularioDetailForms;
-    }else{
-      return FormularioDetailFirmers;
-    }
   }
 }
 

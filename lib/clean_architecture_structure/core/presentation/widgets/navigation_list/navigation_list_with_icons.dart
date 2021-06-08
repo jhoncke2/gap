@@ -63,14 +63,20 @@ class VisitNavigationList extends StatelessWidget {
 
   void _onTapIniciarVisita(){
     if(visit.hasMuestreo)
-      _navTo(NavigationRoute.Muestras);
+      _navToMuestras();
     else
-      _navTo(NavigationRoute.Formularios); 
+      _navToFormularios(); 
   }
 
-  void _navTo(NavigationRoute navRoute){
-    BlocProvider.of<NavigationBloc>(context).add(NavigateToEvent(navigationRoute: navRoute));
-    Navigator.of(context).pushReplacementNamed(navRoute.value);
+  _navToMuestras(){
+
+  }
+
+  void _navToFormularios(){
+    //BlocProvider.of<NavigationBloc>(context).add(NavigateToEvent(navigationRoute: NavigationRoute.Formularios));
+    //Navigator.of(context).pushReplacementNamed(NavigationRoute.Formularios.value);
+    //TODO: Cambiar cuando se haya implementado clean architecture
+    PagesNavigationManager.navToForms();
   }
 
   Widget _createAdjuntarImagenesWidget(){
