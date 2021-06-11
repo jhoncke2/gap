@@ -4,7 +4,7 @@ import 'package:gap/clean_architecture_structure/core/presentation/blocs/navigat
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/header/page_header.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/navigation_list/buttons/navigation_list_button.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/navigation_list/navigation_list.dart';
-import 'package:gap/clean_architecture_structure/core/presentation/widgets/scaffold_native_back_button_locker.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/widgets/general_app_scaffold.dart';
 import 'package:gap/clean_architecture_structure/features/projects/domain/use_cases/set_chosen_project.dart';
 import 'package:gap/clean_architecture_structure/features/projects/presentation/bloc/projects_bloc.dart';
 import 'package:gap/clean_architecture_structure/features/projects/domain/entities/project.dart';
@@ -25,7 +25,7 @@ class ProjectDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _initInitialConfiguration(context);
-    return ScaffoldNativeBackButtonLocker(
+    return GeneralAppScaffold(
         child: SafeArea(
       child: MultiBlocProvider(
         providers: [

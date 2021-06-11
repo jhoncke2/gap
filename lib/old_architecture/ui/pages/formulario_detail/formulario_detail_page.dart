@@ -88,21 +88,6 @@ class _LoadedFormularioDetail extends StatelessWidget {
     );
   }
 
-  Widget _createWidgetWithBlocBuilderConfigDefined(){
-    
-    return Container(
-      height: containerHeight,
-      margin: EdgeInsets.all(0),
-      child: Column(
-        children:[
-          header,
-          separer,
-          _createIndexBuilder()
-        ],
-      )
-    );
-  }
-
   Widget _createIndexBuilder(){
     return BlocBuilder<IndexOldBloc, IndexState>(
       builder: (context, indexState) {

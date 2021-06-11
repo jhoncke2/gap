@@ -1,14 +1,14 @@
 import 'package:flutter/cupertino.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:gap/old_architecture/native_connectors/permissions.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/navigation/navigation_local_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/domain/repositories/navigation_repository.dart';
 import 'package:gap/clean_architecture_structure/core/platform/custom_navigator.dart';
 import 'package:gap/clean_architecture_structure/injection_container.dart';
 import 'package:gap/old_architecture/logic/central_managers/data_distributor/data_distributor_error_handler_manager.dart';
-import 'package:gap/old_architecture/native_connectors/gps.dart';
 import 'package:gap/old_architecture/data/enums/enums.dart';
 import 'package:gap/old_architecture/data/models/entities/entities.dart';
 import 'package:gap/old_architecture/ui/utils/dialogs.dart' as dialogs;
+import 'package:permission_handler/permission_handler.dart';
 
 class PagesNavigationManager{
 
@@ -77,9 +77,12 @@ class PagesNavigationManager{
   }
 
   static Future<void> navToFormDetail(FormularioOld formulario, BuildContext context)async{
-    if(await _formularioSePuedeAbrir(formulario)){
-      await _GPSValidator.executeMethodByGpsStatus((){_updateForm(formulario);}, _goToAppSetings, gpsActivationRequestMessage);
-    }
+    await _executeMethodByValidateStorage(()async{
+      if(await _formularioSePuedeAbrir(formulario)){
+        await _GPSValidator.executeMethodByGpsStatus((){_updateForm(formulario);}, _goToAppSetings, gpsActivationRequestMessage);
+      }
+    });
+    
   }
 
   static Future<bool> _formularioSePuedeAbrir(FormularioOld formulario)async{
@@ -107,7 +110,9 @@ class PagesNavigationManager{
   }
 
   static Future endFormFillingOut()async{
-    await _GPSValidator.executeMethodByGpsStatus(_endFormFillingOut, _goToAppSetings, gpsActivationRequestMessage);
+    await _executeMethodByValidateStorage(()async{
+      await _GPSValidator.executeMethodByGpsStatus(_endFormFillingOut, _goToAppSetings, gpsActivationRequestMessage);
+    });
   }
 
   static Future _endFormFillingOut()async{
@@ -116,40 +121,57 @@ class PagesNavigationManager{
   }
 
   static Future initFirstFirmerFillingOut()async{
-    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.INIT_FIRST_FIRMER_FILLING_OUT);
-    await _goToPageByHavingOrNotError(NavigationRoute.Firmers, false);
+    await _executeMethodByValidateStorage(()async{
+      await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.INIT_FIRST_FIRMER_FILLING_OUT);
+      await _goToPageByHavingOrNotError(NavigationRoute.Firmers, false);
+    });
+    
   }
 
   static Future initFirstFirmerFirm()async{
-    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.INIT_FIRST_FIRMER_FIRM);
+    await _executeMethodByValidateStorage(()async{
+      await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.INIT_FIRST_FIRMER_FIRM);
+    });
+    
   }
 
   static Future<void> addFirmer()async{
-    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_FIRMERS);
+    await _executeMethodByValidateStorage(()async{
+      await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_FIRMERS);
+    });
+    
   }
 
   static Future<void> endFormFirmers()async{
-    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.END_ALL_FORM_PROCESS); 
-    await _backToForms();
-    await navLocalDataSource.removeLast();
-    await navLocalDataSource.removeLast();
-    await customNavigator.navigateReplacingTo((await navLocalDataSource.getNavRoutes()).last);
+    await _executeMethodByValidateStorage(()async{
+      await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.END_ALL_FORM_PROCESS); 
+      await _backToForms();
+      await navLocalDataSource.removeLast();
+      await navLocalDataSource.removeLast();
+      await customNavigator.navigateReplacingTo((await navLocalDataSource.getNavRoutes()).last);
+    }); 
   }
 
   static Future<void> endForms()async{
-    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.RESET_FORMS);
-    await navLocalDataSource.removeLast();
-    await navLocalDataSource.removeLast();
-    await customNavigator.navigateReplacingTo((await navLocalDataSource.getNavRoutes()).last);
+    await _executeMethodByValidateStorage(()async{
+      await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.RESET_FORMS);
+      await navLocalDataSource.removeLast();
+      await navLocalDataSource.removeLast();
+      await customNavigator.navigateReplacingTo((await navLocalDataSource.getNavRoutes()).last);
+    }); 
   }
 
   static Future<void> navToCommentedImages()async{ 
-    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_COMMENTED_IMAGES);
-    await _goToPageByHavingOrNotError(NavigationRoute.AdjuntarFotosVisita, false);
+    await _executeMethodByValidateStorage(()async{
+      await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_COMMENTED_IMAGES);
+      await _goToPageByHavingOrNotError(NavigationRoute.AdjuntarFotosVisita, false);
+    });
   }
 
   static Future<void> updateImgsToCommentedImgs()async{
-    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.ADD_CURRENT_PHOTOS_TO_COMMENTED_IMAGES);
+    await _executeMethodByValidateStorage(()async{
+      await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.ADD_CURRENT_PHOTOS_TO_COMMENTED_IMAGES);
+    });
   }
 
   static Future<void> endAdjuntarImages(BuildContext context)async{
@@ -158,22 +180,30 @@ class PagesNavigationManager{
   }
 
   static Future<void> _backToProjects()async{
-    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.RESET_CHOSEN_PROJECT);
+    await _executeMethodByValidateStorage(()async{
+      await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.RESET_CHOSEN_PROJECT);
+    });
   }
 
   static Future<void> _backToProjectDetail()async{
-    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.RESET_VISITS);
+    await _executeMethodByValidateStorage(()async{
+      await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.RESET_VISITS);
+    });
   }
 
   static Future<void> _backToVisits()async{
-    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.RESET_CHOSEN_VISIT);
+    await _executeMethodByValidateStorage(()async{
+      await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.RESET_CHOSEN_VISIT);
+    });
   }
 
   static Future<void> _backToVisitDetail()async{
   }
 
   static Future<void> _backToForms()async{
-    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.RESET_CHOSEN_FORM);
+    await _executeMethodByValidateStorage(()async{
+      await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.RESET_CHOSEN_FORM);
+    });
   }
 
   static Future _goToPageByHavingOrNotError(NavigationRoute destinationRoute, bool replacingAllRoutes)async{
@@ -223,10 +253,22 @@ class PagesNavigationManager{
     if(route == NavigationRoute.Formularios)
       await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.RESET_FORMS);
   }
+
+  static Future _executeMethodByValidateStorage(Function methodIfStorage)async{
+    final PermissionStatus storagePermission = await NativeServicesPermissions.storageServiceStatus;
+    if(storagePermission.isGranted)
+      await methodIfStorage();
+  }
 }
 
 class _GPSValidator{
   static Future executeMethodByGpsStatus(Function methodIfGps, Function methodIfNotGps, String errMessage)async{
+    final PermissionStatus gpsPermission = await NativeServicesPermissions.gpsServiceStatus;
+    if(gpsPermission.isGranted)
+      await methodIfGps();
+    else
+      await methodIfNotGps();
+    /*
     final  gpsStatus = await GPS.gpsPermission;
     switch(gpsStatus){
       case LocationPermission.whileInUse:
@@ -242,5 +284,12 @@ class _GPSValidator{
         await methodIfNotGps(CustomNavigatorImpl.navigatorKey.currentContext, errMessage);
         break;
     }
+    */
+  }
+}
+
+class _StorageValidator{
+  static Future executeMethodbyStorageStatus(Function methodIfStorage)async{
+
   }
 }

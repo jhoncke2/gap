@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'package:dartz/dartz.dart';
+import 'package:mockito/mockito.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/formularios/formularios_remote_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/preloaded/preloaded_local_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/models/formulario/formulario_model.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/data/models/muestra_model.dart';
-import 'package:mockito/mockito.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/projects/projects_local_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/user/user_local_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/visits/visits_local_data_source.dart';
@@ -466,6 +466,66 @@ void main(){
       when(userLocalDataSource.getAccessToken()).thenThrow(StorageException(type: StorageExceptionType.NORMAL));
       final result = await repository.removeMuestra(tMuestraId);
       expect(result, Left(StorageFailure(excType: StorageExceptionType.NORMAL)));
+    });
+  });
+
+  group('endMuestreo', (){
+    ProjectModel tChosenProject;
+    VisitModel tChosenVisit;
+    MuestreoModel tMuestreo;
+
+    setUp((){
+      tChosenProject = _getProjectFromFixture();
+      tChosenVisit = _getVisitFromFixture();
+      tMuestreo = _getMuestreoFromFixture();
+    });
+
+    test('should call the specified methods when there is connectivity', ()async{
+      when(networkInfo.isConnected()).thenAnswer((_) async => true);
+      when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tChosenProject);
+      when(visitsLocalDataSource.getChosenVisit(any)).thenAnswer((_) async => tChosenVisit);
+      await repository.endMuestreo();
+      verify(networkInfo.isConnected());
+      verify(projectsLocalDataSource.getChosenProject());
+      verify(visitsLocalDataSource.getChosenVisit(tChosenProject.id));
+      verify(preloadedLocalDataSource.removeMuestreo(tChosenProject.id, tChosenVisit.id));
+    });
+
+    test('should dont call the specified methods when there is not connectivity', ()async{
+      when(networkInfo.isConnected()).thenAnswer((_) async => false);
+      await repository.endMuestreo();
+      verify(networkInfo.isConnected());
+      verifyNever(projectsLocalDataSource.getChosenProject());
+      verifyNever(visitsLocalDataSource.getChosenVisit(any));
+      verifyNever(preloadedLocalDataSource.removeMuestreo(any, any));
+    });
+
+    test('''should return Right(null), 
+    when there is connectivity and all goes good''', ()async{
+      when(networkInfo.isConnected()).thenAnswer((_) async => true);
+      when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tChosenProject);
+      when(visitsLocalDataSource.getChosenVisit(any)).thenAnswer((_) async => tChosenVisit);
+      final result = await repository.endMuestreo();
+      expect(result, Right(null));
+    });
+
+    test('''should return Right(null), 
+    when there is not connectivity''', ()async{
+      when(networkInfo.isConnected()).thenAnswer((_) async => false);
+      when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tChosenProject);
+      when(visitsLocalDataSource.getChosenVisit(any)).thenAnswer((_) async => tChosenVisit);
+      final result = await repository.endMuestreo();
+      expect(result, Right(null));
+    });
+
+    test('''should return Left(ServerFailure(X)),
+    when there is connectivity and remoteDataSource throws ServerException(X)''', ()async{
+      when(networkInfo.isConnected()).thenAnswer((_) async => true);
+      when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tChosenProject);
+      when(visitsLocalDataSource.getChosenVisit(any)).thenAnswer((_) async => tChosenVisit);
+      when(preloadedLocalDataSource.removeMuestreo(any, any)).thenThrow(StorageException(type: StorageExceptionType.PLATFORM));
+      final result = await repository.endMuestreo();
+      expect(result, Left(StorageFailure(excType: StorageExceptionType.PLATFORM)));
     });
   });
 }

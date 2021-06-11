@@ -1,10 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/navigation/navigation_local_data_source.dart';
+import 'package:gap/clean_architecture_structure/core/domain/entities/formulario/formulario.dart';
 import 'package:gap/clean_architecture_structure/core/domain/repositories/formularios_repository.dart';
 import 'package:gap/clean_architecture_structure/core/domain/repositories/preloaded_repository.dart';
 import 'package:gap/clean_architecture_structure/core/domain/repositories/projects_repository.dart';
 import 'package:gap/clean_architecture_structure/core/domain/repositories/visits_repository.dart';
+import 'package:gap/clean_architecture_structure/core/domain/use_cases/use_case.dart';
+import 'package:gap/clean_architecture_structure/core/domain/use_cases/use_case_error_handler.dart';
 import 'package:gap/clean_architecture_structure/core/platform/custom_navigator.dart';
+import 'package:gap/clean_architecture_structure/features/projects/domain/use_cases/get_chosen_project.dart';
+import 'package:gap/clean_architecture_structure/features/visits/domain/use_cases/get_chosen_visit.dart';
 import 'package:gap/clean_architecture_structure/injection_container.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:gap/old_architecture/logic/bloc/nav_routes/custom_navigator.dart';
@@ -26,21 +31,25 @@ class DataInitializer{
 
   static final CustomNavigator customNavigator = sl();
   static final NavigationLocalDataSource navLocalDataSource = sl();
-
+  static final UseCaseErrorHandler useCaseErrorHandler = sl();
   //static final RoutesManager _routesManager = RoutesManager();
   bool _continueInitialization;
 
   Future init(BuildContext context, NetConnectionState netConnState)async{
     _continueInitialization = true;
     dataDisrtibutorErrorHandlingManager.netConnectionState = netConnState;
-    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.DO_FIRST_APP_INITIALIZATION);
-    if(!dataDisrtibutorErrorHandlingManager.happendError){
-      final PermissionStatus storagePermissionStatus = await NativeServicesPermissions.storageServiceStatus;
-      await _doFunctionByStoragePermissionStatus(storagePermissionStatus, CustomNavigatorOld.navigatorKey.currentContext, netConnState);
-    }else{
-      await UserStorageManager.setFirstTimeRunned();
-      _navigateToLogin(CustomNavigatorOld.navigatorKey.currentContext, netConnState);
+    final PermissionStatus storagePermissionStatus = await NativeServicesPermissions.storageServiceStatus;
+    if(storagePermissionStatus.isGranted){
+      await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.DO_FIRST_APP_INITIALIZATION);
+      if(!dataDisrtibutorErrorHandlingManager.happendError){
+        await _doFunctionByStoragePermissionStatus(storagePermissionStatus, CustomNavigatorOld.navigatorKey.currentContext, netConnState);
+      }else{
+        await UserStorageManager.setFirstTimeRunned();
+        _navigateToLogin(CustomNavigatorOld.navigatorKey.currentContext, netConnState);
+      }
     }
+    
+    
   }
 
   Future _doFunctionByStoragePermissionStatus(PermissionStatus permissionStatus, BuildContext context, NetConnectionState netConnState)async{
@@ -51,9 +60,8 @@ class DataInitializer{
   }
 
   Future _repeatStoragePermissionValidation(PermissionStatus permissionStatus, BuildContext context, NetConnectionState netConnState)async{
-    await dialogs.showErrDialog(context, 'Activa el permiso de almacenamiento para esta aplicación en configuración del dispositivo');
-    await NativeServicesPermissions.openSettings();
-    await _doFunctionByStoragePermissionStatus(permissionStatus, context, netConnState);
+    final PermissionStatus storagePermissionStatus = await NativeServicesPermissions.storageServiceStatus;
+    await _doFunctionByStoragePermissionStatus(storagePermissionStatus, context, netConnState);
   }
 
   Future _navigateToLogin(BuildContext context, NetConnectionState netConnState)async{
@@ -162,7 +170,8 @@ class DataInitializer{
   }
 
   Future _doProjectDetailUpdating()async{
-    final eitherChosenProject = await projectsRepository.getChosenProject();
+    final GetChosenProject getChosenProject = sl();
+    final eitherChosenProject = await getChosenProject(NoParams());
     await eitherChosenProject.fold((l)async{
       _continueInitialization = false;
     }, (chosenProject)async{
@@ -177,7 +186,8 @@ class DataInitializer{
   }
 
   Future _doVisitDetailUpdating()async{
-    final eitherChosenVisit = await visitsRepository.getChosenVisit();
+    final GetChosenVisit getChosenVisit = sl();
+    final eitherChosenVisit = await getChosenVisit(NoParams());
     await eitherChosenVisit.fold((l)async{
       _continueInitialization = false;
     }, (chosenVisit)async{
@@ -191,7 +201,9 @@ class DataInitializer{
   }
 
   Future _doFormDetailUpdating()async{
-    final eitherChosenFormulario = await formulariosRepository.getChosenFormulario();
+    final eitherChosenFormulario = await useCaseErrorHandler.executeFunction<Formulario>(
+      () => formulariosRepository.getChosenFormulario()
+    );
     await eitherChosenFormulario.fold((l)async{
       _continueInitialization = false;
     }, (chosenFormulario)async{

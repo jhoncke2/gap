@@ -13,7 +13,7 @@ abstract class PreloadedLocalDataSource{
   Future<void> removePreloadedFormulario(int projectId, int visitId, int formularioId);
   Future<MuestreoModel> getMuestreo(int projectId, int visitId);
   Future<void> updateMuestreo(int projectId, int visitId, MuestreoModel muestreo);
-  Future<void> removeMuestreo(int projectId, int visitId, int muestreoId);
+  Future<void> removeMuestreo(int projectId, int visitId);
 
   Future<void> setPreloadedFamilyOld(int projectId, int visitId, List<FormularioModel> formularios, [MuestreoModel muestreo, FormularioModel preFormulario, FormularioModel posFormulario]);
   Future<List<int>> getPreloadedProjectsIdsOld(); 
@@ -83,9 +83,16 @@ class PreloadedLocalDataSourceImpl implements PreloadedLocalDataSource{
     final PreloadedVisitModel visitData = preloadedData.getVisitData(projectId, visitId);
     if(visitData != null){
       final int formIndex = visitData.formularios.indexWhere((f) => f.id == formulario.id);
-      if(formIndex != -1)
+      if(formIndex != -1){
+        FormularioModel preloadedFormulario = visitData.formularios[formIndex];
+        preloadedFormulario.firmers.forEach((firmer) {
+          if( formulario.firmers.indexWhere((f) => f.id == firmer.id) == -1)
+            formulario.firmers.add(firmer);
+        });
         visitData.formularios[formIndex] = formulario;
+      }  
     }
+    await storageConnector.setMap(preloadedData.toJson(), PRELOADED_DATA_STORAGE_KEY);
   }
 
   Future<void> removePreloadedFormulario(int projectId, int visitId, int formularioId)async{
@@ -114,11 +121,11 @@ class PreloadedLocalDataSourceImpl implements PreloadedLocalDataSource{
     final PreloadedVisitModel visitData = preloadedData.getVisitData(projectId, visitId);
     if(visitData != null)
       preloadedData.setVisitData(projectId, visitId, visitData.formularios, muestreo);
-      await storageConnector.setMap(preloadedData.toJson(), PRELOADED_DATA_STORAGE_KEY);
+    await storageConnector.setMap(preloadedData.toJson(), PRELOADED_DATA_STORAGE_KEY);
   }
   
   @override
-  Future<void> removeMuestreo(int projectId, int visitId, int muestreoId)async{
+  Future<void> removeMuestreo(int projectId, int visitId)async{
     final Map<String, dynamic> jsonPreloadedData = await storageConnector.getMap(PRELOADED_DATA_STORAGE_KEY);
     final PreloadedDataModel preloadedData = PreloadedDataModel.fromJson(jsonPreloadedData);
     final PreloadedVisitModel visitData = preloadedData.getVisitData(projectId, visitId);

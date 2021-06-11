@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/blocs/navigation/navigation_bloc.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/header/page_header.dart';
-import 'package:gap/clean_architecture_structure/core/presentation/widgets/scaffold_native_back_button_locker.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/widgets/general_app_scaffold.dart';
 import 'package:gap/clean_architecture_structure/features/visits/presentation/bloc/visits_bloc.dart';
 import 'package:gap/clean_architecture_structure/features/visits/presentation/widgets/loaded_visits.dart';
 import 'package:gap/clean_architecture_structure/injection_container.dart';
@@ -17,7 +17,7 @@ class VisitsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ScaffoldNativeBackButtonLocker(
+      body: GeneralAppScaffold(
         providers: [
           BlocProvider<VisitsBloc>(create: (_)=>sl()),
         ],

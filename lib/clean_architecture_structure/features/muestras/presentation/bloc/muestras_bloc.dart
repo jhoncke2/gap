@@ -1,13 +1,12 @@
 import 'dart:async';
-import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/save_formulario.dart';
 import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/save_formulario.dart';
 import 'package:gap/clean_architecture_structure/core/error/failures.dart';
 import 'package:gap/clean_architecture_structure/core/domain/use_cases/use_case.dart';
 import 'package:gap/clean_architecture_structure/core/domain/entities/formulario/formulario.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/rango.dart';
-import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/get_formulario.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/muestra.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/remove_muestra.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/update_preparaciones.dart';
@@ -86,17 +85,20 @@ class MuestrasBloc extends Bloc<MuestrasEvent, MuestrasState>{
       String message = (failure is ServerFailure)? failure.message : GENERAL_ERROR_MESSAGE;
       yield MuestraError(message: message);
     }, (muestreo)async*{
-      if(muestreo.preFormulario != null){
+      if(_canGoToFormulario(muestreo.preFormulario)){
         yield * _loadFormularioInicial(muestreo);
       }else if(muestreo.componentes != null && muestreo.componentes.length > 0){
         yield * _initMuestrasProcess(muestreo);
-      }else if(muestreo.posFormulario != null){
+      }else if(_canGoToFormulario(muestreo.posFormulario)){
         yield * _loadFormularioFinal(muestreo);
       }else{
         yield MuestreoFinished(muestreo: muestreo);
       }
     });
   }
+
+  bool _canGoToFormulario(Formulario formulario) =>
+    formulario != null && !formulario.completo;
 
   Stream<MuestrasState> _loadFormularioInicial(Muestreo muestreo)async*{
     yield LoadingFormulario();
@@ -109,7 +111,7 @@ class MuestrasBloc extends Bloc<MuestrasEvent, MuestrasState>{
     await saveFormulario(SaveFormularioParams( muestreoId: muestreo.id, formulario: event.formulario, formularioType: PRE_FORMULARIO_TYPE));
     if(muestreo.componentes != null && muestreo.componentes.length > 0){
       yield * _initMuestrasProcess(muestreo);
-    }else if (muestreo.posFormulario != null)
+    }else if (_canGoToFormulario(muestreo.posFormulario))
       yield * _loadFormularioFinal(muestreo);
     else
       yield MuestreoFinished(muestreo: muestreo);
@@ -117,7 +119,7 @@ class MuestrasBloc extends Bloc<MuestrasEvent, MuestrasState>{
 
   Stream<MuestrasState> _endTomaMuestras()async*{
     final Muestreo muestreo = (state as LoadedMuestreo).muestreo;
-    if (muestreo.posFormulario != null)
+    if (_canGoToFormulario(muestreo.posFormulario))
       yield * _loadFormularioFinal(muestreo);
     else
       yield MuestreoFinished(muestreo: muestreo);

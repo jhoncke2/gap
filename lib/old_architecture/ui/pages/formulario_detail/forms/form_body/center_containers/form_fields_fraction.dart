@@ -86,11 +86,6 @@ class _FormInputsFractionState extends State<FormInputsFraction> {
     }
   }
 
-  Future _animateScrollToPosition(double offset)async{
-    //await widget.formFieldsScrollController.animateTo(offset, duration: Duration(milliseconds: 15), curve: Curves.bounceIn);
-    print(widget.formFieldsScrollController.offset);
-  }
-
   Widget _createFormFieldsWithIndex(){
     List<CustomFormFieldOld> formFIeldsByPage = _getFormFIeldsByCurrentPage();
     final double screenHeight = MediaQuery.of(context).size.height;

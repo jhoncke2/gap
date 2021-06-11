@@ -25,7 +25,7 @@ class PreloadedDataBloc extends Bloc<PreloadedDataEvent, PreloadedDataState> {
     yield * _sendPreloadedData();
     if(event is SendInitialPreloadedDataEvent)
       goTo(NavigationParams(navRoute: event.routeToGo));
-    yield InactivePreloaded();
+    yield await Future.delayed(Duration(milliseconds: 1000), ()=> InactivePreloaded());
   }
 
   Stream<PreloadedDataState> _sendPreloadedData()async*{

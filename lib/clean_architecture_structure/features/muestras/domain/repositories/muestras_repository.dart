@@ -10,4 +10,5 @@ abstract class MuestrasRepository{
   Future<Either<Failure, void>> setMuestra(int muestreoId, int selectedRangoId, List<double> pesosTomados);
   Future<Either<Failure, void>> updatePreparaciones(int muestreoId, List<String> preparaciones);
   Future<Either<Failure, void>> removeMuestra(int muestraId);
+  Future<Either<Failure, void>> endMuestreo();
 }

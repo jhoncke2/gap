@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
 import 'package:gap/old_architecture/logic/blocs_manager/chosen_form_manager.dart';
@@ -8,8 +7,6 @@ import 'package:gap/old_architecture/ui/widgets/native_back_button_locker.dart';
 // ignore: must_be_immutable
 class InitPageOld extends StatelessWidget{
   static final String route = 'init';
-  static StreamController<BuildContext> _contextStreamController = StreamController();
-  static Stream<BuildContext> get contextStream => _contextStreamController.stream;
   BuildContext context;
 
   @override
@@ -31,7 +28,7 @@ class InitPageOld extends StatelessWidget{
                 fit: BoxFit.fill
               ),
               Text(
-                'Versión 0.14.16',
+                'Versión 0.14.21',
                 style: TextStyle(
                   color: Theme.of(context).primaryColor.withOpacity(0.65),
                   fontSize: 16.5

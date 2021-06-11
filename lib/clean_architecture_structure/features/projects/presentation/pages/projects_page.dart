@@ -4,7 +4,7 @@ import 'package:gap/clean_architecture_structure/core/presentation/blocs/navigat
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/header/page_header.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/page_title.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/progress_indicator.dart';
-import 'package:gap/clean_architecture_structure/core/presentation/widgets/scaffold_native_back_button_locker.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/widgets/general_app_scaffold.dart';
 import 'package:gap/clean_architecture_structure/features/projects/presentation/bloc/projects_bloc.dart';
 import 'package:gap/clean_architecture_structure/features/projects/presentation/widgets/loaded_projects.dart';
 import 'package:gap/clean_architecture_structure/injection_container.dart';
@@ -16,7 +16,7 @@ class ProjectsPage extends StatelessWidget {
   ProjectsPage({Key key}) : super(key: key);
   @override
   Widget build(BuildContext context){
-    return ScaffoldNativeBackButtonLocker(
+    return GeneralAppScaffold(
       child: MultiBlocProvider(
         providers: [
           BlocProvider<ProjectsBloc>(create: (_)=>sl()),

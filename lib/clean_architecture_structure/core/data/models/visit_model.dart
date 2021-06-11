@@ -73,7 +73,20 @@ class VisitModel extends Visit{
     'sede': (sede as SedeModel).toJson(), 
     'completo': completo,
     'fecha_visita':  transformDateInToStringOld(date),
+    'muestra': this.hasMuestreo
   };
+
+  @override
+  Visit copyWith({
+    bool completo
+  })=>VisitModel(
+    id: this.id, 
+    date: this.date, 
+    completo: completo ?? this.completo, 
+    sede: this.sede, 
+    formularios: this.formularios,
+    hasMuestreo: this.hasMuestreo
+  );
 }
 
 

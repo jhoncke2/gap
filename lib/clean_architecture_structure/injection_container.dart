@@ -21,7 +21,6 @@ import 'package:gap/clean_architecture_structure/core/domain/use_cases/user/logi
 import 'package:gap/clean_architecture_structure/core/domain/use_cases/navigation/pop.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/utils/input_validator.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/notifiers/keyboard_notifier.dart';
-import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/get_formulario.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/save_formulario.dart';
 import 'package:gap/clean_architecture_structure/features/visits/presentation/notifier/visits_change_notifier.dart';
 import 'package:gap/clean_architecture_structure/core/domain/use_cases/use_case_error_handler.dart';

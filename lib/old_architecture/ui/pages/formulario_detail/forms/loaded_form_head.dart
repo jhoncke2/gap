@@ -33,12 +33,11 @@ class LoadedFormHead extends StatelessWidget {
             bottom: _sizeUtils.xasisSobreYasis * 0.025),
         child: BlocBuilder<VisitsBloc, VisitsState>(
           builder: (visitsContext, state) {
-            if(state is OnVisitDetail){
-              return _createLoadedVisitChild(state);
-            }else{
+            if(state is VisitsEmpty)
               _loadChosenVisit(visitsContext);
-              return Container();
-            }
+            else if(state is OnVisitDetail)
+              return _createLoadedVisitChild(state);
+            return Container();
           },
         ),
       ),

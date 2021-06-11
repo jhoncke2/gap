@@ -3,7 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/general_button.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/page_title.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/progress_indicator.dart';
-import 'package:gap/old_architecture/logic/bloc/entities/visits/visits_bloc.dart';
+import 'package:gap/clean_architecture_structure/features/visits/presentation/bloc/visits_bloc.dart';
+import 'package:gap/clean_architecture_structure/injection_container.dart';
 import 'package:gap/old_architecture/logic/bloc/widgets/commented_images/commented_images_bloc.dart';
 import 'package:gap/old_architecture/logic/bloc/widgets/index/index_bloc.dart';
 import 'package:gap/old_architecture/logic/blocs_manager/commented_images_index_manager.dart';
@@ -26,22 +27,25 @@ class AdjuntarFotosVisitaPageOld extends StatelessWidget {
   Widget build(BuildContext context) {
     _context = context;
     return Scaffold(
-      body: NativeBackButtonLocker(
-        child: SafeArea(
-          child: GestureDetector(
-            child: SingleChildScrollView(
-              child: BlocBuilder<CommentedImagesBloc, CommentedImagesState>(
-                builder: (context, state) {
-                  if(state.isLoading)
-                    return CustomProgressIndicator();
-                  else
-                    return _createContentItems();
-                },
-              ),
-            ), 
-            onTap: (){
-              FocusScope.of(_context).requestFocus(new FocusNode());
-            }
+      body: BlocProvider<VisitsBloc>(
+        create: (_)=>sl(),
+        child: NativeBackButtonLocker(
+          child: SafeArea(
+            child: GestureDetector(
+              child: SingleChildScrollView(
+                child: BlocBuilder<CommentedImagesBloc, CommentedImagesState>(
+                  builder: (context, state) {
+                    if(state.isLoading)
+                      return CustomProgressIndicator();
+                    else
+                      return _createContentItems();
+                  },
+                ),
+              ), 
+              onTap: (){
+                FocusScope.of(_context).requestFocus(new FocusNode());
+              }
+            ),
           ),
         ),
       ),
@@ -65,24 +69,31 @@ class AdjuntarFotosVisitaPageOld extends StatelessWidget {
       height: _sizeUtils.xasisSobreYasis * 1.0,
       padding: EdgeInsets.symmetric(
       horizontal: _sizeUtils.normalHorizontalScaffoldPadding),
-      child: BlocBuilder<VisitsOldBloc, VisitsState>(
-        builder: (context, state) {
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              _createTopComponents(state),
-              CommentedImagesPageOfIndex(),
-              IndexPagination(),
-              _createEndButton()
-            ],
-          );
+      child: BlocBuilder<VisitsBloc, VisitsState>(
+        builder: (visitsBContext, state) {  
+          if(state is VisitsEmpty){
+            WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+              BlocProvider.of<VisitsBloc>(visitsBContext).add(LoadChosenVisit());
+            });
+          }else if(state is OnVisitDetail){
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                _createTopComponents(state),
+                CommentedImagesPageOfIndex(),
+                IndexPagination(),
+                _createEndButton()
+              ],
+            );
+          }
+          return Container();
         },
       ),
     );
   }
 
-  Widget _createTopComponents(VisitsState state){
+  Widget _createTopComponents(OnVisitDetail state){
     return Container(
       child: Column(
         children: [
@@ -90,7 +101,7 @@ class AdjuntarFotosVisitaPageOld extends StatelessWidget {
           SizedBox(height: _sizeUtils.littleSizedBoxHeigh),
           _createAdjuntarFotosButtonByCommImgsState(),
           SizedBox(height: _sizeUtils.littleSizedBoxHeigh),
-          _createTextoSecundario(state.chosenVisit.name),
+          _createTextoSecundario(state.visit.name),
         ],
       ),
     );

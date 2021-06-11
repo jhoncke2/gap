@@ -97,8 +97,23 @@ class VisitsRepositoryImpl implements VisitsRepository{
   @override
   Future<Either<Failure, Visit>> getChosenVisit()async{
     try{
-      final ProjectModel chosenProject = await projectsLocalDataSource.getChosenProject();
-      final VisitModel chosenVisit = await localDataSource.getChosenVisit(chosenProject.id);
+      final int chosenProjectId = ( await projectsLocalDataSource.getChosenProject() ).id;
+      VisitModel chosenVisit = await localDataSource.getChosenVisit(chosenProjectId);
+      if( await networkInfo.isConnected() ){
+        final String accessToken = await userLocalDataSource.getAccessToken();
+        final List<VisitModel> remoteVisits = await remoteDataSource.getVisits(chosenProjectId, accessToken);
+        int visitIndex = remoteVisits.indexWhere((v) => v.id == chosenVisit.id);
+        if(visitIndex != -1)
+          chosenVisit = remoteVisits[visitIndex];
+      }else{
+        final List<FormularioModel> formularios = await preloadedDataSource.getPreloadedFormularios(chosenProjectId, chosenVisit.id);
+        bool completedVisit = true;
+        for(int i = 0; i < formularios.length && completedVisit; i++){
+          if(!formularios[i].completo)
+            completedVisit = false;
+        }
+        chosenVisit = chosenVisit.copyWith(completo: completedVisit);
+      }
       return Right(chosenVisit);
     }on StorageException catch(exception){
       return Left(StorageFailure(excType: exception.type));

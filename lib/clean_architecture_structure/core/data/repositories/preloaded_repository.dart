@@ -1,8 +1,8 @@
+import 'package:meta/meta.dart';
+import 'package:dartz/dartz.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/data/data_sources/muestras_remote_data_source.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/data/models/muestra_model.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/data/models/muestreo_model.dart';
-import 'package:meta/meta.dart';
-import 'package:dartz/dartz.dart';
 import 'package:gap/clean_architecture_structure/core/domain/entities/formulario/formulario.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/user/user_local_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/models/formulario/formulario_model.dart';
@@ -87,16 +87,22 @@ class PreloadedRepositoryImpl implements PreloadedRepository{
           m.pesos
         );
         muestreo.muestrasTomadas.removeWhere((muestreoM) => muestreoM.id == m.id);
+        if(muestreo.preFormulario != null)
         await localDataSource.updateMuestreo(projectId, visitId, muestreo);
       }
-      await localDataSource.removeMuestreo(projectId, visitId, muestreo.id);
+      await _sendMuestreoFormularioIfIsCompleted(muestreo.preFormulario, 'Pre', accessToken, muestreo.id);
+      await _sendMuestreoFormularioIfIsCompleted(muestreo.posFormulario, 'Pos', accessToken, muestreo.id);
+      await localDataSource.removeMuestreo(projectId, visitId);
     }
       
   }
 
+  Future<void> _sendMuestreoFormularioIfIsCompleted(FormularioModel formulario, String formularioType, String accessToken, int muestreoId)async{
+    if(formulario != null && formulario.completo)
+      await muestrasRemoteDataSource.setFormulario(accessToken, muestreoId, formulario, formularioType);
+  }
+
   Future<void> _sendFormularioData(FormularioModel formulario, int projectId, int visitId, String accessToken)async{
-    //print('******************');
-    //print('${formulario.toJson()}');
     if(formulario.initialPosition != null){
       await formulariosRemoteDataSource.setInitialPosition(formulario.initialPosition, formulario.id, accessToken);
       formulario.initialPosition = null;

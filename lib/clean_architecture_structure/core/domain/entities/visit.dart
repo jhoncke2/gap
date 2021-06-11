@@ -27,6 +27,11 @@ class Visit extends EntityWithStage{
 
   @override
   List<Object> get props => [id, date.year, date.month, date.day, completo, sede, formularios];
+
+  // ignore: missing_return
+  Visit copyWith({
+    bool completo
+  }){}
 }
 
 class Sede extends Equatable{
@@ -50,4 +55,5 @@ class Sede extends Equatable{
 
   @override
   List<Object> get props => [id, nombre, departamento, ciudad, direccion, telefono, barrio];
+
 }

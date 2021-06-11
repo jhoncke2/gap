@@ -80,7 +80,7 @@ void main(){
         '$tProjectId': {
           '$tVisitId':{
             'formularios': formulariosToJson( _getFormulariosFromFixtures() ),
-            'muestreo': tMuestreo
+            'muestreo': tMuestreo.toJson()
           }
         }
       };
@@ -96,7 +96,7 @@ void main(){
         '$tProjectId': {
           '$tVisitId':{
             'formularios': formulariosToJson( _getFormulariosFromFixtures() ),
-            'muestreo': tUpdatedMuestreo
+            'muestreo': tUpdatedMuestreo.toJson()
           }
         }
       };
@@ -142,7 +142,7 @@ void main(){
     });
 
     test('should call the specified methods', ()async{
-      await preloadedLocalDataSource.removeMuestreo(tProjectId, tVisitId, tMuestreo.id);
+      await preloadedLocalDataSource.removeMuestreo(tProjectId, tVisitId);
       verify(storageConnector.getMap(PreloadedLocalDataSourceImpl.PRELOADED_DATA_STORAGE_KEY));
       verify(storageConnector.setMap(tPreloadedDataWithoutMuestreo, PreloadedLocalDataSourceImpl.PRELOADED_DATA_STORAGE_KEY));
     });

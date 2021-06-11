@@ -41,7 +41,7 @@ class ProjectsLocalDataSourceImpl implements ProjectsLocalDataSource{
     final String stringChosenProjectId = await storageConnector.getString(CHOSEN_PROJECT_STORAGE_KEY);
     final int chosenProjectId = int.parse(stringChosenProjectId);
     final List<Map<String, dynamic>> jsonProjects = await storageConnector.getList(PROJECTS_STORAGE_KEY);
-    final Map<String, dynamic> jsonChosenProject = jsonProjects.singleWhere((p) => p['id'] == chosenProjectId);
+    final Map<String, dynamic> jsonChosenProject = jsonProjects.firstWhere((p) => p['id'] == chosenProjectId);
     return ProjectModel.fromJson(jsonChosenProject);
   }
 

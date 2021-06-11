@@ -93,14 +93,13 @@ class _FormulariosComponents extends StatelessWidget {
         padding: EdgeInsets.only(left: _sizeUtils.xasisSobreYasis * 0.05),
         child: BlocBuilder<VisitsBloc, VisitsState>(
           builder: (visitsBContext, state) {
-            if(state is OnVisitDetail){
-              return _createLoadedVisitChild(state);
-            }else{
+            if(state is VisitsEmpty){
               WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                 BlocProvider.of<VisitsBloc>(visitsBContext).add(LoadChosenVisit());
               });
-              return Container();
-            }
+            }else if(state is OnVisitDetail)
+              return _createLoadedVisitChild(state);   
+            return Container();
           },
         ));
   }

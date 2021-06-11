@@ -69,7 +69,8 @@ class VisitNavigationList extends StatelessWidget {
   }
 
   _navToMuestras(){
-
+    BlocProvider.of<NavigationBloc>(context).add(NavigateToEvent(navigationRoute: NavigationRoute.Muestras));
+    Navigator.of(context).pushReplacementNamed(NavigationRoute.Muestras.value);
   }
 
   void _navToFormularios(){

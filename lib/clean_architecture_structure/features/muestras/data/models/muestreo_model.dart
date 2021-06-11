@@ -82,8 +82,8 @@ class MuestreoModel extends Muestreo{
     'muestras': muestrasToJson( this.muestrasTomadas ),
     'obligatorio': this.obligatorio,
     'n_muestreos':[ minMuestras, maxMuestras ],
-    'pre_formulario': (this.preFormulario as FormularioModel).toJson(),
-    'pos_formulario': (this.posFormulario as FormularioModel).toJson()
+    'pre_formulario': (this.preFormulario == null)? null : (this.preFormulario as FormularioModel).toJson(),
+    'pos_formulario': (this.posFormulario == null)? null : (this.posFormulario as FormularioModel).toJson()
   };
 
   @override

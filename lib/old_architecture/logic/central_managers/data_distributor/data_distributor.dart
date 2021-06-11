@@ -82,7 +82,9 @@ abstract class DataDistributor{
   }
 
   Future updateFirstInitialization()async{
-    final eitherAlreadyRunned = await centralSystemRepository.getAppRunnedAnyTime();
+    final eitherAlreadyRunned = await errorHandler.executeFunction<bool>(
+      () => centralSystemRepository.getAppRunnedAnyTime()
+    );
     await eitherAlreadyRunned.fold((_){
 
     }, (alreadyRunned)async{
@@ -100,7 +102,9 @@ abstract class DataDistributor{
 
   Future doInitialConfig()async{
     userB.add(ChangeLoginButtopnAvaibleless(isAvaible: false));
-    final result = await userRepository.reLogin();
+    final result = await errorHandler.executeFunction<void>(
+      () => userRepository.reLogin()
+    );
     userB.add(ChangeLoginButtopnAvaibleless(isAvaible: true));
     result.fold((failure){
       throw UnfoundStorageElementErr(elementType: StorageElementType.AUTH_TOKEN);
@@ -115,7 +119,9 @@ abstract class DataDistributor{
     if(loginInfo['type'] == 'first_login'){
       userB.add(ChangeLoginButtopnAvaibleless(isAvaible: false));
       final User user = User(email: loginInfo['email'], password: loginInfo['password']);
-      final eitherLogin = await userRepository.login(user);
+      final eitherLogin = await errorHandler.executeFunction<void>(
+        () => userRepository.login(user)
+      );
       await eitherLogin.fold((failure){
         String message;
         if(failure is ServerFailure)
@@ -123,11 +129,13 @@ abstract class DataDistributor{
         throw ServiceStatusErr(extraInformation: 'login', message: message);
       }, (_)async{
         //TODO: Quitar cuando no se necesite más
-        await centralSystemRepository.setAppRunnedAnyTime();
+        await errorHandler.executeFunction<void>(() => centralSystemRepository.setAppRunnedAnyTime());
         userB.add(ChangeLoginButtopnAvaibleless(isAvaible: true));
       });
     }else{
-      final eitherRelogin = await userRepository.reLogin();
+      final eitherRelogin = await errorHandler.executeFunction<void>(
+        () => userRepository.reLogin()
+      );
       eitherRelogin.fold((_){
         throw ServiceStatusErr(extraInformation: 'login');
       }, (_){
@@ -138,7 +146,9 @@ abstract class DataDistributor{
 
   Future<void> updateProjects()async{
     projectsB.add(ResetProjects());
-    final Either<Failure, List<Project>> eitherProjects = await projectsRepository.getProjects();
+    final Either<Failure, List<Project>> eitherProjects = await errorHandler.executeFunction<List<Project>>(
+      () => projectsRepository.getProjects()
+    );
     eitherProjects.fold((l)async{
       //TODO: Implementar manejo de error de conexión
       dialogs.showBlockedDialog(CustomNavigatorImpl.navigatorKey.currentContext, 'Ocurrió un error con los datos de los proyectos');
@@ -152,7 +162,9 @@ abstract class DataDistributor{
   Future<void> updateChosenProject(ProjectOld projectOld)async{
     projectsB.add(ResetProjects());
     final ProjectModel project = ProjectModel(id: projectOld.id, nombre: projectOld.nombre);
-    final eitherResult = await projectsRepository.setChosenProject(project);
+    final eitherResult = await errorHandler.executeFunction(
+      () => projectsRepository.setChosenProject(project)
+    );
     eitherResult.fold((l){
       //TODO: Implementar manejo de errores
     }, (r){

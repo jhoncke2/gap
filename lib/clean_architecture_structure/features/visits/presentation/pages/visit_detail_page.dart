@@ -5,7 +5,7 @@ import 'package:gap/clean_architecture_structure/core/presentation/widgets/heade
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/navigation_list/navigation_list_with_icons.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/page_title.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/progress_indicator.dart';
-import 'package:gap/clean_architecture_structure/core/presentation/widgets/scaffold_native_back_button_locker.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/widgets/general_app_scaffold.dart';
 import 'package:gap/clean_architecture_structure/features/visits/presentation/bloc/visits_bloc.dart';
 import 'package:gap/clean_architecture_structure/injection_container.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
@@ -15,7 +15,7 @@ class VisitDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ScaffoldNativeBackButtonLocker(
+    return GeneralAppScaffold(
       child: SafeArea(
         child: BlocProvider<VisitsBloc>(
           create: (context) => sl(),

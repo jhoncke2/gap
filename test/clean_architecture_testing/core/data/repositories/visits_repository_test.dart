@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:gap/clean_architecture_structure/core/domain/entities/formulario/formulario.dart';
 import 'package:test/test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:mockito/mockito.dart';
@@ -320,36 +321,82 @@ void _testSetChosenVisitGroup(){
 void _testGetChosenVisitsGroup(){
   group('getChosenVisit', (){
     ProjectModel tProject;
-    Visit tChosenVisit;
+    List<Visit> tVisits;
+    String tAccessToken;
+    Visit tLocalChosenVisit;
+    Visit tNewChosenVisit;
+    List<Formulario> tCompleteFormularios;
+    List<Formulario> tUncompleteFormularios;
 
     setUp((){
       tProject = _getProjectFromFixture();
-      tChosenVisit = _getVisitsFromFixture()[0];
+      tVisits = _getVisitsFromFixture();
+      tVisits[0] = tVisits[0].copyWith(completo: true);
+      tAccessToken = 'access_token';
+      tLocalChosenVisit = _getVisitsFromFixture()[0].copyWith(completo: false);
+      tNewChosenVisit = _getVisitsFromFixture()[0].copyWith(completo: true);
+      tCompleteFormularios = _getFormulariosCompletosFromFixtures();
+      tUncompleteFormularios = _getFormulariosFromFixture();
     });
 
     test('should get the chosen visit from localDataSource when there is connection', ()async{
       when(networkInfo.isConnected()).thenAnswer((_) async => true);
       when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tProject);
-      when(localDataSource.getChosenVisit(any)).thenAnswer((realInvocation) async => tChosenVisit);
+      when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
+      when(remoteDataSource.getVisits(any, any)).thenAnswer((_) async => tVisits);
+      when(localDataSource.getChosenVisit(any)).thenAnswer((_) async => tLocalChosenVisit);
       await visitsRepository.getChosenVisit();
+      verify(networkInfo.isConnected());
+      verify(projectsLocalDataSource.getChosenProject());
+      verify(userLocalDataSource.getAccessToken());
+      verify(remoteDataSource.getVisits(tProject.id, tAccessToken));
       verify(localDataSource.getChosenVisit(tProject.id));
+      verifyNever(preloadedDataSource.getPreloadedFormularios(tProject.id, tLocalChosenVisit.id));
     });
 
     
     test('should get the chosen visit from localDataSource when there is not connection', ()async{
       when(networkInfo.isConnected()).thenAnswer((_) async => false);
       when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tProject);
-      when(localDataSource.getChosenVisit(any)).thenAnswer((realInvocation) async => tChosenVisit);
+      when(localDataSource.getChosenVisit(any)).thenAnswer((realInvocation) async => tLocalChosenVisit);
+      when(preloadedDataSource.getPreloadedFormularios(any, any)).thenAnswer((_) async => tCompleteFormularios);
       await visitsRepository.getChosenVisit();
+      verify(projectsLocalDataSource.getChosenProject());
       verify(localDataSource.getChosenVisit(tProject.id));
+      verifyNever(userLocalDataSource.getAccessToken());
+      verifyNever(remoteDataSource.getVisits(tProject.id, tAccessToken));
+      verify(preloadedDataSource.getPreloadedFormularios(tProject.id, tLocalChosenVisit.id));
     });
 
-    test('should return Right(tChosenVisit) when all goes good', ()async{
+    test('''should return Right(tNewChosenVisit) when there is connectivity
+    and all goes good''', ()async{
       when(networkInfo.isConnected()).thenAnswer((_) async => true);
+      when(userLocalDataSource.getAccessToken()).thenAnswer((_) async => tAccessToken);
+      when(remoteDataSource.getVisits(any, any)).thenAnswer((_) async => tVisits);
       when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tProject);
-      when(localDataSource.getChosenVisit(any)).thenAnswer((realInvocation) async => tChosenVisit);
+      when(localDataSource.getChosenVisit(any)).thenAnswer((realInvocation) async => tLocalChosenVisit);
       final response = await visitsRepository.getChosenVisit();
-      expect(response, Right(tChosenVisit));
+      expect(response, Right(tNewChosenVisit));
+    });
+
+    test('''should return Right(tNewChosenVisit) when there is not connectivity,
+    all the preloaded formularios are completed, and all goes good''', ()async{
+      when(networkInfo.isConnected()).thenAnswer((_) async => false);
+      when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tProject);
+      when(localDataSource.getChosenVisit(any)).thenAnswer((realInvocation) async => tLocalChosenVisit);
+      when(preloadedDataSource.getPreloadedFormularios(any, any)).thenAnswer((_) async => tCompleteFormularios);
+      final response = await visitsRepository.getChosenVisit();
+      expect(response, Right(tNewChosenVisit));
+    });
+
+    test('''should return Right(tLocalChosenVisit) when there is not connectivity,
+    all the preloaded formularios are not completed, and all goes good''', ()async{
+      when(networkInfo.isConnected()).thenAnswer((_) async => false);
+      when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tProject);
+      when(localDataSource.getChosenVisit(any)).thenAnswer((realInvocation) async => tLocalChosenVisit);
+      when(preloadedDataSource.getPreloadedFormularios(any, any)).thenAnswer((_) async => tUncompleteFormularios);
+      final response = await visitsRepository.getChosenVisit();
+      expect(response, Right(tLocalChosenVisit));
     });
 
     test('should return Left(StorageFailure()) when localDataSource throws a StorageException()', ()async{
@@ -372,4 +419,10 @@ MuestreoModel _getMuestreoFromFixtures(){
   String stringMuestreo = callFixture('muestreo.json');
   Map<String, dynamic> jsonMuestreo = jsonDecode(stringMuestreo);
   return MuestreoModel.fromRemoteJson(jsonMuestreo);
+}
+
+List<FormularioModel> _getFormulariosCompletosFromFixtures(){
+  final String sFormularios = callFixture('formularios_completos.json');
+  final List<Map<String, dynamic>> jFormularios = jsonDecode(sFormularios).cast<Map<String, dynamic>>();
+  return formulariosFromJson(jFormularios);
 }

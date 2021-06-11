@@ -64,4 +64,10 @@ class MuestrasRepositoryFake implements MuestrasRepository{
     );
     return Right(null);
   }
+
+  @override
+  Future<Either<Failure, void>> endMuestreo() {
+    // TODO: implement endMuestreo
+    throw UnimplementedError();
+  }
 }

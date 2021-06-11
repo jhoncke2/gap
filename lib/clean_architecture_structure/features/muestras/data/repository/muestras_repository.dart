@@ -1,11 +1,12 @@
-import 'package:gap/clean_architecture_structure/core/data/data_sources/preloaded/preloaded_local_data_source.dart';
-import 'package:gap/clean_architecture_structure/features/muestras/data/models/muestra_model.dart';
 import 'package:meta/meta.dart';
 import 'package:dartz/dartz.dart';
-import 'package:gap/clean_architecture_structure/core/data/models/project_model.dart';
-import 'package:gap/clean_architecture_structure/core/data/models/visit_model.dart';
+import 'package:gap/clean_architecture_structure/core/error/failures.dart';
 import 'package:gap/clean_architecture_structure/core/error/exceptions.dart';
 import 'package:gap/clean_architecture_structure/core/network/network_info.dart';
+import 'package:gap/clean_architecture_structure/core/data/models/visit_model.dart';
+import 'package:gap/clean_architecture_structure/core/data/models/project_model.dart';
+import 'package:gap/clean_architecture_structure/core/data/data_sources/preloaded/preloaded_local_data_source.dart';
+import 'package:gap/clean_architecture_structure/features/muestras/data/models/muestra_model.dart';
 import 'package:gap/clean_architecture_structure/core/domain/entities/formulario/formulario.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/formularios/formularios_remote_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/projects/projects_local_data_source.dart';
@@ -14,7 +15,6 @@ import 'package:gap/clean_architecture_structure/core/data/data_sources/visits/v
 import 'package:gap/clean_architecture_structure/features/muestras/data/models/muestreo_model.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/data/data_sources/muestras_remote_data_source.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/entities/muestreo.dart';
-import 'package:gap/clean_architecture_structure/core/error/failures.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/repositories/muestras_repository.dart';
 
 class MuestrasRepositoryImpl implements MuestrasRepository{
@@ -66,6 +66,7 @@ class MuestrasRepositoryImpl implements MuestrasRepository{
         final int chosenProjectId = (await projectsLocalDataSource.getChosenProject()).id;
         final int chosenVisitId = (await visitsLocalDataSource.getChosenVisit(chosenProjectId)).id;
         MuestreoModel muestreo = await preloadedLocalDataSource.getMuestreo(chosenProjectId, chosenVisitId);
+        formulario.completo = true;
         if(tipo == 'Pre')
           muestreo = muestreo.copyWith(preFormulario: formulario);
         else
@@ -145,6 +146,20 @@ class MuestrasRepositoryImpl implements MuestrasRepository{
       return Left(StorageFailure(excType: exception.type));
     }on ServerException catch(exception){
       return Left(ServerFailure(servExcType: exception.type, message: exception.message));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> endMuestreo()async{
+    try{
+      if( await networkInfo.isConnected() ){
+        int chosenProjectId = (await projectsLocalDataSource.getChosenProject()).id;
+        int chosenVisitId = (await visitsLocalDataSource.getChosenVisit(chosenProjectId)).id;
+        await preloadedLocalDataSource.removeMuestreo(chosenProjectId, chosenVisitId);
+      }
+      return Right(null);
+    }on StorageException catch(exception){
+      return Left(StorageFailure(excType: exception.type));
     }
   }
 }
