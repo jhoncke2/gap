@@ -6,7 +6,7 @@ import 'package:gap/clean_architecture_structure/core/domain/repositories/preloa
 import 'package:gap/clean_architecture_structure/core/domain/repositories/projects_repository.dart';
 import 'package:gap/clean_architecture_structure/core/domain/repositories/visits_repository.dart';
 import 'package:gap/clean_architecture_structure/core/domain/use_cases/use_case.dart';
-import 'package:gap/clean_architecture_structure/core/domain/use_cases/use_case_error_handler.dart';
+import 'package:gap/clean_architecture_structure/core/domain/helpers/use_case_error_handler.dart';
 import 'package:gap/clean_architecture_structure/core/platform/custom_navigator.dart';
 import 'package:gap/clean_architecture_structure/features/projects/domain/use_cases/get_chosen_project.dart';
 import 'package:gap/clean_architecture_structure/features/visits/domain/use_cases/get_chosen_visit.dart';
@@ -38,7 +38,7 @@ class DataInitializer{
   Future init(BuildContext context, NetConnectionState netConnState)async{
     _continueInitialization = true;
     dataDisrtibutorErrorHandlingManager.netConnectionState = netConnState;
-    final PermissionStatus storagePermissionStatus = await NativeServicesPermissions.storageServiceStatus;
+    final PermissionStatus storagePermissionStatus = await NativeServicesPermissionsOld.storageServiceStatus;
     if(storagePermissionStatus.isGranted){
       await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.DO_FIRST_APP_INITIALIZATION);
       if(!dataDisrtibutorErrorHandlingManager.happendError){
@@ -48,8 +48,6 @@ class DataInitializer{
         _navigateToLogin(CustomNavigatorOld.navigatorKey.currentContext, netConnState);
       }
     }
-    
-    
   }
 
   Future _doFunctionByStoragePermissionStatus(PermissionStatus permissionStatus, BuildContext context, NetConnectionState netConnState)async{
@@ -60,7 +58,7 @@ class DataInitializer{
   }
 
   Future _repeatStoragePermissionValidation(PermissionStatus permissionStatus, BuildContext context, NetConnectionState netConnState)async{
-    final PermissionStatus storagePermissionStatus = await NativeServicesPermissions.storageServiceStatus;
+    final PermissionStatus storagePermissionStatus = await NativeServicesPermissionsOld.storageServiceStatus;
     await _doFunctionByStoragePermissionStatus(storagePermissionStatus, context, netConnState);
   }
 
@@ -178,7 +176,6 @@ class DataInitializer{
       final ProjectOld chosenProjectOld = ProjectOld(id: chosenProject.id, nombre: chosenProject.nombre, visits: []);
       await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_CHOSEN_PROJECT, chosenProjectOld);
     });
-    
   }
 
   Future _doVisitsUpdating()async{

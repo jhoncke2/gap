@@ -1,4 +1,6 @@
 //sl: service locator
+import 'package:gap/clean_architecture_structure/core/domain/use_cases/preloaded/send_preloaded_data.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/blocs/preloaded_data/preloaded_data_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'core/network/network_info.dart';
 import 'package:http/http.dart' as http;
@@ -23,7 +25,7 @@ import 'package:gap/clean_architecture_structure/core/presentation/utils/input_v
 import 'package:gap/clean_architecture_structure/core/presentation/notifiers/keyboard_notifier.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/save_formulario.dart';
 import 'package:gap/clean_architecture_structure/features/visits/presentation/notifier/visits_change_notifier.dart';
-import 'package:gap/clean_architecture_structure/core/domain/use_cases/use_case_error_handler.dart';
+import 'package:gap/clean_architecture_structure/core/domain/helpers/use_case_error_handler.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/blocs/navigation/navigation_bloc.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/domain/use_cases/update_preparaciones.dart';
 import 'package:gap/clean_architecture_structure/features/projects/domain/use_cases/get_chosen_project.dart';
@@ -125,6 +127,12 @@ void init()async{
   ));
   sl.registerLazySingleton<NavigationRepository>(()=>NavigationRepositoryImpl(
     localDataSource: sl()
+  ));
+  
+  sl.registerLazySingleton(() => SendPreloadedData(repository: sl()));
+  sl.registerLazySingleton<PreloadedDataBloc>(()=>PreloadedDataBloc(
+    sendPreloadedData: sl(), 
+    goTo: sl()
   ));
   //TODO: Quitar al confirmar funcionamiento correcto de MuestrasRepositoryImpl
   //sl.registerLazySingleton<MuestrasRepository>(()=>MuestrasRepositoryFake());

@@ -4,7 +4,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/clean_architecture_structure/core/domain/entities/commented_image.dart';
 import 'package:gap/clean_architecture_structure/core/domain/entities/formulario/formulario.dart';
-import 'package:gap/clean_architecture_structure/core/domain/use_cases/use_case_error_handler.dart';
+import 'package:gap/clean_architecture_structure/core/domain/helpers/use_case_error_handler.dart';
 import 'package:gap/clean_architecture_structure/core/platform/custom_navigator.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:gap/clean_architecture_structure/core/domain/repositories/central_system_repository.dart';

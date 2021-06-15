@@ -6,7 +6,7 @@ import 'package:gap/clean_architecture_structure/core/data/models/visit_model.da
 import 'package:gap/clean_architecture_structure/core/domain/entities/visit.dart';
 import 'package:gap/clean_architecture_structure/core/domain/repositories/visits_repository.dart';
 import 'package:gap/clean_architecture_structure/core/domain/use_cases/use_case.dart';
-import 'package:gap/clean_architecture_structure/core/domain/use_cases/use_case_error_handler.dart';
+import 'package:gap/clean_architecture_structure/core/domain/helpers/use_case_error_handler.dart';
 import 'package:gap/clean_architecture_structure/features/visits/domain/use_cases/get_chosen_visit.dart';
 import 'package:mockito/mockito.dart';
 

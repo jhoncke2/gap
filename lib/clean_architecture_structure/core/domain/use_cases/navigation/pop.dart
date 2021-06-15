@@ -5,7 +5,7 @@ import 'package:gap/clean_architecture_structure/core/domain/use_cases/use_case.
 import 'package:gap/clean_architecture_structure/core/error/failures.dart';
 import 'package:gap/clean_architecture_structure/core/platform/custom_navigator.dart';
 
-import '../use_case_error_handler.dart';
+import '../../helpers/use_case_error_handler.dart';
 
 class Pop implements UseCase<void, NoParams>{
 

@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/blocs/navigation/navigation_bloc.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/blocs/preloaded_data/preloaded_data_bloc.dart';
@@ -5,9 +7,8 @@ import 'package:gap/clean_architecture_structure/core/presentation/widgets/progr
 import 'package:gap/clean_architecture_structure/injection_container.dart';
 import 'package:gap/old_architecture/logic/bloc/widgets/keyboard_listener/keyboard_listener_bloc.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
-import 'package:meta/meta.dart';
-import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class GeneralAppScaffold extends StatelessWidget {
   static final SizeUtils sizeUtils = SizeUtils();
   final Widget child;
@@ -56,7 +57,7 @@ class GeneralAppScaffold extends StatelessWidget {
         Container(
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
-          color: Colors.blueGrey.withOpacity(0.3),
+          color: Colors.grey.withOpacity(0.25),
         ),
         upperWidget
       ],
@@ -88,23 +89,31 @@ class GeneralAppScaffold extends StatelessWidget {
   }
 
   Widget _createText(String text){
-    return Text(
-      text,
-      style: TextStyle(
-        fontSize: sizeUtils.titleSize,
-        color: Theme.of(context).primaryColor
+    return Center(
+      child: Text(
+        text,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: sizeUtils.subtitleSize,
+          color: Theme.of(context).primaryColor
+        ),
       ),
     );
   }
 
   Widget _centerMessage({ @required Widget child } ){
-    return Container(
-      child: child,
-      height: 75,
-      width: 140,
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.9),
-        borderRadius: BorderRadius.circular(15)
+    return Center(
+      child: Container(
+        child: child,
+        height: MediaQuery.of(context).size.height * 0.2,
+        width: MediaQuery.of(context).size.width * 0.6,
+        padding: EdgeInsets.symmetric(
+          horizontal: sizeUtils.xasisSobreYasis * 0.035
+        ),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.975),
+          borderRadius: BorderRadius.circular(15)
+        ),
       ),
     );
   }

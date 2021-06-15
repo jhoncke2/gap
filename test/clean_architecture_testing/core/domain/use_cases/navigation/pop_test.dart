@@ -1,4 +1,4 @@
-import 'package:gap/clean_architecture_structure/core/domain/use_cases/use_case_error_handler.dart';
+import 'package:gap/clean_architecture_structure/core/domain/helpers/use_case_error_handler.dart';
 import 'package:test/test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:mockito/mockito.dart';

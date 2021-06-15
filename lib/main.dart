@@ -32,10 +32,12 @@ Future<void> doInitialConfig()async{
 }
 
 Future _onStartingApp()async{
+  /*
   if(await NativeServicesPermissions.storageIsGranted || true)
     await _initApp(null);
   else
     await _requestStorageActivation();
+  */
 }
 
 void _onResumeApp(AppLifecycleState state)async{
@@ -76,7 +78,7 @@ Future _onConnectionChanged(NetConnectionState newConnState, BuildContext contex
 
 Future _requestStorageActivation()async{
   await dialogs.showErrDialog(CustomNavigatorOld.navigatorKey.currentContext, 'Por favor activa el servicio de almacenamiento para esta app en configuración del dispositivo');
-  await NativeServicesPermissions.openSettings();
+  await NativeServicesPermissionsOld.openSettings();
 }
 
 Future<void> _testRemovePartOfStorage()async{

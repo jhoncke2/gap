@@ -1,6 +1,6 @@
 import 'package:permission_handler/permission_handler.dart';
 
-class NativeServicesPermissions{
+class NativeServicesPermissionsOld{
 
   static Future<bool> get gpsIsGranted async => await Permission.location.isGranted;
   static Future<PermissionStatus> get gpsServiceStatus async => await Permission.location.request();

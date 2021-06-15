@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/clean_architecture_structure/core/platform/custom_navigator.dart';
+import 'package:gap/clean_architecture_structure/features/init/presentation/pages/init_page.dart';
 import 'package:gap/clean_architecture_structure/page_routes.dart';
 import 'package:gap/old_architecture/central_config/bloc_providers_creator.dart';
 import 'package:gap/old_architecture/ui/pages/init_page.dart';
@@ -43,7 +44,7 @@ class _GapAppState extends State<GapApp> with WidgetsBindingObserver{
         primaryColor: Color.fromRGBO(93, 92, 92, 1),
         secondaryHeaderColor: Colors.brown.withOpacity(0.35)
       ),
-      home: InitPageOld(),
+      home: InitPage(),
       //home: MuestrasPage(),
       //routes: PageRoutesCreatorOld.routes,
       routes: PageRoutes.routes,

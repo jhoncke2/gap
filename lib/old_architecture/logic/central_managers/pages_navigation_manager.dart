@@ -255,7 +255,7 @@ class PagesNavigationManager{
   }
 
   static Future _executeMethodByValidateStorage(Function methodIfStorage)async{
-    final PermissionStatus storagePermission = await NativeServicesPermissions.storageServiceStatus;
+    final PermissionStatus storagePermission = await NativeServicesPermissionsOld.storageServiceStatus;
     if(storagePermission.isGranted)
       await methodIfStorage();
   }
@@ -263,7 +263,7 @@ class PagesNavigationManager{
 
 class _GPSValidator{
   static Future executeMethodByGpsStatus(Function methodIfGps, Function methodIfNotGps, String errMessage)async{
-    final PermissionStatus gpsPermission = await NativeServicesPermissions.gpsServiceStatus;
+    final PermissionStatus gpsPermission = await NativeServicesPermissionsOld.gpsServiceStatus;
     if(gpsPermission.isGranted)
       await methodIfGps();
     else

@@ -4,7 +4,7 @@ import 'package:gap/clean_architecture_structure/core/domain/repositories/user_r
 import 'package:gap/clean_architecture_structure/core/domain/use_cases/use_case.dart';
 import 'package:gap/clean_architecture_structure/core/error/failures.dart';
 
-import '../use_case_error_handler.dart';
+import '../../helpers/use_case_error_handler.dart';
 
 class Logout extends UseCase<void, NoParams>{
   final UserRepository repository;

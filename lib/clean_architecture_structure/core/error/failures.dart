@@ -56,3 +56,7 @@ class ServerFailure extends Failure{
 class InvalidInputFailure extends Failure{}
 
 class FormatFailure extends Failure{}
+
+class UngrantedStorageFailure extends Failure{}
+
+class UngrantedGPSFailure extends Failure{}

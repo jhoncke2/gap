@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gap/clean_architecture_structure/core/domain/repositories/user_repository.dart';
 import 'package:gap/clean_architecture_structure/core/domain/use_cases/use_case.dart';
-import 'package:gap/clean_architecture_structure/core/domain/use_cases/use_case_error_handler.dart';
+import 'package:gap/clean_architecture_structure/core/domain/helpers/use_case_error_handler.dart';
 import 'package:gap/clean_architecture_structure/core/domain/use_cases/user/logout.dart';
 import 'package:gap/clean_architecture_structure/core/error/exceptions.dart';
 import 'package:gap/clean_architecture_structure/core/error/failures.dart';

@@ -1,3 +1,4 @@
+import 'package:gap/clean_architecture_structure/features/init/presentation/pages/init_page.dart';
 import 'package:gap/clean_architecture_structure/features/login/presentation/pages/login_page.dart';
 import 'package:gap/clean_architecture_structure/features/muestras/presentation/pages/muestras_page.dart';
 import 'package:gap/clean_architecture_structure/features/projects/presentation/pages/project_detail_page.dart';
@@ -10,16 +11,12 @@ import 'package:gap/old_architecture/ui/pages/firmers/firmers_page.dart';
 import 'package:gap/old_architecture/ui/pages/formulario_detail/formulario_detail_page.dart';
 import 'package:gap/old_architecture/ui/pages/formularios_page.dart';
 import 'package:gap/old_architecture/ui/pages/init_page.dart';
-import 'package:gap/old_architecture/ui/pages/login_page.dart';
-import 'package:gap/old_architecture/ui/pages/project_detail_page.dart';
-import 'package:gap/old_architecture/ui/pages/projects_page.dart';
-import 'package:gap/old_architecture/ui/pages/visit_detail_page.dart';
-import 'package:gap/old_architecture/ui/pages/visits_page.dart';
 
 class PageRoutes{
-  static final initialRoute = NavigationRoute.Muestras;
+  static final initialRoute = NavigationRoute.Init;
   static final routes = {
-    NavigationRoute.Init.value : (_)=>InitPageOld(),
+    //NavigationRoute.Init.value : (_)=>InitPageOld(),
+    NavigationRoute.Init.value: (_)=>InitPage(),
     NavigationRoute.Login.value : (_)=>LoginPage(),
     //NavigationRoute.Login.value : (_)=>LoginPageOld(),
     NavigationRoute.Projects.value : (_)=>ProjectsPage(),
