@@ -12,13 +12,16 @@ import 'package:gap/old_architecture/ui/utils/size_utils.dart';
 class GeneralAppScaffold extends StatelessWidget {
   static final SizeUtils sizeUtils = SizeUtils();
   final Widget child;
+  final Widget Function() createChild;
   final List<BlocProvider> providers;
   BuildContext context;
   GeneralAppScaffold({
-    Key key, 
-    @required this.child,
+    Key key,
+    this.child,
+    @required this.createChild,
     this.providers
-  }) : super(key: key);
+  }) : 
+    super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,21 +34,22 @@ class GeneralAppScaffold extends StatelessWidget {
           BlocProvider<KeyboardListenerBloc>(create: (_)=>sl())
         ]..addAll(this.providers??[]),
         child: WillPopScope(
-            child: BlocBuilder<PreloadedDataBloc, PreloadedDataState>(
-              builder: (_, state){
-                if(state is InactivePreloaded)
-                  return this.child;
-                else if(state is SendingPreloaded)
-                  return _createStackWidget(_createSendingPreloadedDataWidget());
-                else if(state is SuccessfulySentPreloaded)
-                  return _createStackWidget(_createSentPreloadedData());
-                else
-                  return _createStackWidget(_createSentPreloadedError());
-              },
-            ),
-            onWillPop: () async {
-              return false;
-            }),
+          child: BlocBuilder<PreloadedDataBloc, PreloadedDataState>(
+            builder: (_, state){
+              if(state is InactivePreloaded)
+                return _createNavigationBuilder();
+              else if(state is SendingPreloaded)
+                return _createStackWidget(_createSendingPreloadedDataWidget());
+              else if(state is SuccessfulySentPreloaded)
+                return _createStackWidget(_createSentPreloadedData());
+              else
+                return _createStackWidget(_createSentPreloadedError());
+            },
+          ),
+          onWillPop: () async {
+            return false;
+          }
+        ),
       ),
     );
   }
@@ -53,7 +57,7 @@ class GeneralAppScaffold extends StatelessWidget {
   Widget _createStackWidget(Widget upperWidget){
     return Stack(
       children: [
-        this.child,
+        this.createChild(),
         Container(
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
@@ -61,6 +65,21 @@ class GeneralAppScaffold extends StatelessWidget {
         ),
         upperWidget
       ],
+    );
+  }
+
+  Widget _createNavigationBuilder(){
+    return BlocBuilder<NavigationBloc, NavigationState>(
+      builder: (context, state) {
+        if(state is InactiveNavigation)
+          return this.createChild();
+        else if(state is Popped){
+          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+            Navigator.of(context).pushReplacementNamed(state.navRoute.value);
+          });
+        }
+        return Container();
+      },
     );
   }
 

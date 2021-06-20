@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/blocs/navigation/navigation_bloc.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/header/back_button.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/header/logout_button.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
@@ -13,12 +15,11 @@ class PageHeader extends StatelessWidget {
   BuildContext _context;
   SizeUtils _sizeUtils;
 
-  PageHeader({
-    this.showBackNavButton = true,
-    this.withTitle = false,
-    this.title,
-    this.titleIsUnderlined = true
-  });
+  PageHeader(
+      {this.showBackNavButton = true,
+      this.withTitle = false,
+      this.title,
+      this.titleIsUnderlined = true});
 
   @override
   Widget build(BuildContext context) {
@@ -37,53 +38,57 @@ class PageHeader extends StatelessWidget {
     );
   }
 
-  void _initInitialConfiguration(BuildContext appContext){
+  void _initInitialConfiguration(BuildContext appContext) {
     _context = appContext;
     _sizeUtils = SizeUtils();
   }
 
-  Widget _createTopElement(){
-    return Container(
-      width: double.infinity,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          _elegirTopLeftElement(),
-          LogoutButton()
-        ],
-      ),
-    );
+  Widget _createTopElement() {
+    final NavigationState navigationState = BlocProvider.of<NavigationBloc>(_context).state;
+    if(navigationState is InactiveNavigation){
+      return Container(
+        width: double.infinity,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            _elegirTopLeftElement(), 
+            LogoutButton()
+          ],
+        ),
+      );
+    }else
+      return Container();
   }
 
-  Widget _elegirTopLeftElement(){
-    if(showBackNavButton)
+  Widget _elegirTopLeftElement() {
+    if (showBackNavButton)
       return AppBackButton();
     else
       return _createEmptyContainer();
   }
 
-  Widget _createEmptyContainer(){
+  Widget _createEmptyContainer() {
     return Container(
       height: _sizeUtils.largeIconSize / 2,
     );
   }
 
-  Widget _createDividerLine(Color color){
+  Widget _createDividerLine(Color color) {
     return Divider(
       color: color,
       thickness: 3,
       height: 3,
     );
   }
-  
-  Widget _createBottomElement(){
-    if(withTitle)
+
+  Widget _createBottomElement() {
+    if (withTitle)
       return _createTitle();
     else
       return Container();
   }
 
-  Widget _createTitle(){
+  Widget _createTitle() {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.only(left: _sizeUtils.xasisSobreYasis * 0.05),
@@ -91,11 +96,11 @@ class PageHeader extends StatelessWidget {
         title,
         textAlign: TextAlign.left,
         style: TextStyle(
-          color: Theme.of(_context).primaryColor,
-          fontSize: _sizeUtils.titleSize,
-          fontWeight: FontWeight.bold,
-          decoration: (this.titleIsUnderlined)?TextDecoration.underline:null
-        ),
+            color: Theme.of(_context).primaryColor,
+            fontSize: _sizeUtils.titleSize,
+            fontWeight: FontWeight.bold,
+            decoration:
+                (this.titleIsUnderlined) ? TextDecoration.underline : null),
       ),
     );
   }

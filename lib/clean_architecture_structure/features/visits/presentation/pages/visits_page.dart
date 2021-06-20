@@ -24,6 +24,9 @@ class VisitsPage extends StatelessWidget {
         child: SafeArea(
           child: Container(child: _createBodyComponents()),
         ),
+        createChild: ()=>SafeArea(
+          child: Container(child: _createBodyComponents()),
+        ),
       ),
     );
   }

@@ -23,13 +23,15 @@ class  PersonalInformationOld{
   String name;
   String identifDocumentType;
   int identifDocumentNumber;
+  String cargo;
   File firm;
 
   PersonalInformationOld({
     this.id, 
     this.name,
     this.identifDocumentType,
-    this.identifDocumentNumber, 
+    this.identifDocumentNumber,
+    this.cargo,
     this.firm
   });
 
@@ -38,6 +40,7 @@ class  PersonalInformationOld{
     name = json['name'];
     identifDocumentType = json['identif_document_type'];
     identifDocumentNumber = json['identif_document_number'];
+    cargo = json['cargo'];
     _convertFirmToFile(json['firm']);
   }
 
@@ -54,6 +57,7 @@ class  PersonalInformationOld{
     'name':name,
     'identif_document_type':identifDocumentType,
     'identif_document_number':identifDocumentNumber,
+    'cargo':cargo,
     //TODO: Convertir a data que se pueda desconvertir más tarde
     'firm':firm.path    
   };
@@ -61,6 +65,7 @@ class  PersonalInformationOld{
   Map<String, String> toServiceJson() => {
     'tipo_dc':identifDocumentType,
     'cc':identifDocumentNumber.toString(),
+    'cargo':cargo,
     'nombre':name
   };
   
@@ -69,6 +74,7 @@ class  PersonalInformationOld{
     name: this.name,
     identifDocumentType: this.identifDocumentType,
     identifDocumentNumber: this.identifDocumentNumber,
+    cargo: this.cargo,
     firm: this.firm
   );
 }

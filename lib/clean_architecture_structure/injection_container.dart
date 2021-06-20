@@ -1,6 +1,9 @@
 //sl: service locator
 import 'package:gap/clean_architecture_structure/core/domain/use_cases/preloaded/send_preloaded_data.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/blocs/preloaded_data/preloaded_data_bloc.dart';
+import 'package:gap/clean_architecture_structure/features/formularios/domain/usecases/get_formularios.dart';
+import 'package:gap/clean_architecture_structure/features/formularios/domain/usecases/set_chosen_formulario.dart';
+import 'package:gap/clean_architecture_structure/features/formularios/presentation/bloc/formularios_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'core/network/network_info.dart';
 import 'package:http/http.dart' as http;
@@ -131,7 +134,7 @@ void init()async{
   
   sl.registerLazySingleton(() => SendPreloadedData(repository: sl()));
   sl.registerLazySingleton<PreloadedDataBloc>(()=>PreloadedDataBloc(
-    sendPreloadedData: sl(), 
+    sendPreloadedData: sl(),
     goTo: sl()
   ));
   //TODO: Quitar al confirmar funcionamiento correcto de MuestrasRepositoryImpl
@@ -235,6 +238,13 @@ void init()async{
   ));
   sl.registerFactory(()=>VisitsChangeNotifier());
 
+  //Formularios
+  sl.registerLazySingleton(()=>GetFormularios(repository: sl(), errorHandler: sl()));
+  sl.registerLazySingleton(()=>SetChosenFormulario(repository: sl(), errorHandler: sl()));
+  sl.registerFactory(()=>FormulariosBloc(
+    getFormularios: sl(), 
+    setChosenFormulario: sl()
+  ));
 
   //***** util components
   sl.registerLazySingleton(()=>InputValidator());

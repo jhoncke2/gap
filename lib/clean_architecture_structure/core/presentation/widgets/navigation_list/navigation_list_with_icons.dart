@@ -74,10 +74,10 @@ class VisitNavigationList extends StatelessWidget {
   }
 
   void _navToFormularios(){
-    //BlocProvider.of<NavigationBloc>(context).add(NavigateToEvent(navigationRoute: NavigationRoute.Formularios));
-    //Navigator.of(context).pushReplacementNamed(NavigationRoute.Formularios.value);
+    BlocProvider.of<NavigationBloc>(context).add(NavigateToEvent(navigationRoute: NavigationRoute.Formularios));
+    Navigator.of(context).pushReplacementNamed(NavigationRoute.Formularios.value);
     //TODO: Cambiar cuando se haya implementado clean architecture
-    PagesNavigationManager.navToForms();
+    //PagesNavigationManager.navToForms();
   }
 
   Widget _createAdjuntarImagenesWidget(){

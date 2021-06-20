@@ -20,7 +20,7 @@ class FormProcessMainContainer extends StatelessWidget {
           mainAxisAlignment: this.mainAxisAlignment,
           children: [
             PageTitle(title: formName, underlined: false, centerText: true),
-            SizedBox(height: _sizeUtils.size.height * this.separerHeightPercent),
+            //SizedBox(height: _sizeUtils.size.height * this.separerHeightPercent),
             bottomChild
           ],
         )

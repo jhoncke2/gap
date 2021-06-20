@@ -50,7 +50,7 @@ void main(){
     test('should yield the specified ordered states when all goes good', ()async{
       when(getProjects.call(any)).thenAnswer((_) async => Right(tProjects));
       final expectedOrderedStates = [
-        LoadedProjects(projects: tProjects)
+        OnLoadedProjects(projects: tProjects)
       ];
       expectLater(bloc.asBroadcastStream(), emitsInOrder(expectedOrderedStates));
       bloc.add(LoadProjectsEvent());
@@ -60,7 +60,7 @@ void main(){
       String errorMessage = 'error, pues';
       when(getProjects.call(any)).thenAnswer((_) async => Left(ServerFailure(message: errorMessage)));
       final expectedOrderedStates = [
-        ErrorProjects(message: errorMessage)
+        OnProjectsError(message: errorMessage)
       ];
       expectLater(bloc.asBroadcastStream(), emitsInOrder(expectedOrderedStates));
       bloc.add(LoadProjectsEvent());
@@ -69,7 +69,7 @@ void main(){
     test('should yield the specified ordered states when usecase returns Left(Failure(X))', ()async{
       when(getProjects.call(any)).thenAnswer((_) async => Left(StorageFailure(excType: StorageExceptionType.NORMAL)));
       final expectedOrderedStates = [
-        ErrorProjects(message: ProjectsBloc.GENERAL_PROJECTS_ERROR_MESSAGE)
+        OnProjectsError(message: ProjectsBloc.GENERAL_PROJECTS_ERROR_MESSAGE)
       ];
       expectLater(bloc.asBroadcastStream(), emitsInOrder(expectedOrderedStates));
       bloc.add(LoadProjectsEvent());
@@ -92,8 +92,8 @@ void main(){
     test('should yield the specified ordered states when all goes good', ()async{
       when(setChosenProject.call(any)).thenAnswer((_) async => Right(null));
       final expectedOrderedStates = [
-        LoadingChosenProject(),
-        LoadedChosenProject(project: tProject)
+        OnLoadingChosenProject(),
+        OnLoadedChosenProject(project: tProject)
       ];
       expectLater(bloc.asBroadcastStream(), emitsInOrder(expectedOrderedStates));
       bloc.add(SetChosenProjectEvent(project: tProject));
@@ -102,8 +102,8 @@ void main(){
     test('should yield the specified ordered states when usecase returns Left(Failure(X))', ()async{
       when(setChosenProject.call(any)).thenAnswer((_) async => Left(StorageFailure(excType: StorageExceptionType.NORMAL)));
       final expectedOrderedStates = [
-        LoadingChosenProject(),
-        ErrorProjects(message: ProjectsBloc.GENERAL_CHOSEN_PROJECT_ERROR_MESSAGE)
+        OnLoadingChosenProject(),
+        OnProjectsError(message: ProjectsBloc.GENERAL_CHOSEN_PROJECT_ERROR_MESSAGE)
       ];
       expectLater(bloc.asBroadcastStream(), emitsInOrder(expectedOrderedStates));
       bloc.add(SetChosenProjectEvent(project: tProject));
@@ -126,8 +126,8 @@ void main(){
     test('should yield the specified ordered states when all goes good', ()async{
       when(getChosenProject.call(any)).thenAnswer((_) async => Right(tProject));
       final expectedOrderedStates = [
-        LoadingChosenProject(),
-        LoadedChosenProject(project: tProject)
+        OnLoadingChosenProject(),
+        OnLoadedChosenProject(project: tProject)
       ];
       expectLater(bloc.asBroadcastStream(), emitsInOrder(expectedOrderedStates));
       bloc.add(LoadChosenProjectEvent());
@@ -137,8 +137,8 @@ void main(){
       String errorMessage = 'mensajito';
       when(getChosenProject.call(any)).thenAnswer((_) async => Left(ServerFailure(message: errorMessage)));
       final expectedOrderedStates = [
-        LoadingChosenProject(),
-        ErrorProjects(message: errorMessage)
+        OnLoadingChosenProject(),
+        OnProjectsError(message: errorMessage)
       ];
       expectLater(bloc.asBroadcastStream(), emitsInOrder(expectedOrderedStates));
       bloc.add(LoadChosenProjectEvent());

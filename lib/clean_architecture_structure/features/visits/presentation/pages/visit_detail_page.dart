@@ -16,17 +16,17 @@ class VisitDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GeneralAppScaffold(
-      child: SafeArea(
-        child: BlocProvider<VisitsBloc>(
-          create: (context) => sl(),
-          child: Column(
-            children: [
-              PageHeader(),
-              SizedBox(height: sizeUtils.normalSizedBoxHeigh),
-              _createVisitsBlocBuilder()
-            ],
-          ),
-        ),
+      providers: [
+        BlocProvider<VisitsBloc>( create: (context) => sl() )
+      ],
+      createChild: ()=>SafeArea(
+        child: Column(
+          children: [
+            PageHeader(),
+            SizedBox(height: sizeUtils.normalSizedBoxHeigh),
+            _createVisitsBlocBuilder()
+          ],
+        ),      
       ),
     );
   }

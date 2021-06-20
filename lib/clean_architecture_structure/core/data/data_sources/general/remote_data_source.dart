@@ -41,8 +41,10 @@ abstract class RemoteDataSource{
         return response;
       else if(statusCode == 401)
         throw ServerException(type: ServerExceptionType.UNHAUTORAIZED);
-      else 
+      else
         throw Exception();
+    }on ServerException{
+
     }catch(exception){
       throw ServerException(type: ServerExceptionType.NORMAL);
     }

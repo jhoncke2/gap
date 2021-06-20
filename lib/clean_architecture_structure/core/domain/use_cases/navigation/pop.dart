@@ -1,3 +1,4 @@
+import 'package:gap/old_architecture/data/enums/enums.dart';
 import 'package:meta/meta.dart';
 import 'package:dartz/dartz.dart';
 import 'package:gap/clean_architecture_structure/core/domain/repositories/navigation_repository.dart';
@@ -7,7 +8,7 @@ import 'package:gap/clean_architecture_structure/core/platform/custom_navigator.
 
 import '../../helpers/use_case_error_handler.dart';
 
-class Pop implements UseCase<void, NoParams>{
+class Pop implements UseCase<NavigationRoute, NoParams>{
 
   final CustomNavigator navigator;
   final NavigationRepository navRepository;
@@ -19,19 +20,19 @@ class Pop implements UseCase<void, NoParams>{
   });
 
   @override
-  Future<Either<Failure, void>> call(NoParams params)async{
-    final eitherErrHandler = await errorHandler.executeFunction<void>(
+  Future<Either<Failure, NavigationRoute>> call(NoParams params)async{
+    final eitherErrHandler = await errorHandler.executeFunction<NavigationRoute>(
       ()async{
         final eitherPop = await navRepository.pop();
         if(eitherPop.isLeft())
-          return eitherPop;
+          return eitherPop.fold((l) => Left(l), (r) => Right(null));
         return await navRepository.getCurrentRoute();
       }
     );
     return eitherErrHandler.fold((l){
       return Left(l);
     }, (navRoute){
-      return Right(null);
+      return Right(navRoute);
     });
   }
 }

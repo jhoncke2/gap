@@ -133,6 +133,6 @@ class _FormulariosComponents extends StatelessWidget {
   }
 
   void _onItemTap(EntityWithStageOld entity) {
-    PagesNavigationManager.navToFormDetail(entity, _context);
+    PagesNavigationManager.navToFormDetail(entity);
   }
 }

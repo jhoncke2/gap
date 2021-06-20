@@ -152,6 +152,7 @@ class ChosenFormBloc extends Bloc<ChosenFormEvent, ChosenFormState> {
     firmer.identifDocumentNumber = null;
     firmer.name = null;
     firmer.identifDocumentType = null;
+    firmer.cargo = null;
   }
 
   void _updateFirmerPersonalInformation(UpdateFirmerPersonalInformation event){

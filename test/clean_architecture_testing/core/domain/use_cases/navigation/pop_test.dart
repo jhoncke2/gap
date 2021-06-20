@@ -36,23 +36,22 @@ void main(){
 
     setUp((){
       tCurrentRouteAfterPop = NavigationRoute.Formularios;
-      when(errorHandler.executeFunction<void>(any)).thenAnswer((realInvocation) => realInvocation.positionalArguments[0]());
+      when(errorHandler.executeFunction<NavigationRoute>(any)).thenAnswer((realInvocation) => realInvocation.positionalArguments[0]());
     });
 
     test('should call the specified methods', ()async{
       when(repository.pop()).thenAnswer((_) async => Right(null));
       when(repository.getCurrentRoute()).thenAnswer((_) async => Right(tCurrentRouteAfterPop));
-      final result = await useCase.call(NoParams());
+      await useCase.call(NoParams());
       verify(repository.pop());
       verify(repository.getCurrentRoute());
-      expect(result, Right(null));
     });
 
     test('should return Right(null) when all goes good', ()async{
       when(repository.pop()).thenAnswer((_) async => Right(null));
       when(repository.getCurrentRoute()).thenAnswer((_) async => Right(tCurrentRouteAfterPop));
       final result = await useCase.call(NoParams());
-      expect(result, Right(null));
+      expect(result, Right(tCurrentRouteAfterPop));
 
     });
 

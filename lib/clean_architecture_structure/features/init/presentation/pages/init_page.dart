@@ -13,7 +13,7 @@ class InitPage extends StatelessWidget {
     sizeUtils.initUtil(MediaQuery.of(context).size);
     _addPostFrameFunction(context);
     return GeneralAppScaffold(
-      child: Container(
+      createChild: ()=> Container(
           height: MediaQuery.of(context).size.height * 0.975,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,

@@ -1,3 +1,4 @@
+import 'package:dartz/dartz.dart';
 import 'package:gap/clean_architecture_structure/core/domain/use_cases/navigation/go_replacing_all_to.dart';
 import 'package:gap/clean_architecture_structure/core/domain/use_cases/navigation/go_to.dart';
 import 'package:gap/clean_architecture_structure/core/domain/use_cases/navigation/pop.dart';
@@ -47,7 +48,7 @@ void main(){
     test('should yield the specified ordered states when all goes good', ()async{
       final expectedOrderedStates = [
         OnNavigation(),
-        Navigated()
+        Navigated(navRoute: tNavigationRoute)
       ];
       expect(bloc.asBroadcastStream(), emitsInOrder(expectedOrderedStates));
       bloc.add(NavigateToEvent(navigationRoute: tNavigationRoute));
@@ -69,7 +70,7 @@ void main(){
     test('should yield the specified ordered states when all goes good', ()async{
       final expectedOrderedStates = [
         OnNavigation(),
-        Navigated()
+        Navigated(navRoute: tNavigationRoute)
       ];
       expect(bloc.asBroadcastStream(), emitsInOrder(expectedOrderedStates));
       bloc.add(NavigateReplacingAllToEvent(navigationRoute: tNavigationRoute));
@@ -77,6 +78,12 @@ void main(){
   });
 
   group('pop', (){
+    NavigationRoute afterPopRoute;
+    setUp((){
+      afterPopRoute = NavigationRoute.Formularios;
+      when(pop.call(any)).thenAnswer((_) async => Right(afterPopRoute));
+    });
+
     test('should call the specified useCase', ()async{
       bloc.add(PopEvent());
       await untilCalled(pop.call(any));
@@ -86,7 +93,7 @@ void main(){
     test('should yield the specified ordered states when all goes good', ()async{
       final expectedOrderedStates = [
         OnNavigation(),
-        Navigated()
+        Popped(navRoute: afterPopRoute)
       ];
       expect(bloc.asBroadcastStream(), emitsInOrder(expectedOrderedStates));
       bloc.add(PopEvent());

@@ -29,11 +29,17 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
     yield OnNavigation();
     if(event is NavigateToEvent){
       await goTo(NavigationParams(navRoute: event.navigationRoute));
+      yield Navigated(navRoute: event.navigationRoute);
     }else if(event is NavigateReplacingAllToEvent){
       await goReplacingAllTo(NavigationParams(navRoute: event.navigationRoute));
+      yield Navigated(navRoute: event.navigationRoute);
     }else if(event is PopEvent){
-      await pop(NoParams());
+      final eitherPop = await pop(NoParams());
+      yield * eitherPop.fold((_)async*{
+        //TODO: Implementar manejo de errores
+      }, (newNavRoute)async*{
+        yield Popped(navRoute: newNavRoute);
+      });
     }
-    yield Navigated();
   }
 }

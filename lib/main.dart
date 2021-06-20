@@ -8,6 +8,7 @@ import 'package:gap/old_architecture/logic/central_managers/data_initializer.dar
 import 'package:gap/old_architecture/native_connectors/net_connection_detector.dart';
 import 'package:gap/old_architecture/logic/storage_managers/user/user_storage_manager.dart';
 import 'package:gap/old_architecture/ui/utils/dialogs.dart' as dialogs;
+import 'clean_architecture_structure/core/platform/native_services_permission.dart';
 import 'clean_architecture_structure/injection_container.dart' as ic;
 
 GapApp app;
@@ -32,12 +33,12 @@ Future<void> doInitialConfig()async{
 }
 
 Future _onStartingApp()async{
-  /*
-  if(await NativeServicesPermissions.storageIsGranted || true)
+  
+  if(await NativeServicesPermissionsOld.storageIsGranted || true)
     await _initApp(null);
   else
     await _requestStorageActivation();
-  */
+  
 }
 
 void _onResumeApp(AppLifecycleState state)async{

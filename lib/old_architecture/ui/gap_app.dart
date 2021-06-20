@@ -44,8 +44,7 @@ class _GapAppState extends State<GapApp> with WidgetsBindingObserver{
         primaryColor: Color.fromRGBO(93, 92, 92, 1),
         secondaryHeaderColor: Colors.brown.withOpacity(0.35)
       ),
-      home: InitPage(),
-      //home: MuestrasPage(),
+      home: InitPageOld(),
       //routes: PageRoutesCreatorOld.routes,
       routes: PageRoutes.routes,
     );

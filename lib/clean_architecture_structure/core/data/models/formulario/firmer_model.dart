@@ -10,12 +10,14 @@ class FirmerModel extends Firmer{
     String name,
     String identifDocumentType,
     int identifDocumentNumber,
+    String cargo,
     File firm
   }):super(
     id: id,
     name: name,
     identifDocumentType: identifDocumentType,
     identifDocumentNumber: identifDocumentNumber,
+    cargo: cargo,
     firm: firm
   );
 
@@ -24,6 +26,7 @@ class FirmerModel extends Firmer{
     name = json['name'];
     identifDocumentType = json['identif_document_type'];
     identifDocumentNumber = json['identif_document_number'];
+    cargo = json['cargo'];
     _convertFirmToFile(json['firm']);
   }
 
@@ -40,15 +43,21 @@ class FirmerModel extends Firmer{
     'name':name,
     'identif_document_type':identifDocumentType,
     'identif_document_number':identifDocumentNumber,
+    'cargo': cargo,
     //TODO: Convertir a data que se pueda desconvertir más tarde
     'firm':firm.path    
   };
 
-  Map<String, String> toServiceJson() => {
-    'tipo_dc':identifDocumentType,
-    'cc':identifDocumentNumber.toString(),
-    'nombre':name
-  };
+  Map<String, String> toServiceJson(){
+    Map<String, String> json = {};
+    json['nombre'] = name;
+    if(identifDocumentNumber != null){
+      json['tipo_dc'] = identifDocumentType;      
+      json['cc'] = identifDocumentNumber.toString();
+    }else
+      json['cargo'] = cargo;
+    return json;
+  }
 }
 
 List<FirmerModel> firmersFromJson(List<Map<String, dynamic>> json){

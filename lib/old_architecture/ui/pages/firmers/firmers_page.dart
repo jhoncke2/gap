@@ -34,11 +34,15 @@ class FirmersPageOld extends StatelessWidget {
       resizeToAvoidBottomInset: false,
       body: NativeBackButtonLocker(
         child: SafeArea(
-          child: GestureDetector(
-            child: _createAlignedComponents(),
-            onTap: () {
-              FocusScope.of(context).requestFocus(new FocusNode());
-            }
+          child: Container(
+            color: Colors.transparent,
+            child: GestureDetector(
+              child: _createAlignedComponents(),
+              onTap: () {
+                print('tap');
+                FocusScope.of(context).requestFocus(new FocusNode());
+              }
+            ),
           ),
         ),
       ),
@@ -71,7 +75,7 @@ class FirmersPageOld extends StatelessWidget {
       bodyMainAxisAlignment = MainAxisAlignment.start;
     }else{
       header = LoadedFormHead(formsState: formsState);
-      separer = SizedBox(height: _sizeUtils.littleSizedBoxHeigh);
+      separer = SizedBox(height: _sizeUtils.littleSizedBoxHeigh * 0.5);
       bodyMainAxisAlignment = MainAxisAlignment.spaceBetween;
     }
     body = FormProcessMainContainer(
@@ -93,6 +97,7 @@ class _FirmerComponents extends StatelessWidget {
   Widget _bottomWidget;
   _FirmerComponents({Key key, @required this.keyboardIsActive}) : super(key: key);
 
+  
   @override
   Widget build(BuildContext context) {
     _context = context;
@@ -105,7 +110,7 @@ class _FirmerComponents extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               _bodyWidget,
-              SizedBox(height: screenHeight * (this.keyboardIsActive? 0.03 : 0.15)),
+              SizedBox(height: screenHeight * (this.keyboardIsActive? 0.0025 : 0.1)),
               _bottomWidget
             ],
           ),

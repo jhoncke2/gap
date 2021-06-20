@@ -179,8 +179,8 @@ class FormulariosRepositoryImpl implements FormulariosRepository{
     try{
       await function();
       return Right(null);
-    }on ServerException{
-      return Left(ServerFailure());
+    }on ServerException catch(exception){
+      return Left(ServerFailure(servExcType: exception.type));
     }on StorageException catch(exception){
       return Left(StorageFailure(excType: exception.type));
     }

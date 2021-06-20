@@ -271,7 +271,7 @@ abstract class DataDistributor{
       formsB.add(ChangeFormsAreBlocked(areBlocked: false));
       throw NavObstructionErr(message: 'Ocurrión un problema al enviar la posición geográfica.');
       //TODO: Implementar manejo de errores
-    }, (_){
+    }, (_){ 
       //TODO: Implementar método
     });
   }
@@ -288,6 +288,7 @@ abstract class DataDistributor{
       name: fO.name, 
       identifDocumentType: fO.identifDocumentType, 
       identifDocumentNumber: fO.identifDocumentNumber,
+      cargo: fO.cargo,
       firm: fO.firm
     )).toList(),
     initialPosition: old.initialPosition == null? null : CustomPositionModel(latitude: old.initialPosition.latitude, longitude: old.initialPosition.longitude),
@@ -378,7 +379,7 @@ abstract class DataDistributor{
 
   Future endFormFillingOut()async{
     final FormularioOld chosenFormOld = formsB.state.chosenForm;
-    await _addFinalPosition(chosenFormOld); 
+    await _addFinalPosition(chosenFormOld);
     deleteNullFirmersFromForm(chosenFormOld);
     //await updateChosenFormInStorage(chosenForm);
     final eitherSetFinalPosition = await errorHandler.executeFunction<void>(

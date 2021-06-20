@@ -7,13 +7,15 @@ class Firmer extends Equatable{
   String name;
   String identifDocumentType;
   int identifDocumentNumber;
+  String cargo;
   File firm;
 
   Firmer({
     this.id, 
     this.name,
     this.identifDocumentType,
-    this.identifDocumentNumber, 
+    this.identifDocumentNumber,
+    this.cargo,
     this.firm
   });
 
@@ -22,9 +24,10 @@ class Firmer extends Equatable{
     name: this.name,
     identifDocumentType: this.identifDocumentType,
     identifDocumentNumber: this.identifDocumentNumber,
+    cargo: this.cargo,
     firm: this.firm
   );
 
   @override
-  List<Object> get props => [id, name, identifDocumentType, identifDocumentNumber, firm.path];
+  List<Object> get props => [id, name, identifDocumentType, identifDocumentNumber, this.cargo, firm.path];
 }

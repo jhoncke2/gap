@@ -28,7 +28,7 @@ class InitPageOld extends StatelessWidget{
                 fit: BoxFit.fill
               ),
               Text(
-                'Versión 0.14.21',
+                'Versión 0.14.23',
                 style: TextStyle(
                   color: Theme.of(context).primaryColor.withOpacity(0.65),
                   fontSize: 16.5

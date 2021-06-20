@@ -145,11 +145,12 @@ class ChosenFormManager{
     final String name = firmer.name;
     final String identifDocType = firmer.identifDocumentType;
     final int identifDocNumber = firmer.identifDocumentNumber;
+    final String cargo = firmer.cargo;
     final List invalidValues = [null, ''];
-    if(!invalidValues.contains(name) && !invalidValues.contains(identifDocType) && !invalidValues.contains(identifDocNumber)){
-      return true;
-    }
-    return false;
+    return !invalidValues.contains(name) && 
+    ((!invalidValues.contains(identifDocType) && !invalidValues.contains(identifDocNumber))
+    || !invalidValues.contains(cargo));
+      
   }
 
   void addNewFirm(){

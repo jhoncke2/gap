@@ -23,7 +23,7 @@ class ProjectsBloc extends Bloc<ProjectsEvent, ProjectsState> {
     @required this.getProjects,
     @required this.getChosenProject,
     @required this.setChosenProject
-  }) : super(EmptyProjects());
+  }) : super(OnUnloadedProjects());
 
   @override
   Stream<ProjectsState> mapEventToState(
@@ -41,16 +41,16 @@ class ProjectsBloc extends Bloc<ProjectsEvent, ProjectsState> {
     final eitherGetProjects = await getProjects(NoParams());
     yield * eitherGetProjects.fold((failure)async*{
       if(failure is ServerFailure)
-        yield ErrorProjects(message: failure.message);
+        yield OnProjectsError(message: failure.message);
       else
-        yield ErrorProjects(message: GENERAL_PROJECTS_ERROR_MESSAGE); 
+        yield OnProjectsError(message: GENERAL_PROJECTS_ERROR_MESSAGE); 
     }, (projects)async*{
-      yield LoadedProjects(projects: projects);
+      yield OnLoadedProjects(projects: projects);
     });
   }
 
   Stream<ProjectsState> _loadChosenProject()async*{
-    yield LoadingChosenProject();
+    yield OnLoadingChosenProject();
     final eitherGetChosenProject = await getChosenProject(NoParams());
     yield * eitherGetChosenProject.fold((failure)async*{
       String errMessage;
@@ -58,21 +58,21 @@ class ProjectsBloc extends Bloc<ProjectsEvent, ProjectsState> {
         errMessage = failure.message;
       else
         errMessage = GENERAL_CHOSEN_PROJECT_ERROR_MESSAGE;
-      yield ErrorProjects(message: errMessage);
+      yield OnProjectsError(message: errMessage);
     }, (project)async*{
-      yield LoadedChosenProject(
+      yield OnLoadedChosenProject(
         project: project
       );
     });
   }
 
   Stream<ProjectsState> _setChosenProject(SetChosenProjectEvent event)async*{
-    yield LoadingChosenProject();
+    yield OnLoadingChosenProject();
     final eitherSetChosenProject = await setChosenProject(ChosenProjectParams(project: event.project));
     yield * eitherSetChosenProject.fold((l)async * {
-      yield ErrorProjects(message: GENERAL_CHOSEN_PROJECT_ERROR_MESSAGE);
+      yield OnProjectsError(message: GENERAL_CHOSEN_PROJECT_ERROR_MESSAGE);
     }, (_)async * {
-      yield LoadedChosenProject(project: event.project);
+      yield OnLoadedChosenProject(project: event.project);
     });
   }
 }

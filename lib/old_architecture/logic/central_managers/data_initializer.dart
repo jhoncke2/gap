@@ -11,6 +11,7 @@ import 'package:gap/clean_architecture_structure/core/platform/custom_navigator.
 import 'package:gap/clean_architecture_structure/features/projects/domain/use_cases/get_chosen_project.dart';
 import 'package:gap/clean_architecture_structure/features/visits/domain/use_cases/get_chosen_visit.dart';
 import 'package:gap/clean_architecture_structure/injection_container.dart';
+import 'package:gap/old_architecture/logic/blocs_manager/chosen_form_manager.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:gap/old_architecture/logic/bloc/nav_routes/custom_navigator.dart';
 import 'package:gap/old_architecture/logic/central_managers/data_distributor/data_distributor_error_handler_manager.dart';
@@ -36,6 +37,8 @@ class DataInitializer{
   bool _continueInitialization;
 
   Future init(BuildContext context, NetConnectionState netConnState)async{
+    //Por el momento
+    ChosenFormManagerSingleton(appContext: CustomNavigatorImpl.navigatorKey.currentContext);
     _continueInitialization = true;
     dataDisrtibutorErrorHandlingManager.netConnectionState = netConnState;
     final PermissionStatus storagePermissionStatus = await NativeServicesPermissionsOld.storageServiceStatus;
@@ -150,15 +153,16 @@ class DataInitializer{
         break;
       case NavigationRoute.Formularios:
         await _doFormsUpdating();
-        break;    
+        break;
+      //TOOD: Muestras
       case NavigationRoute.FormularioDetail:
         await _doFormDetailUpdating();
         break;
-      case NavigationRoute.AdjuntarFotosVisita:
-        await _doAdjuntarFotosUpdating();
-        break;
       case NavigationRoute.Firmers:
         await _doFirmersUpdating();
+        break;
+      case NavigationRoute.AdjuntarFotosVisita:
+        await _doAdjuntarFotosUpdating();
         break;
     }
   }
@@ -214,6 +218,7 @@ class DataInitializer{
   }
 
   Future _doFirmersUpdating()async{
+    await _doFormDetailUpdating();
   }
 
   void _evaluateifThereWasAnyErr(){

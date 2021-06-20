@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/old_architecture/data/models/entities/entities.dart';
+import 'package:gap/old_architecture/logic/bloc/widgets/firm_paint/firm_paint_bloc.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
 import 'draw_detector.dart';
 import 'firm_paint.dart';
@@ -20,7 +22,7 @@ class FirmField extends StatelessWidget {
       child: Column(
         children:[
           _createTitle(),
-          SizedBox(height: _sizeUtils.littleSizedBoxHeigh),
+          SizedBox(height: _sizeUtils.littleSizedBoxHeigh * 0.1),
           //TODO: Revisar documentación y probar que sirva
           _createPainter(),
           _createFirmBotLine()
@@ -30,13 +32,30 @@ class FirmField extends StatelessWidget {
   }
 
   Widget _createTitle(){
-    return Text(
-      'Firma',
-      style: TextStyle(
-        color: Theme.of(_context).primaryColor,
-        fontSize: _sizeUtils.subtitleSize
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Container(),
+        Text(
+          'Firma',
+          style: TextStyle(
+            color: Theme.of(_context).primaryColor,
+            fontSize: _sizeUtils.subtitleSize
+          ),
+        ),
+        IconButton(
+          icon: Icon(
+            Icons.cancel
+          ),
+          color: Colors.redAccent.withOpacity(0.8),
+          onPressed: _onResetButtonPressed
+        )
+      ],
     );
+  }
+
+  void _onResetButtonPressed(){
+    BlocProvider.of<FirmPaintBloc>(_context).add(ResetFirmPaint());
   }
 
   Widget _createPainter(){

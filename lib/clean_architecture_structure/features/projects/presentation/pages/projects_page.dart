@@ -17,18 +17,16 @@ class ProjectsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context){
     return GeneralAppScaffold(
-      child: MultiBlocProvider(
-        providers: [
-          BlocProvider<ProjectsBloc>(create: (_)=>sl()),
-          BlocProvider<NavigationBloc>(create: (_)=>sl()),
-        ],
-        child: SafeArea(
-          child: Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: _sizeUtils.xasisSobreYasis * 0.00
-            ),
-            child: _createBodyComponents(),
+      key: Key('projects'),
+      providers: [
+        BlocProvider<ProjectsBloc>(create: (_)=>sl())
+      ],
+      createChild: ()=> SafeArea(
+        child: Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: _sizeUtils.xasisSobreYasis * 0.00
           ),
+          child: _createBodyComponents(),
         ),
       ),
     );
@@ -64,13 +62,13 @@ class ProjectsPage extends StatelessWidget {
   Widget _createProjectsNavList() {
     return BlocBuilder<ProjectsBloc, ProjectsState>(
       builder: (context, state) {
-        if(state is EmptyProjects){
+        if(state is OnUnloadedProjects){
           _loadProjects(context);
-        }else if (state is LoadedProjects) {
+        }else if (state is OnLoadedProjects) {
           return LoadedProjectsWidget(projects: state.projects);
-        }else if (state is LoadingProjects) {
+        }else if (state is OnLoadingProjects) {
           return CustomProgressIndicator(heightScreenPercentage: 0.4);
-        }else if(state is LoadedChosenProject){
+        }else if(state is OnLoadedChosenProject){
           _navToProjectDetail(context);
         }
         return Container();

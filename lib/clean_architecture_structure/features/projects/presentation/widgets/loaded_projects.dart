@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gap/clean_architecture_structure/core/presentation/blocs/navigation/navigation_bloc.dart';
 import 'package:gap/clean_architecture_structure/features/projects/domain/entities/project.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/navigation_list/buttons/navigation_list_button.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/navigation_list/navigation_list.dart';
 import 'package:gap/clean_architecture_structure/features/projects/presentation/bloc/projects_bloc.dart';
-import 'package:gap/old_architecture/data/enums/enums.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
 // ignore: must_be_immutable
 class LoadedProjectsWidget extends StatelessWidget {

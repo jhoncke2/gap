@@ -12,11 +12,13 @@ import 'package:gap/old_architecture/ui/pages/formulario_detail/formulario_detai
 import 'package:gap/old_architecture/ui/pages/formularios_page.dart';
 import 'package:gap/old_architecture/ui/pages/init_page.dart';
 
+import 'features/formularios/presentation/pages/formularios_page.dart';
+
 class PageRoutes{
   static final initialRoute = NavigationRoute.Init;
   static final routes = {
-    //NavigationRoute.Init.value : (_)=>InitPageOld(),
-    NavigationRoute.Init.value: (_)=>InitPage(),
+    NavigationRoute.Init.value : (_)=>InitPageOld(),
+    //NavigationRoute.Init.value: (_)=>InitPage(),
     NavigationRoute.Login.value : (_)=>LoginPage(),
     //NavigationRoute.Login.value : (_)=>LoginPageOld(),
     NavigationRoute.Projects.value : (_)=>ProjectsPage(),
@@ -28,7 +30,8 @@ class PageRoutes{
     //NavigationRoute.VisitDetail.value: (_)=>VisitDetailPageOld(),
     NavigationRoute.VisitDetail.value: (_)=>VisitDetailPage(),
     NavigationRoute.Muestras.value : (_)=>MuestrasPage(),
-    NavigationRoute.Formularios.value: (_)=>FormulariosPageOld(),
+    //NavigationRoute.Formularios.value: (_)=>FormulariosPageOld(),
+    NavigationRoute.Formularios.value: (_)=>FormulariosPage(),
     NavigationRoute.FormularioDetail.value: (_)=>FormularioDetailPageOld(),
     NavigationRoute.Firmers.value: (_)=>FirmersPageOld(),
     NavigationRoute.AdjuntarFotosVisita.value: (_)=>AdjuntarFotosVisitaPageOld(),

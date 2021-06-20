@@ -8,12 +8,12 @@ class ScaffoldKeyboardDetector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GeneralAppScaffold(
-      child: GestureDetector(
+      createChild: ()=>GestureDetector(
         child: this.child,
         onTap: () {
           FocusScope.of(context).requestFocus(new FocusNode());
         }
-      )
+      ),
     );
   }
 }

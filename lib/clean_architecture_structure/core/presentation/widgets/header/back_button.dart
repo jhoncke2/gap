@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/blocs/navigation/navigation_bloc.dart';
 import 'package:gap/old_architecture/logic/central_managers/pages_navigation_manager.dart';
 import 'package:gap/old_architecture/ui/utils/size_utils.dart';
 class AppBackButton extends StatelessWidget {
@@ -18,7 +20,8 @@ class AppBackButton extends StatelessWidget {
         ),
         onPressed: (){
           //TODO: Cambiar por nueva funcionalidad con clean architecture
-          PagesNavigationManager.pop();
+          BlocProvider.of<NavigationBloc>(context).add(PopEvent());
+          //PagesNavigationManager.pop();
         },
       ),
     );

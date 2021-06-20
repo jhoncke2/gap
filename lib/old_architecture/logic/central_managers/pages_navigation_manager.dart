@@ -76,7 +76,7 @@ class PagesNavigationManager{
     await _goToNextPage(NavigationRoute.Formularios);
   }
 
-  static Future<void> navToFormDetail(FormularioOld formulario, BuildContext context)async{
+  static Future<void> navToFormDetail(FormularioOld formulario)async{
     await _executeMethodByValidateStorage(()async{
       if(await _formularioSePuedeAbrir(formulario)){
         await _GPSValidator.executeMethodByGpsStatus((){_updateForm(formulario);}, _goToAppSetings, gpsActivationRequestMessage);
