@@ -34,6 +34,10 @@ class FormulariosPage extends StatelessWidget {
                   WidgetsBinding.instance.addPostFrameCallback((_) {
                     BlocProvider.of<FormulariosBloc>(formsContext).add(LoadFormularios());
                   });
+                }else if(state is OnCompletedFormularios){
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    PagesNavigationManager.initFirstFirmerFillingOut();
+                  });
                 }else if(state is OnLoadedFormularios){
                   return _createContent(state);
                 }else if(state is OnFormularioSelected){

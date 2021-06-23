@@ -22,5 +22,5 @@ abstract class VariableFormField extends CustomFormField{
   bool get isCompleted;
 
   @override
-  List<Object> get props => super.props..addAll([name, isRequired, description]);
+  List<Object> get props => [...super.props, name, isRequired, description];
 }

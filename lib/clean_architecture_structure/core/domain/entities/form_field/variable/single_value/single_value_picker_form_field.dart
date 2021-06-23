@@ -31,9 +31,9 @@ class DateField extends SingleValueFormField{
   set value(DateTime newDate){
     super.uniqueValue = transformDateInToString(newDate);
   }
-
   String get valueAsString => super.uniqueValue == null? null :  uniqueValue;
   DateTime get initialDate => super.placeholder == null ? null : transformStringInToDate(super.placeholder);
+  
 }
 
 // ignore: must_be_immutable

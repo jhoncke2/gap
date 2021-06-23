@@ -32,7 +32,7 @@ class VisitNavigationList extends StatelessWidget {
       ),
       child: Column(
         children: [
-          _createIniciarVisitaWidget(),          
+          _createIniciarVisitaWidget(),  
           _createAdjuntarImagenesWidget(),
           _createVisualizarVisitaWidget(),          
         ],

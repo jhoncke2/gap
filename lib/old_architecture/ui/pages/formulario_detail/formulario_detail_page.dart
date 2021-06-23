@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/clean_architecture_structure/core/presentation/blocs/navigation/navigation_bloc.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/progress_indicator.dart';
+import 'package:gap/clean_architecture_structure/injection_container.dart';
 import 'package:gap/old_architecture/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/old_architecture/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/old_architecture/logic/bloc/widgets/index/index_bloc.dart';
@@ -19,30 +21,46 @@ class FormularioDetailPageOld extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: true,
-      body: NativeBackButtonLocker(
-        child: SingleChildScrollView(
-          child: GestureDetector(
-            child: Container(
-              height: MediaQuery.of(context).size.height ,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(),
-                  SafeArea(
-                    child: _createFormBuilder(),
-                    bottom: false,
-                    maintainBottomViewPadding: true,
-                  ),
-                ],
-              ),
-            ),
-            onTap: (){
-              FocusScope.of(context).requestFocus(new FocusNode());
-            }
+        resizeToAvoidBottomInset: true,
+        body: NativeBackButtonLocker(
+          child: BlocProvider<NavigationBloc>(
+            create: (context) => sl(),
+            child: BlocBuilder<NavigationBloc, NavigationState>(
+              builder: (context, state) {
+                if(state is InactiveNavigation)
+                  return _createUnNavigatedWidget(context);
+                else if(state is Popped){
+                  WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                    Navigator.of(context).pushReplacementNamed(state.navRoute.value);
+                  });
+                }
+                return Container();
+              },
+            )
           ),
-        ),
-      )
+        ));
+  }
+
+  Widget _createUnNavigatedWidget(BuildContext context){
+    return SingleChildScrollView(
+      child: GestureDetector(
+          child: Container(
+            height: MediaQuery.of(context).size.height,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(),
+                SafeArea(
+                  child: _createFormBuilder(),
+                  bottom: false,
+                  maintainBottomViewPadding: true,
+                ),
+              ],
+            ),
+          ),
+          onTap: () {
+            FocusScope.of(context).requestFocus(new FocusNode());
+          }),
     );
   }
 
@@ -74,52 +92,50 @@ class _LoadedFormularioDetail extends StatelessWidget {
       builder: (context, keyboardState) {
         _defineConfigByBlocsStates(keyboardState, context);
         return Container(
-          height: containerHeight,
-          margin: EdgeInsets.all(0),
-          child: Column(
-            children:[
-              header,
-              separer,
-              _createIndexBuilder()
-            ],
-          )
-        );
+            height: containerHeight,
+            margin: EdgeInsets.all(0),
+            child: Column(
+              children: [header, separer, _createIndexBuilder()],
+            ));
       },
     );
   }
 
-  Widget _createIndexBuilder(){
+  Widget _createIndexBuilder() {
     return BlocBuilder<IndexOldBloc, IndexState>(
       builder: (context, indexState) {
-        if(indexState.nPages > 0){
+        if (indexState.nPages > 0) {
           return FormProcessMainContainer(
-            formName: formsState.chosenForm.name,
-            bottomChild: ChosenFormCurrentComponent()
+              formName: formsState.chosenForm.name,
+              bottomChild: ChosenFormCurrentComponent());
+        } else {
+          return CustomProgressIndicator(
+            heightScreenPercentage: 0.6,
           );
-        }else{
-          return CustomProgressIndicator(heightScreenPercentage: 0.6,);
         }
       },
     );
   }
 
-  void _defineConfigByBlocsStates(KeyboardListenerState keyboardState, BuildContext context) {
+  void _defineConfigByBlocsStates(
+      KeyboardListenerState keyboardState, BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
-    if(keyboardState.isActive){
+    if (keyboardState.isActive) {
       containerHeight = screenHeight * 0.9625;
       header = Container();
       separer = SizedBox(height: _sizeUtils.littleSizedBoxHeigh * 0.0);
-    }else{
+    } else {
       containerHeight = screenHeight * 0.94;
       header = _createLoadedFormHead();
       separer = SizedBox(height: _sizeUtils.littleSizedBoxHeigh * 0.0);
     }
   }
 
-  Widget _createLoadedFormHead(){
+  Widget _createLoadedFormHead() {
     return BlocBuilder<ChosenFormBloc, ChosenFormState>(
-      builder: (_, chosenFormState){
-        if([FormStep.OnFormFillingOut, FormStep.Finished].contains( chosenFormState.formStep ))
+      builder: (_, chosenFormState) {
+        if ([FormStep.OnFormFillingOut, FormStep.Finished]
+            .contains(chosenFormState.formStep))
           return LoadedFormHead(formsState: formsState, hasBackButton: true);
         else
           return LoadedFormHead(formsState: formsState, hasBackButton: false);

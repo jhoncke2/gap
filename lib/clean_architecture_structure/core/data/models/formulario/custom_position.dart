@@ -16,7 +16,7 @@ class CustomPositionModel extends CustomPosition{
     longitude: (json['longitud'] as num).toDouble()
   );
 
-  factory CustomPositionModel.fromPosition(Position position)=>CustomPositionModel(
+  factory CustomPositionModel.fromCustomPosition(CustomPosition position)=>CustomPositionModel(
     latitude: position.latitude,
     longitude: position.longitude
   );

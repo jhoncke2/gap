@@ -1,10 +1,13 @@
 //sl: service locator
 import 'package:gap/clean_architecture_structure/core/domain/use_cases/preloaded/send_preloaded_data.dart';
+import 'package:gap/clean_architecture_structure/core/platform/locator.dart';
+import 'package:gap/clean_architecture_structure/core/platform/native_services_permission.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/blocs/preloaded_data/preloaded_data_bloc.dart';
 import 'package:gap/clean_architecture_structure/features/formularios/domain/usecases/get_formularios.dart';
-import 'package:gap/clean_architecture_structure/features/formularios/domain/usecases/set_chosen_formulario.dart';
+import 'package:gap/clean_architecture_structure/features/formularios/domain/usecases/choose_formulario.dart';
 import 'package:gap/clean_architecture_structure/features/formularios/presentation/bloc/formularios_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'core/domain/helpers/usecase_permissions_manager.dart';
 import 'core/network/network_info.dart';
 import 'package:http/http.dart' as http;
 import 'package:connectivity/connectivity.dart';
@@ -69,6 +72,9 @@ import 'package:gap/clean_architecture_structure/core/platform/storage_connector
 import 'core/data/data_sources/formularios/formularios_remote_data_source.dart';
 import 'core/data/data_sources/projects/projects_local_data_source.dart';
 import 'core/data/data_sources/projects/projects_remote_data_source.dart';
+import 'features/formularios/domain/usecases/end_chosen_formulario.dart';
+import 'features/formularios/domain/usecases/init_formulario.dart';
+import 'features/formularios/domain/usecases/update_campos.dart';
 import 'features/muestras/domain/use_cases/remove_muestra.dart';
 import 'features/visits/presentation/bloc/visits_bloc.dart';
 import 'core/presentation/blocs/user/user_bloc.dart';
@@ -240,10 +246,26 @@ void init()async{
 
   //Formularios
   sl.registerLazySingleton(()=>GetFormularios(repository: sl(), errorHandler: sl()));
-  sl.registerLazySingleton(()=>SetChosenFormulario(repository: sl(), errorHandler: sl()));
+  sl.registerLazySingleton(()=>ChooseFormulario(
+    repository: sl(), 
+    errorHandler: sl(), 
+    permissions: sl(), 
+    locator: sl())
+  );
+  sl.registerLazySingleton(() => InitChosenFormulario(repository: sl(), errorHandler: sl()));
+  sl.registerLazySingleton(() => UpdateCampos(repository: sl(), errorHandler: sl()));
+  sl.registerLazySingleton(() => EndChosenFormulario(
+    repository: sl(), 
+    errorHandler: sl(), 
+    permissions: sl(), 
+    locator: sl()
+  ));
   sl.registerFactory(()=>FormulariosBloc(
     getFormularios: sl(), 
-    setChosenFormulario: sl()
+    setChosenFormulario: sl(),
+    initChosenFormulario: sl(),
+    updateCampos: sl(),
+    endChosenFormulario: sl()
   ));
 
   //***** util components
@@ -260,9 +282,16 @@ void init()async{
   sl.registerLazySingleton<CustomNavigator>(()=>
     CustomNavigatorImpl()
   );
+  sl.registerLazySingleton<UseCasePermissionsManager>(()=>
+    UseCasePermissionsManagerImpl(permissions: sl())
+  );
+  sl.registerLazySingleton<CustomLocator>(()=>
+    CustomLocatorImpl()  
+  );
 
   //**********External
   sl.registerLazySingleton(() => Connectivity());
   sl.registerLazySingleton(() => http.Client());
   sl.registerLazySingleton(() => FlutterSecureStorage());
+  sl.registerLazySingleton<NativeServicesPermissions>(() => NativeServicesPermissionsImpl());
 }

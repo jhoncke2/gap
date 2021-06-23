@@ -27,5 +27,5 @@ class SingleValueFormField extends VariableFormField{
   @override
   bool get isCompleted => ![null, ''].contains(uniqueValue);
   @override
-  List<Object> get props => super.props..addAll([uniqueValue, placeholder]);
+  List<Object> get props => [...super.props, uniqueValue, placeholder];
 }

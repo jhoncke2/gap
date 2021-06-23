@@ -14,7 +14,7 @@ abstract class StaticFormField extends CustomFormField{
   );
 
   @override
-  List<Object> get props => super.props..add(subType.value);
+  List<Object> get props => [...super.props, subType.value];
 }
 
 class HeaderFormField extends StaticFormField{

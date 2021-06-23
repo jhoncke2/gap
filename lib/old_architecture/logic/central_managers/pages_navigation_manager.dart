@@ -95,7 +95,7 @@ class PagesNavigationManager{
   }
 
   static Future _updateForm(FormularioOld formulario)async{
-    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_CHOSEN_FORM, formulario);
+    await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_CHOSEN_FORM, [formulario, true]);
     await _goToPageByHavingOrNotError(NavigationRoute.FormularioDetail, false);
   }
 

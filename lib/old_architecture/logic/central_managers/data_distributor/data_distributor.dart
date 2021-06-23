@@ -52,7 +52,7 @@ import 'package:gap/old_architecture/native_connectors/gps.dart';
 import 'package:gap/old_architecture/native_connectors/storage_connector.dart';
 import 'package:gap/old_architecture/ui/utils/dialogs.dart' as dialogs;
 
-abstract class DataDistributor{
+class DataDistributor{
 
   final UseCaseErrorHandler errorHandler = sl();
   final CentralSystemRepository centralSystemRepository = sl();
@@ -225,9 +225,9 @@ abstract class DataDistributor{
     });
   }
   
-  Future<void> updateChosenForm(FormularioOld formOld)async{
+  Future<void> updateChosenForm(List data)async{
     formsB.add(ChangeFormsAreBlocked(areBlocked: true));
-    final FormularioModel chosenForm = _getFormularioFromFormularioOld(formOld);
+    final FormularioModel chosenForm = _getFormularioFromFormularioOld(data[0]);
     final eitherChoose = await errorHandler.executeFunction(() => formulariosRepository.setChosenFormulario(chosenForm));
     indexB.add(ResetAllOfIndex());
     await eitherChoose.fold((l)async{
@@ -235,11 +235,11 @@ abstract class DataDistributor{
       throw NavObstructionErr(message: 'Ocurrió un error con el formulario');
       //TODO: Implementar manejo de errores
     }, (_)async{
-      await _updateChosenFormFromRepository();
+      await _updateChosenFormFromRepository(data[1]);
     });
   }
 
-  Future<void> _updateChosenFormFromRepository()async{
+  Future<void> _updateChosenFormFromRepository(bool takeInitialPosition)async{
     final eitherUpdatedChosenForm = await errorHandler.executeFunction<Formulario>(() => formulariosRepository.getChosenFormulario());
     await eitherUpdatedChosenForm.fold((l)async{
       formsB.add(ChangeFormsAreBlocked(areBlocked: false));
@@ -251,29 +251,32 @@ abstract class DataDistributor{
         throw NavObstructionErr(message: 'El formulario no tiene campos');
       }
         
-      await _manageUpdatedChosenForm(updatedChosenForm);
+      await _manageUpdatedChosenForm(updatedChosenForm, takeInitialPosition);
     });
   }
 
-  Future<void> _manageUpdatedChosenForm(FormularioModel updatedChosenForm)async{
+  Future<void> _manageUpdatedChosenForm(FormularioModel updatedChosenForm, bool takeInitialPosition)async{
     final FormularioOld updatedChosenFormOld = FormularioOld.fromFormularioNew(updatedChosenForm);
-    await addInitialPosition(updatedChosenFormOld);
+    if(takeInitialPosition){
+      await addInitialPosition(updatedChosenFormOld);
+      final eitherSetInitialPosition = await errorHandler.executeFunction(
+        () => formulariosRepository.setInitialPosition(CustomPositionModel(
+          latitude: updatedChosenFormOld.initialPosition.latitude,
+          longitude: updatedChosenFormOld.initialPosition.longitude
+        ))
+      );
+      eitherSetInitialPosition.fold((l){
+        formsB.add(ChangeFormsAreBlocked(areBlocked: false));
+        throw NavObstructionErr(message: 'Ocurrión un problema al enviar la posición geográfica.');
+        //TODO: Implementar manejo de errores
+      }, (_){ 
+        //TODO: Implementar método
+      });
+    }
     formsB.add(ChooseForm(chosenOne: updatedChosenFormOld));
     await _chooseBlocMethodByChosenFormStep(updatedChosenFormOld);
     formsB.add(ChangeFormsAreBlocked(areBlocked: false));
-    final eitherSetInitialPosition = await errorHandler.executeFunction(
-      () => formulariosRepository.setInitialPosition(CustomPositionModel(
-        latitude: updatedChosenFormOld.initialPosition.latitude,
-        longitude: updatedChosenFormOld.initialPosition.longitude
-      ))
-    );
-    eitherSetInitialPosition.fold((l){
-      formsB.add(ChangeFormsAreBlocked(areBlocked: false));
-      throw NavObstructionErr(message: 'Ocurrión un problema al enviar la posición geográfica.');
-      //TODO: Implementar manejo de errores
-    }, (_){ 
-      //TODO: Implementar método
-    });
+    
   }
 
   FormularioModel _getFormularioFromFormularioOld(FormularioOld old)=>FormularioModel(
@@ -302,7 +305,7 @@ abstract class DataDistributor{
 
   @protected
   Future addInitialPosition(FormularioOld form)async{
-    final Position currentPosition = await GPS.gpsPosition;
+    final Position currentPosition = await GPSOld.gpsPosition;
     form.initialPosition = currentPosition;
   }
 
@@ -408,7 +411,7 @@ abstract class DataDistributor{
 
   @protected
   Future _addFinalPosition(FormularioOld form)async{
-    final Position currentPosition = await GPS.gpsPosition;
+    final Position currentPosition = await GPSOld.gpsPosition;
     form.finalPosition = currentPosition;
   }
 

@@ -14,3 +14,7 @@ class SetChosenFormularioEvent extends FormulariosEvent{
     @required this.formulario
   });
 }
+
+class InitChosenFormularioEvent extends FormulariosEvent{
+  
+}

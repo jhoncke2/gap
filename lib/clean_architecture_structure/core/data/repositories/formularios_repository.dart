@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:gap/clean_architecture_structure/core/data/models/formulario/custom_position.dart';
 import 'package:meta/meta.dart';
 import 'package:gap/clean_architecture_structure/core/domain/entities/formulario/custom_position.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/projects/projects_local_data_source.dart';
@@ -97,6 +98,7 @@ class FormulariosRepositoryImpl implements FormulariosRepository{
   @override
   Future<Either<Failure, void>> setInitialPosition(CustomPosition position)async{
     return await _executeGeneralVoidFunction(()async{
+      position = CustomPositionModel.fromCustomPosition(position);
       final ProjectModel chosenProject = await projectsLocalDataSource.getChosenProject();
       final VisitModel chosenVisit = await visitsLocalDataSource.getChosenVisit(chosenProject.id);
       FormularioModel chosenFormulario = await localDataSource.getChosenFormulario(chosenVisit.id);
@@ -133,6 +135,7 @@ class FormulariosRepositoryImpl implements FormulariosRepository{
   @override
   Future<Either<Failure, void>> setFinalPosition(CustomPosition position)async{
     return await _executeGeneralVoidFunction(()async{
+      position = CustomPositionModel.fromCustomPosition(position);
       final ProjectModel chosenProject = await projectsLocalDataSource.getChosenProject();
       final VisitModel chosenVisit = await visitsLocalDataSource.getChosenVisit(chosenProject.id);
       FormularioModel chosenFormulario = await localDataSource.getChosenFormulario(chosenVisit.id);

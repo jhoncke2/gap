@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:gap/old_architecture/data/models/entities/entities.dart';
@@ -58,8 +57,10 @@ class FormulariosOldBloc extends Bloc<FormulariosEvent, FormulariosState> {
   void _chooseForm(ChooseForm event){
     final FormularioOld chosenOne = event.chosenOne;
     final List<FormularioOld> forms = state.forms;
-    int chosenIndex = forms.indexWhere((element) => element.id == chosenOne.id);
-    forms[chosenIndex] = chosenOne;
+    if(forms!=null){
+      int chosenIndex = forms.indexWhere((element) => element.id == chosenOne.id);
+      forms[chosenIndex] = chosenOne;
+    }
     _currentYieldedState = state.copyWith(
       chosenForm: chosenOne,
       forms: forms,

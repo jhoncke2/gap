@@ -1,3 +1,6 @@
+import 'package:gap/clean_architecture_structure/core/domain/entities/formulario/custom_position.dart';
+import 'package:gap/clean_architecture_structure/core/domain/helpers/usecase_permissions_manager.dart';
+import 'package:gap/clean_architecture_structure/core/platform/locator.dart';
 import 'package:meta/meta.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
@@ -7,20 +10,30 @@ import 'package:gap/clean_architecture_structure/core/domain/repositories/formul
 import 'package:gap/clean_architecture_structure/core/domain/entities/formulario/formulario.dart';
 import 'package:gap/clean_architecture_structure/core/domain/use_cases/use_case.dart';
 
-class SetChosenFormulario implements UseCase<void, ChooseFormularioParams>{
+class ChooseFormulario implements UseCase<void, ChooseFormularioParams>{
   final FormulariosRepository repository;
   final UseCaseErrorHandler errorHandler;
+  final UseCasePermissionsManager permissions;
+  final CustomLocator locator;
 
-  SetChosenFormulario({
+  ChooseFormulario({
     @required this.repository, 
-    @required this.errorHandler
+    @required this.errorHandler,
+    @required this.permissions,
+    @required this.locator
   });
 
   @override
   Future<Either<Failure, void>> call(ChooseFormularioParams params)async{
-    return await errorHandler.executeFunction<void>(() => repository.setChosenFormulario(params.formulario));
+    return await errorHandler.executeFunction<void>(
+      () => permissions.executeFunctionByValidateLocation<void>(()async{
+        final CustomPosition position = await locator.gpsPosition;
+        await repository.setInitialPosition(position);
+        return repository.setChosenFormulario(params.formulario);
+      }
+    )
+    );
   }
-
 }
 
 class ChooseFormularioParams extends Equatable{

@@ -1,10 +1,10 @@
 [
     {
         "type": "number",
-        "required": false,
+        "required": true,
         "label": "NUMERO DE ORDEN DE SERVICIO",
         "className": "form-control",
-        "value":"4",
+        "value":null,
         "name": "number-1586211811903",
         "access": false
     },

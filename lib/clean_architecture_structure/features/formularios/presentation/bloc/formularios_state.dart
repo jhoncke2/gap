@@ -11,13 +11,13 @@ class FormulariosEmpty extends FormulariosState {}
 
 class LoadingFormularios extends FormulariosState {}
 
-class LoadingFormulariosError extends FormulariosState{
+class FormulariosLoadingError extends FormulariosState{
   final String message;
-  LoadingFormulariosError({
+  FormulariosLoadingError({
     @required this.message
   });
   @override
-  List<Object> get props => [this.message];
+  List<Object> get props => [...super.props, this.message];
 }
 
 class OnLoadedFormularios extends FormulariosState{
@@ -26,7 +26,11 @@ class OnLoadedFormularios extends FormulariosState{
     @required this.formularios
   });
   @override
-  List<Object> get props => [this.formularios];
+  List<Object> get props => [...super.props, this.formularios];
+}
+
+class OnCompletedFormularios extends FormulariosState{
+  
 }
 
 class LoadingFormularioSelection extends FormulariosState{}
@@ -36,5 +40,30 @@ class OnFormularioSelected extends FormulariosState{
     @required this.formulario
   });
   @override
-  List<Object> get props => [this.formulario];
+  List<Object> get props => [...super.props, this.formulario];
+}
+
+class OnFormularioDetail extends OnFormularioSelected{
+  final int nFormFieldsPages;
+  final int currentPage;
+  final bool canAdvance;
+  final bool canBack;
+  final List<CustomFormFieldOld> formFieldsFromPage;
+  OnFormularioDetail({
+    @required this.nFormFieldsPages,
+    @required this.currentPage,
+    @required this.canAdvance,
+    @required this.canBack,
+    @required this.formFieldsFromPage,
+    @required Formulario formulario,
+  }):super(formulario: formulario);
+  @override
+  List<Object> get props => [
+    ...super.props,
+    this.nFormFieldsPages,
+    this.currentPage,
+    this.canAdvance,
+    this.canBack,
+    this.formFieldsFromPage
+  ];
 }

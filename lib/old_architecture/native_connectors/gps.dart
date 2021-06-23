@@ -1,6 +1,6 @@
 import 'package:geolocator/geolocator.dart';
 
-class GPS{
+class GPSOld{
   static Future<bool> get gpsIsEnabled async => await Geolocator.isLocationServiceEnabled();
   static Future<LocationPermission> get gpsPermission async => await Geolocator.checkPermission();
   static Function get openAppSettings => Geolocator.openAppSettings;

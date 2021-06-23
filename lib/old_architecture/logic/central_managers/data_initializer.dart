@@ -209,7 +209,7 @@ class DataInitializer{
       _continueInitialization = false;
     }, (chosenFormulario)async{
       FormularioOld chosenFormularioOld = FormularioOld.fromFormularioNew(chosenFormulario);
-      await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_CHOSEN_FORM, chosenFormularioOld);
+      await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_CHOSEN_FORM, [chosenFormularioOld, false]);
     });
   }
 

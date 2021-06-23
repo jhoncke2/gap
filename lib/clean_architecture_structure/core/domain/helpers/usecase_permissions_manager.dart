@@ -38,5 +38,4 @@ class UseCasePermissionsManagerImpl implements UseCasePermissionsManager{
   Future<bool> _storageIsFinallyGranted()async{
     return await permissions.storageIsGranted || await permissions.storageRequestStatus == PlatformPermissionStatus.GRANTED;
   }
-
 }

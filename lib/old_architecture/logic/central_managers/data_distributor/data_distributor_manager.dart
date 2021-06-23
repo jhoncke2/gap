@@ -7,8 +7,8 @@ import 'package:gap/old_architecture/native_connectors/net_connection_detector.d
 
 class DataDistributorManager{
   static final NetConnectionStateContainer _netConnectionContainer = NetConnectionStateContainer();
-  final DataDistributor _dataDistributorWithConnection = DataDistributorWithConnection();
-  final DataDistributor _dataDistributorWithoutConnection = SourceDataToBlocWithoutConnection();
+  final DataDistributor _dataDistributorWithConnection = DataDistributor();
+  final DataDistributor _dataDistributorWithoutConnection = DataDistributor();
   bool happendError;
   int errorRepetitions;
 
