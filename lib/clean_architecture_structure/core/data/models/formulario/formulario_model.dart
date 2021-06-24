@@ -75,7 +75,7 @@ class FormularioModel extends Formulario{
       'formulario_pivot_id' : id,
       'nombre' : name,
       'completo' : completo,
-      'firmers' : firmersToJson(firmers??[]),
+      'c' : firmersToJson(firmers??[]),
       'campos' : customFormFieldsToJson(campos),
       'form_step_index': _getIndexForJson(),
       'initial_position': initialPosition == null? null : (initialPosition as CustomPositionModel).toJson(),

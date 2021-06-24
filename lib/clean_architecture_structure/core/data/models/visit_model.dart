@@ -1,6 +1,9 @@
+import 'package:gap/clean_architecture_structure/core/domain/entities/formulario/firmer.dart';
 import 'package:meta/meta.dart';
 import 'package:gap/clean_architecture_structure/core/domain/entities/visit.dart';
 import 'package:gap/old_architecture/data/models/entities/entities.dart';
+
+import 'formulario/firmer_model.dart';
 
 List<VisitModel> visitsFromRemoteJson(dynamic jsonVisits){
   List<VisitModel> visitsList;
@@ -49,14 +52,16 @@ class VisitModel extends Visit{
     @required bool completo,
     @required SedeModel sede,
     @required List<dynamic> formularios,
-    @required bool hasMuestreo
+    @required bool hasMuestreo,
+    @required List<FirmerModel> firmers,
   }):super(
     id: id,
     date: date,
     completo: completo,
     sede: sede,
     formularios: formularios,
-    hasMuestreo: hasMuestreo
+    hasMuestreo: hasMuestreo,
+    firmers: firmers
   );
   
   factory VisitModel.fromJson(Map<String, dynamic> json)=>VisitModel(
@@ -65,6 +70,7 @@ class VisitModel extends Visit{
     date: json['fecha_visita'] == null? DateTime.now() : transformStringInToDateOld(json['fecha_visita']),
     sede: SedeModel.fromJson(json['sede']),
     hasMuestreo: json['muestra']??false,
+    firmers: json['firmers']!=null? firmersFromJson(json['firmers'].cast<Map<String, dynamic>>()): [],
     formularios: [],
   );
 
@@ -73,22 +79,24 @@ class VisitModel extends Visit{
     'sede': (sede as SedeModel).toJson(), 
     'completo': completo,
     'fecha_visita':  transformDateInToStringOld(date),
+    'firmers':firmersToJson(firmers),
     'muestra': this.hasMuestreo
   };
 
   @override
   Visit copyWith({
-    bool completo
+    bool completo,
+    List<Firmer> firmers
   })=>VisitModel(
     id: this.id, 
     date: this.date, 
     completo: completo ?? this.completo, 
     sede: this.sede, 
     formularios: this.formularios,
-    hasMuestreo: this.hasMuestreo
+    hasMuestreo: this.hasMuestreo,
+    firmers: firmers ?? this.firmers
   );
 }
-
 
 class SedeModel extends Sede{
   SedeModel({

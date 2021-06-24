@@ -1,3 +1,4 @@
+import 'package:gap/clean_architecture_structure/core/domain/entities/formulario/firmer.dart';
 import 'package:gap/old_architecture/data/enums/enums.dart';
 import 'package:meta/meta.dart';
 import 'package:equatable/equatable.dart';
@@ -11,6 +12,7 @@ class Visit extends EntityWithStage{
   final Sede sede;
   final List<dynamic> formularios;
   final bool hasMuestreo;
+  final List<Firmer> firmers;
   
   Visit({
     @required this.id,
@@ -19,6 +21,7 @@ class Visit extends EntityWithStage{
     @required this.sede,
     @required this.formularios,
     @required this.hasMuestreo,
+    @required this.firmers,
     ProcessStage stage
   }):super(
     name: (sede == null)? '' : sede.nombre,
@@ -26,11 +29,12 @@ class Visit extends EntityWithStage{
   );
 
   @override
-  List<Object> get props => [id, date.year, date.month, date.day, completo, sede, formularios];
+  List<Object> get props => [id, date.year, date.month, date.day, completo, sede, formularios, firmers];
 
   // ignore: missing_return
   Visit copyWith({
-    bool completo
+    bool completo,
+    List<Firmer> firmers
   }){}
 }
 

@@ -55,6 +55,7 @@ class VisitOld extends EntityWithStageOld{
   SedeOld sede;
   List<FormularioOld> formularios;
   bool hasMuestreo;
+  List<PersonalInformationOld> firmers;
 
   VisitOld({
     int id,
@@ -62,7 +63,8 @@ class VisitOld extends EntityWithStageOld{
     this.date,
     this.sede,
     this.formularios,
-    this.hasMuestreo
+    this.hasMuestreo,
+    this.firmers
   })
   :
   _completo = completo,
@@ -79,7 +81,8 @@ class VisitOld extends EntityWithStageOld{
     date: v.date, 
     sede: SedeOld(id: v.sede.id, nombre: v.sede.nombre),
     hasMuestreo: v.hasMuestreo??false,
-    formularios: []
+    formularios: [],
+    firmers: []
   );
 
   factory VisitOld.fromJson(Map<String, dynamic> json)=>VisitOld(
@@ -88,6 +91,7 @@ class VisitOld extends EntityWithStageOld{
     date: json['fecha'] == null? DateTime.now() : transformStringInToDateOld(json['fecha']),
     sede: SedeOld.fromJson(json['sede']),
     formularios: formulariosFromJsonOld((json["formularios"]??[]).cast<Map<String, dynamic>>()),
+    firmers: json['firmers'] != null? PersonalInformations.fromJson(json['firmers'].cast<Map<String, dynamic>>()).personalInformations : []
   );
 
   /*

@@ -15,7 +15,7 @@ import 'package:gap/clean_architecture_structure/core/data/data_sources/formular
 import 'package:gap/clean_architecture_structure/core/data/data_sources/preloaded/preloaded_local_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/user/user_local_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/models/formulario/formulario_model.dart';
-import 'package:gap/clean_architecture_structure/core/data/repositories/formularios_repository.dart';
+import 'package:gap/clean_architecture_structure/core/data/repositories/formularios/formularios_repository.dart';
 import 'package:gap/clean_architecture_structure/core/domain/entities/formulario/formulario.dart';
 import 'package:gap/clean_architecture_structure/core/network/network_info.dart';
 import '../../../fixtures/fixture_reader.dart';
@@ -75,7 +75,7 @@ void main(){
     setUp((){
       tAccessToken = 'access_token';
       tChosenProject = ProjectModel(id: 1, nombre: 'p');
-      tChosenVisit = VisitModel(id: 2, completo: false, sede: null, date: null, hasMuestreo: false, formularios: []);
+      tChosenVisit = VisitModel(id: 2, completo: false, sede: null, date: null, hasMuestreo: false, formularios: [], firmers: []);
       tChosenFormulario = _getFormulariosFromFixture()[0];
     });
 
@@ -161,7 +161,7 @@ void _testGetFormulariosGroup(){
     setUp((){
       tAccessToken = 'access_token';
       tProject = ProjectModel(id: 1, nombre: '');
-      tVisit = VisitModel(id: 2, completo: false, sede: null, date: null, hasMuestreo: false, formularios: []);
+      tVisit = VisitModel(id: 2, completo: false, sede: null, date: null, hasMuestreo: false, formularios: [], firmers: []);
       tFormularios = _getFormulariosFromFixture();
       tChosenFormulario = _getFormulariosFromFixture()[0];
       tChosenFormulario = tChosenFormulario.copyWith(completo: !tChosenFormulario.completo);
@@ -254,7 +254,7 @@ void _testSetChosenFormularioGroup(){
     FormularioModel tFormulario;
     setUp((){
       tChosenProject = ProjectModel(id: 1, nombre: 'p');
-      tChosenVisit = VisitModel(id: 2, completo: false, sede: null, date: null, hasMuestreo: false, formularios: []);
+      tChosenVisit = VisitModel(id: 2, completo: false, sede: null, date: null, hasMuestreo: false, formularios: [], firmers: []);
       tFormulario = _getFormulariosFromFixture()[0];
       when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tChosenProject);
       when(visitsLocalDataSource.getChosenVisit(any)).thenAnswer((_) async => tChosenVisit);
@@ -288,7 +288,7 @@ void _testGetChosenFormularioGroup(){
     FormularioModel tFormulario;
     setUp((){
       tProject = ProjectModel(id: 1, nombre: '');
-      tVisit = VisitModel(id: 2, completo: false, sede: null, date: null, hasMuestreo: false, formularios: []);
+      tVisit = VisitModel(id: 2, completo: false, sede: null, date: null, hasMuestreo: false, formularios: [], firmers: []);
       tFormulario = _getFormulariosFromFixture()[0];
       tAccessToken = 'access_token';
     });
@@ -401,7 +401,7 @@ void _testSetInitialPositionGroup(){
     setUp((){
       tAccessToken = 'access_token';
       tProject = ProjectModel(id: 1, nombre: 'project');
-      tVisit = VisitModel(id: 2, completo: false, sede: null, date: null, hasMuestreo: false, formularios: []);
+      tVisit = VisitModel(id: 2, completo: false, sede: null, date: null, hasMuestreo: false, formularios: [], firmers: []);
       tInitialPosition = CustomPositionModel(latitude: 1.1, longitude: 2.2);
       tFormulario = FormularioModel(id: 3, completo: false);
       when(projectsLocalDataSource.getChosenProject()).thenAnswer((_) async => tProject);
@@ -485,7 +485,7 @@ void _testSetFormularioGroup(){
     setUp((){
       tAccessToken = 'access_token';
       tProject = ProjectModel(id: 1, nombre: 'p');
-      tVisit = VisitModel(id: 2, completo: false, sede: null, date: null, hasMuestreo: false, formularios: []);
+      tVisit = VisitModel(id: 2, completo: false, sede: null, date: null, hasMuestreo: false, formularios: [], firmers: []);
       tFormulario = _getFormulariosFromFixture()[0];
     });
 
@@ -566,7 +566,7 @@ void _testSetFinalPositionGroup(){
     setUp((){
       tAccessToken = 'access_token';
       tProject = ProjectModel(id: 1, nombre: 'project');
-      tVisit = VisitModel(id: 2, completo: false, sede: null, date: null, hasMuestreo: false, formularios: []);
+      tVisit = VisitModel(id: 2, completo: false, sede: null, date: null, hasMuestreo: false, formularios: [], firmers: []);
       tInitialPosition = CustomPositionModel(latitude: 1.1, longitude: 2.2);
       tFormulario = FormularioModel(id: 3, completo: false);
       tFinalPosition = CustomPositionModel(latitude: 3.3, longitude: 4.4);
@@ -658,8 +658,7 @@ void _testSetFirmerGroup(){
     setUp((){
       tAccessToken = 'access_token';
       tProject = ProjectModel(id: 1, nombre: 'p');
-      tVisit = VisitModel(id: 2, completo: false, sede: null, date: null, hasMuestreo: false, formularios: []);VisitModel(id: 2, completo: false, sede: null, date: null, hasMuestreo: false, formularios: []);
-      tVisit = VisitModel(id: 2, completo: false, sede: null, date: null, hasMuestreo: false, formularios: []);VisitModel(id: 2, completo: false, sede: null, date: null, hasMuestreo: false, formularios: []);
+      tVisit = VisitModel(id: 2, completo: false, sede: null, date: null, hasMuestreo: false, formularios: [], firmers: []);
       tFormulario1 = _getFormulariosFromFixture()[0];
       tFirmer1 = _getFormulariosFromFixture()[1].firmers[0];
     });

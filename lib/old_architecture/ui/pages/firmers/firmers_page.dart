@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/general_button.dart';
 import 'package:gap/clean_architecture_structure/core/presentation/widgets/progress_indicator.dart';
+import 'package:gap/clean_architecture_structure/features/visits/presentation/bloc/visits_bloc.dart';
+import 'package:gap/clean_architecture_structure/injection_container.dart';
 import 'package:gap/old_architecture/logic/bloc/entities/formularios/formularios_bloc.dart';
 import 'package:gap/old_architecture/logic/bloc/widgets/chosen_form/chosen_form_bloc.dart';
 import 'package:gap/old_architecture/logic/bloc/widgets/keyboard_listener/keyboard_listener_bloc.dart';
@@ -11,10 +13,11 @@ import 'package:gap/old_architecture/ui/pages/formulario_detail/forms/form_body/
 import 'package:gap/old_architecture/ui/pages/formulario_detail/forms/form_body/center_containers/first_firmer_firm.dart';
 import 'package:gap/old_architecture/ui/pages/formulario_detail/forms/form_body/center_containers/first_firmer_pers_info.dart';
 import 'package:gap/old_architecture/ui/pages/formulario_detail/forms/form_body/center_containers/secondary_firmer_firm.dart';
-import 'package:gap/old_architecture/ui/pages/formulario_detail/forms/loaded_form_head.dart';
-import 'package:gap/old_architecture/ui/utils/size_utils.dart';
-import 'package:gap/old_architecture/ui/widgets/form_process_container.dart';
 import 'package:gap/old_architecture/ui/widgets/native_back_button_locker.dart';
+import 'package:gap/old_architecture/ui/widgets/form_process_container.dart';
+import 'package:gap/old_architecture/ui/pages/firmers/firm_head.dart';
+import 'package:gap/old_architecture/ui/utils/size_utils.dart';
+
 
 // ignore: must_be_immutable
 class FirmersPageOld extends StatelessWidget {
@@ -32,16 +35,18 @@ class FirmersPageOld extends StatelessWidget {
     _context = context;
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: NativeBackButtonLocker(
-        child: SafeArea(
-          child: Container(
-            color: Colors.transparent,
-            child: GestureDetector(
-              child: _createAlignedComponents(),
-              onTap: () {
-                print('tap');
-                FocusScope.of(context).requestFocus(new FocusNode());
-              }
+      body: BlocProvider<VisitsBloc>(
+        create: (_)=>sl(),
+        child: NativeBackButtonLocker(
+          child: SafeArea(
+            child: Container(
+              color: Colors.transparent,
+              child: GestureDetector(
+                child: _createAlignedComponents(),
+                onTap: () {
+                  FocusScope.of(context).requestFocus(new FocusNode());
+                }
+              ),
             ),
           ),
         ),
@@ -74,7 +79,7 @@ class FirmersPageOld extends StatelessWidget {
       separer = SizedBox(height: _sizeUtils.littleSizedBoxHeigh * 0.0);
       bodyMainAxisAlignment = MainAxisAlignment.start;
     }else{
-      header = LoadedFormHead(formsState: formsState);
+      header = FirmHead(formsState: formsState);
       separer = SizedBox(height: _sizeUtils.littleSizedBoxHeigh * 0.5);
       bodyMainAxisAlignment = MainAxisAlignment.spaceBetween;
     }
@@ -96,7 +101,6 @@ class _FirmerComponents extends StatelessWidget {
   Widget _bodyWidget;
   Widget _bottomWidget;
   _FirmerComponents({Key key, @required this.keyboardIsActive}) : super(key: key);
-
   
   @override
   Widget build(BuildContext context) {

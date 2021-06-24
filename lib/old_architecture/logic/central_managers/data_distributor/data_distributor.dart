@@ -192,6 +192,9 @@ class DataDistributor{
     date: vO.date,
     sede: SedeModel(id: vO.sede.id, nombre: vO.sede.nombre),
     hasMuestreo: vO.hasMuestreo??false,
+    //**************************************** */
+    //No se puede utilizar este método porque no funciona la parte de los firmers
+    firmers: []
   );
   
   Future<void> updateChosenVisit(VisitOld visitOld)async{
@@ -494,8 +497,8 @@ class DataDistributor{
     chosenFormB.add(InitFirmsFinishing());
     final FormularioOld chosenForm = formsB.state.chosenForm;
     chosenForm.formStep = FormStep.Finished;
-    await updateFirmers();
-    await _updateFirmersInForm(chosenForm);
+    //await updateFirmers();
+    //await _updateFirmersInForm(chosenForm);
     await formulariosRepository.endChosenFormulario();
     //await updateChosenFormInStorage(chosenForm);
     chosenFormB.add(ResetChosenForm());

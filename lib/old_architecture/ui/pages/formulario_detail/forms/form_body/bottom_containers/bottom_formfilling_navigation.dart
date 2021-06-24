@@ -94,8 +94,9 @@ class _ChangeFormStepButton extends StatelessWidget {
     if(chosenFormState.formStep == FormStep.OnFormFillingOut)
       PagesNavigationManager.endFormFillingOut();
     else if(chosenFormState.formStep == FormStep.OnFormReading)
-      PagesNavigationManager.initFirstFirmerFillingOut();
-    else
-      PagesNavigationManager.initFirstFirmerFirm();
+      //PagesNavigationManager.initFirstFirmerFillingOut();
+      PagesNavigationManager.endAllFormProcess();
+    //else
+    //  PagesNavigationManager.initFirstFirmerFirm();
   }
 }

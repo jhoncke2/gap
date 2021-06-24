@@ -1,4 +1,5 @@
 //sl: service locator
+import 'package:gap/clean_architecture_structure/core/data/repositories/formularios/fake_impl/formularios_repository_fake.dart';
 import 'package:gap/clean_architecture_structure/core/domain/use_cases/preloaded/send_preloaded_data.dart';
 import 'package:gap/clean_architecture_structure/core/platform/locator.dart';
 import 'package:gap/clean_architecture_structure/core/platform/native_services_permission.dart';
@@ -45,7 +46,7 @@ import 'package:gap/clean_architecture_structure/features/muestras/data/data_sou
 import 'package:gap/clean_architecture_structure/features/muestras/data/repository/muestras_repository.dart';
 import 'package:gap/clean_architecture_structure/core/data/data_sources/central_system/central_system_local_data_source.dart';
 import 'package:gap/clean_architecture_structure/core/data/repositories/commented_images_repository.dart';
-import 'package:gap/clean_architecture_structure/core/data/repositories/formularios_repository.dart';
+import 'package:gap/clean_architecture_structure/core/data/repositories/formularios/formularios_repository.dart';
 import 'package:gap/clean_architecture_structure/core/data/repositories/navigation_repository.dart';
 import 'package:gap/clean_architecture_structure/features/projects/data/repository/projects_repository.dart';
 import 'package:gap/clean_architecture_structure/core/data/repositories/user_repository.dart';
@@ -108,6 +109,7 @@ void init()async{
     projectsLocalDataSource: sl(), 
     visitsLocalDataSource: sl()
   ));
+  /*
   sl.registerLazySingleton<FormulariosRepository>(()=>FormulariosRepositoryImpl(
     networkInfo: sl(), 
     remoteDataSource: sl(), 
@@ -115,8 +117,11 @@ void init()async{
     preloadedDataSource: sl(), 
     userLocalDataSource: sl(), 
     visitsLocalDataSource: sl(), 
-    projectsLocalDataSource: sl()
+    projectsLocalDataSource: sl()s
   ));
+  */
+  sl.registerLazySingleton<FormulariosRepository>(()=>FormulariosRepositoryFake());
+
   sl.registerLazySingleton<PreloadedRepository>(()=>PreloadedRepositoryImpl(
     networkInfo: sl(),    
     userLocalDataSource: sl(), 

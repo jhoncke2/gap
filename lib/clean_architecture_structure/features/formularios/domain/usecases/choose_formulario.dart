@@ -28,8 +28,9 @@ class ChooseFormulario implements UseCase<void, ChooseFormularioParams>{
     return await errorHandler.executeFunction<void>(
       () => permissions.executeFunctionByValidateLocation<void>(()async{
         final CustomPosition position = await locator.gpsPosition;
+        final eitherSetChosenFormulario = await repository.setChosenFormulario(params.formulario);
         await repository.setInitialPosition(position);
-        return repository.setChosenFormulario(params.formulario);
+        return eitherSetChosenFormulario;
       }
     )
     );

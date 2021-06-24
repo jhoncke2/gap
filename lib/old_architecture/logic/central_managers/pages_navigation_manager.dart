@@ -125,7 +125,6 @@ class PagesNavigationManager{
       await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.INIT_FIRST_FIRMER_FILLING_OUT);
       await _goToPageByHavingOrNotError(NavigationRoute.Firmers, false);
     });
-    
   }
 
   static Future initFirstFirmerFirm()async{
@@ -140,6 +139,15 @@ class PagesNavigationManager{
       await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.UPDATE_FIRMERS);
     });
     
+  }
+
+  static Future<void> endAllFormProcess()async{
+     await _executeMethodByValidateStorage(()async{
+      await dataDisrtibutorErrorHandlingManager.executeFunction(DataDistrFunctionName.END_ALL_FORM_PROCESS); 
+      await _backToForms();
+      await navLocalDataSource.removeLast();
+      await customNavigator.navigateReplacingTo((await navLocalDataSource.getNavRoutes()).last);
+    }); 
   }
 
   static Future<void> endFormFirmers()async{
